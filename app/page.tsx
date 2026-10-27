@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { authHeaders } from "../lib/browser-auth";
 import Link from "next/link";
 
 type Msg = { role: "user" | "model"; text: string };
@@ -10,12 +11,12 @@ const SUGGESTIONS = [
   "Seed 25 demo subscribers at $12/month.",
   "What's my MRR and how many failed payments?",
   "Draft a dunning email for customers with failed payments.",
-  "Invoice sam@acme.com $240 for a consulting call.",
+  "Draft an invoice for demo@example.invalid for $240.",
 ];
 
 export default function Home() {
   const [messages, setMessages] = useState<Msg[]>([
-    { role: "model", text: "Hi, I'm AutomatePal. Describe your product and I'll set up billing on PayPal - plans, checkout links, invoices. Ask me anything about your revenue." },
+    { role: "model", text: "Hi, I'm AutomatePal. Describe your product and I can help set up PayPal sandbox products, plans and checkout links. Sign in to keep your activity private. No real money moves." },
   ]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
@@ -29,7 +30,7 @@ export default function Home() {
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...await authHeaders() },
         body: JSON.stringify({ history: messages, message: text }),
       });
       const data = await res.json();
@@ -48,6 +49,7 @@ export default function Home() {
           <h1 className="text-xl font-bold">AutomatePal</h1>
           <p className="text-sm text-gray-500">AI billing &amp; revenue copilot on PayPal (sandbox)</p>
         </div>
+        <Link href="/login" className="text-sm underline">Sign in</Link>
         <Link href="/dashboard" className="rounded-lg bg-black px-3 py-2 text-sm text-white">Revenue dashboard</Link>
       </header>
 

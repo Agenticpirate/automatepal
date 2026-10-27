@@ -5,6 +5,8 @@ const BASE = process.env.PAYPAL_API_BASE ?? "https://api-m.sandbox.paypal.com";
 const CLIENT_ID = process.env.PAYPAL_CLIENT_ID ?? "";
 const CLIENT_SECRET = process.env.PAYPAL_CLIENT_SECRET ?? "";
 
+if (BASE !== "https://api-m.sandbox.paypal.com") throw new Error("Only PayPal sandbox is supported");
+
 let cachedToken: { token: string; expiresAt: number } | null = null;
 
 async function accessToken(): Promise<string> {
@@ -27,6 +29,7 @@ async function api<T = unknown>(method: string, path: string, body?: unknown): P
   const token = await accessToken();
   const res = await fetch(`${BASE}${path}`, {
     method,
+    signal: AbortSignal.timeout(20000),
     headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
     body: body === undefined ? undefined : JSON.stringify(body),
   });

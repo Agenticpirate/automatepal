@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
+import { authHeaders } from "../../lib/browser-auth";
 import Link from "next/link";
 import { AgGridReact } from "ag-grid-react";
 import { AllCommunityModule, ModuleRegistry, ColDef, CellStyle, themeQuartz } from "ag-grid-community";
@@ -7,7 +8,7 @@ import { AllCommunityModule, ModuleRegistry, ColDef, CellStyle, themeQuartz } fr
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 type Event = {
-  id: string; ts: string; kind: string; refId?: string;
+  id: string; ts: string; kind: string; source?: string; refId?: string;
   amount?: number; currency?: string; customer?: string; note?: string;
 };
 type Stats = { totalRevenue: number; mrr: number; activeSubscriptions: number; failedPayments: number; succeededPayments: number };
@@ -23,7 +24,7 @@ export default function Dashboard() {
   const [stats, setStats] = useState<Stats | null>(null);
 
   useEffect(() => {
-    fetch("/api/dashboard").then((r) => r.json()).then((d) => {
+    authHeaders().then(headers => fetch("/api/dashboard", {headers})).then((r) => r.json()).then((d) => {
       setEvents(d.events); setStats(d.stats);
     });
   }, []);
@@ -36,6 +37,7 @@ export default function Dashboard() {
         if (p.value === "payment_succeeded") return { color: "#16a34a" };
         return undefined;
       } },
+    { field: "source", headerName: "Source", width: 140 },
     { field: "customer", headerName: "Customer", flex: 1 },
     { field: "amount", headerName: "Amount", width: 110, valueFormatter: (p) => (p.value != null ? `$${Number(p.value).toFixed(2)}` : "") },
     { field: "note", headerName: "Note", flex: 1.4 },
@@ -54,7 +56,7 @@ export default function Dashboard() {
       <header className="mb-4 flex items-center justify-between">
         <div>
           <h1 className="text-xl font-bold">Revenue dashboard</h1>
-          <p className="text-sm text-gray-500">Live ledger from AutomatePal (PayPal sandbox)</p>
+          <p className="text-sm text-gray-500">PayPal sandbox recorded activity. Fictional events are labelled simulation.</p>
         </div>
         <Link href="/" className="rounded-lg border px-3 py-2 text-sm">Back to agent</Link>
       </header>

@@ -65,6 +65,7 @@ export default function Dashboard() {
         {card("Failed payments", stats ? String(stats.failedPayments) : "-")}
         {card("Succeeded", stats ? String(stats.succeededPayments) : "-")}
       </div>
+      <p className="mb-3 text-xs text-gray-400">PayPal is a trademark of PayPal, Inc. AutomatePal is not affiliated with or endorsed by PayPal.</p>
       <div style={{ height: 560 }}>
         <AgGridReact
           theme={themeQuartz}

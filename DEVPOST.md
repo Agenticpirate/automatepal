@@ -39,3 +39,6 @@ Webhook-driven live payment events, Braintree support, YStartups verified-revenu
 
 ## Sponsor prizes targeted
 Best Use of AG Grid, Best Use of Render
+
+## Trademark & endorsement note
+PayPal is a trademark of PayPal, Inc. AutomatePal is not affiliated with, sponsored by, or endorsed by PayPal - it is an independent project that uses the public PayPal developer platform (sandbox). No PayPal logos or brand assets are used in the app, repo, or video.

@@ -49,6 +49,10 @@ This repo includes `render.yaml`. On Render: New > Blueprint, point at this repo
 - **Render** - hosting
 - Built with AI pair-programming (Instinct agent)
 
+## Trademarks
+
+PayPal is a trademark of PayPal, Inc. AutomatePal is an independent open-source project built for the PayPal AI Hackathon and is **not affiliated with, sponsored by, or endorsed by PayPal**. "Built with PayPal" refers only to use of the public PayPal developer platform (sandbox APIs). No PayPal logos or brand assets are used in this project. Per PayPal's developer branding guidelines, the product name avoids the PayPal name and its brand features.
+
 ## License
 
 MIT

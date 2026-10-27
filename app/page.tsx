@@ -68,6 +68,7 @@ export default function Home() {
         ))}
       </div>
 
+      <p className="pb-2 text-center text-xs text-gray-400">PayPal is a trademark of PayPal, Inc. AutomatePal is not affiliated with or endorsed by PayPal.</p>
       <form onSubmit={(e) => { e.preventDefault(); send(input); }} className="flex gap-2 border-t pt-3">
         <input
           value={input}

@@ -30,5 +30,7 @@ Dashboard zoom out. "Billing setup used to be a week of PayPal integration. Auto
 ## Recording checklist
 - [ ] Seed data first so dashboard is alive
 - [ ] Use sandbox links only (visible "sandbox" in URL is fine - required)
+- [ ] No PayPal logo or wordmark anywhere on screen; refer to PayPal in text/voice only ("built with the PayPal developer platform")
+- [ ] End card: "PayPal is a trademark of PayPal, Inc. AutomatePal is not affiliated with or endorsed by PayPal."
 - [ ] No third-party logos/music; plain screen + voice
 - [ ] Export 1080p, upload to YouTube as public, paste link into Devpost

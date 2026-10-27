@@ -4,6 +4,7 @@
 
 import { GoogleGenAI, Type, FunctionCallingConfigMode } from "@google/genai";
 import type { Content, FunctionDeclaration } from "@google/genai";
+import { requestContext } from "./session";
 import { z } from "zod";
 import * as paypal from "./paypal";
 import { addEvent, allEvents, computeStats } from "./store";
@@ -124,6 +125,10 @@ const schemas: Record<string, z.ZodType> = {
 export async function runTool(name: string, args: Record<string, unknown>): Promise<unknown> {
   if (!schemas[name]) throw new Error("Unsupported action");
   args = schemas[name].parse(args) as Record<string, unknown>;
+  const ctx = requestContext.getStore();
+  const paypalActions = ["create_product","create_plan","create_checkout_order","create_invoice_draft","list_products_and_plans"];
+  if (ctx && paypalActions.includes(name) && (!process.env.APP_OWNER_EMAIL || ctx.email !== process.env.APP_OWNER_EMAIL))
+    return {error:"This beta uses the owner's sandbox. Only the owner can access PayPal tools. You can explore fictional demo activity and your own recorded events."};
   switch (name) {
     case "create_product": {
       const r = (await paypal.createProduct({

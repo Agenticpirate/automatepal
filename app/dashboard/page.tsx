@@ -58,7 +58,7 @@ export default function Dashboard() {
           <h1 className="text-xl font-bold">Revenue dashboard</h1>
           <p className="text-sm text-gray-500">PayPal sandbox recorded activity. Fictional events are labelled simulation.</p>
         </div>
-        <Link href="/" className="rounded-lg border px-3 py-2 text-sm">Back to agent</Link>
+        <Link href="/workspace" className="rounded-lg border px-3 py-2 text-sm">Back to agent</Link>
       </header>
       <div className="mb-4 grid grid-cols-2 gap-3 md:grid-cols-5">
         {card("MRR", stats ? `$${stats.mrr.toFixed(2)}` : "-")}

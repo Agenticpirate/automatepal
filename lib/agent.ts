@@ -2,6 +2,7 @@
 // The founder chats in plain English; the agent calls PayPal tools and the
 // local ledger, then answers with links, numbers and drafts.
 
+import { randomUUID } from "node:crypto";
 import { GoogleGenAI, Type, FunctionCallingConfigMode } from "@google/genai";
 import type { Content, FunctionDeclaration } from "@google/genai";
 import { MUTATIONS, proposeAction } from "./actions";
@@ -180,9 +181,10 @@ export async function runTool(name: string, args: Record<string, unknown>): Prom
       const n = Math.min(Number(args.subscribers), 50);
       const price = Number(args.monthly_price);
       const created: string[] = [];
+      const scenario = randomUUID().slice(0,8);
       for (let i = 0; i < n; i++) {
         const name = FIRST_NAMES[i % FIRST_NAMES.length];
-        const email = `${name.toLowerCase()}${i}@${DOMAINS[0]}`;
+        const email = `${name.toLowerCase()}${i}-${scenario}@${DOMAINS[0]}`;
         await addEvent({ source: "simulation", kind: "subscription_created", amount: price, customer: email, note: `${name} subscribed` });
         const months = 1 + (i % 4);
         for (let m = 0; m < months; m++) {

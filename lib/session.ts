@@ -9,6 +9,6 @@ export async function authenticate(req: NextRequest) {
   if (!url || !key || !auth?.startsWith('Bearer ')) return null;
   const client = createClient(url,key,{global:{headers:{Authorization:auth}},auth:{persistSession:false,autoRefreshToken:false}});
   const { data, error } = await client.auth.getUser(auth.slice(7));
-  if (error || !data.user) return null;
+  if (error || !data.user || !data.user.email_confirmed_at) return null;
   return {userId:data.user.id,email:data.user.email,client};
 }

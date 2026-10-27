@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { AgGridReact } from "ag-grid-react";
-import { AllCommunityModule, ModuleRegistry, ColDef, themeQuartz } from "ag-grid-community";
+import { AllCommunityModule, ModuleRegistry, ColDef, CellStyle, themeQuartz } from "ag-grid-community";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -31,7 +31,11 @@ export default function Dashboard() {
   const cols = useMemo<ColDef<Event>[]>(() => [
     { field: "ts", headerName: "Time", width: 180, valueFormatter: (p) => new Date(p.value).toLocaleString() },
     { field: "kind", headerName: "Event", width: 150, valueFormatter: (p) => KIND_LABEL[p.value] ?? p.value,
-      cellStyle: (p) => p.value === "payment_failed" ? { color: "#dc2626", fontWeight: 600 } : p.value === "payment_succeeded" ? { color: "#16a34a" } : undefined },
+      cellStyle: (p): CellStyle | undefined => {
+        if (p.value === "payment_failed") return { color: "#dc2626", fontWeight: "600" };
+        if (p.value === "payment_succeeded") return { color: "#16a34a" };
+        return undefined;
+      } },
     { field: "customer", headerName: "Customer", flex: 1 },
     { field: "amount", headerName: "Amount", width: 110, valueFormatter: (p) => (p.value != null ? `$${Number(p.value).toFixed(2)}` : "") },
     { field: "note", headerName: "Note", flex: 1.4 },

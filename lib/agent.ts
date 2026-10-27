@@ -3,6 +3,7 @@
 // local ledger, then answers with links, numbers and drafts.
 
 import { GoogleGenAI, Type, FunctionCallingConfigMode } from "@google/genai";
+import type { Content, FunctionDeclaration } from "@google/genai";
 import * as paypal from "./paypal";
 import { addEvent, allEvents, computeStats } from "./store";
 
@@ -15,7 +16,7 @@ You help a founder: (1) turn a product description into PayPal products, subscri
 Rules: always confirm what you created with its PayPal link or ID; keep answers short and concrete; never invent numbers - use tools;
 when creating a plan you need a product first (create one if missing); amounts are USD unless the founder says otherwise.`;
 
-const toolDefs = [
+const toolDefs: FunctionDeclaration[] = [
   {
     name: "create_product",
     description: "Create a PayPal catalog product (service/digital) in the sandbox.",
@@ -191,7 +192,7 @@ async function runTool(name: string, args: Record<string, unknown>): Promise<unk
 export type ChatMessage = { role: "user" | "model"; text: string };
 
 export async function runAgent(history: ChatMessage[], userText: string) {
-  const contents = [
+  const contents: Content[] = [
     ...history.map((m) => ({ role: m.role, parts: [{ text: m.text }] })),
     { role: "user" as const, parts: [{ text: userText }] },
   ];
@@ -215,7 +216,7 @@ export async function runAgent(history: ChatMessage[], userText: string) {
       return { reply: text || "Done.", actions };
     }
     contents.push({ role: "model" as const, parts });
-    const responseParts = [];
+    const responseParts: { functionResponse: { name: string; response: { result: unknown } } }[] = [];
     for (const p of calls) {
       const fc = p.functionCall!;
       let result: unknown;

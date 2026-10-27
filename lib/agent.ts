@@ -1,4 +1,4 @@
-// FounderPay Agent: Gemini function-calling loop over PayPal sandbox tools.
+// AutomatePal: Gemini function-calling loop over PayPal sandbox tools.
 // The founder chats in plain English; the agent calls PayPal tools and the
 // local ledger, then answers with links, numbers and drafts.
 
@@ -10,7 +10,7 @@ import { addEvent, allEvents, computeStats } from "./store";
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY ?? "" });
 const MODEL = process.env.GEMINI_MODEL ?? "gemini-2.5-flash";
 
-const SYSTEM = `You are FounderPay Agent, an AI billing and revenue copilot for indie founders, built on the PayPal sandbox.
+const SYSTEM = `You are AutomatePal, an AI billing and revenue copilot for indie founders, built on the PayPal sandbox.
 You help a founder: (1) turn a product description into PayPal products, subscription plans, checkout orders and invoices;
 (2) answer revenue questions (MRR, revenue, failed payments) from the ledger; (3) draft dunning emails - always ground them in list_failed_payments output (real customer emails and amounts), one short friendly email per customer.
 Rules: always confirm what you created with its PayPal link or ID; keep answers short and concrete; never invent numbers - use tools;
@@ -143,7 +143,7 @@ async function runTool(name: string, args: Record<string, unknown>): Promise<unk
       const r = (await paypal.createOrder({
         intent: "CAPTURE",
         purchase_units: [{ amount: { currency_code: args.currency ?? "USD", value: String(args.amount) },
-          description: args.description ?? "FounderPay checkout" }],
+          description: args.description ?? "AutomatePal checkout" }],
       })) as { id?: string; links?: { rel: string; href: string }[] };
       const approve = r.links?.find((l) => l.rel === "approve")?.href;
       await addEvent({ kind: "order_created", refId: r.id, amount: Number(args.amount), note: String(args.description ?? "") });
@@ -152,7 +152,7 @@ async function runTool(name: string, args: Record<string, unknown>): Promise<unk
     case "create_and_send_invoice": {
       const draft = (await paypal.createInvoiceDraft({
         detail: { currency_code: args.currency ?? "USD" },
-        invoicer: { name: { given_name: "FounderPay", surname: "Agent" } },
+        invoicer: { name: { given_name: "AutomatePal", surname: "Agent" } },
         primary_recipients: [{ billing_info: { email_address: args.customer_email } }],
         items: [{ name: args.item_name, quantity: String(args.quantity ?? 1),
           unit_amount: { currency_code: args.currency ?? "USD", value: String(args.unit_amount) } }],

@@ -1,4 +1,4 @@
-# Demo video script (< 3 min) - FounderPay Agent
+# Demo video script (< 3 min) - AutomatePal
 
 Target: 2:30-2:50. Screen recording, voiceover or captions. Show the app working end to end.
 
@@ -25,7 +25,7 @@ Type: "Draft dunning emails for everyone whose payment failed."
 Agent lists the failed customers and writes a personalized recovery email for each.
 
 ## 2:20-2:45 - Wrap
-Dashboard zoom out. "Billing setup used to be a week of PayPal integration. FounderPay Agent makes it a conversation - products, plans, checkout, invoices, revenue analytics and dunning, all on the PayPal developer platform with a Gemini agent. Deployed on Render, dashboard on AG Grid. Everything you just saw is open source - link below."
+Dashboard zoom out. "Billing setup used to be a week of PayPal integration. AutomatePal makes it a conversation - products, plans, checkout, invoices, revenue analytics and dunning, all on the PayPal developer platform with a Gemini agent. Deployed on Render, dashboard on AG Grid. Everything you just saw is open source - link below."
 
 ## Recording checklist
 - [ ] Seed data first so dashboard is alive

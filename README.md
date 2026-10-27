@@ -1,4 +1,4 @@
-# FounderPay Agent
+# AutomatePal
 
 An AI billing & revenue copilot for indie founders, built on the **PayPal developer platform (sandbox)** and **Google Gemini**.
 

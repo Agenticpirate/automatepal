@@ -1,4 +1,4 @@
-# Devpost submission draft - FounderPay Agent
+# Devpost submission draft - AutomatePal
 
 ## Tagline
 An AI billing & revenue copilot for indie founders - describe your product in chat, get live PayPal billing.
@@ -7,7 +7,7 @@ An AI billing & revenue copilot for indie founders - describe your product in ch
 Indie founders ship products fast but stall on billing: PayPal's APIs are powerful yet take days to wire up - products, plans, checkout, invoices, dunning. Most founders just want to say "I sell X for $12/month" and start charging. We asked: what if an AI agent did the whole setup, and then stayed on as your revenue analyst?
 
 ## What it does
-FounderPay Agent is a chat-first billing copilot:
+AutomatePal is a chat-first billing copilot:
 - Turns a plain-English product description into real PayPal catalog products, subscription plans, checkout orders and invoices (sandbox)
 - Creates shareable checkout/subscribe links on the spot
 - Answers revenue questions - MRR, total revenue, active subscribers, failed payments - grounded in a live billing ledger
@@ -29,7 +29,7 @@ Sandbox reporting APIs are sparse for subscription analytics, so we designed the
 Function calling turns "billing setup" from a week of integration work into a conversation. Keeping tool schemas tight (9 verbs) made the agent far more reliable than free-form API access.
 
 ## What's next
-Webhook-driven live payment events, Braintree support, YStartups verified-revenue badges for startups using FounderPay, and multi-currency MRR.
+Webhook-driven live payment events, Braintree support, YStartups verified-revenue badges for startups using AutomatePal, and multi-currency MRR.
 
 ## AI tools used
 - Google Gemini 2.5 Flash - agent reasoning + function calling

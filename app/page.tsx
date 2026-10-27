@@ -15,7 +15,7 @@ const SUGGESTIONS = [
 
 export default function Home() {
   const [messages, setMessages] = useState<Msg[]>([
-    { role: "model", text: "Hi, I'm FounderPay Agent. Describe your product and I'll set up billing on PayPal - plans, checkout links, invoices. Ask me anything about your revenue." },
+    { role: "model", text: "Hi, I'm AutomatePal. Describe your product and I'll set up billing on PayPal - plans, checkout links, invoices. Ask me anything about your revenue." },
   ]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
@@ -45,7 +45,7 @@ export default function Home() {
     <main className="mx-auto flex min-h-screen max-w-3xl flex-col p-4">
       <header className="flex items-center justify-between border-b pb-3">
         <div>
-          <h1 className="text-xl font-bold">FounderPay Agent</h1>
+          <h1 className="text-xl font-bold">AutomatePal</h1>
           <p className="text-sm text-gray-500">AI billing &amp; revenue copilot on PayPal (sandbox)</p>
         </div>
         <Link href="/dashboard" className="rounded-lg bg-black px-3 py-2 text-sm text-white">Revenue dashboard</Link>

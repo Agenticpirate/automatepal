@@ -1,4 +1,4 @@
-// PayPal sandbox REST client for FounderPay Agent.
+// PayPal sandbox REST client for AutomatePal.
 // Server-side only. Uses OAuth client credentials against the sandbox base URL.
 
 const BASE = process.env.PAYPAL_API_BASE ?? "https://api-m.sandbox.paypal.com";

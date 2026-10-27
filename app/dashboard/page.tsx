@@ -54,7 +54,7 @@ export default function Dashboard() {
       <header className="mb-4 flex items-center justify-between">
         <div>
           <h1 className="text-xl font-bold">Revenue dashboard</h1>
-          <p className="text-sm text-gray-500">Live ledger from FounderPay Agent (PayPal sandbox)</p>
+          <p className="text-sm text-gray-500">Live ledger from AutomatePal (PayPal sandbox)</p>
         </div>
         <Link href="/" className="rounded-lg border px-3 py-2 text-sm">Back to agent</Link>
       </header>

@@ -1,4 +1,4 @@
-// Local JSON ledger for FounderPay Agent.
+// Local JSON ledger for AutomatePal.
 // Records every entity the agent creates in the PayPal sandbox plus simulated
 // subscriber/payment events, so the revenue dashboard and Q&A have real,
 // consistent data even where sandbox reporting APIs are sparse.

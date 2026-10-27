@@ -12,7 +12,7 @@ const MODEL = process.env.GEMINI_MODEL ?? "gemini-2.5-flash";
 
 const SYSTEM = `You are FounderPay Agent, an AI billing and revenue copilot for indie founders, built on the PayPal sandbox.
 You help a founder: (1) turn a product description into PayPal products, subscription plans, checkout orders and invoices;
-(2) answer revenue questions (MRR, revenue, failed payments) from the ledger; (3) draft dunning emails for failed payments.
+(2) answer revenue questions (MRR, revenue, failed payments) from the ledger; (3) draft dunning emails - always ground them in list_failed_payments output (real customer emails and amounts), one short friendly email per customer.
 Rules: always confirm what you created with its PayPal link or ID; keep answers short and concrete; never invent numbers - use tools;
 when creating a plan you need a product first (create one if missing); amounts are USD unless the founder says otherwise.`;
 
@@ -91,6 +91,11 @@ const toolDefs: FunctionDeclaration[] = [
     },
   },
   {
+    name: "list_failed_payments",
+    description: "List customers whose latest payment failed, for dunning follow-up.",
+    parameters: { type: Type.OBJECT, properties: {} },
+  },
+  {
     name: "simulate_subscriber_activity",
     description: "Seed realistic demo activity: N subscribers with payments, including some failed payments for dunning demos.",
     parameters: {
@@ -128,7 +133,7 @@ async function runTool(name: string, args: Record<string, unknown>): Promise<unk
         payment_preferences: { auto_bill_outstanding: true, payment_failure_threshold: 3 },
       })) as { id?: string };
       await addEvent({ kind: "plan_created", refId: r.id, note: String(args.name), amount: Number(args.monthly_price) });
-      return { plan_id: r.id };
+      return { plan_id: r.id, subscribe_link: r.id ? `https://www.sandbox.paypal.com/webapps/billing/plans/subscribe?plan_id=${r.id}` : undefined };
     }
     case "list_products_and_plans": {
       const [p, pl] = await Promise.all([paypal.listProducts(), paypal.listPlans()]);
@@ -162,6 +167,19 @@ async function runTool(name: string, args: Record<string, unknown>): Promise<unk
     case "list_events": {
       const events = await allEvents();
       return events.slice(-Number(args.limit ?? 20)).reverse();
+    }
+    case "list_failed_payments": {
+      const events = await allEvents();
+      const latestByCustomer = new Map<string, { kind: string; amount?: number; ts: string }>();
+      for (const e of events) {
+        if (!e.customer) continue;
+        if (e.kind !== "payment_succeeded" && e.kind !== "payment_failed") continue;
+        latestByCustomer.set(e.customer, { kind: e.kind, amount: e.amount, ts: e.ts });
+      }
+      const failed = [...latestByCustomer.entries()]
+        .filter(([, v]) => v.kind === "payment_failed")
+        .map(([customer, v]) => ({ customer, amount: v.amount, failed_at: v.ts }));
+      return { failed_count: failed.length, failed };
     }
     case "simulate_subscriber_activity": {
       const n = Math.min(Number(args.subscribers), 50);

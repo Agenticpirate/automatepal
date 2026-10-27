@@ -1,6 +1,8 @@
 // PayPal sandbox REST client for AutomatePal.
 // Server-side only. Uses OAuth client credentials against the sandbox base URL.
 
+import { requestContext } from "./session";
+
 const BASE = process.env.PAYPAL_API_BASE ?? "https://api-m.sandbox.paypal.com";
 const CLIENT_ID = process.env.PAYPAL_CLIENT_ID ?? "";
 const CLIENT_SECRET = process.env.PAYPAL_CLIENT_SECRET ?? "";
@@ -13,6 +15,7 @@ async function accessToken(): Promise<string> {
   if (cachedToken && Date.now() < cachedToken.expiresAt - 30_000) return cachedToken.token;
   const res = await fetch(`${BASE}/v1/oauth2/token`, {
     method: "POST",
+    signal: AbortSignal.timeout(20000),
     headers: {
       Authorization: "Basic " + Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString("base64"),
       "Content-Type": "application/x-www-form-urlencoded",
@@ -30,7 +33,7 @@ async function api<T = unknown>(method: string, path: string, body?: unknown): P
   const res = await fetch(`${BASE}${path}`, {
     method,
     signal: AbortSignal.timeout(20000),
-    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json", ...(method === "POST" && requestContext.getStore()?.actionId ? {"PayPal-Request-Id": requestContext.getStore()!.actionId!} : {}) },
     body: body === undefined ? undefined : JSON.stringify(body),
   });
   if (res.status === 204) return {} as T;

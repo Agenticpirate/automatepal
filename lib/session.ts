@@ -1,7 +1,7 @@
 import { AsyncLocalStorage } from 'node:async_hooks';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { NextRequest } from 'next/server';
-export const requestContext = new AsyncLocalStorage<{userId:string; email?:string; client:SupabaseClient}>();
+export const requestContext = new AsyncLocalStorage<{userId:string; email?:string; client:SupabaseClient; actionId?:string}>();
 export async function authenticate(req: NextRequest) {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;

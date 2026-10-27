@@ -16,17 +16,21 @@ type Stats = { totalRevenue: number; mrr: number; activeSubscriptions: number; f
 const KIND_LABEL: Record<string, string> = {
   product_created: "Product created", plan_created: "Plan created",
   subscription_created: "Subscription", order_created: "Order",
-  invoice_sent: "Invoice sent", payment_succeeded: "Payment OK", payment_failed: "Payment FAILED",
+  invoice_created:"Invoice draft", order_captured:"Order captured", invoice_sent: "Invoice sent", payment_succeeded: "Payment OK", payment_failed: "Payment FAILED",
 };
 
 export default function Dashboard() {
   const [events, setEvents] = useState<Event[]>([]);
+  const [error,setError]=useState('');
+  const [demo,setDemo]=useState<Stats|null>(null);
+  const [showDemo,setShowDemo]=useState(false);
   const [stats, setStats] = useState<Stats | null>(null);
 
   useEffect(() => {
     authHeaders().then(headers => fetch("/api/dashboard", {headers})).then((r) => r.json()).then((d) => {
-      setEvents(d.events); setStats(d.stats);
-    });
+      if(d.error){setError(d.error);return;}
+      setEvents(d.events??[]); setStats(d.stats);setDemo(d.demoStats);
+    }).catch(()=>setError("Could not load your activity."));
   }, []);
 
   const cols = useMemo<ColDef<Event>[]>(() => [
@@ -44,6 +48,7 @@ export default function Dashboard() {
     { field: "refId", headerName: "PayPal ID", flex: 1 },
   ], []);
 
+  const selected=showDemo?demo:stats;
   const card = (label: string, value: string) => (
     <div className="rounded-xl border bg-white p-4 shadow-sm">
       <div className="text-xs uppercase tracking-wide text-gray-400">{label}</div>
@@ -60,18 +65,21 @@ export default function Dashboard() {
         </div>
         <Link href="/workspace" className="rounded-lg border px-3 py-2 text-sm">Back to agent</Link>
       </header>
+      {error&&<p role="alert" className="mb-4 rounded bg-amber-50 p-4">{error} <Link href="/login" className="underline">Sign in</Link></p>}
+      <div className="mb-4 flex gap-3"><button onClick={()=>setShowDemo(false)} className="rounded border p-2 text-sm">PayPal sandbox</button><button onClick={()=>setShowDemo(true)} className="rounded border p-2 text-sm">Fictional demo</button></div>
+      <h2 className="mb-3 text-sm font-semibold">{showDemo?'FICTIONAL DEMO - not real revenue':'PAYPAL SANDBOX - recorded events only'}</h2>
       <div className="mb-4 grid grid-cols-2 gap-3 md:grid-cols-5">
-        {card("MRR", stats ? `$${stats.mrr.toFixed(2)}` : "-")}
-        {card("Total revenue", stats ? `$${stats.totalRevenue.toFixed(2)}` : "-")}
-        {card("Active subs", stats ? String(stats.activeSubscriptions) : "-")}
-        {card("Failed payments", stats ? String(stats.failedPayments) : "-")}
-        {card("Succeeded", stats ? String(stats.succeededPayments) : "-")}
+        {card("MRR", selected ? `$${selected.mrr.toFixed(2)}` : "-")}
+        {card("Total revenue", selected ? `$${selected.totalRevenue.toFixed(2)}` : "-")}
+        {card("Active subs", selected ? String(selected.activeSubscriptions) : "-")}
+        {card("Failed payments", selected ? String(selected.failedPayments) : "-")}
+        {card("Succeeded", selected ? String(selected.succeededPayments) : "-")}
       </div>
       <p className="mb-3 text-xs text-gray-400">PayPal is a trademark of PayPal, Inc. AutomatePal is not affiliated with or endorsed by PayPal.</p>
       <div style={{ height: 560 }}>
         <AgGridReact
           theme={themeQuartz}
-          rowData={events}
+          rowData={events.filter(e=>e.source===(showDemo?"simulation":"paypal_sandbox"))}
           columnDefs={cols}
           defaultColDef={{ sortable: true, filter: true, resizable: true }}
           pagination

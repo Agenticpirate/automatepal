@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { allowRequest } from "../../../lib/rate-limit";
 import { z } from "zod";
 import { authenticate, requestContext } from "../../../lib/session";
 import { runAgent } from "../../../lib/agent";
@@ -10,6 +11,7 @@ export async function POST(req: NextRequest) {
   if (Number(req.headers.get("content-length") ?? 0) > 128000) return NextResponse.json({ error: "Request too large" }, { status: 413 });
   const session = await authenticate(req);
   if (!session) return NextResponse.json({ error: "Please sign in." }, { status: 401 });
+  if (!allowRequest(session.userId)) return NextResponse.json({error:"Please wait a minute before sending more messages."},{status:429});
   const origin = req.headers.get("origin");
   if (origin && origin !== req.nextUrl.origin) return NextResponse.json({ error: "Invalid origin" }, { status: 403 });
   let body;

@@ -13,7 +13,7 @@ Verified locally:
 - Validation rejects negative amounts and real invoice-recipient domains. Invoice tool creates drafts only.
 - Production build and TypeScript pass.
 
-Implemented but requiring further acceptance tests: checkout order creation, invoice drafts, failure summaries, and AI-written dunning drafts. Subscription activation, completed checkout capture, verified webhooks and recurring-payment reconciliation are not complete. Creating a plan is not a subscription or revenue.
+Checkout order creation returned a sandbox approval URL in local testing. Invoicing is unavailable: the API returned 403 insufficient permissions, so the invoice tool is not offered to the AI. Failure summaries and dunning drafts need further acceptance tests. Subscription activation, completed checkout capture, verified webhooks and recurring-payment reconciliation are not complete. Creating a plan is not a subscription or revenue.
 
 ## Run locally
 
@@ -59,3 +59,8 @@ PayPal is a trademark of PayPal, Inc. AutomatePal is an independent project, not
 ## License
 
 MIT for the original project code. Third-party dependencies retain their respective licenses.
+
+### Action safety and beta access
+Authenticated creation requests are saved to `action_proposals` and require an explicit confirm/cancel click. Confirmation atomically locks the action before calling PayPal; confirmed requests carry a stable `PayPal-Request-Id`. Failed/uncertain actions are marked for review, not retried automatically. Apply both `db/001_events.sql` and `db/002_actions.sql`. Visitor accounts can seed and inspect their own fictional events, but cannot access the owner's PayPal catalog or credentials. A no-AI demo button remains available when the model provider is unavailable.
+
+Public email signup remains limited by Supabase default SMTP. GitHub OAuth is the intended public beta entry point and must be configured and tested before advertising signup as ready. Process-local rate limiting is a beta safeguard, not a distributed abuse-control system.

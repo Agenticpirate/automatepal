@@ -2,7 +2,7 @@ import { runTool, runAgent } from '../lib/agent';
 import { computeStats } from '../lib/store';
 async function main() {
 console.log('Negative amount rejected:', await runTool('create_checkout_order', {amount:-1}).then(()=>false,()=>true));
-console.log('Real recipient rejected:', await runTool('create_and_send_invoice', {customer_email:'someone@gmail.com',item_name:'Test',unit_amount:1}).then(()=>false,()=>true));
+console.log('Unavailable invoice action rejected:', await runTool('create_invoice_draft', {customer_email:'someone@gmail.com',item_name:'Test',unit_amount:1}).then(()=>false,()=>true));
 console.log('PayPal catalog read:', JSON.stringify(await runTool('list_products_and_plans',{})).slice(0,300));
 // Demo seeding is tested separately to keep reruns idempotent.
 console.log('Real stats:', await computeStats());

@@ -43,11 +43,12 @@ export async function addEvent(e: Omit<LedgerEvent, "id" | "ts" | "source"> & { 
 export async function allEvents(source?: LedgerEvent["source"]) {
   const ctx = requestContext.getStore();
   if (ctx) {
-    let query = ctx.client.from("billing_events").select("payload").eq("user_id", ctx.userId).order("ts").limit(1000);
+    let query = ctx.client.from("billing_events").select("payload").eq("user_id", ctx.userId).order("ts",{ascending:false}).limit(1001);
     if (source) query = query.eq("source",source);
     const {data,error} = await query;
     if (error) throw new Error("Could not load billing events");
-    return (data ?? []).map(r => r.payload as LedgerEvent);
+    if((data?.length??0)>1000)throw new Error("Activity limit reached; reporting requires paginated aggregation.");
+    return (data ?? []).map(r => r.payload as LedgerEvent).reverse();
   }
   if (process.env.NODE_ENV === "production") throw new Error("Authenticated storage required");
   const rows = source

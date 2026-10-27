@@ -1,0 +1,233 @@
+// FounderPay Agent: Gemini function-calling loop over PayPal sandbox tools.
+// The founder chats in plain English; the agent calls PayPal tools and the
+// local ledger, then answers with links, numbers and drafts.
+
+import { GoogleGenAI, Type, FunctionCallingConfigMode } from "@google/genai";
+import * as paypal from "./paypal";
+import { addEvent, allEvents, computeStats } from "./store";
+
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY ?? "" });
+const MODEL = process.env.GEMINI_MODEL ?? "gemini-2.5-flash";
+
+const SYSTEM = `You are FounderPay Agent, an AI billing and revenue copilot for indie founders, built on the PayPal sandbox.
+You help a founder: (1) turn a product description into PayPal products, subscription plans, checkout orders and invoices;
+(2) answer revenue questions (MRR, revenue, failed payments) from the ledger; (3) draft dunning emails for failed payments.
+Rules: always confirm what you created with its PayPal link or ID; keep answers short and concrete; never invent numbers - use tools;
+when creating a plan you need a product first (create one if missing); amounts are USD unless the founder says otherwise.`;
+
+const toolDefs = [
+  {
+    name: "create_product",
+    description: "Create a PayPal catalog product (service/digital) in the sandbox.",
+    parameters: {
+      type: Type.OBJECT,
+      properties: {
+        name: { type: Type.STRING },
+        description: { type: Type.STRING },
+        type: { type: Type.STRING, enum: ["SERVICE", "DIGITAL", "PHYSICAL"] },
+      },
+      required: ["name"],
+    },
+  },
+  {
+    name: "create_plan",
+    description: "Create a monthly subscription plan for a product.",
+    parameters: {
+      type: Type.OBJECT,
+      properties: {
+        product_id: { type: Type.STRING },
+        name: { type: Type.STRING },
+        monthly_price: { type: Type.NUMBER },
+        currency: { type: Type.STRING },
+      },
+      required: ["product_id", "name", "monthly_price"],
+    },
+  },
+  {
+    name: "list_products_and_plans",
+    description: "List existing PayPal products and subscription plans.",
+    parameters: { type: Type.OBJECT, properties: {} },
+  },
+  {
+    name: "create_checkout_order",
+    description: "Create a one-time PayPal checkout order and return its approval link.",
+    parameters: {
+      type: Type.OBJECT,
+      properties: {
+        amount: { type: Type.NUMBER },
+        currency: { type: Type.STRING },
+        description: { type: Type.STRING },
+      },
+      required: ["amount"],
+    },
+  },
+  {
+    name: "create_and_send_invoice",
+    description: "Create a PayPal invoice for a customer email and send it.",
+    parameters: {
+      type: Type.OBJECT,
+      properties: {
+        customer_email: { type: Type.STRING },
+        item_name: { type: Type.STRING },
+        quantity: { type: Type.NUMBER },
+        unit_amount: { type: Type.NUMBER },
+        currency: { type: Type.STRING },
+      },
+      required: ["customer_email", "item_name", "unit_amount"],
+    },
+  },
+  {
+    name: "get_revenue_stats",
+    description: "Get revenue stats: total revenue, MRR, active subscriptions, failed payments.",
+    parameters: { type: Type.OBJECT, properties: {} },
+  },
+  {
+    name: "list_events",
+    description: "List recent ledger events (payments, subscriptions, invoices, failures).",
+    parameters: {
+      type: Type.OBJECT,
+      properties: { limit: { type: Type.NUMBER } },
+    },
+  },
+  {
+    name: "simulate_subscriber_activity",
+    description: "Seed realistic demo activity: N subscribers with payments, including some failed payments for dunning demos.",
+    parameters: {
+      type: Type.OBJECT,
+      properties: { subscribers: { type: Type.NUMBER }, monthly_price: { type: Type.NUMBER } },
+      required: ["subscribers", "monthly_price"],
+    },
+  },
+];
+
+const FIRST_NAMES = ["Ava","Liam","Maya","Noah","Ivy","Ethan","Zoe","Lucas","Ruby","Owen","Nora","Felix","Isla","Hugo","Cleo","Arjun","Priya","Diego","Sana","Theo"];
+const DOMAINS = ["gmail.com","outlook.com","proton.me","yahoo.com","hey.com"];
+
+async function runTool(name: string, args: Record<string, unknown>): Promise<unknown> {
+  switch (name) {
+    case "create_product": {
+      const r = (await paypal.createProduct({
+        name: args.name,
+        description: args.description ?? "",
+        type: args.type ?? "SERVICE",
+        category: "SOFTWARE",
+      })) as { id?: string };
+      await addEvent({ kind: "product_created", refId: r.id, note: String(args.name) });
+      return { product_id: r.id };
+    }
+    case "create_plan": {
+      const r = (await paypal.createPlan({
+        product_id: args.product_id,
+        name: args.name,
+        billing_cycles: [
+          { frequency: { interval_unit: "MONTH", interval_count: 1 },
+            tenure_type: "REGULAR", sequence: 1, total_cycles: 0,
+            pricing_scheme: { fixed_price: { value: String(args.monthly_price), currency_code: args.currency ?? "USD" } } },
+        ],
+        payment_preferences: { auto_bill_outstanding: true, payment_failure_threshold: 3 },
+      })) as { id?: string };
+      await addEvent({ kind: "plan_created", refId: r.id, note: String(args.name), amount: Number(args.monthly_price) });
+      return { plan_id: r.id };
+    }
+    case "list_products_and_plans": {
+      const [p, pl] = await Promise.all([paypal.listProducts(), paypal.listPlans()]);
+      return { products: p, plans: pl };
+    }
+    case "create_checkout_order": {
+      const r = (await paypal.createOrder({
+        intent: "CAPTURE",
+        purchase_units: [{ amount: { currency_code: args.currency ?? "USD", value: String(args.amount) },
+          description: args.description ?? "FounderPay checkout" }],
+      })) as { id?: string; links?: { rel: string; href: string }[] };
+      const approve = r.links?.find((l) => l.rel === "approve")?.href;
+      await addEvent({ kind: "order_created", refId: r.id, amount: Number(args.amount), note: String(args.description ?? "") });
+      return { order_id: r.id, checkout_link: approve };
+    }
+    case "create_and_send_invoice": {
+      const draft = (await paypal.createInvoiceDraft({
+        detail: { currency_code: args.currency ?? "USD" },
+        invoicer: { name: { given_name: "FounderPay", surname: "Agent" } },
+        primary_recipients: [{ billing_info: { email_address: args.customer_email } }],
+        items: [{ name: args.item_name, quantity: String(args.quantity ?? 1),
+          unit_amount: { currency_code: args.currency ?? "USD", value: String(args.unit_amount) } }],
+      })) as { id?: string };
+      if (!draft.id) throw new Error("invoice draft failed");
+      await paypal.sendInvoice(draft.id);
+      await addEvent({ kind: "invoice_sent", refId: draft.id, amount: Number(args.unit_amount) * Number(args.quantity ?? 1), customer: String(args.customer_email), note: String(args.item_name) });
+      return { invoice_id: draft.id, sent: true };
+    }
+    case "get_revenue_stats":
+      return computeStats();
+    case "list_events": {
+      const events = await allEvents();
+      return events.slice(-Number(args.limit ?? 20)).reverse();
+    }
+    case "simulate_subscriber_activity": {
+      const n = Math.min(Number(args.subscribers), 50);
+      const price = Number(args.monthly_price);
+      const created: string[] = [];
+      for (let i = 0; i < n; i++) {
+        const name = FIRST_NAMES[i % FIRST_NAMES.length];
+        const email = `${name.toLowerCase()}${i}@${DOMAINS[i % DOMAINS.length]}`;
+        await addEvent({ kind: "subscription_created", amount: price, customer: email, note: `${name} subscribed` });
+        const months = 1 + (i % 4);
+        for (let m = 0; m < months; m++) {
+          const failedKind = i % 9 === 8 && m === months - 1; // ~11% latest payment fails
+          await addEvent({
+            kind: failedKind ? "payment_failed" : "payment_succeeded",
+            amount: price, customer: email,
+            note: failedKind ? "Card declined (sandbox simulation)" : "Monthly renewal",
+          });
+        }
+        created.push(email);
+      }
+      return { simulated_subscribers: created.length, monthly_price: price };
+    }
+    default:
+      return { error: `unknown tool ${name}` };
+  }
+}
+
+export type ChatMessage = { role: "user" | "model"; text: string };
+
+export async function runAgent(history: ChatMessage[], userText: string) {
+  const contents = [
+    ...history.map((m) => ({ role: m.role, parts: [{ text: m.text }] })),
+    { role: "user" as const, parts: [{ text: userText }] },
+  ];
+  const actions: { tool: string; result: unknown }[] = [];
+  // function-calling loop (max 8 rounds)
+  for (let round = 0; round < 8; round++) {
+    const res = await ai.models.generateContent({
+      model: MODEL,
+      contents,
+      config: {
+        systemInstruction: SYSTEM,
+        tools: [{ functionDeclarations: toolDefs }],
+        toolConfig: { functionCallingConfig: { mode: FunctionCallingConfigMode.AUTO } },
+      },
+    });
+    const candidate = res.candidates?.[0];
+    const parts = candidate?.content?.parts ?? [];
+    const calls = parts.filter((p) => p.functionCall);
+    if (calls.length === 0) {
+      const text = parts.map((p) => p.text ?? "").join("").trim();
+      return { reply: text || "Done.", actions };
+    }
+    contents.push({ role: "model" as const, parts });
+    const responseParts = [];
+    for (const p of calls) {
+      const fc = p.functionCall!;
+      let result: unknown;
+      try {
+        result = await runTool(fc.name!, (fc.args ?? {}) as Record<string, unknown>);
+      } catch (e) {
+        result = { error: e instanceof Error ? e.message : String(e) };
+      }
+      actions.push({ tool: fc.name!, result });
+      responseParts.push({ functionResponse: { name: fc.name!, response: { result } } });
+    }
+    contents.push({ role: "user" as const, parts: responseParts });
+  }
+  return { reply: "I ran several actions but hit my step limit - check the dashboard for the latest state.", actions };
+}

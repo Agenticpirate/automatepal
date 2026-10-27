@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# FounderPay Agent
 
-## Getting Started
+An AI billing & revenue copilot for indie founders, built on the **PayPal developer platform (sandbox)** and **Google Gemini**.
 
-First, run the development server:
+Tell the agent about your product in plain English. It creates PayPal products, subscription plans, checkout orders and invoices in your sandbox, answers revenue questions (MRR, failed payments), and drafts dunning emails. A live **AG Grid** dashboard shows every subscription, payment and failure.
+
+Built for the [PayPal AI Hackathon](https://paypalaihackathon.devpost.com/) (Nov 2026).
+
+## Features
+
+- **Chat-to-billing**: "I sell a template pack for $19" -> PayPal product + checkout link
+- **Subscriptions**: creates catalog products and monthly billing plans
+- **Invoices**: creates and sends PayPal invoices to any customer email
+- **Revenue Q&A**: MRR, total revenue, active subscribers, failed payments
+- **Dunning**: surfaces failed payments and drafts recovery emails
+- **Demo seeding**: one command seeds realistic subscriber activity
+- **AG Grid dashboard**: sortable/filterable ledger of every billing event
+
+## Stack
+
+- Next.js 16 (App Router) + React 19 + Tailwind
+- PayPal sandbox REST APIs: Catalog, Billing Plans/Subscriptions, Checkout Orders, Invoicing
+- Google Gemini (function calling) as the agent brain
+- AG Grid Community for the revenue dashboard
+- Deployed on Render (free tier)
+
+## Run it
 
 ```bash
+cp .env.example .env   # fill in your keys
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000 - chat with the agent, then open `/dashboard`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+You need:
+1. A **PayPal developer account** (free): create a sandbox app at https://developer.paypal.com/dashboard to get `PAYPAL_CLIENT_ID` / `PAYPAL_CLIENT_SECRET`.
+2. A **Gemini API key** (free tier): https://aistudio.google.com/apikey
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Deploy (Render)
 
-## Learn More
+This repo includes `render.yaml`. On Render: New > Blueprint, point at this repo, set `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET`, `GEMINI_API_KEY` in the dashboard, deploy.
 
-To learn more about Next.js, take a look at the following resources:
+## AI tools used
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Google Gemini 2.5 Flash** - agent reasoning + function calling over PayPal tools
+- **AG Grid Community** - revenue dashboard grid
+- **Render** - hosting
+- Built with AI pair-programming (Instinct agent)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## License
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT

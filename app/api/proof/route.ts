@@ -9,6 +9,7 @@ import { proposeAction } from '../../../lib/actions';
 import { PROOF_TOOLS,proofPaymentSchema } from '../../../lib/proof-payments';
 import { allEvents } from '../../../lib/store';
 import { z } from 'zod';
+import {reconcileProof} from '../../../lib/proof-reconciliation';
 export async function GET(req:NextRequest){
  const ctx=await authenticate(req);if(!ctx)return NextResponse.json({error:'Please sign in.'},{status:401});
  const {data,error}=await ctx.client.from('proof_contracts').select('*').eq('user_id',ctx.userId).order('created_at',{ascending:false}).limit(30);
@@ -23,6 +24,7 @@ export async function POST(req:NextRequest){
  if(!allowRequest(ctx.userId))return NextResponse.json({error:'Please wait a minute.'},{status:429});
  const body=await req.json().catch(()=>null);
  try{
+  if(body?.action==='reconcile'){const report=await requestContext.run(ctx,()=>reconcileProof(body.id));return NextResponse.json({report},{headers:{'Cache-Control':'no-store'}});}
   if(PROOF_TOOLS.includes(body?.action)){
    if(process.env.PROOF_PAYMENTS_ENABLED!=='true')throw Error('Proof payment execution is not enabled yet.');
    if(ctx.email!==process.env.APP_OWNER_EMAIL)throw Error('Only the sandbox owner can prepare PayPal actions.');

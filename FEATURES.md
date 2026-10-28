@@ -67,3 +67,7 @@ Feature freeze Nov 4. Nov 4-11 testing/fixes only. Nov 11-12 demo/submission art
 - One same-tenant related/potential-duplicate link, no merge or inferred duplicate. Resolved/closed tickets can prepare owner-written Q&A in the same tab. Work notes are never copied automatically; processing/publication still need consent.
 - No ServiceNow branding/assets or parity claim. Customer-visible replies/notes, full request catalog, automated knowledge suggestions, target timers/SLA, real teams and automatic duplicate detection are roadmap. Existing owner reporting/audit remains bounded.
 - Telegram/email delivery explicitly deferred by owner until readiness review. No token requested or transport built. Draft notification rules remain OFF.
+
+### Minimal dashboard theme (next deploy)
+- Shared restrained service-desk navigation, typography, surfaces and spacing across owner overview, tickets and widget studio. Theme selector supports system/light/dark and persists on this browser; widget frame supports its own theme selector too. No paid tier or arbitrary theme scripts.
+- Four surfaces checked at390/1280 pixels, light/dark, reload persistence and system preference. Main dark text/muted/link colors on panel exceed4.5:1 by calculation. Not a full accessibility audit; external embeds have their own storage context.

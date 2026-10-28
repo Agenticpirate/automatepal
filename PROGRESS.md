@@ -137,3 +137,8 @@ Local gates and live verification are recorded per subsequent update. Remote/dep
 - Rollback: application can return to58c1aff on Render; additive service fields can stay. Workflow guard remains intentional; if it causes a confirmed regression, disable only service_ticket_guard via a reviewed forward migration, preserving events/data. No destructive rollback or migration replay.
 - Minimal/premium dashboard and system/manual persisted dark mode are next after this core is live. No paid tier. Notification transport/token requests deferred at owner's instruction.
 -18:12 IST hosted release65e45d8b1a41 verified, payments false. Refreshed existing owner Google sign-in; /tickets deep link loaded service record and Save service fields returned success for unchanged fictional defaults. Actual hosted pixels inspected. Migration037, SQL and UI acceptance complete within bounded preview, no production/parity claim.
+
+### 2026-10-28 18:14 IST: minimalist dashboard / theme gate
+- Shared scoped light/dark design for owner/tickets/widget-studio/help frame; system preference + manual persisted selector. Marketing palette unchanged. Mobile/desktop snapshots inspected including populated owner/tickets. Main dark foreground/muted/link contrast calculation >=4.5:1 against panel; full accessibility audit not claimed.
+- Lint/build/regressions and theme persistence/system/no-overflow checks passed. Migration038 corrects legacy inbox Resolve to pass new guarded open->resolved->closed workflow, refund review guard stays intact. Handoff DB regression passed. No payments/secrets/transport change.
+- Rollback app to65e45d8; additive038 preserves workflow compatibility and stays applied. Theme stored only in local browser, no server setting migration.

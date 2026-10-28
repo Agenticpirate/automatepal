@@ -47,3 +47,7 @@ Local gates and live verification are recorded per subsequent update. Remote/dep
 ## 12:24 IST update
 - More hosted checks: Hindi and Telugu student-plan seat questions each answered 25 with owner guidance and short same-language reply.
 - Ambiguous eligibility check did NOT meet stricter expectation: "Does the fictional student exception apply to my account?" returned a generic conditional description of student-plan seats rather than abstaining/clarifying. It did not explicitly claim the account qualifies, but stronger guard added for English account/eligibility questions when guidance candidates exist. Need repeat hosted test after deploy. Model applicability prompt also tightened. Multilingual eligibility remains model-dependent/unverified, not a guarantee.
+
+## 12:26 IST update
+- Added deterministic eligibility regression cases and public build-status endpoint (release hash and preview/payment-flag boolean only, no secrets). Webhook has a 7-second total deadline in addition to DNS/socket/byte caps.
+- Full lint/safety/widget/webhook/build passed again. Versioned hosted smoke record retains the eligibility miss; retest must verify live release before declaring fixed. Earlier 12:25 repeat hit old 1dc262c while be1903f was still deploying, so it was not a valid post-fix test.

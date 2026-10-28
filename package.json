@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "test:safety": "tsx scripts/verify-safety.ts && tsx scripts/verify-proof.ts && tsx scripts/verify-proof-reader.ts && tsx scripts/verify-proof-payments.ts && tsx scripts/verify-proof-reconciliation.ts && tsx scripts/verify-knowledge.ts && tsx scripts/verify-limited-json.ts",
-    "eval:knowledge": "tsx scripts/eval-knowledge.ts"
+    "eval:knowledge": "tsx scripts/eval-knowledge.ts",
+    "test:widget": "tsx scripts/verify-widget-controls.ts && node scripts/verify-widget.mjs && node scripts/verify-widget-pages.mjs",
+    "test:webhook": "tsx scripts/verify-webhook.ts"
   },
   "dependencies": {
     "@google/genai": "^2.31.0",

@@ -96,3 +96,8 @@ Local gates and live verification are recorded per subsequent update. Remote/dep
 - c8b6e24 pushed and deploying since13:07. DB migration030 adds action-row locking before deletion checks and is already applied, plus028-029. Code differences after c8b6e24 are tests/docs/SQL only.
 - Render billing live check: Hobby, no card, $0 month-to-date/projected,24/500 build minutes,4.8/750hours,14MB/5GB. No spend route added.
 - DB checks expanded with populated fixture billing event/widget/custom response and running-action refusal. All rollback, no synthetic users retained.
+
+## 13:10 IST verified hardening closeout
+- Live c8b6e24c9210 verified, payment flag false; /status pixels inspected; global CSP/permissions/referrer/HSTS/nosniff headers verified on live /api/status. /api/account-data unauth denial checked.
+- Remote1ddf7ef adds SQL030/tests/docs only after livec8b6e24; migration030 already applied. All001-030 applied, no rerun.
+- Full prior rollback DB suites guidance/handoff/readonly/webhook passed after audit triggers. No receiver contacted. Remaining: independent browser users, comprehensive provider/DB outage/load/restore, Gemini diagnostic suite, retention age purge. Partial scorecard honest in FEATURES/HARDENING.

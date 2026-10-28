@@ -38,3 +38,8 @@ Local gates and live verification are recorded per subsequent update. Remote/dep
 - Migration 026 applied, webhook queue and manual delivery implementation complete locally. URL/IP/HMAC and rollback DB claims/backoff/stable-ID/stale-attempt tests pass, no external sends. Manual delivery only; no automatic worker. UI inspected mobile, no key shown.
 - Read-only API dc08132 deployed; settings visible and screenshot inspected. No token created through hosted UI yet. Tokens should never be printed in trace/screenshots/chat.
 - FEATURES.md refreshed to separate hosted previews, measured acceptance limits and roadmap, including manually driven webhook limitations.
+
+## 12:22 IST update
+- Hosted API acceptance: scoped 200, wrong-scope 401, revoked 401; temporary token record deleted. No token logged.
+- Follow-up: DNS resolution bounded to 1.5s/one try; webhook signature display clarified. Negative-feedback questions now join unanswered questions in Prepare Q&A (nothing auto-published). Migration 027 changes only absent-settings fallback to general Site help, preserving saved owner labels.
+- Coordinator confirmed Gemini approval still pending, do not re-ask. Hosted-only tests may proceed. "Premium version" clarification pending privately; do not interpret it as spend authority or paid-plan launch.

@@ -18,7 +18,7 @@ Updated 2026-10-28. "Hosted preview" means a bounded fictional/sandbox feature i
 | Leads and human review | Hosted preview | Optional fictional email requires consent, owner review queue, no automatic email. |
 | Handoff inbox | Hosted preview | Open/attention/taken-over/closed, take over/release/resolve. DB tests verify paused reservations and in-flight answer suppression. No live human reply channel. |
 | Feedback / unanswered / CSV | Hosted preview | Up/down, recent question metadata and formula-safe unanswered CSV. Not independently verified model-quality metrics. |
-| Scoped read-only API | Hosted preview | Hashed bearer tokens, max 5 active, 1-168 hour expiry, revocation, support/analytics scopes, latest 100 metadata rows. No messages/contacts/source text/payment access. DB scope/revocation tests pass; UI deployed, full external client acceptance pending. |
+| Scoped read-only API | Hosted preview | Hashed bearer tokens, max 5 active, 1-168 hour expiry, revocation, support/analytics scopes, latest 100 metadata rows. No messages/contacts/source text/payment access. DB scope/revocation tests pass; UI deployed, hosted client acceptance passed: scoped 200, wrong scope/revoked 401; temporary token removed. |
 | Signed opt-in webhooks | Manual-delivery preview | HMAC-SHA256 timestamp+raw-body, stable event IDs, metadata only, 3 attempts with 1/5-minute due times. Fresh public IPv4 resolution pinned to TLS, no redirects, size/time bounds. Local/DB tests pass. No external receiver acceptance or always-on worker; delivery requires owner action. |
 | Fictional billing order card | Hosted preview | Labelled USD fictional fixture; not a live merchant account/order lookup. |
 | Proof-to-Pay evidence and reconciliation | Hosted preview | Public GitHub evidence, pinned SHA/checks, fail-closed truncation, known recorded sandbox IDs only. Dedicated public-read token pending. Payment execution OFF. Not escrow. |
@@ -28,7 +28,7 @@ Updated 2026-10-28. "Hosted preview" means a bounded fictional/sandbox feature i
 
 - Read-only sandbox billing card improvements and narrower hosted acceptance.
 - Full repeated versioned eval including owner-note conflict/stale/unrelated, multilingual, injection and style, plus independent testers.
-- Negative-feedback "fix this answer" to reviewed Q&A; existing unanswered-to-Q&A is available.
+- Negative-feedback and unanswered questions can prepare a reviewed Q&A source; correction still needs owner consent/publication.
 - External read-only API client and approved webhook receiver acceptance. No receiver is contacted without owner opt-in.
 
 ## Roadmap only

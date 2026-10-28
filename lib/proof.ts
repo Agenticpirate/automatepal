@@ -7,18 +7,33 @@ export const proofInput=z.object({
 });
 export type ProofInput=z.infer<typeof proofInput>;
 export type GitEvidence={url:string;fetchedAt:string;title:string;body:string;merged:boolean;draft:boolean;headSha:string;mergeSha:string|null;baseRepo:string;checks:{name:string;status:string;conclusion:string|null;sha:string;url:string}[];files:{path:string;status:string;additions:number;deletions:number;patch:string}[];checksTruncated:boolean;filesTruncated:boolean};
+const evidenceCache=new Map<string,{etag:string|null;data:unknown;at:number}>();
+let githubCooldown=0;
 async function github(path:string){
- const r=await fetch('https://api.github.com'+path,{headers:{Accept:'application/vnd.github+json','User-Agent':'AutomatePal-Proof-Beta'},signal:AbortSignal.timeout(15000),cache:'no-store',redirect:'error'});
+ if(githubCooldown>Date.now())throw Error('GitHub rate limit is cooling down. Evidence cannot be verified; no payment action is allowed.');
+ const entry=evidenceCache.get(path);
+ const cached=entry&&Date.now()-entry.at<60000?entry:undefined;
+ // Revalidate every read; cache only supplies the representation for a verified 304.
+ const headers:Record<string,string>={Accept:'application/vnd.github+json','User-Agent':'AutomatePal-Proof-Beta'};
+ if(cached?.etag)headers['If-None-Match']=cached.etag;
+ if(process.env.GITHUB_PUBLIC_READ_TOKEN)headers.Authorization='Bearer '+process.env.GITHUB_PUBLIC_READ_TOKEN;
+ const r=await fetch('https://api.github.com'+path,{headers,signal:AbortSignal.timeout(15000),cache:'no-store',redirect:'error'});
+ if(r.status===304&&cached)return cached.data;
  if(!r.ok){
   const body=await r.json().catch(()=>({}));const rate=r.headers.get('x-ratelimit-remaining');
-  if(rate==='0'||String(body.message??'').toLowerCase().includes('rate limit'))throw new Error('GitHub public API rate limit reached for this server. Evidence cannot be verified. No payment action is allowed; try after the limit resets.');
+  if(rate==='0'||String(body.message??'').toLowerCase().includes('rate limit')){
+   const reset=Number(r.headers.get('x-ratelimit-reset'))*1000;githubCooldown=Number.isFinite(reset)&&reset>Date.now()?reset:Date.now()+60000;
+   throw new Error('GitHub public API rate limit reached for this server. Evidence cannot be verified. No payment action is allowed; try after the limit resets.');
+  }
   throw new Error(`GitHub evidence unavailable (${r.status}). ${String(body.message??'Public repositories only.').slice(0,200)} No payment action is allowed.`);
  }
- return r.json();
+ const data=await r.json();if(evidenceCache.size>=100){const first=evidenceCache.keys().next().value;if(first)evidenceCache.delete(first);}
+ evidenceCache.set(path,{etag:r.headers.get('etag'),data,at:Date.now()});return data;
 }
 export async function fetchEvidence(url:string):Promise<GitEvidence>{
  const m=/^https:\/\/github\.com\/([A-Za-z0-9_.-]+)\/([A-Za-z0-9_.-]+)\/pull\/([1-9][0-9]*)\/?$/.exec(url);if(!m)throw Error('Invalid GitHub pull request URL');
  const root=`/repos/${m[1]}/${m[2]}`;const pr=await github(`${root}/pulls/${m[3]}`);
+ if(pr.base?.repo?.private!==false)throw Error('Only public repository evidence is allowed.');
  if(!pr.head?.sha||!pr.base?.repo?.full_name)throw Error('Incomplete GitHub evidence');
  const [checks,files]=await Promise.all([github(`${root}/commits/${pr.head.sha}/check-runs?per_page=100&filter=latest`),github(`${root}/pulls/${m[3]}/files?per_page=100`)]);
  return {url:pr.html_url,fetchedAt:new Date().toISOString(),title:String(pr.title).slice(0,300),body:String(pr.body??'').slice(0,5000),merged:pr.merged===true,draft:pr.draft===true,headSha:pr.head.sha,mergeSha:pr.merge_commit_sha??null,baseRepo:pr.base.repo.full_name,

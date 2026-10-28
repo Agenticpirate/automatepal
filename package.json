@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:safety": "tsx scripts/verify-safety.ts && tsx scripts/verify-proof.ts && tsx scripts/verify-proof-reader.ts && tsx scripts/verify-proof-payments.ts"
   },
   "dependencies": {
     "@google/genai": "^2.31.0",

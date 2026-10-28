@@ -9,7 +9,11 @@ export type ProofInput=z.infer<typeof proofInput>;
 export type GitEvidence={url:string;fetchedAt:string;title:string;body:string;merged:boolean;draft:boolean;headSha:string;mergeSha:string|null;baseRepo:string;checks:{name:string;status:string;conclusion:string|null;sha:string;url:string}[];files:{path:string;status:string;additions:number;deletions:number;patch:string}[];checksTruncated:boolean;filesTruncated:boolean};
 async function github(path:string){
  const r=await fetch('https://api.github.com'+path,{headers:{Accept:'application/vnd.github+json','User-Agent':'AutomatePal-Proof-Beta'},signal:AbortSignal.timeout(15000),cache:'no-store',redirect:'error'});
- if(!r.ok)throw new Error(`GitHub evidence unavailable (${r.status}). Public repositories only; retry later or check the URL.`);
+ if(!r.ok){
+  const body=await r.json().catch(()=>({}));const rate=r.headers.get('x-ratelimit-remaining');
+  if(rate==='0'||String(body.message??'').toLowerCase().includes('rate limit'))throw new Error('GitHub public API rate limit reached for this server. Evidence cannot be verified. No payment action is allowed; try after the limit resets.');
+  throw new Error(`GitHub evidence unavailable (${r.status}). ${String(body.message??'Public repositories only.').slice(0,200)} No payment action is allowed.`);
+ }
  return r.json();
 }
 export async function fetchEvidence(url:string):Promise<GitEvidence>{

@@ -36,9 +36,11 @@ export async function fetchEvidence(url:string):Promise<GitEvidence>{
  if(pr.base?.repo?.private!==false)throw Error('Only public repository evidence is allowed.');
  if(!pr.head?.sha||!pr.base?.repo?.full_name)throw Error('Incomplete GitHub evidence');
  const [checks,files]=await Promise.all([github(`${root}/commits/${pr.head.sha}/check-runs?per_page=100&filter=latest`),github(`${root}/pulls/${m[3]}/files?per_page=100`)]);
+ const pinned=await github(`${root}/pulls/${m[3]}`);
+ if(pinned.head?.sha!==pr.head.sha||pinned.merged!==pr.merged||pinned.merge_commit_sha!==pr.merge_commit_sha)throw Error('Pull request changed while evidence was collected. Evidence cannot support capture.');
  return {url:pr.html_url,fetchedAt:new Date().toISOString(),title:String(pr.title).slice(0,300),body:String(pr.body??'').slice(0,5000),merged:pr.merged===true,draft:pr.draft===true,headSha:pr.head.sha,mergeSha:pr.merge_commit_sha??null,baseRepo:pr.base.repo.full_name,
  checks:(checks.check_runs??[]).map((c:Record<string,unknown>)=>({name:c.name,status:c.status,conclusion:c.conclusion,sha:c.head_sha,url:c.html_url})),
- files:files.map((f:Record<string,unknown>)=>({path:f.filename,status:f.status,additions:f.additions,deletions:f.deletions,patch:String(f.patch??'').slice(0,2500)})).slice(0,40),checksTruncated:Number(checks.total_count)>100,filesTruncated:Number(pr.changed_files)>40};
+ files:files.map((f:Record<string,unknown>)=>({path:f.filename,status:f.status,additions:f.additions,deletions:f.deletions,patch:String(f.patch??'').slice(0,2500)})).slice(0,40),checksTruncated:Number(checks.total_count)>100,filesTruncated:Number(pr.changed_files)>40||files.some((f:Record<string,unknown>)=>typeof f.patch!=='string'||f.patch.length>2500)};
 }
 export function deterministicGate(input:ProofInput,e:GitEvidence){
  const reasons:string[]=[];if(!e.merged)reasons.push('Pull request is not merged.');if(e.draft)reasons.push('Pull request is a draft.');

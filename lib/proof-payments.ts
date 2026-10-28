@@ -6,7 +6,7 @@ import {proofInput,fetchEvidence,assessEvidence} from './proof';
 export const proofPaymentSchema=z.object({contractId:z.string().uuid(),reason:z.string().trim().min(10).max(500)});
 export const PROOF_TOOLS=['proof_create_order','proof_authorize','proof_capture','proof_void'];
 type PaymentOrder={id:string;intent:string;status:string;purchase_units:{custom_id?:string;amount?:{value:string;currency_code:string};payments?:{authorizations?:{id:string;status:string}[]}}[];links?:{rel:string;href:string}[]};
-export async function proofPayment(tool:string,raw:Record<string,unknown>){
+async function executeProofPayment(tool:string,raw:Record<string,unknown>){
  if(process.env.PROOF_PAYMENTS_ENABLED!=='true')throw Error('Proof payment execution is disabled pending sandbox acceptance tests. Evidence assessment is available.');
  const args=proofPaymentSchema.parse(raw);const ctx=requestContext.getStore();
  if(!ctx||ctx.email!==process.env.APP_OWNER_EMAIL)throw Error('Only the sandbox owner can execute proof payment actions.');
@@ -52,4 +52,21 @@ export async function proofPayment(tool:string,raw:Record<string,unknown>){
  if(result.status!=='COMPLETED'||!result.id)throw Error('Capture not completed. Check PayPal before retrying.');
  await addEvent({kind:'proof_captured',refId:result.id,amount:input.amount,note:args.reason,meta:{contractId:c.id,orderId:order.id,authorizationId:a.refId,status:result.status,headSha:evidence.headSha}});
  return {captureId:result.id,status:result.status,reason:args.reason,headSha:evidence.headSha};
+}
+
+export async function proofPayment(tool:string,raw:Record<string,unknown>){
+ if(process.env.PROOF_PAYMENTS_ENABLED!=='true')throw Error('Proof payment execution is disabled pending sandbox acceptance tests. Evidence assessment is available.');
+ const ctx=requestContext.getStore();const args=proofPaymentSchema.parse(raw);
+ if(!ctx?.actionId||ctx.email!==process.env.APP_OWNER_EMAIL||!PROOF_TOOLS.includes(tool))throw Error('Reviewed owner action required.');
+ const {data,error}=await ctx.client.rpc('proof_claim_operation',{p_contract:args.contractId,p_action:ctx.actionId});
+ if(error||!data)throw Error('This contract is busy or requires reconciliation of an earlier attempt. Do not retry payment actions.');
+ try{
+  const result=await executeProofPayment(tool,raw);
+  const finished=await ctx.client.rpc('proof_finish_operation',{p_contract:args.contractId,p_action:ctx.actionId});
+  if(finished.error||!finished.data)throw Error('Outcome recorded but lock cleanup could not be verified. Reconciliation required.');
+  return result;
+ }catch{
+  // Do not release an uncertain operation. PayPal may have succeeded before storage failed.
+  throw Error('Proof operation did not finish cleanly. This contract is locked for reconciliation. Check PayPal and saved activity before any further payment action.');
+ }
 }

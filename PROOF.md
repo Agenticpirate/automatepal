@@ -24,3 +24,9 @@ Read-only evidence was fetched from https://github.com/vercel/next.js/pull/10080
 - https://developer.paypal.com/api/payments/v2/authorizations-void
 - https://docs.github.com/en/rest/checks/runs
 - https://docs.github.com/en/rest/pulls/pulls?apiVersion=latest
+
+## Execution lock (not yet enabled)
+
+Each contract has a database-backed operation lock tied to the exact executing proposal. A second proposal and a retry cannot run while the lock exists. The lock is removed only after provider result and ledger storage finish. Exceptions preserve the lock and require operator reconciliation against PayPal and saved activity. No automatic timeout unlock is used. There is not yet a reconciliation UI or full provider acceptance coverage, so `PROOF_PAYMENTS_ENABLED` remains unset/off.
+
+GitHub reads use up to 100 bounded ETag entries, valid for conditional revalidation for 60 seconds. A conditional 304 from GitHub is required before a cached representation can be used. Rate-limit failures start a bounded cooldown; no stale response fallback is allowed. A dedicated public-read credential may be configured as `GITHUB_PUBLIC_READ_TOKEN`; never use a repository-write token.

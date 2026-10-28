@@ -106,3 +106,7 @@ Local gates and live verification are recorded per subsequent update. Remote/dep
 - Migration031 applied. Existing support cases are tickets (same UUID; short display label plus full ID), one per fictional case. Status/priority/category/tags/owner assignment/internal notes/first-review timestamps; recorded timeline combines visitor questions/requests/internal events. AI answer bodies not stored, no outbound replies.
 - Unanswered completed answer/negative feedback/request triggers auto-escalate, preserve taken-over pause; resolved/closed pause AI. Display cap200 latest tickets,50 bulk IDs,200 internal events/case. Notes owner-only, metadata audit triggers.
 - Rollback DB tests passed own metadata/notes, unanswered/negative/refund triggers, taken-over and resolved pause, foreign timeline/write denial, deletion cascade. Prior handoff DB suite passes. Local mobile/desktop inspected, filter/bulk fixture and CSV guards pass. Full gate run/deploy next.
+
+## 13:17 IST ticket deploy checkpoint
+- cd3b862 deployment started13:15, latest deployed code wasc8b6e24. Migration032 direct capability question guard/state timeline and033 strict event cap applied, all001-033 now.
+- Ticket+hardening rollback suites pass after migrations, widget/billing/webhook tests pass. No outbound receiver/payment calls. Local owner note/body stays private; public case view unchanged. Need hosted /tickets sign-in verification after release matches.

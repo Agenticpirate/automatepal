@@ -16,3 +16,8 @@ Local gates and live verification are recorded per subsequent update. Remote/dep
 - Migration 021 applied additively; scripts/verify-guidance-db.ts passed rollback-only metadata/private/capability/validation tests. 022 NOT applied: revoke old wrapper only after new app path acceptance.
 - Owner-guidance source form, current UTC date window, separately ranked semantic candidates, applicability/conflict check before answer, note-only generation when applicable. Website text remains for unrelated questions. Conservative fallback if unclear/stale/conflict/provider error. Local gates passed.
 - Gemini sandbox use approval pending for measured model eval. Do not bypass it by extracting hosted secrets. scripts/eval-owner-guidance.ts has 9 cases awaiting execution.
+
+## 12:08 IST update
+- 19bfd84 deployed to preview (owner-guidance source selector now observed at /knowledge). Model evaluation pending secure Gemini approval; not accepted as production behavior.
+- Widget control implementation prepared. Migration 023 applied. Empty external origin list means no external embed; first-party sample remains allowed. Display controls never claimed to protect capability links. Local Playwright lazy-load/navigation checks, origins/path tests, lint/safety/build all passed. Desktop/mobile screenshots inspected for readability.
+- /api/widget returns only validated settings, with CORS for permitted exact origins, never page text/query. API checks Origin but it is not a customer authentication boundary.

@@ -1,13 +1,55 @@
 {
- "date":"2026-10-28",
- "scope":"Manual hosted synthetic checks against fictional North Dock corpus. Not repeatable supplied-source eval, statistical assurance or full owner-guidance acceptance.",
- "checks":[
-  {"name":"student-seat-override-en","pass":true,"observed":"The fictional North Dock student plan includes 25 seats.","source":"Owner guidance"},
-  {"name":"unrelated-report-format","pass":true,"observed":"Demo reports are available in CSV format.","source":"Reference corpus only"},
-  {"name":"student-seat-hi","pass":true,"observed":"काल्पनिक North Dock student plan में 25 सीटें उपलब्ध हैं।","source":"Owner guidance"},
-  {"name":"student-seat-te","pass":true,"observed":"కల్పిత North Dock స్టూడెంట్ ప్లాన్‌లో 25 సీట్లు ఉన్నాయి.","source":"Owner guidance"},
-  {"name":"ambiguous-account-eligibility","pass":false,"observed":"The fictional student exception applies only to the North Dock student plan, providing a seat allowance of 25 seats instead of the standard 10.","gap":"Generic conditional explanation rather than strict abstention. Did not assert account qualification. English guard added in be1903f, repeat pending."},
-  {"name":"readonly-api-scope-revocation","pass":true,"observed":"Scoped token 200, wrong scope 401, revoked 401. Temporary token removed, no token value logged."}
- ],
- "pending":["stale note", "conflicting applicable notes", "website-missing note example", "English eligibility fix retest", "broad multilingual eligibility", "external opted-in webhook receiver"]
+  "date": "2026-10-28",
+  "scope": "Manual hosted synthetic checks against fictional North Dock corpus. Not repeatable supplied-source eval, statistical assurance or full owner-guidance acceptance.",
+  "checks": [
+    {
+      "name": "student-seat-override-en",
+      "pass": true,
+      "observed": "The fictional North Dock student plan includes 25 seats.",
+      "source": "Owner guidance"
+    },
+    {
+      "name": "unrelated-report-format",
+      "pass": true,
+      "observed": "Demo reports are available in CSV format.",
+      "source": "Reference corpus only"
+    },
+    {
+      "name": "student-seat-hi",
+      "pass": true,
+      "observed": "काल्पनिक North Dock student plan में 25 सीटें उपलब्ध हैं।",
+      "source": "Owner guidance"
+    },
+    {
+      "name": "student-seat-te",
+      "pass": true,
+      "observed": "కల్పిత North Dock స్టూడెంట్ ప్లాన్‌లో 25 సీట్లు ఉన్నాయి.",
+      "source": "Owner guidance"
+    },
+    {
+      "name": "ambiguous-account-eligibility",
+      "pass": false,
+      "observed": "The fictional student exception applies only to the North Dock student plan, providing a seat allowance of 25 seats instead of the standard 10.",
+      "gap": "Generic conditional explanation rather than strict abstention. Did not assert account qualification. English guard added in be1903f, repeat pending."
+    },
+    {
+      "name": "readonly-api-scope-revocation",
+      "pass": true,
+      "observed": "Scoped token 200, wrong scope 401, revoked 401. Temporary token removed, no token value logged."
+    },
+    {
+      "name": "ambiguous-account-eligibility-post-fix",
+      "release": "be1903f",
+      "pass": true,
+      "observed": "I do not have enough published information to answer that. Please ask a person to review.",
+      "source": "No source disclosed"
+    }
+  ],
+  "pending": [
+    "stale note",
+    "conflicting applicable notes",
+    "website-missing note example",
+    "broad multilingual eligibility",
+    "external opted-in webhook receiver"
+  ]
 }

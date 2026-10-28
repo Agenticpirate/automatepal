@@ -1,0 +1,2 @@
+// Abort a slow health dependency and return an explicit unknown state, never a healthy fallback.
+export async function healthDeadline<T>(read:(signal:AbortSignal)=>PromiseLike<T>,ms=8000):Promise<T>{const c=new AbortController();let timer:ReturnType<typeof setTimeout>|undefined;try{return await Promise.race([Promise.resolve().then(()=>read(c.signal)),new Promise<never>((_,reject)=>{timer=setTimeout(()=>{c.abort();reject(new Error('Health dependency deadline'));},ms);})]);}finally{if(timer)clearTimeout(timer);}}

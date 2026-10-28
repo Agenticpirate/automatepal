@@ -74,3 +74,10 @@ export async function searchTransactions(startIso: string, endIso: string) {
   const q = new URLSearchParams({ start_date: startIso, end_date: endIso, page_size: "100" });
   return api("GET", `/v1/reporting/transactions?${q.toString()}`);
 }
+
+// Proof-to-Pay uses AUTHORIZE orders, never live payment endpoints.
+export const getOrder = (id:string) => api("GET", `/v2/checkout/orders/${id}`);
+export const authorizeOrder = (id:string) => api("POST", `/v2/checkout/orders/${id}/authorize`, {});
+export const getAuthorization = (id:string) => api("GET", `/v2/payments/authorizations/${id}`);
+export const captureAuthorization = (id:string,p:unknown) => api("POST", `/v2/payments/authorizations/${id}/capture`, p);
+export const voidAuthorization = (id:string) => api("POST", `/v2/payments/authorizations/${id}/void`, {});

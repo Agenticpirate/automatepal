@@ -74,6 +74,7 @@ export default function Home() {
           <p className="text-sm text-gray-500">AI billing &amp; revenue copilot on PayPal (sandbox)</p>
         </div>
         {email?<button className="text-sm underline" onClick={async()=>{await browserAuth()?.auth.signOut();setEmail('');setPending([]);router.push('/login');}}>Sign out</button>:<Link href="/login" className="text-sm underline">Sign in</Link>}
+        <Link href="/proof" className="rounded-lg border px-3 py-2 text-sm">Proof-to-Pay</Link>
         <Link href="/dashboard" className="rounded-lg bg-black px-3 py-2 text-sm text-white">Revenue dashboard</Link>
       </header>
 

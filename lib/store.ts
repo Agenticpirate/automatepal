@@ -10,7 +10,7 @@ export type LedgerEvent = {
   id: string; ts: string;
   kind: "product_created" | "plan_created" | "subscription_created" |
     "order_created" | "order_captured" | "invoice_created" | "invoice_sent" |
-    "payment_succeeded" | "payment_failed";
+    "payment_succeeded" | "payment_failed" | "proof_order_created" | "proof_authorized" | "proof_captured" | "proof_voided";
   source: "simulation" | "paypal_sandbox";
   refId?: string; amount?: number; currency?: string; customer?: string;
   note?: string; meta?: Record<string, unknown>;
@@ -58,7 +58,7 @@ export async function allEvents(source?: LedgerEvent["source"]) {
 }
 export async function computeStats(source: LedgerEvent["source"] = "paypal_sandbox") {
   const events = await allEvents(source);
-  const succeeded = events.filter(e => e.kind === "payment_succeeded");
+  const succeeded = events.filter(e => e.kind === "payment_succeeded" || e.kind === "proof_captured");
   const latest = new Map<string, LedgerEvent>();
   for (const e of events) if (e.customer && ["payment_succeeded", "payment_failed"].includes(e.kind)) latest.set(e.customer, e);
   const subscriptions = events.filter(e => e.kind === "subscription_created" && (source === "simulation" || e.meta?.status === "ACTIVE"));

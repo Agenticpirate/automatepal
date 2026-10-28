@@ -109,6 +109,7 @@ const schemas: Record<string, z.ZodType> = {
   list_failed_payments: z.object({}), get_revenue_stats: z.object({}), list_products_and_plans: z.object({}),
 };
 export async function runTool(name: string, args: Record<string, unknown>): Promise<unknown> {
+  if(name.startsWith("proof_")){const {proofPayment}=await import("./proof-payments");return proofPayment(name,args);}
   if (!schemas[name]) throw new Error("Unsupported action");
   args = schemas[name].parse(args) as Record<string, unknown>;
   const ctx = requestContext.getStore();

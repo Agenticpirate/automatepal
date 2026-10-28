@@ -124,3 +124,9 @@ Local gates and live verification are recorded per subsequent update. Remote/dep
 - Official sources: https://core.telegram.org/bots/faq ; https://resend.com/pricing ; https://resend.com/docs/dashboard/domains/introduction ; https://resend.com/docs/knowledge-base/account-quotas-and-limits . Email needs a verified owned domain. No card/signup checked and no send made.
 - Historical attention reconciliation also passed a rollback fixture seeded as a pre-ticket pending refund. Handoff/widget, signed-webhook (no external send), read-only billing and hardening suites passed after the overview additions. Full npm audit has no known advisories.
 - Deployment58c1aff started13:22:02 IST; build compiled, hosted acceptance still pending at13:22:49. Do not report hosted success until /api/status and signed-in /owner confirm.
+
+### 2026-10-28 13:27 IST: hosted owner overview accepted
+- /api/status release58c1aff7aaad, proofPaymentExecution=false. /owner200/no-store/noindex; both owner API routes401 without authentication.
+- Signed-in owner snapshot loaded11 fictional tickets,4 intervention cases,16 queries/8 unanswered and one pending human handoff. Existing pending-refund count0 is truthful because its old request was reviewed, not silently re-opened.
+- Inspected live queue screenshot and alert-rule screenshot. Hosted dry run logged4 eligible tickets in digest-only mode, explicitly not sent. No transport/provider request or secret was used. Actual notifications remain disabled and not implemented as an active service.
+- Save/dry-run fixture interactions, disabled test-send button, anonymous API denial tests passed. Parent receives actual hosted screenshots and exact URLs. Browser lease released after acceptance.

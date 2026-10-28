@@ -56,7 +56,7 @@ Feature freeze Nov 4. Nov 4-11 testing/fixes only. Nov 11-12 demo/submission art
 | Backup / restore | Partial, unverified | Schema/code in git, not data backup. Free Supabase manual export possible; destination and isolated restore not set up. No restore/RPO/RTO claim. |
 | Always-on / managed recovery | Not available under current free deployment | Render free sleeps/restarts; managed Supabase daily backups/PITR require paid tiers. No upgrades, spend, enterprise or SLA claim. |
 
-### Owner intervention overview (next deploy)
+### Owner intervention overview (live preview)
 - `/owner`: private queue snapshot, attention/open/unassigned/taken-over counts, unanswered/negative/refund/handoff cues, recent query text, seven UTC day counts and preview budget. Latest200 tickets/1000 queries/100 requests, explicitly not all-time analytics or an SLA.
 - Saved Telegram/email channel preference, minimum priority, reason overrides, quiet hours/timezone and digest preference. Delivery is DB-constrained OFF. A one-per-minute dry run logs eligible ticket counts without customer content or network transport. Latest100 checks retained,20 displayed; owner audit and data deletion cover the new records.
 - No external notifications, active worker, provider account, verified sender domain, delivery retries or cross-run delivery dedupe yet. Test-send is disabled. Owner destination/template approval and securely supplied provider credentials are required before delivery. No secret fields are accepted here. Slack/WhatsApp/SMS are roadmap.

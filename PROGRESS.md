@@ -110,3 +110,15 @@ Local gates and live verification are recorded per subsequent update. Remote/dep
 ## 13:17 IST ticket deploy checkpoint
 - cd3b862 deployment started13:15, latest deployed code wasc8b6e24. Migration032 direct capability question guard/state timeline and033 strict event cap applied, all001-033 now.
 - Ticket+hardening rollback suites pass after migrations, widget/billing/webhook tests pass. No outbound receiver/payment calls. Local owner note/body stays private; public case view unchanged. Need hosted /tickets sign-in verification after release matches.
+
+### 2026-10-28 13:18 IST: hosted tickets accepted
+- Release cd3b8620e479 /api/status reports payment execution false.
+- Signed-in /tickets loaded 11 fictional tickets; opened existing refund-request timeline and inspected actual hosted pixels.
+- Applied migration034 to mark unreviewed pre-ticket fallback/negative/pending-request cases for attention, without renewing links or changing reviewed/paused cases. A fallback is a review cue, not a confirmed answer error.
+- Owner overview in progress; notifications still disabled, destinations/wording/secrets unresolved. No external notification sent.
+
+### 2026-10-28 13:21 IST: owner intervention dashboard and disabled draft alert rules
+- Added authenticated owner-overview endpoint, fail-closed bounded snapshot, attention counts, recent queries, seven UTC day trends, preview budget and ticket deep links.
+- Draft alert preferences have priority/reason filters, timezone quiet hours and digest preference. DB constraint prevents enabled=true. Dry runs only, one/minute, capped100-check log, no external transport or secrets. Audit/RLS/data-deletion tested. Migrations035-036 applied once.
+- Lint/build, owner-alert pure tests, rollback DB tenant isolation/dedupe/audit/deletion and mobile/desktop UI fixtures passed. Actual provider setup/delivery remains blocked on owner destination/wording/credentials, not claimed complete.
+- Official sources: https://core.telegram.org/bots/faq ; https://resend.com/pricing ; https://resend.com/docs/dashboard/domains/introduction ; https://resend.com/docs/knowledge-base/account-quotas-and-limits . Email needs a verified owned domain. No card/signup checked and no send made.

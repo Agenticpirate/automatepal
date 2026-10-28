@@ -84,3 +84,10 @@ Local gates and live verification are recorded per subsequent update. Remote/dep
 - Corpus now has three sources: original general reference published; original student25 note Oct28-Nov4 published; temporary conflicting35 note private (former archival fixture, b1affa9e). Native confirm-based delete timed out/reset browser; verified source still existed, then used normal edit/save to make it private and verified after reload. No deletion claim.
 - Parent confirmed no independent testers yet; fresh links will be needed Nov4-11. Existing links expire about13:12 and need not be renewed now. Independent second-user isolation remains required.
 - No webhook receiver configured or contacted; external receiver acceptance still needs explicitly opted-in destination. Gemini approval pending since12:02; no re-ask or bypass. Premium intent pending parent clarification. No new features/UI polish outside existing build priorities.
+
+## 13:07 IST hardening track
+- Parent relayed Ravi wants solid/enterprise-grade systems; hardening now takes priority, no enterprise claims or spend.
+- Migrations 028 owner metadata audit and 029 owner-confirmed preview-data deletion applied. No real user deletion performed. Tests use synthetic Auth UUIDs rolled back. Do not rerun migrations.
+- Local auth-outage fail-closed, bounded rate map, streamed caps for chat/actions/Proof, global headers, metadata-only logs, /status, audit/deletion UI prepared. Full npm audit 0 known advisories.
+- Synthetic two-principal DB role checks and typed-confirmation deletion/foreign survival passed. Independent second-browser full workflow remains unverified. Backup/restore not done; source docs/free-tier limitations in HARDENING.md.
+- Before commit/deploy: inspect final mobile controls and status pixels; run safety/build/widget/billing/webhook; then verify hosted headers/release/payment OFF and unauthenticated audit endpoint. No destructive live deletion test on owner data.

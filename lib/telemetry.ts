@@ -1,0 +1,3 @@
+// Fixed vocabulary only. Never accept request text, identities, URLs or provider errors.
+const stages=new Set(['guidance_account_eligibility_unknown','guidance_unclear_or_conflict','guidance_not_current','guidance_check_failed','instruction_request_refused','no_safe_sources','answer_abstained_or_invalid_citation','answer_style_rejected','unsupported_obligation','unsupported_temporal_anchor','quote_not_exact','grounding_rejected','answer_provider_failed','answer_schema_failed','grounding_provider_failed','grounding_schema_failed']);
+export function knowledgeDiagnostic(stage:string){console.info(JSON.stringify({event:'knowledge_answer_gate',stage:stages.has(stage)?stage:'unknown_gate',time:new Date().toISOString()}));}

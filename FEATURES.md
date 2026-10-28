@@ -37,3 +37,20 @@ Website scale crawling, sitemap import, OAuth cloud connectors, Slack/WhatsApp/M
 ## Schedule
 
 Feature freeze Nov 4. Nov 4-11 testing/fixes only. Nov 11-12 demo/submission artifacts and buffer. Any unfinished build item at freeze becomes roadmap. Submission target remains subject to owner approval.
+
+## Hardening scorecard - 2026-10-28
+
+"Done" means the stated bounded check passed, not production acceptance. Details in HARDENING.md.
+
+| Track | State | Measured evidence / remaining gap |
+| --- | --- | --- |
+| Tenant isolation / RLS | Partial | Two synthetic principals in rollback SQL, 15 cross-tenant table denials plus forged write/foreign RPC/secret denial passed. Independent second-browser sign-in and populated full workflow remain pending. |
+| Input and abuse guards | Done, bounded | Stream caps on chat/actions/Proof added; existing knowledge caps retained. 6/min process guard bounded to 5000 identities, fail-closed overflow tested. Knowledge 20/case and 100/tenant/day persisted. No distributed general API limiter. |
+| Secrets / audit / logs | Partial | Hashed capability tokens, webhook key column denied; metadata-only owner audit max1000, fixed-vocabulary answer gate logs. No external log-retention guarantee or compliance audit. |
+| Auth/provider degradation | Partial | Injected auth outage fails closed; source/model gates keep safe fallbacks. DB/model outage does not imply service availability; not full chaos testing. |
+| Idempotency | Partial | Existing action CAS, proof locks, revision-safe source saves, exclusive webhook claim tests. General creation still requires checking uncertain provider outcome. |
+| Retention / deletion | Partial | Confirmed self-service preview-data deletion; own-data removal and other-user survival tested with rollback fixtures. Auth/provider data/backups/external copies excluded; no age-based purge. |
+| Headers / dependency audit | Done, bounded | nosniff/no-referrer/HSTS/limited CSP/permissions policy tested locally; 0 known advisories full npm audit. Full CSP/penetration test not claimed. |
+| Status / load sanity | Done, bounded | /status and minimal /api/status, ten concurrent local liveness requests and five unauthenticated route denials pass. No dependency-health or capacity claim. |
+| Backup / restore | Partial, unverified | Schema/code in git, not data backup. Free Supabase manual export possible; destination and isolated restore not set up. No restore/RPO/RTO claim. |
+| Always-on / managed recovery | Not available under current free deployment | Render free sleeps/restarts; managed Supabase daily backups/PITR require paid tiers. No upgrades, spend, enterprise or SLA claim. |

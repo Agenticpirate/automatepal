@@ -1,3 +1,5 @@
+import {allowRequest} from '../../../lib/rate-limit';
+import {limitedJson} from '../../../lib/limited-json';
 import { validOrigin } from "../../../lib/origin";
 import { NextRequest,NextResponse } from 'next/server';
 import { authenticate,requestContext } from '../../../lib/session';
@@ -11,8 +13,9 @@ export async function GET(req:NextRequest) {
 }
 export async function POST(req:NextRequest) {
  const ctx=await authenticate(req); if(!ctx)return NextResponse.json({error:'Please sign in.'},{status:401});
+ if(!allowRequest('actions:'+ctx.userId))return NextResponse.json({error:'Please wait a minute.'},{status:429});
  if(!validOrigin(req))return NextResponse.json({error:'Invalid origin'},{status:403});
- const parsed=schema.safeParse(await req.json().catch(()=>null));if(!parsed.success)return NextResponse.json({error:'Invalid action.'},{status:400});
+ const parsed=schema.safeParse(await limitedJson(req,4000).catch(()=>null));if(!parsed.success)return NextResponse.json({error:'Invalid action.'},{status:400});
  const {id,decision}=parsed.data;
  // Compare-and-set prevents double clicks and concurrent requests executing twice.
  const {data,error}=await ctx.client.from('action_proposals').update({status:decision==='cancel'?'cancelled':'executing'}).eq('id',id).eq('user_id',ctx.userId).eq('status','pending').select('id,tool,args').maybeSingle();

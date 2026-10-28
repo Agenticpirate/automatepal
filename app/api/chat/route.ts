@@ -1,3 +1,4 @@
+import {limitedJson} from '../../../lib/limited-json';
 import { validOrigin } from "../../../lib/origin";
 import { NextRequest, NextResponse } from "next/server";
 import { allowRequest } from "../../../lib/rate-limit";
@@ -15,7 +16,7 @@ export async function POST(req: NextRequest) {
   if (!allowRequest(session.userId)) return NextResponse.json({error:"Please wait a minute before sending more messages."},{status:429});
   if (!validOrigin(req)) return NextResponse.json({ error: "Invalid origin" }, { status: 403 });
   let body;
-  try { body = input.parse(await req.json()); }
+  try { body = input.parse(await limitedJson(req,128000)); }
   catch { return NextResponse.json({ error: "Enter a message of up to 4000 characters." }, { status: 400 }); }
   if (!process.env.GEMINI_API_KEY || !process.env.PAYPAL_CLIENT_ID || !process.env.PAYPAL_CLIENT_SECRET)
     return NextResponse.json({ error: "Sandbox setup is incomplete." }, { status: 503 });

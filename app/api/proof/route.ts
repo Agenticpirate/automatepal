@@ -1,3 +1,4 @@
+import {limitedJson} from '../../../lib/limited-json';
 import { NextRequest,NextResponse } from 'next/server';
 import { randomUUID } from 'node:crypto';
 import { authenticate } from '../../../lib/session';
@@ -22,14 +23,14 @@ export async function POST(req:NextRequest){
  const ctx=await authenticate(req);if(!ctx)return NextResponse.json({error:'Please sign in.'},{status:401});
  if(!validOrigin(req))return NextResponse.json({error:'Invalid origin'},{status:403});
  if(!allowRequest(ctx.userId))return NextResponse.json({error:'Please wait a minute.'},{status:429});
- const body=await req.json().catch(()=>null);
+ const body=await limitedJson(req,16000).then(v=>v as Record<string,unknown>|null).catch(()=>null);
  try{
-  if(body?.action==='reconcile'){const report=await requestContext.run(ctx,()=>reconcileProof(body.id));return NextResponse.json({report},{headers:{'Cache-Control':'no-store'}});}
-  if(PROOF_TOOLS.includes(body?.action)){
+  if(body?.action==='reconcile'){const report=await requestContext.run(ctx,()=>reconcileProof(z.string().uuid().parse(body.id)));return NextResponse.json({report},{headers:{'Cache-Control':'no-store'}});}
+  if(body&&typeof body.action==='string'&&PROOF_TOOLS.includes(body.action)){
    if(process.env.PROOF_PAYMENTS_ENABLED!=='true')throw Error('Proof payment execution is not enabled yet.');
    if(ctx.email!==process.env.APP_OWNER_EMAIL)throw Error('Only the sandbox owner can prepare PayPal actions.');
    const args=proofPaymentSchema.parse({contractId:body.id,reason:body.reason});
-   const pending=await requestContext.run(ctx,()=>proposeAction(body.action,args));
+   const pending=await requestContext.run(ctx,()=>proposeAction(String(body.action),args));
    return NextResponse.json({pending});
   }
   if(body?.action==='create'){

@@ -11,7 +11,8 @@
     "eval:knowledge": "tsx scripts/eval-knowledge.ts",
     "test:widget": "tsx scripts/verify-widget-controls.ts && node scripts/verify-widget.mjs && node scripts/verify-widget-pages.mjs",
     "test:webhook": "tsx scripts/verify-webhook.ts",
-    "test:billing": "tsx scripts/verify-billing-preview.ts"
+    "test:billing": "tsx scripts/verify-billing-preview.ts",
+    "test:hardening": "tsx scripts/verify-hardening.ts"
   },
   "dependencies": {
     "@google/genai": "^2.31.0",

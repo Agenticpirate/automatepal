@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import {billingPreview} from '../lib/billing-preview';
+const fixture={id:'11111111-1111-4111-8111-111111111111',fictional:true,order:'Fictional Launch Kit order',amount:19,currency:'USD'};
+const card=billingPreview(fixture)!;
+assert.equal(card.totalMinor,1900);assert.equal(card.reference,'DEMO-11111111');
+assert.equal(card.paymentStatus,'Not connected');assert.equal(card.refundStatus,'Review only');
+assert.equal(card.taxStatus,'Not calculated');assert.equal(card.invoiceStatus,'Not issued');
+for(const changes of [{fictional:false},{currency:'EUR'},{amount:-1},{amount:Infinity},{amount:'19'},{id:'real-order-id'},{order:''}])assert.equal(billingPreview({...fixture,...changes}),null);
+assert.equal(billingPreview(null),null);assert.equal(billingPreview({}),null);
+assert.equal(billingPreview({...fixture,amount:19.125})?.totalMinor,1913);
+console.log('PASS: fictional-only read-only card, USD integer cents, invalid/unbound data hidden');

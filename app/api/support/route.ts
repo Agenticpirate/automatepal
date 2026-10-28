@@ -1,3 +1,4 @@
+import {billingPreview} from '../../../lib/billing-preview';
 import{widgetSettings}from'../../../lib/widget';
 import{limitedJson}from'../../../lib/limited-json';
 import { NextRequest,NextResponse } from 'next/server';
@@ -15,7 +16,7 @@ export async function GET(req:NextRequest){
  const token=req.nextUrl.searchParams.get('token');
  if(token){const parsed=tokenSchema.safeParse(token);if(!parsed.success)return NextResponse.json({error:'Invalid demo link.'},{status:400});
   const {data,error}=await publicClient().rpc('support_case_view',{p_hash:hash(token)});
-  return NextResponse.json(error||!data?{error:'This fictional demo link is unavailable or expired.'}:{case:data},{status:error||!data?404:200,headers:{'Cache-Control':'no-store','Referrer-Policy':'no-referrer'}});
+  return NextResponse.json(error||!data?{error:'This fictional demo link is unavailable or expired.'}:{case:{...data,billing:billingPreview(data)}},{status:error||!data?404:200,headers:{'Cache-Control':'no-store','Referrer-Policy':'no-referrer'}});
  }
  const ctx=await authenticate(req);if(!ctx)return NextResponse.json({error:'Please sign in.'},{status:401});
  const {data,error}=await ctx.client.from('support_requests').select('id,case_id,created_at,kind,message,status,contact_email,contact_consent').eq('user_id',ctx.userId).order('created_at',{ascending:false}).limit(100);

@@ -20,13 +20,13 @@ Updated 2026-10-28. "Hosted preview" means a bounded fictional/sandbox feature i
 | Feedback / unanswered / CSV | Hosted preview | Up/down, recent question metadata and formula-safe unanswered CSV. Not independently verified model-quality metrics. |
 | Scoped read-only API | Hosted preview | Hashed bearer tokens, max 5 active, 1-168 hour expiry, revocation, support/analytics scopes, latest 100 metadata rows. No messages/contacts/source text/payment access. DB scope/revocation tests pass; UI deployed, hosted client acceptance passed: scoped 200, wrong scope/revoked 401; temporary token removed. |
 | Signed opt-in webhooks | Manual-delivery preview | HMAC-SHA256 timestamp+raw-body, stable event IDs, metadata only, 3 attempts with 1/5-minute due times. Fresh public IPv4 resolution pinned to TLS, no redirects, size/time bounds. Local/DB tests pass. No external receiver acceptance or always-on worker; delivery requires owner action. |
-| Fictional billing order card | Hosted preview | Labelled USD fictional fixture; not a live merchant account/order lookup. |
+| Fictional billing order card | Preview, next deploy | Validated fictional-only USD fixture with demo reference, integer-cent total, payment/refund/invoice/tax status. Missing/invalid fixture is hidden. No lookup or payment execution; review does not imply approval. Mobile/desktop and hide-control tests passed. |
 | Proof-to-Pay evidence and reconciliation | Hosted preview | Public GitHub evidence, pinned SHA/checks, fail-closed truncation, known recorded sandbox IDs only. Dedicated public-read token pending. Payment execution OFF. Not escrow. |
 | Tax estimate worksheet / CSV | Hosted preview | User-entered USD amounts/rate only. No jurisdiction rules, official rate, tax advice, filing or invoice claim. |
 
 ## Still planned within the build window, not complete
 
-- Read-only sandbox billing card improvements and narrower hosted acceptance.
+- Hosted acceptance of the richer read-only fictional billing overview.
 - Full repeated versioned eval including owner-note conflict/stale/unrelated, multilingual, injection and style, plus independent testers.
 - Negative-feedback and unanswered questions can prepare a reviewed Q&A source; correction still needs owner consent/publication.
 - External read-only API client and approved webhook receiver acceptance. No receiver is contacted without owner opt-in.

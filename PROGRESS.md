@@ -76,3 +76,11 @@ Local gates and live verification are recorded per subsequent update. Remote/dep
 - Verified c657ca927257 live, payment execution false, /support noindex/no-referrer HTTP headers present.
 - Read-only billing card prepared with validated fictional-only USD fixture, demo-only reference, integer-cent total, distinct not-connected/review-only/not-issued/not-calculated statuses. No new schema or provider calls. Missing/invalid fixtures hidden.
 - Billing unit checks, Playwright mobile/desktop and hide/invalid fixture checks, lint/safety/build/widget/webhook gates passed. Inspected mobile and corrected overly wide desktop layout, re-rendered and inspected. Hosted deployment and acceptance pending next.
+
+## 12:45 IST closeout
+- 7ae020501c98 verified live via /api/status (payment execution false); live billing pixels inspected. No migrations after 027.
+- Hosted tests added to versioned smoke record: Hindi/Telugu eligibility safely fell back, expired Oct1-Oct20 student note safely fell back, current 25/35 conflicting notes safely fell back. Original Oct28-Nov4 student note restored and 25-seat answer re-verified after conflicting note made private.
+- Website-missing archival XML owner example returned safe fallback, a retained recall failure. Hosted internal failure stage is unknown. Do not call this full owner-guidance acceptance. Need supplied-source model diagnostic eval once secure Gemini approval arrives.
+- Corpus now has three sources: original general reference published; original student25 note Oct28-Nov4 published; temporary conflicting35 note private (former archival fixture, b1affa9e). Native confirm-based delete timed out/reset browser; verified source still existed, then used normal edit/save to make it private and verified after reload. No deletion claim.
+- Parent confirmed no independent testers yet; fresh links will be needed Nov4-11. Existing links expire about13:12 and need not be renewed now. Independent second-user isolation remains required.
+- No webhook receiver configured or contacted; external receiver acceptance still needs explicitly opted-in destination. Gemini approval pending since12:02; no re-ask or bypass. Premium intent pending parent clarification. No new features/UI polish outside existing build priorities.

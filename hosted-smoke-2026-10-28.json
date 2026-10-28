@@ -43,6 +43,56 @@
       "pass": true,
       "observed": "I do not have enough published information to answer that. Please ask a person to review.",
       "source": "No source disclosed"
+    },
+    {
+      "name": "unclear-account-eligibility-hi",
+      "release": "c657ca9",
+      "pass": true,
+      "observed": "Safe human-review fallback, no account qualification claimed.",
+      "stage": "Hosted UI only, internal stage not exposed."
+    },
+    {
+      "name": "unclear-account-eligibility-te",
+      "release": "c657ca9",
+      "pass": true,
+      "observed": "Safe human-review fallback, no account qualification claimed.",
+      "stage": "Hosted UI only, internal stage not exposed."
+    },
+    {
+      "name": "website-missing-archival-xml",
+      "release": "7ae020501c98",
+      "pass": false,
+      "expected": "XML exports from applicable current owner-only example.",
+      "observed": "Safe human-review fallback.",
+      "stage": "Undetermined: retrieval/applicability/answer/grounding not exposed in hosted UI.",
+      "fixture": "Archival-plan owner note Oct28-Nov4, no matching website fact; subsequently repurposed as conflicting test and left private."
+    },
+    {
+      "name": "stale-student-seats",
+      "release": "7ae020501c98",
+      "pass": true,
+      "observed": "Safe fallback while student exception Oct1-Oct20 was expired; did not return 25 or Standard 10.",
+      "stage": "Hosted UI only; no claim about internal rejection stage."
+    },
+    {
+      "name": "conflicting-student-seats",
+      "release": "7ae020501c98",
+      "pass": true,
+      "observed": "Safe fallback with two current published notes: 25 versus 35 seats.",
+      "stage": "Hosted UI only; internal stage not exposed."
+    },
+    {
+      "name": "restored-student-seats",
+      "release": "7ae020501c98",
+      "pass": true,
+      "observed": "The fictional North Dock student plan includes 25 seats.",
+      "source": "Original owner guidance after restoring Oct28-Nov4 and making conflicting note private."
+    },
+    {
+      "name": "read-only-billing-overview",
+      "release": "7ae020501c98",
+      "pass": true,
+      "observed": "Inspected live UI: fictional fixture USD19.00; Not connected / Review only / Not issued / Not calculated; no provider calls."
     }
   ],
   "pending": [

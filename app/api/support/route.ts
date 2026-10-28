@@ -19,8 +19,9 @@ export async function GET(req:NextRequest){
  }
  const ctx=await authenticate(req);if(!ctx)return NextResponse.json({error:'Please sign in.'},{status:401});
  const {data,error}=await ctx.client.from('support_requests').select('id,case_id,created_at,kind,message,status,contact_email,contact_consent').eq('user_id',ctx.userId).order('created_at',{ascending:false}).limit(100);
+ const cases=await ctx.client.from('support_cases').select('id,created_at,expires_at,order_label,inbox_state').eq('user_id',ctx.userId).order('created_at',{ascending:false}).limit(100);
  const settings=await ctx.client.from('widget_settings').select('label,color,initials,prompts,controls').eq('user_id',ctx.userId).maybeSingle();
- return NextResponse.json(error?{error:'Could not load requests.'}:{requests:data,settings:settings.data?{...settings.data,...settings.data.controls}:null},{status:error?503:200,headers:{'Cache-Control':'no-store'}});
+ return NextResponse.json(error?{error:'Could not load requests.'}:{requests:data,cases:cases.data??[],settings:settings.data?{...settings.data,...settings.data.controls}:null},{status:error?503:200,headers:{'Cache-Control':'no-store'}});
 }
 export async function POST(req:NextRequest){
  if(!validOrigin(req))return NextResponse.json({error:'Invalid origin'},{status:403});
@@ -40,6 +41,7 @@ export async function POST(req:NextRequest){
   }
   const ctx=await authenticate(req);if(!ctx)return NextResponse.json({error:'Please sign in.'},{status:401});
   if(!allowRequest(ctx.userId))return NextResponse.json({error:'Please wait a minute.'},{status:429});
+  if(body?.action==='inbox'){const d=z.object({id:z.string().uuid(),state:z.enum(['open','taken_over','closed'])}).parse(body);const{data,error}=await ctx.client.rpc('set_support_inbox',{p_id:d.id,p_state:d.state});if(error||!data)throw Error('Case unavailable.');return NextResponse.json({note:'Case state updated. No message or payment sent.'});}
   if(body?.action==='settings'){
    const current=await ctx.client.from('widget_settings').select('controls').eq('user_id',ctx.userId).maybeSingle();if(current.error)throw Error('Could not load current settings.');const settings=widgetSettings.parse({...current.data?.controls,...(body.settings as Record<string,unknown>)});const{label,color,initials,prompts,...controls}=settings;
    const {error}=await ctx.client.from('widget_settings').upsert({user_id:ctx.userId,label,color,initials,prompts,controls});if(error)throw Error('Could not save widget settings.');return NextResponse.json({note:'Widget appearance and quick prompts saved. No external script or image URL accepted.'});

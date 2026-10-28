@@ -21,3 +21,8 @@ Local gates and live verification are recorded per subsequent update. Remote/dep
 - 19bfd84 deployed to preview (owner-guidance source selector now observed at /knowledge). Model evaluation pending secure Gemini approval; not accepted as production behavior.
 - Widget control implementation prepared. Migration 023 applied. Empty external origin list means no external embed; first-party sample remains allowed. Display controls never claimed to protect capability links. Local Playwright lazy-load/navigation checks, origins/path tests, lint/safety/build all passed. Desktop/mobile screenshots inspected for readability.
 - /api/widget returns only validated settings, with CORS for permitted exact origins, never page text/query. API checks Origin but it is not a customer authentication boundary.
+
+## 12:10 IST update
+- Migration 024 applied: open/attention/taken_over/closed cases, owner-scoped state RPC. Reserve and final completion check case state under row lock, so in-flight model result is held if taken over/closed. No human messaging implemented or claimed.
+- scripts/verify-handoff-db.ts passed rollback-only take-over, in-flight completion suppression, release, attention, close, invalid case checks. Lint/safety/build passed. UI mobile screenshot inspected.
+- Controls defaults merged when loading old settings to avoid missing-array crash. Setup now explains allowlisting the approved test origin before embedding.

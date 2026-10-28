@@ -51,3 +51,23 @@ Local gates and live verification are recorded per subsequent update. Remote/dep
 ## 12:26 IST update
 - Added deterministic eligibility regression cases and public build-status endpoint (release hash and preview/payment-flag boolean only, no secrets). Webhook has a 7-second total deadline in addition to DNS/socket/byte caps.
 - Full lint/safety/widget/webhook/build passed again. Versioned hosted smoke record retains the eligibility miss; retest must verify live release before declaring fixed. Earlier 12:25 repeat hit old 1dc262c while be1903f was still deploying, so it was not a valid post-fix test.
+
+## Continuation checkpoint 12:29 IST
+
+- Remote head 573cb25, latest verified live release 9940952370e4 via /api/status. proofPaymentExecution=false. 573cb25 deployment in progress. Small timer setup cleanup follows, no semantics change.
+- All migrations 001-027 applied (022 revoked legacy save only after ordinary/note hosted imports succeeded). Do not rerun non-idempotent migrations blindly.
+- Repo: /home/sandbox/founderpay-agent. Credentials retrieved only through secure private files, not checked into app. First repo-scope PAT was 403, existing classic PAT pushed successfully. Reacquire vault files for future work, do not copy credentials into app.
+- Model suite blocked only on existing Gemini sandbox approval, already sent to Ravi 12:02 and still pending; do not re-ask. Hosted app model calls work, no credential extraction allowed.
+- Hosted measured checks recorded in hosted-smoke-2026-10-28.json: English/Hindi/Telugu 25-seat owner override; unrelated CSV unchanged; account eligibility miss kept in record, fixed and confirmed fallback on be1903f. Not full owner-note acceptance.
+- Published fictional test corpus: North Dock Standard 10 seats, CSV export steps, weekday 09:00-17:00 UTC support, Android only, display-name steps, India delivery 5-7 business days after dispatch, optional review within 14 days no anchor, no automatic refund. Published student-only 25-seat owner note Oct 28-Nov 4 UTC. Both can be removed after testing. No real merchant/customer data.
+- Four distinct anonymous tester links sent privately to coordinator, expire approx 13:12-13:13 IST Oct 28. 20 questions/case, 100 shared/day. At 12:27, 10 used/7 supported. No receivers configured; no webhook external sends. Temporary API acceptance token deleted.
+- Signed webhooks are MANUAL delivery only with due times/backoff, not automatic worker. They remain opt-in/off. Do not claim full external receiver acceptance.
+
+### Next steps
+1. Verify latest deploy/status and headers; inspect live fallback label after next update. Final report should state actual live commit.
+2. When Gemini permission granted, run scripts/eval-owner-guidance.ts using secure key file, plus retrieval eval with rollback fixtures. Keep failures and failure stages.
+3. Complete stale/conflict/website-missing note cases and independent tester run; no weakening fail-closed checks to inflate recall.
+4. Improve read-only sandbox order cards while keeping all payment execution OFF. Tax worksheet remains input arithmetic only; Proof preview/reconciliation has no live payment flow.
+5. Get exact approved hidden-page paths before any foundersprime/ystartups test embed. No site-wide change.
+6. Premium intent clarification belongs to coordinator; do not treat it as spend/plan-launch authority. UI polish remains post-submission unless Ravi changes freeze plan explicitly.
+7. FEATURE freeze Nov 4, testing/fixes Nov 4-11, Nov 11-12 artifacts/buffer. Incomplete becomes roadmap.

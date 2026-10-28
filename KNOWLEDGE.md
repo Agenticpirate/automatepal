@@ -23,3 +23,7 @@ CSV export prefixes formula-leading cells to avoid spreadsheet formula execution
 ## PDF import local preview
 
 PDF.js6.4.299 parses a selected PDF in the browser worker, only from provided bytes. No URL input, attachment opening or document action execution is exposed. Limits:2MB,10 pages,30KB extracted text; a15-second load timeout destroys the task. Page markers help review; tables/layout may be lost. Empty/scanned, invalid-signature and11-page fixtures are rejected. A one-page text fixture imports expected words and leaves processing/publication consent unchecked. File parsing is not an assertion that the text is safe or correct. Review before publishing; secret checks and untrusted-source answer gates still apply. Not deployed yet.
+
+## Persistent question budget next change
+
+Before an embedding/model call, a capability-scoped RPC reserves an interaction under a per-tenant advisory transaction lock. Caps are20 per case and100 per tenant per UTC database day. Failure/timeout consumes the reserved slot and stays unanswered; no automatic refund/retry of the slot. This is a demo abuse bound, not a billing entitlement or complete bot defense.

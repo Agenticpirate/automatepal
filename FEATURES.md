@@ -61,7 +61,7 @@ Feature freeze Nov 4. Nov 4-11 testing/fixes only. Nov 11-12 demo/submission art
 - Saved Telegram/email channel preference, minimum priority, reason overrides, quiet hours/timezone and digest preference. Delivery is DB-constrained OFF. A one-per-minute dry run logs eligible ticket counts without customer content or network transport. Latest100 checks retained,20 displayed; owner audit and data deletion cover the new records.
 - No external notifications, active worker, provider account, verified sender domain, delivery retries or cross-run delivery dedupe yet. Test-send is disabled. Owner destination/template approval and securely supplied provider credentials are required before delivery. No secret fields are accepted here. Slack/WhatsApp/SMS are roadmap.
 
-### Service-management core (next deploy)
+### Service-management core (live preview)
 - Incident / service request / question, labeled single-owner queues, explicit 3x3 impact/urgency priority matrix with manual override, DB-enforced state transitions. New -> open/pending; open/pending -> each other/resolved; resolved -> open/closed; closed -> open.
 - Refund review: request owner review, then record approved/rejected before resolving. Internal metadata only, never payment execution or spending authority. Repeated identical service fields/decisions are no-ops.
 - One same-tenant related/potential-duplicate link, no merge or inferred duplicate. Resolved/closed tickets can prepare owner-written Q&A in the same tab. Work notes are never copied automatically; processing/publication still need consent.

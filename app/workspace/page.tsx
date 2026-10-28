@@ -76,7 +76,7 @@ export default function Home() {
         {email?<button className="text-sm underline" onClick={async()=>{await browserAuth()?.auth.signOut();setEmail('');setPending([]);router.push('/login');}}>Sign out</button>:<Link href="/login" className="text-sm underline">Sign in</Link>}
         <Link href="/knowledge" className="rounded-lg border px-3 py-2 text-sm">Knowledge</Link>
         <Link href="/tax" className="rounded-lg border px-3 py-2 text-sm">Tax worksheet</Link>
-        <Link href="/support" className="rounded-lg border px-3 py-2 text-sm">Support demo</Link>
+        <Link href="/setup" className="rounded-lg border px-3 py-2 text-sm">Quick setup</Link>
         <Link href="/proof" className="rounded-lg border px-3 py-2 text-sm">Proof-to-Pay</Link>
         <Link href="/dashboard" className="rounded-lg bg-black px-3 py-2 text-sm text-white">Revenue dashboard</Link>
       </header>

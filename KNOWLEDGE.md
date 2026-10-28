@@ -19,3 +19,7 @@ Provider references: https://ai.google.dev/gemini-api/docs/embeddings and https:
 Local-only next change logs questions, supported/unanswered flag and source count against a case, with up/down feedback. Owner RLS restricts analytics; public feedback requires the same valid case capability. A case can record up to20 questions. Owner view loads the most recent1000 rows, explicitly not all-time totals, and exports unanswered CSV. This still needs hosted acceptance. Questions must remain fictional/public and the customer panel discloses storage and Gemini processing.
 
 CSV export prefixes formula-leading cells to avoid spreadsheet formula execution. Analytics are recorded demo interactions, not independently verified model quality metrics. The public feedback/logging RPC is capability-scoped, so a holder can submit demo feedback; no anti-fraud claim is made.
+
+## PDF import local preview
+
+PDF.js6.4.299 parses a selected PDF in the browser worker, only from provided bytes. No URL input, attachment opening or document action execution is exposed. Limits:2MB,10 pages,30KB extracted text; a15-second load timeout destroys the task. Page markers help review; tables/layout may be lost. Empty/scanned, invalid-signature and11-page fixtures are rejected. A one-page text fixture imports expected words and leaves processing/publication consent unchecked. File parsing is not an assertion that the text is safe or correct. Review before publishing; secret checks and untrusted-source answer gates still apply. Not deployed yet.

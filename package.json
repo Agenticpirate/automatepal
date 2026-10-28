@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test:safety": "tsx scripts/verify-safety.ts && tsx scripts/verify-proof.ts && tsx scripts/verify-proof-reader.ts && tsx scripts/verify-proof-payments.ts && tsx scripts/verify-proof-reconciliation.ts && tsx scripts/verify-knowledge.ts",
+    "test:safety": "tsx scripts/verify-safety.ts && tsx scripts/verify-proof.ts && tsx scripts/verify-proof-reader.ts && tsx scripts/verify-proof-payments.ts && tsx scripts/verify-proof-reconciliation.ts && tsx scripts/verify-knowledge.ts && tsx scripts/verify-limited-json.ts",
     "eval:knowledge": "tsx scripts/eval-knowledge.ts"
   },
   "dependencies": {

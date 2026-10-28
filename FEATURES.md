@@ -33,7 +33,7 @@ Status as of 2026-10-28. This is a build checklist, not a promise of parity or p
 - Working-hours/chat modes, agent takeover/release, tags, important/rename/resolve and conversation export.
 - Real conversation/visitor funnel and dated deltas, unanswered clustering and full history search.
 - Signed/retried webhooks, scoped expiring API tokens, REST subset, SDK commands/HMAC visitor identity and tracking events.
-- Team roles/invites and visitor/lead/conversation retention/deletion tools. Current source deletion cascades chunks; previously viewed/exported answers cannot be recalled.
+- Team roles/invites and visitor/lead/conversation retention/deletion tools. Current source deletion removes linked attempt metadata and cascades chunks, invalidating pending saves. Previously viewed/exported answers, analytics and provider copies cannot be recalled.
 - Authenticated merchant PayPal onboarding and actual per-merchant read-only order/refund/invoice lookup. Current widget uses fictional cases; the owner sandbox toolset is separate.
 
 ## Roadmap only

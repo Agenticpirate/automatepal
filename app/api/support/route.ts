@@ -1,3 +1,4 @@
+import{limitedJson}from'../../../lib/limited-json';
 import { NextRequest,NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { randomBytes,randomUUID,createHash } from 'node:crypto';
@@ -23,7 +24,7 @@ export async function GET(req:NextRequest){
 export async function POST(req:NextRequest){
  if(!validOrigin(req))return NextResponse.json({error:'Invalid origin'},{status:403});
  if(Number(req.headers.get('content-length')??0)>6000)return NextResponse.json({error:'Request too large'},{status:413});
- const body=await req.json().catch(()=>null);
+ const body=await limitedJson(req,6000).then(v=>v as Record<string,unknown>|null).catch(()=>null);
  try{
   if(body?.action==='feedback'){const d=z.object({token:tokenSchema,id:z.string().uuid(),feedback:z.union([z.literal(1),z.literal(-1)])}).parse(body);const {data,error}=await publicClient().rpc('support_rate_knowledge',{p_hash:hash(d.token),p_id:d.id,p_feedback:d.feedback});if(error||!data)throw Error('Feedback unavailable.');return NextResponse.json({note:'Feedback recorded.'});}
   if(body?.action==='answer'){

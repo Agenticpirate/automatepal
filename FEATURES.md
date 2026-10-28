@@ -19,8 +19,8 @@ Status as of 2026-10-28. This is a build checklist, not a promise of parity or p
 - User-input USD tax arithmetic worksheet and CSV. No jurisdiction selection, tax advice, filing or official tax rates.
 
 ## Knowledge core next
-- Persist ingestion attempts/status, including failed/limit states; source editing is live, background jobs are not.
-- Separate exact raw-question custom responses: built and tested locally, rollout acceptance pending. Case/whitespace normalization only, not fuzzy semantic matching.
+- Persist ingestion attempts/status, including failed/limit/stale-unconfirmed states: built locally, rollout acceptance pending. Source editing is live; background jobs are not.
+- Separate exact raw-question custom responses: hosted fictional acceptance passed. Case/whitespace normalization only, not fuzzy semantic matching.
 - Bounded recent-conversation query rewrite with evidence-preserving retrieval and explicit isolation tests.
 - Improve answerable recall and measure it without weakening unsupported-answer fallback. Latest13case synthetic run10/13 expected outcomes; earlier8/13. Not a statistical error rate.
 - Sitemap/list-of-links import and manual resync, after SSRF, redirect, robots/permission, content-size and source-diff controls. No crawler currently enabled.

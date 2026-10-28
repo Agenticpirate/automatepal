@@ -1,0 +1,8 @@
+# Open-source reference ledger
+
+The AutomatePal application is original MIT code. References checked October28,2026:
+
+- Supabase repository, Apache License2.0: https://github.com/supabase/supabase/blob/master/LICENSE . Its semantic-search documentation informed the pgvector distance/RPC approach: https://supabase.com/docs/guides/functions/examples/semantic-search . Tenant capability routing and SQL in this application are original, not copied wholesale.
+- promptfoo, MIT: https://github.com/promptfoo/promptfoo/blob/main/LICENSE . Evaluated as a possible test runner; not installed or bundled. The current small eval runner is original TypeScript, not promptfoo and not a claim of equivalent coverage.
+
+No SiteGPT code, assets, brand or proprietary prompts were copied. Its public feature list was used only to identify product categories: https://sitegpt.ai/features . No claim of feature parity or enterprise certification is made.

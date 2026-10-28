@@ -1,0 +1,3 @@
+import assert from'node:assert/strict';import{safeKnowledge,answerKnowledge}from'../lib/knowledge';
+async function main(){assert.throws(()=>safeKnowledge('api_key=secretfixturevalue123'),/secret/);assert.throws(()=>safeKnowledge('-----BEGIN PRIVATE KEY-----'),/secret/);const a=await answerKnowledge('What is the refund policy?',[]);assert.equal(a.supported,false);const b=await answerKnowledge('What is the refund policy?',[{id:'fixture',title:'Fixture',excerpt:'api_key=secretfixturevalue123'}]);assert.equal(b.supported,false);assert.equal(b.sources.length,0);console.log('PASS knowledge guards: secret patterns denied, no-source fallback, source-secret exclusion before model call.');}
+main().catch(e=>{console.error(e);process.exitCode=1});

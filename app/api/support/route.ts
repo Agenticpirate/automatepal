@@ -1,6 +1,7 @@
 import { NextRequest,NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { randomBytes,randomUUID,createHash } from 'node:crypto';
+import {answerKnowledge,safeKnowledge,embedKnowledge} from '../../../lib/knowledge';
 import { z } from 'zod';
 import {authenticate} from '../../../lib/session';
 import {validOrigin} from '../../../lib/origin';
@@ -24,6 +25,11 @@ export async function POST(req:NextRequest){
  if(Number(req.headers.get('content-length')??0)>6000)return NextResponse.json({error:'Request too large'},{status:413});
  const body=await req.json().catch(()=>null);
  try{
+  if(body?.action==='answer'){
+   const d=z.object({token:tokenSchema,question:z.string().trim().min(3).max(500)}).parse(body);safeKnowledge(d.question);
+   if(!allowRequest(hash(d.token)))return NextResponse.json({error:'Please wait a minute.'},{status:429});
+   const capability=await publicClient().rpc('support_case_view',{p_hash:hash(d.token)});if(capability.error||!capability.data)throw Error('Invalid or expired demo link.');const vector=await embedKnowledge(d.question,true);const {data,error}=await publicClient().rpc('support_knowledge_vectors',{p_hash:hash(d.token),p_embedding:vector});if(error)throw Error('Knowledge unavailable. Ask a person to review.');return NextResponse.json(await answerKnowledge(d.question,data??[]),{headers:{'Cache-Control':'no-store'}});
+  }
   if(body?.action==='request'){
    const d=z.object({token:tokenSchema,kind:z.enum(['refund_request','receipt_request','billing_question','human_handoff','lead_callback']),message:z.string().trim().min(5).max(1000),email:z.string().email().max(254).optional(),consent:z.boolean().default(false)}).parse(body);
    const {data,error}=await publicClient().rpc('support_case_contact',{p_hash:hash(d.token),p_kind:d.kind,p_message:d.message,p_email:d.email??null,p_consent:d.consent});

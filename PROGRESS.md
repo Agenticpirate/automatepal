@@ -130,3 +130,9 @@ Local gates and live verification are recorded per subsequent update. Remote/dep
 - Signed-in owner snapshot loaded11 fictional tickets,4 intervention cases,16 queries/8 unanswered and one pending human handoff. Existing pending-refund count0 is truthful because its old request was reviewed, not silently re-opened.
 - Inspected live queue screenshot and alert-rule screenshot. Hosted dry run logged4 eligible tickets in digest-only mode, explicitly not sent. No transport/provider request or secret was used. Actual notifications remain disabled and not implemented as an active service.
 - Save/dry-run fixture interactions, disabled test-send button, anonymous API denial tests passed. Parent receives actual hosted screenshots and exact URLs. Browser lease released after acceptance.
+
+### 2026-10-28 18:07 IST: service-management core release gate
+- Migration037 applied once, additive schema/RPCs with DB workflow guard. Nine priority cells, forbidden transitions, refund approval guard, identical retry no-op, foreign/self link/invalid-field denial and two-principal isolation passed in rollback SQL.
+- Full safety/widget/billing/webhook/hardening/tickets/owner regressions, lint/build, npm audit0 advisories passed. Mobile390 and desktop1280 screenshots inspected; Q&A draft transfer passed after correcting a fixture response that initially crashed the fake knowledge list. No real data or provider calls in tests.
+- Rollback: application can return to58c1aff on Render; additive service fields can stay. Workflow guard remains intentional; if it causes a confirmed regression, disable only service_ticket_guard via a reviewed forward migration, preserving events/data. No destructive rollback or migration replay.
+- Minimal/premium dashboard and system/manual persisted dark mode are next after this core is live. No paid tier. Notification transport/token requests deferred at owner's instruction.

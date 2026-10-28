@@ -1,8 +1,8 @@
 {
-  "runAt": "2026-10-28T04:28:40.851Z",
+  "runAt": "2026-10-28T04:34:42.674Z",
   "scope": "13 synthetic end-to-end embedding, tenant-scoped pgvector retrieval, answer and grounding cases. Database fixtures rolled back. This is not a statistical hallucination rate, production assurance or broad language calibration.",
   "total": 13,
-  "passed": 8,
+  "passed": 10,
   "results": [
     {
       "name": "review-window",
@@ -16,10 +16,10 @@
           "score": 0.814804781365681
         }
       ],
-      "answer": "You can ask for an owner review for your fictional Launch Kit within 14 days.",
+      "answer": "You can request an owner review for your fictional Launch Kit order within 14 days.",
       "sources": [
         {
-          "id": "c9564e8b-a5c6-4ad2-ba3d-a4c2208a0942",
+          "id": "27269560-d002-44a5-a574-936b52302835",
           "title": "Fictional review policy",
           "quotes": [
             "For fictional Launch Kit orders, customers can ask for owner review within 14 days."
@@ -63,8 +63,8 @@
       "name": "shipping-window",
       "question": "How long does fictional North Dock delivery take after dispatch?",
       "expectedSupported": true,
-      "pass": true,
-      "stage": "supported",
+      "pass": false,
+      "stage": "grounding_provider_failed",
       "retrieved": [
         {
           "title": "Fictional shipping policy",
@@ -75,24 +75,16 @@
           "score": 0.757515755588191
         }
       ],
-      "answer": "The estimated delivery time for Fictional North Dock demo parcels is 5 to 7 business days after dispatch.",
-      "sources": [
-        {
-          "id": "3c371232-91cc-4ad6-a9d3-de5dfd373d5c",
-          "title": "Fictional shipping policy",
-          "quotes": [
-            "The estimated delivery time is 5 to 7 business days after dispatch."
-          ]
-        }
-      ],
-      "supported": true
+      "answer": "I do not have enough published information to answer that. Please ask a person to review.",
+      "sources": [],
+      "supported": false
     },
     {
       "name": "shipping-country",
       "question": "Which country does fictional North Dock deliver within?",
       "expectedSupported": true,
-      "pass": false,
-      "stage": "provider_error_timeout_or_invalid_json",
+      "pass": true,
+      "stage": "supported",
       "retrieved": [
         {
           "title": "Fictional shipping policy",
@@ -103,25 +95,41 @@
           "score": 0.767855383456521
         }
       ],
-      "answer": "I do not have enough published information to answer that. Please ask a person to review.",
-      "sources": [],
-      "supported": false
+      "answer": "Fictional North Dock delivers demo parcels only within India.",
+      "sources": [
+        {
+          "id": "660aaa36-65c7-44d6-ab39-2de6f2f947c2",
+          "title": "Fictional shipping policy",
+          "quotes": [
+            "Fictional North Dock delivers demo parcels only within India."
+          ]
+        }
+      ],
+      "supported": true
     },
     {
       "name": "invoice-human",
       "question": "How can I get a copy of a fictional North Dock invoice?",
       "expectedSupported": true,
-      "pass": false,
-      "stage": "provider_error_timeout_or_invalid_json",
+      "pass": true,
+      "stage": "supported",
       "retrieved": [
         {
           "title": "Fictional invoice policy",
           "score": 0.885712174007475
         }
       ],
-      "answer": "I do not have enough published information to answer that. Please ask a person to review.",
-      "sources": [],
-      "supported": false
+      "answer": "You can request a copy of a fictional North Dock invoice from a person.",
+      "sources": [
+        {
+          "id": "800e7133-c953-418b-9292-6b67d8e0e280",
+          "title": "Fictional invoice policy",
+          "quotes": [
+            "Fictional North Dock invoice copies can be requested from a person."
+          ]
+        }
+      ],
+      "supported": true
     },
     {
       "name": "unknown-paid-status",
@@ -187,17 +195,25 @@
       "name": "hindi-review",
       "question": "काल्पनिक Launch Kit के लिए मालिक से समीक्षा कितने दिनों के भीतर मांग सकते हैं?",
       "expectedSupported": true,
-      "pass": false,
-      "stage": "provider_error_timeout_or_invalid_json",
+      "pass": true,
+      "stage": "supported",
       "retrieved": [
         {
           "title": "Fictional review policy",
           "score": 0.793993387995386
         }
       ],
-      "answer": "I do not have enough published information to answer that. Please ask a person to review.",
-      "sources": [],
-      "supported": false
+      "answer": "काल्पनिक Launch Kit ऑर्डर के लिए, ग्राहक 14 दिनों के भीतर मालिक से समीक्षा के लिए अनुरोध कर सकते हैं।",
+      "sources": [
+        {
+          "id": "27269560-d002-44a5-a574-936b52302835",
+          "title": "Fictional review policy",
+          "quotes": [
+            "For fictional Launch Kit orders, customers can ask for owner review within 14 days."
+          ]
+        }
+      ],
+      "supported": true
     },
     {
       "name": "telugu-shipping",
@@ -215,10 +231,10 @@
           "score": 0.720115413645238
         }
       ],
-      "answer": "కల్పిత North Dock పార్సెల్ పంపిన (dispatch) తర్వాత, డెలివరీ కావడానికి 5 నుండి 7 పని రోజులు పడుతుంది.",
+      "answer": "కల్పిత North Dock పార్సెల్ పంపిన తర్వాత, డెలివరీకి 5 నుండి 7 పని రోజులు పడుతుంది.",
       "sources": [
         {
-          "id": "3c371232-91cc-4ad6-a9d3-de5dfd373d5c",
+          "id": "660aaa36-65c7-44d6-ab39-2de6f2f947c2",
           "title": "Fictional shipping policy",
           "quotes": [
             "The estimated delivery time is 5 to 7 business days after dispatch."

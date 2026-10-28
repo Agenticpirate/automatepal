@@ -15,8 +15,9 @@ export async function GET(req:NextRequest){
   return NextResponse.json(error||!data?{error:'This fictional demo link is unavailable or expired.'}:{case:data},{status:error||!data?404:200,headers:{'Cache-Control':'no-store','Referrer-Policy':'no-referrer'}});
  }
  const ctx=await authenticate(req);if(!ctx)return NextResponse.json({error:'Please sign in.'},{status:401});
- const {data,error}=await ctx.client.from('support_requests').select('id,case_id,created_at,kind,message,status').eq('user_id',ctx.userId).order('created_at',{ascending:false}).limit(100);
- return NextResponse.json(error?{error:'Could not load requests.'}:{requests:data},{status:error?503:200,headers:{'Cache-Control':'no-store'}});
+ const {data,error}=await ctx.client.from('support_requests').select('id,case_id,created_at,kind,message,status,contact_email,contact_consent').eq('user_id',ctx.userId).order('created_at',{ascending:false}).limit(100);
+ const settings=await ctx.client.from('widget_settings').select('label,color,initials,prompts').eq('user_id',ctx.userId).maybeSingle();
+ return NextResponse.json(error?{error:'Could not load requests.'}:{requests:data,settings:settings.data},{status:error?503:200,headers:{'Cache-Control':'no-store'}});
 }
 export async function POST(req:NextRequest){
  if(!validOrigin(req))return NextResponse.json({error:'Invalid origin'},{status:403});
@@ -24,12 +25,16 @@ export async function POST(req:NextRequest){
  const body=await req.json().catch(()=>null);
  try{
   if(body?.action==='request'){
-   const d=z.object({token:tokenSchema,kind:z.enum(['refund_request','receipt_request','billing_question']),message:z.string().trim().min(5).max(1000)}).parse(body);
-   const {data,error}=await publicClient().rpc('support_case_request',{p_hash:hash(d.token),p_kind:d.kind,p_message:d.message});
+   const d=z.object({token:tokenSchema,kind:z.enum(['refund_request','receipt_request','billing_question','human_handoff','lead_callback']),message:z.string().trim().min(5).max(1000),email:z.string().email().max(254).optional(),consent:z.boolean().default(false)}).parse(body);
+   const {data,error}=await publicClient().rpc('support_case_contact',{p_hash:hash(d.token),p_kind:d.kind,p_message:d.message,p_email:d.email??null,p_consent:d.consent});
    if(error)throw Error('Request unavailable, expired or limit reached.');return NextResponse.json({id:data,note:'Sent to the demo owner for review. No refund, payment or email has been sent.'});
   }
   const ctx=await authenticate(req);if(!ctx)return NextResponse.json({error:'Please sign in.'},{status:401});
   if(!allowRequest(ctx.userId))return NextResponse.json({error:'Please wait a minute.'},{status:429});
+  if(body?.action==='settings'){
+   const settings=z.object({label:z.string().trim().min(1).max(40),color:z.string().regex(/^#[a-fA-F0-9]{6}$/),initials:z.string().trim().min(1).max(3),prompts:z.array(z.string().trim().min(3).max(100)).max(4)}).parse(body.settings);
+   const {error}=await ctx.client.from('widget_settings').upsert({user_id:ctx.userId,...settings});if(error)throw Error('Could not save widget settings.');return NextResponse.json({note:'Widget appearance and quick prompts saved. No external script or image URL accepted.'});
+  }
   if(body?.action==='create_demo'){
    const token=randomBytes(32).toString('hex'),id=randomUUID(),expires=new Date(Date.now()+3600000).toISOString();
    const {error}=await ctx.client.from('support_cases').insert({id,user_id:ctx.userId,token_hash:hash(token),expires_at:expires,order_label:'Fictional Launch Kit order',amount:19});if(error)throw Error('Could not create demo.');

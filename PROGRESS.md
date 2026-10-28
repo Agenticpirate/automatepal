@@ -26,3 +26,9 @@ Local gates and live verification are recorded per subsequent update. Remote/dep
 - Migration 024 applied: open/attention/taken_over/closed cases, owner-scoped state RPC. Reserve and final completion check case state under row lock, so in-flight model result is held if taken over/closed. No human messaging implemented or claimed.
 - scripts/verify-handoff-db.ts passed rollback-only take-over, in-flight completion suppression, release, attention, close, invalid case checks. Lint/safety/build passed. UI mobile screenshot inspected.
 - Controls defaults merged when loading old settings to avoid missing-array crash. Setup now explains allowlisting the approved test origin before embedding.
+
+## 12:14 IST update
+- Hosted 77c6a4f live. Owner Google sign-in works without phone prompt. Published fictional North Dock corpus via UI; metadata-aware save and embeddings succeeded. Published dated student-plan-only 25-seat note through UI (Oct 28-Nov 4 UTC). Standard 10-seat and CSV export fixture are unchanged.
+- Four independent one-hour tester links sent privately to coordinator at 12:12-12:13 IST. 20 answers/case, 100/tenant/day budget, cap 8-10/tester to leave diagnostics headroom. No tester owner account.
+- Migration 025 read-only token API applied. Scope-specific metadata-only outputs, hashed storage, max five active, max seven days, revocation. rollback DB tests passed. Mobile settings screenshot inspected with no token value. Full lint/build passed.
+- Next: hosted API acceptance and publish features matrix; signed webhook path still pending and must stay labelled not enabled until SSRF/retry/signature acceptance.

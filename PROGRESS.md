@@ -43,3 +43,7 @@ Local gates and live verification are recorded per subsequent update. Remote/dep
 - Hosted API acceptance: scoped 200, wrong-scope 401, revoked 401; temporary token record deleted. No token logged.
 - Follow-up: DNS resolution bounded to 1.5s/one try; webhook signature display clarified. Negative-feedback questions now join unanswered questions in Prepare Q&A (nothing auto-published). Migration 027 changes only absent-settings fallback to general Site help, preserving saved owner labels.
 - Coordinator confirmed Gemini approval still pending, do not re-ask. Hosted-only tests may proceed. "Premium version" clarification pending privately; do not interpret it as spend authority or paid-plan launch.
+
+## 12:24 IST update
+- More hosted checks: Hindi and Telugu student-plan seat questions each answered 25 with owner guidance and short same-language reply.
+- Ambiguous eligibility check did NOT meet stricter expectation: "Does the fictional student exception apply to my account?" returned a generic conditional description of student-plan seats rather than abstaining/clarifying. It did not explicitly claim the account qualifies, but stronger guard added for English account/eligibility questions when guidance candidates exist. Need repeat hosted test after deploy. Model applicability prompt also tightened. Multilingual eligibility remains model-dependent/unverified, not a guarantee.

@@ -25,10 +25,11 @@ export async function POST(req:NextRequest){
  if(Number(req.headers.get('content-length')??0)>6000)return NextResponse.json({error:'Request too large'},{status:413});
  const body=await req.json().catch(()=>null);
  try{
+  if(body?.action==='feedback'){const d=z.object({token:tokenSchema,id:z.string().uuid(),feedback:z.union([z.literal(1),z.literal(-1)])}).parse(body);const {data,error}=await publicClient().rpc('support_rate_knowledge',{p_hash:hash(d.token),p_id:d.id,p_feedback:d.feedback});if(error||!data)throw Error('Feedback unavailable.');return NextResponse.json({note:'Feedback recorded.'});}
   if(body?.action==='answer'){
    const d=z.object({token:tokenSchema,question:z.string().trim().min(3).max(500)}).parse(body);safeKnowledge(d.question);
    if(!allowRequest(hash(d.token)))return NextResponse.json({error:'Please wait a minute.'},{status:429});
-   const capability=await publicClient().rpc('support_case_view',{p_hash:hash(d.token)});if(capability.error||!capability.data)throw Error('Invalid or expired demo link.');const vector=await embedKnowledge(d.question,true);const {data,error}=await publicClient().rpc('support_knowledge_vectors',{p_hash:hash(d.token),p_embedding:vector});if(error)throw Error('Knowledge unavailable. Ask a person to review.');return NextResponse.json(await answerKnowledge(d.question,data??[]),{headers:{'Cache-Control':'no-store'}});
+   const capability=await publicClient().rpc('support_case_view',{p_hash:hash(d.token)});if(capability.error||!capability.data)throw Error('Invalid or expired demo link.');const vector=await embedKnowledge(d.question,true);const {data,error}=await publicClient().rpc('support_knowledge_vectors',{p_hash:hash(d.token),p_embedding:vector});if(error)throw Error('Knowledge unavailable. Ask a person to review.');const answer=await answerKnowledge(d.question,data??[]);const logged=await publicClient().rpc('support_log_knowledge',{p_hash:hash(d.token),p_question:d.question,p_supported:answer.supported,p_count:answer.sources.length});if(logged.error)throw Error('Could not record demo question. Ask a person to review.');return NextResponse.json({...answer,interactionId:logged.data},{headers:{'Cache-Control':'no-store'}});
   }
   if(body?.action==='request'){
    const d=z.object({token:tokenSchema,kind:z.enum(['refund_request','receipt_request','billing_question','human_handoff','lead_callback']),message:z.string().trim().min(5).max(1000),email:z.string().email().max(254).optional(),consent:z.boolean().default(false)}).parse(body);

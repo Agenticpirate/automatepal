@@ -13,3 +13,9 @@ One real fixture pipeline passed embedding -> tenant pgvector RPC (similarity0.8
 Not yet implemented: PDF parsing, feedback/history/analytics, calibrated multilingual retrieval, production abuse limits/retention, verified cross-tenant browser test, real merchant billing linkage. The knowledge surface remains a preview; hosted acceptance is the next gate.
 
 Provider references: https://ai.google.dev/gemini-api/docs/embeddings and https://ai.google.dev/gemini-api/docs/pricing . The free API tier may use submitted content to improve Google products. Do not ingest private customer content in this preview.
+
+## Analytics work in progress
+
+Local-only next change logs questions, supported/unanswered flag and source count against a case, with up/down feedback. Owner RLS restricts analytics; public feedback requires the same valid case capability. A case can record up to20 questions. Owner view loads the most recent1000 rows, explicitly not all-time totals, and exports unanswered CSV. This still needs hosted acceptance. Questions must remain fictional/public and the customer panel discloses storage and Gemini processing.
+
+CSV export prefixes formula-leading cells to avoid spreadsheet formula execution. Analytics are recorded demo interactions, not independently verified model quality metrics. The public feedback/logging RPC is capability-scoped, so a holder can submit demo feedback; no anti-fraud claim is made.

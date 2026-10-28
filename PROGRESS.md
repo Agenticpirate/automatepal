@@ -10,3 +10,9 @@ Owner guidance type with relevance, applicability, effective dates, conservative
 
 ## Current verification
 Local gates and live verification are recorded per subsequent update. Remote/deployment state must be rechecked before claiming completion.
+
+## 12:04 IST update
+- fd7a3be pushed, Render deploy dep-dbgpdqnb9u1s738uidjg. General-support copy verified live at /support, screenshot inspected.
+- Migration 021 applied additively; scripts/verify-guidance-db.ts passed rollback-only metadata/private/capability/validation tests. 022 NOT applied: revoke old wrapper only after new app path acceptance.
+- Owner-guidance source form, current UTC date window, separately ranked semantic candidates, applicability/conflict check before answer, note-only generation when applicable. Website text remains for unrelated questions. Conservative fallback if unclear/stale/conflict/provider error. Local gates passed.
+- Gemini sandbox use approval pending for measured model eval. Do not bypass it by extracting hosted secrets. scripts/eval-owner-guidance.ts has 9 cases awaiting execution.

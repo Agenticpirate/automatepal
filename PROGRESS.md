@@ -91,3 +91,8 @@ Local gates and live verification are recorded per subsequent update. Remote/dep
 - Local auth-outage fail-closed, bounded rate map, streamed caps for chat/actions/Proof, global headers, metadata-only logs, /status, audit/deletion UI prepared. Full npm audit 0 known advisories.
 - Synthetic two-principal DB role checks and typed-confirmation deletion/foreign survival passed. Independent second-browser full workflow remains unverified. Backup/restore not done; source docs/free-tier limitations in HARDENING.md.
 - Before commit/deploy: inspect final mobile controls and status pixels; run safety/build/widget/billing/webhook; then verify hosted headers/release/payment OFF and unauthenticated audit endpoint. No destructive live deletion test on owner data.
+
+## 13:09 IST deployment checkpoint
+- c8b6e24 pushed and deploying since13:07. DB migration030 adds action-row locking before deletion checks and is already applied, plus028-029. Code differences after c8b6e24 are tests/docs/SQL only.
+- Render billing live check: Hobby, no card, $0 month-to-date/projected,24/500 build minutes,4.8/750hours,14MB/5GB. No spend route added.
+- DB checks expanded with populated fixture billing event/widget/custom response and running-action refusal. All rollback, no synthetic users retained.

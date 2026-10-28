@@ -1,40 +1,40 @@
-# AutomatePal implementation checklist
+# AutomatePal feature matrix
 
-Status as of 2026-10-28. This is a build checklist, not a promise of parity or production readiness. "Hosted preview" means a bounded fictional/sandbox workflow has been checked. It does not mean ready for real merchants. SiteGPT was reviewed for behavior ideas only; no source, assets or branding were copied.
+Updated 2026-10-28. "Hosted preview" means a bounded fictional/sandbox feature is deployed, not ready for real merchants. No parity, certification, legal escrow or zero-error claim. SiteGPT public docs informed behavior, not copied assets or code.
 
-## Hosted previews
-- Owner Google login; owner-only shared PayPal sandbox tools; persisted exact review/confirm for money-moving proposals. No live-money mode.
-- Fictional billing help panel and owner review queue. Submission/review does not issue a refund or email.
-- Widget script tag, Shadow DOM isolation, lazy iframe, left/right positioning and session open/closed persistence. Persistence currently has local browser test evidence, not every third-party website.
-- Tenant label, monogram, accent and four plain-text quick prompts. No image-logo or arbitrary-script setting.
-- Optional contact email with explicit consent and human-review request.
-- Text/TXT/MD knowledge and bounded browser-only text PDF extraction. No OCR. Review before processing/publication; separate consent switches default off.
-- Tenant/published-source pgvector retrieval, exact supporting quotes, validated source IDs, secondary grounding check, fallback. English temporal-anchor rejection is a limited extra guard.
-- Custom Q&A prepares a regular source for review. It is not yet a separately ranked override store.
-- Atomic source edits with revision conflict detection, retained previous source on failed save and renewed processing/publication choice.
-- Source count and character-based page units; 30 sources/360 units per owner. Each unit is 2500 stored characters rounded up per source. Not a commercial plan entitlement.
-- Persistent question reservation before model calls: 20/case and100/tenant/database-UTC-day. Failures consume slots. Limited demo budgets, not production bot protection.
-- Recent1000-question analytics, feedback and unanswered list. Formula-safe CSV export has local browser test evidence; hosted download acceptance remains unverified.
-- Proof-to-Pay public GitHub evidence preview, owner read-only reconciliation for known recorded provider IDs, evidence export. Shared unauthenticated GitHub rate limits can block reads; dedicated public-read token remains pending. Payment execution disabled.
-- User-input USD tax arithmetic worksheet and CSV. No jurisdiction selection, tax advice, filing or official tax rates.
+| Capability | State | Evidence and limits |
+| --- | --- | --- |
+| Google sign-in and private owner workspace | Hosted preview | Owner sign-in checked; independent second-user acceptance still required. |
+| Guided knowledge / look / test / script setup | Hosted preview | One-hour fictional demo links, not permanent customer identity. No card. |
+| TXT/MD and small text-PDF import | Hosted preview | Local PDF extraction/review, 2 MB / 10 pages; no OCR or crawling. |
+| Source edits, deletion, attempt history, quota | Hosted preview | Atomic revision-checked replacement, renewal of processing/publication consent, 30 sources / 360 character-based page units. Existing copies cannot be recalled. |
+| Source-grounded general support answers | Hosted preview | Tenant pgvector threshold 0.72, exact quotes, source IDs, independent model grounding, conservative fallback. Small prior retrieval run 10/13; earlier 8/13. Not a statistical error rate. |
+| Concise answer-first style | Hosted preview | Usually 1-3 short sentences, no preamble, 700-character ordinary / 1600-character how-to guard. Full required steps take priority; failed style returns fallback rather than ungrounded truncation. |
+| Exact owner custom responses | Hosted preview | Separately stored, exact normalized question match, verbatim answer. Not model-verified, fuzzy matching or fine-tuning. |
+| Owner examples and exceptions | Hosted preview, limited acceptance | First-class owner guidance with applicability and inclusive UTC effective dates, separate relevance retrieval, applicability/conflict/stale checks before answering. Private/publish-off defaults. One hosted 25-seat override and unrelated CSV case passed; full nine-case model suite pending secure local provider access. |
+| Branding, prompts, widget controls | Hosted preview | Label, monogram, color, starters, side, auto-open, hide order/contact/quotes, exact HTTPS origins, excluded paths/subtrees. Origin/path rules are display controls, not authentication for link holders. No image logos/arbitrary HTML. |
+| Lazy embed and navigation state | Hosted preview | Shadow DOM and lazy iframe, tab session open/closed state; isolated browser tests pass, universal site compatibility not claimed. |
+| Abuse budget and extraction refusal | Hosted preview | 20 answer attempts/case, 100/tenant/UTC day persisted before provider calls; refused questions consume slots. 500-character counter; process rate guard not distributed protection. |
+| Leads and human review | Hosted preview | Optional fictional email requires consent, owner review queue, no automatic email. |
+| Handoff inbox | Hosted preview | Open/attention/taken-over/closed, take over/release/resolve. DB tests verify paused reservations and in-flight answer suppression. No live human reply channel. |
+| Feedback / unanswered / CSV | Hosted preview | Up/down, recent question metadata and formula-safe unanswered CSV. Not independently verified model-quality metrics. |
+| Scoped read-only API | Hosted preview | Hashed bearer tokens, max 5 active, 1-168 hour expiry, revocation, support/analytics scopes, latest 100 metadata rows. No messages/contacts/source text/payment access. DB scope/revocation tests pass; UI deployed, full external client acceptance pending. |
+| Signed opt-in webhooks | Manual-delivery preview | HMAC-SHA256 timestamp+raw-body, stable event IDs, metadata only, 3 attempts with 1/5-minute due times. Fresh public IPv4 resolution pinned to TLS, no redirects, size/time bounds. Local/DB tests pass. No external receiver acceptance or always-on worker; delivery requires owner action. |
+| Fictional billing order card | Hosted preview | Labelled USD fictional fixture; not a live merchant account/order lookup. |
+| Proof-to-Pay evidence and reconciliation | Hosted preview | Public GitHub evidence, pinned SHA/checks, fail-closed truncation, known recorded sandbox IDs only. Dedicated public-read token pending. Payment execution OFF. Not escrow. |
+| Tax estimate worksheet / CSV | Hosted preview | User-entered USD amounts/rate only. No jurisdiction rules, official rate, tax advice, filing or invoice claim. |
 
-## Knowledge core next
-- Persist ingestion attempts/status, including failed/limit/stale-unconfirmed states: hosted success/refresh acceptance passed; failure/limit/isolation paths have rollback DB test evidence. Source editing is live; background jobs are not.
-- Separate exact raw-question custom responses: hosted fictional acceptance passed. Case/whitespace normalization only, not fuzzy semantic matching.
-- Bounded recent-conversation query rewrite with evidence-preserving retrieval and explicit isolation tests.
-- Improve answerable recall and measure it without weakening unsupported-answer fallback. Latest13case synthetic run10/13 expected outcomes; earlier8/13. Not a statistical error rate.
-- Sitemap/list-of-links import and manual resync, after SSRF, redirect, robots/permission, content-size and source-diff controls. No crawler currently enabled.
-- DOCX extraction only after parser/resource/security review. YouTube transcripts optional, not enabled.
+## Still planned within the build window, not complete
 
-## Product work not built
-- Named instruction sets/personas, creativity controls, configurable fallback, follow-ups, moderation settings, page-context API and modify-answer workflow.
-- Domain allowlist/excluded pages; inline embed; broader appearance/font/avatar/dark/size settings; auto-open, UI translations, RTL, legal consent and disclaimer controls.
-- Triggered/custom lead forms; lead management/search/CSV/booking link; email and webhook notifications.
-- Working-hours/chat modes, agent takeover/release, tags, important/rename/resolve and conversation export.
-- Real conversation/visitor funnel and dated deltas, unanswered clustering and full history search.
-- Signed/retried webhooks, scoped expiring API tokens, REST subset, SDK commands/HMAC visitor identity and tracking events.
-- Team roles/invites and visitor/lead/conversation retention/deletion tools. Current source deletion removes linked attempt metadata and cascades chunks, invalidating pending saves. Previously viewed/exported answers, analytics and provider copies cannot be recalled.
-- Authenticated merchant PayPal onboarding and actual per-merchant read-only order/refund/invoice lookup. Current widget uses fictional cases; the owner sandbox toolset is separate.
+- Read-only sandbox billing card improvements and narrower hosted acceptance.
+- Full repeated versioned eval including owner-note conflict/stale/unrelated, multilingual, injection and style, plus independent testers.
+- Negative-feedback "fix this answer" to reviewed Q&A; existing unanswered-to-Q&A is available.
+- External read-only API client and approved webhook receiver acceptance. No receiver is contacted without owner opt-in.
 
 ## Roadmap only
-Slack, WhatsApp, Messenger, Google Chat, helpdesk integrations, native AI email inbox, cloud OAuth content connectors, mobile apps, MCP/CLI/A2A, typed SDKs and compliance programs. No HIPAA/SOC2/GDPR certification claim, HIPAA mode, legal escrow, enterprise-ready or zero-hallucination claim.
+
+Website scale crawling, sitemap import, OAuth cloud connectors, Slack/WhatsApp/Messenger/Zendesk/Crisp and other helpdesk connectors, iOS app, MCP/CLI/typed SDKs, teams/roles, full history search/export, automatic webhook worker, real merchant onboarding and live payments. No SOC2/HIPAA/GDPR certification, enterprise-ready, zero-hallucination, legal escrow or uniqueness claim.
+
+## Schedule
+
+Feature freeze Nov 4. Nov 4-11 testing/fixes only. Nov 11-12 demo/submission artifacts and buffer. Any unfinished build item at freeze becomes roadmap. Submission target remains subject to owner approval.

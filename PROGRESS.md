@@ -32,3 +32,9 @@ Local gates and live verification are recorded per subsequent update. Remote/dep
 - Four independent one-hour tester links sent privately to coordinator at 12:12-12:13 IST. 20 answers/case, 100/tenant/day budget, cap 8-10/tester to leave diagnostics headroom. No tester owner account.
 - Migration 025 read-only token API applied. Scope-specific metadata-only outputs, hashed storage, max five active, max seven days, revocation. rollback DB tests passed. Mobile settings screenshot inspected with no token value. Full lint/build passed.
 - Next: hosted API acceptance and publish features matrix; signed webhook path still pending and must stay labelled not enabled until SSRF/retry/signature acceptance.
+
+## 12:20 IST update
+- Two hosted answer smoke cases passed: student seats -> 25 with Owner guidance label; unrelated report format -> CSV with reference corpus only. Screenshots inspected. These are two observations, not full nine-case acceptance.
+- Migration 026 applied, webhook queue and manual delivery implementation complete locally. URL/IP/HMAC and rollback DB claims/backoff/stable-ID/stale-attempt tests pass, no external sends. Manual delivery only; no automatic worker. UI inspected mobile, no key shown.
+- Read-only API dc08132 deployed; settings visible and screenshot inspected. No token created through hosted UI yet. Tokens should never be printed in trace/screenshots/chat.
+- FEATURES.md refreshed to separate hosted previews, measured acceptance limits and roadmap, including manually driven webhook limitations.

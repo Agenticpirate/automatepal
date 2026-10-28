@@ -1,3 +1,4 @@
+import { validOrigin } from "../../../lib/origin";
 import { NextRequest,NextResponse } from 'next/server';
 import { authenticate,requestContext } from '../../../lib/session';
 import { runTool } from '../../../lib/agent';
@@ -10,7 +11,7 @@ export async function GET(req:NextRequest) {
 }
 export async function POST(req:NextRequest) {
  const ctx=await authenticate(req); if(!ctx)return NextResponse.json({error:'Please sign in.'},{status:401});
- const origin=req.headers.get('origin');if(origin&&origin!==req.nextUrl.origin)return NextResponse.json({error:'Invalid origin'},{status:403});
+ if(!validOrigin(req))return NextResponse.json({error:'Invalid origin'},{status:403});
  const parsed=schema.safeParse(await req.json().catch(()=>null));if(!parsed.success)return NextResponse.json({error:'Invalid action.'},{status:400});
  const {id,decision}=parsed.data;
  // Compare-and-set prevents double clicks and concurrent requests executing twice.

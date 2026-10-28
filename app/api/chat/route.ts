@@ -1,3 +1,4 @@
+import { validOrigin } from "../../../lib/origin";
 import { NextRequest, NextResponse } from "next/server";
 import { allowRequest } from "../../../lib/rate-limit";
 import { z } from "zod";
@@ -12,8 +13,7 @@ export async function POST(req: NextRequest) {
   const session = await authenticate(req);
   if (!session) return NextResponse.json({ error: "Please sign in." }, { status: 401 });
   if (!allowRequest(session.userId)) return NextResponse.json({error:"Please wait a minute before sending more messages."},{status:429});
-  const origin = req.headers.get("origin");
-  if (origin && origin !== req.nextUrl.origin) return NextResponse.json({ error: "Invalid origin" }, { status: 403 });
+  if (!validOrigin(req)) return NextResponse.json({ error: "Invalid origin" }, { status: 403 });
   let body;
   try { body = input.parse(await req.json()); }
   catch { return NextResponse.json({ error: "Enter a message of up to 4000 characters." }, { status: 400 }); }

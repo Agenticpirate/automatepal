@@ -149,3 +149,13 @@ Local gates and live verification are recorded per subsequent update. Remote/dep
 - Main has desktop/mobile light/dark and populated owner screenshots for Ravi review. HOLD final design deploy until main returns approval/feedback. Current hosted app remains65e45d8, paymentsOFF. Theme foundation commitd14d166 is pushed but NOT deployed. Latest design is a reversible local draft pending review.
 - Theme, landing, populated ticket/owner UI tests passed. Four surfaces at390/1280, public1440. Populated widget fixture added for light/dark checks. Main foreground/muted/link contrast checked; full accessibility audit not claimed. Need final regression/build after review edits and hosted pixels after approved deploy.
 - Next requested queue: metadata-only structured error log + owner view + scoped machine summary; safe known-class remediation + runbook. Do not request notification credentials or build transport; owner deferred Telegram/email until readiness. Logs/remediation not implemented yet.
+
+### 2026-10-28 18:23 IST: approved design live
+- Ravi approved design via main at18:18; full gate then Render deploy. Exact public release50da543a82f8, payment execution false. Actual hosted desktop/mobile light/dark inspected. Theme toggles work; browser released. Rollback65e45d8, additive038 stays.
+- Design references and interaction remain original/fictional. No generic autoplay effect; no provider or external network effect from landing specimen.
+
+### 2026-10-28 18:28 IST: operations local gate, not yet hosted
+- Metadata-only operations table/RLS/RPC, owner view with filters, scoped24-hour health aggregates, explicit health:read token. Seven-day visibility, lazy cleanup and500-row cap. Best effort, not complete capture or uptime proof.
+- One proven-safe transient ticket-list DB connection/capacity read retry after250ms, before/after codes. No automatic write/provider/claim/deploy recovery. See OPERATIONS.md for known-code runbook and agent-assisted repair gate.
+- Local lint/build/full regressions and operations UI/rollback SQL tests passed. Synthetic two-principal RLS, wrong/revoked scope, enum rejection, duplicate event no-op, retention and explicit owner deletion verified. No real data deleted. Actual fixture pixels inspected desktop/mobile light/dark, fail-closed stale view verified.
+- Hosted acceptance pending. Migration039-040 not yet applied at this checkpoint. Rollback design release50da543; additive logs/schema can remain. Main must not start a scoped watcher until authorized token provisioning is complete. No token generated; no secret in repo or chat.

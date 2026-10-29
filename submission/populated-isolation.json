@@ -1,0 +1,6 @@
+{
+  "checkedAt": "2026-10-29T04:17:12.054Z",
+  "checks": 62,
+  "passed": true,
+  "scope": "Populated synthetic SQL-role/RLS and RPC isolation. No independent browser/Auth session or model/restore assurance. All fixture rows and identities rolled back."
+}

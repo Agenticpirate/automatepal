@@ -74,3 +74,8 @@ Feature freeze Nov 4. Nov 4-11 testing/fixes only. Nov 11-12 demo/submission art
 
 | Operational error logs / health | Hosted preview | Metadata-only instrumented ticket/owner/alert errors, owner view/filter, latest 200/7-day visibility and 500 retained. Explicit health:read token, bounded 24-hour summary; best-effort logs, not uptime/model health. |
 | Safe automatic recovery | Hosted preview | Ticket-list transient DB connection/capacity errors only: one 250ms retry with before/after metadata. No automatic writes, provider sends, claim repair, rollback, money, secrets or permission changes. |
+
+### PayPal sandbox plan evidence
+- Hosted preview `/sandbox-catalog`, owner-only live PayPal sandbox product/plan GETs and validated selected plan pricing/frequency. First20 each only. No customer/subscriber/transaction data and no create/capture/refund. Active plan is not a subscription or revenue.
+- Per-question fictional plan disclosure consent, fresh plan read, Gemini answer plus separate grounding and exact quotes;10 attempts/owner/UTC day persisted, failures count. Transaction/customer eligibility questions refused. One hosted USD12/month answer passed with exact plan evidence on released6054cf, not an accuracy/eligibility guarantee.
+- Owner-only credentials are not public judge access. Own-key self-host instructions are documented; fully isolated setup and independent visitor acceptance still pending.

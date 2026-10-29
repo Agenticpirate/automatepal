@@ -1,4 +1,4 @@
-# Sandbox pricing proposal - pending owner decision
+# Approved sandbox pricing - October 29, 2026
 
 Verified official SiteGPT pricing https://sitegpt.ai/pricing on2026-10-29 09:10 IST. Prices below are USD as displayed. These calculations do not imply feature parity, equivalent capacity, enterprise service or a commercial checkout offer.
 
@@ -16,3 +16,6 @@ SiteGPT's current self-serve trial is7 days free, card required/cancel before en
 ## Existing approved monthly test plan
 
 PlanP-6469698482657923LNLRMAAQ, productPROD-7XY32282JR657902U, CREATED, oneUSD1/3DAY trial thenUSD19/MONTH. Created/GET-verified before the later50%-of-SiteGPT instruction arrived. CREATED is not subscribable. ExistingUSD12 plans unchanged. No payment/subscription/order/refund/capture created. Keep this inert record until owner decides its relationship to revised prices. Evidence in sandbox-monthly-plan-evidence.json. Hosted read-page pixel acceptance for this new plan remains pending; earlierUSD12 live flow was accepted separately.
+
+## Approved and implemented
+Original Go ahead on2026-10-29 09:13 IST accepted all six exact prices and sharedUSD1/3-day trial. Six separate CREATED plans direct-GET verified, evidence in sandbox-tier-plan-evidence.json. All six details then inspected on hosted owner page, including Scale annual after app minute-throttle reset. No subscription/order/capture/refund. Old19/12 records retained. Pricing route commit5113272 lint/build/safety passed; manual deploy started09:20:36, hosted pricing pixels pending. Earlier proposal language above is historical, not an unresolved tier decision.

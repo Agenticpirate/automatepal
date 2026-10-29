@@ -1,0 +1,92 @@
+{
+  "checkedAt": "2026-10-29T04:10:33.010Z",
+  "results": [
+    {
+      "path": "/",
+      "status": 200,
+      "title": "AutomatePal - source-backed support preview",
+      "description": "Explore source-backed answers, owner-reviewed service desk workflows and PayPal sandbox plan evidence. Fictional-data preview. No live payments.",
+      "canonical": "https://automatepal.onrender.com/",
+      "og": "https://automatepal.onrender.com/opengraph-image?9e7aa7cba771028c",
+      "twitter": "summary_large_image",
+      "h1": 1,
+      "robotsHeader": null
+    },
+    {
+      "path": "/pricing",
+      "status": 200,
+      "title": "Sandbox demo pricing | AutomatePal",
+      "description": "Compare fictional Starter, Growth and Scale monthly or annual plans with a $1 three-day trial. Local preview only, no checkout or live charges.",
+      "canonical": "https://automatepal.onrender.com/pricing",
+      "og": "https://automatepal.onrender.com/opengraph-image",
+      "twitter": "summary_large_image",
+      "h1": 1,
+      "robotsHeader": null
+    },
+    {
+      "path": "/privacy",
+      "status": 200,
+      "title": "Beta privacy notice | AutomatePal",
+      "description": "How the fictional-data AutomatePal preview uses sign-in, sources, AI processing and bounded deletion controls.",
+      "canonical": "https://automatepal.onrender.com/privacy",
+      "og": "https://automatepal.onrender.com/opengraph-image",
+      "twitter": "summary_large_image",
+      "h1": 1,
+      "robotsHeader": null
+    },
+    {
+      "path": "/terms",
+      "status": 200,
+      "title": "Sandbox beta terms | AutomatePal",
+      "description": "Evaluation boundaries for AutomatePal: fictional data only, no live payments or production suitability promise.",
+      "canonical": "https://automatepal.onrender.com/terms",
+      "og": "https://automatepal.onrender.com/opengraph-image",
+      "twitter": "summary_large_image",
+      "h1": 1,
+      "robotsHeader": null
+    },
+    {
+      "path": "/status",
+      "status": 200,
+      "title": "Preview status | AutomatePal",
+      "description": "AutomatePal preview status and limitations. Not an uptime or provider-health guarantee.",
+      "canonical": "https://automatepal.onrender.com/status",
+      "og": "https://automatepal.onrender.com/opengraph-image",
+      "twitter": "summary_large_image",
+      "h1": 1,
+      "robotsHeader": null
+    },
+    {
+      "path": "/login",
+      "status": 200,
+      "title": "Sign in | AutomatePal",
+      "description": "Sign in to your private AutomatePal fictional-data workspace.",
+      "canonical": "https://automatepal.onrender.com/login",
+      "og": "https://automatepal.onrender.com/opengraph-image",
+      "twitter": "summary_large_image",
+      "h1": 1,
+      "robotsHeader": "noindex, nofollow"
+    },
+    {
+      "path": "/help",
+      "status": 200,
+      "title": "AutomatePal - source-backed support preview",
+      "description": "Explore source-backed answers, owner-reviewed service desk workflows and PayPal sandbox plan evidence. Fictional-data preview. No live payments.",
+      "canonical": "https://automatepal.onrender.com/",
+      "og": "https://automatepal.onrender.com/opengraph-image",
+      "twitter": "summary_large_image",
+      "h1": 1,
+      "robotsHeader": "noindex, nofollow"
+    }
+  ],
+  "sitemap": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n<url>\n<loc>https://automatepal.onrender.com</loc>\n</url>\n<url>\n<loc>https://automatepal.onrender.com/pricing</loc>\n</url>\n<url>\n<loc>https://automatepal.onrender.com/privacy</loc>\n</url>\n<url>\n<loc>https://automatepal.onrender.com/terms</loc>\n</url>\n<url>\n<loc>https://automatepal.onrender.com/status</loc>\n</url>\n</urlset>\n",
+  "robots": "User-Agent: *\nAllow: /\nDisallow: /api/\n\nSitemap: https://automatepal.onrender.com/sitemap.xml\n",
+  "structuredData": {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "AutomatePal",
+    "url": "https://automatepal.onrender.com/",
+    "description": "Source-backed support and owner-reviewed service desk. Fictional-data preview, no live payments."
+  },
+  "limits": "No live ranking, real-user Core Web Vitals or full accessibility audit."
+}

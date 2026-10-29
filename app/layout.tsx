@@ -13,8 +13,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AutomatePal - AI billing copilot",
-  description: "AI billing and revenue copilot for indie founders, built with the PayPal developer platform and Gemini.",
+ metadataBase:new URL('https://automatepal.onrender.com'),
+ title:{default:'AutomatePal - source-backed support preview',template:'%s | AutomatePal'},
+ description:'Explore source-backed answers, owner-reviewed service desk workflows and PayPal sandbox plan evidence. Fictional-data preview. No live payments.',
+ alternates:{canonical:'/'},
+ openGraph:{type:'website',siteName:'AutomatePal',url:'/',title:'AutomatePal - support with a clear next step',description:'Source-backed answers and owner review. Fictional-data preview, no live payments.',images:[{url:'/opengraph-image',width:1200,height:630,alt:'AutomatePal: source-backed answers, owner review, fictional-data preview'}]},
+ twitter:{card:'summary_large_image',title:'AutomatePal - source-backed support preview',description:'Source-backed answers and owner review. Fictional-data preview, no live payments.',images:['/opengraph-image']},
+ robots:{index:true,follow:true},
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

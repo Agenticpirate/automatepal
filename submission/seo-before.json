@@ -1,0 +1,70 @@
+[
+  {
+    "path": "/",
+    "status": 200,
+    "seconds": 0.128,
+    "htmlBytes": 12934,
+    "title": [
+      "AutomatePal - AI billing copilot"
+    ],
+    "canonical": [],
+    "description": [
+      "<meta name=\"description\" content=\"AI billing and revenue copilot for indie founders, built with the PayPal developer platform and Gemini.\"/>"
+    ],
+    "robotsHeader": null,
+    "h1count": 1
+  },
+  {
+    "path": "/pricing",
+    "status": 200,
+    "seconds": 0.137,
+    "htmlBytes": 12580,
+    "title": [
+      "AutomatePal - AI billing copilot"
+    ],
+    "canonical": [],
+    "description": [
+      "<meta name=\"description\" content=\"AI billing and revenue copilot for indie founders, built with the PayPal developer platform and Gemini.\"/>"
+    ],
+    "robotsHeader": null,
+    "h1count": 1
+  },
+  {
+    "path": "/robots.txt",
+    "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "path": "/sitemap.xml",
+    "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "path": "/login",
+    "status": 200,
+    "seconds": 0.065,
+    "htmlBytes": 9365,
+    "title": [
+      "AutomatePal - AI billing copilot"
+    ],
+    "canonical": [],
+    "description": [
+      "<meta name=\"description\" content=\"AI billing and revenue copilot for indie founders, built with the PayPal developer platform and Gemini.\"/>"
+    ],
+    "robotsHeader": null,
+    "h1count": 1
+  },
+  {
+    "path": "/help",
+    "status": 200,
+    "seconds": 0.102,
+    "htmlBytes": 8680,
+    "title": [
+      "AutomatePal - AI billing copilot"
+    ],
+    "canonical": [],
+    "description": [
+      "<meta name=\"description\" content=\"AI billing and revenue copilot for indie founders, built with the PayPal developer platform and Gemini.\"/>"
+    ],
+    "robotsHeader": "noindex, nofollow",
+    "h1count": 1
+  }
+]

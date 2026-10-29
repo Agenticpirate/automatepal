@@ -51,6 +51,7 @@ async function api<T = unknown>(method: string, path: string, body?: unknown): P
 export const createProduct = (p: unknown) => api("POST", "/v1/catalogs/products", p);
 export const listProducts = () => api("GET", "/v1/catalogs/products?page_size=20");
 export const createPlan = (p: unknown) => api("POST", "/v1/billing/plans", p);
+export const getPlan = (id:string) => {if(!/^P-[A-Z0-9]{1,58}$/.test(id))throw Error("Invalid plan ID");return api("GET", `/v1/billing/plans/${id}`);};
 export const listPlans = () => api("GET", "/v1/billing/plans?page_size=20");
 
 // ---- Subscriptions ----

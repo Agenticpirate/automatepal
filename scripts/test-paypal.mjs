@@ -1,16 +1,7 @@
-// Smoke test: OAuth token + list products against the PayPal sandbox.
+// Read-only sandbox smoke. Never logs credentials, token, raw provider errors or names.
 // Usage: node --env-file=.env scripts/test-paypal.mjs
-const BASE = process.env.PAYPAL_API_BASE ?? "https://api-m.sandbox.paypal.com";
-const id = process.env.PAYPAL_CLIENT_ID, secret = process.env.PAYPAL_CLIENT_SECRET;
-if (!id || !secret) { console.error("missing PAYPAL_CLIENT_ID/SECRET in .env"); process.exit(1); }
-const tok = await fetch(`${BASE}/v1/oauth2/token`, {
-  method: "POST",
-  headers: { Authorization: "Basic " + Buffer.from(`${id}:${secret}`).toString("base64"),
-    "Content-Type": "application/x-www-form-urlencoded" },
-  body: "grant_type=client_credentials",
-}).then(r => r.json());
-if (!tok.access_token) { console.error("AUTH FAILED", tok); process.exit(1); }
-console.log("oauth ok, token expires in", tok.expires_in, "s");
-const products = await fetch(`${BASE}/v1/catalogs/products?page_size=5`, {
-  headers: { Authorization: `Bearer ${tok.access_token}` } }).then(r => r.json());
-console.log("products:", (products.products ?? []).map(p => `${p.id} ${p.name}`));
+const BASE=process.env.PAYPAL_API_BASE??'https://api-m.sandbox.paypal.com';
+if(BASE!=='https://api-m.sandbox.paypal.com')throw Error('Only the fixed PayPal sandbox host is allowed');
+const id=process.env.PAYPAL_CLIENT_ID,secret=process.env.PAYPAL_CLIENT_SECRET;
+if(!id||!secret){console.error('Missing sandbox credentials in private environment');process.exit(1);}
+try{const auth=await fetch(BASE+'/v1/oauth2/token',{method:'POST',redirect:'error',signal:AbortSignal.timeout(20000),headers:{Authorization:'Basic '+Buffer.from(id+':'+secret).toString('base64'),'Content-Type':'application/x-www-form-urlencoded'},body:'grant_type=client_credentials'});if(!auth.ok)throw Error('OAuth unavailable: HTTP'+auth.status);const tok=await auth.json();if(typeof tok.access_token!=='string')throw Error('OAuth unavailable');const r=await fetch(BASE+'/v1/catalogs/products?page_size=5',{redirect:'error',signal:AbortSignal.timeout(20000),headers:{Authorization:'Bearer '+tok.access_token}});if(!r.ok)throw Error('Catalog read unavailable: HTTP'+r.status);const d=await r.json();if(!Array.isArray(d.products)||d.products.length>5)throw Error('Unsupported catalog shape');console.log(JSON.stringify({environment:'sandbox',oauth:true,catalog:true,productCount:d.products.length,limit:5,paymentExecution:false}));}catch(e){console.error(e instanceof Error?e.message:'Sandbox read unavailable');process.exitCode=1;}

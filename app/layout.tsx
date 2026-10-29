@@ -20,6 +20,7 @@ export const metadata: Metadata = {
  openGraph:{type:'website',siteName:'AutomatePal',url:'/',title:'AutomatePal - support with a clear next step',description:'Source-backed answers and owner review. Fictional-data preview, no live payments.',images:[{url:'/opengraph-image',width:1200,height:630,alt:'AutomatePal: source-backed answers, owner review, fictional-data preview'}]},
  twitter:{card:'summary_large_image',title:'AutomatePal - source-backed support preview',description:'Source-backed answers and owner review. Fictional-data preview, no live payments.',images:['/opengraph-image']},
  robots:{index:true,follow:true},
+ icons:{icon:[{url:'/icon.svg',type:'image/svg+xml'},{url:'/favicon.ico',sizes:'any'}]},
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

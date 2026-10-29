@@ -11,3 +11,5 @@ Local tests: seven route metadata/social/h1 and private headers; five public sit
 Sources read: https://developers.google.com/search/docs/crawling-indexing/robots/intro ; https://developers.google.com/search/docs/crawling-indexing/sitemaps/overview ; https://developers.google.com/search/docs/appearance/structured-data/software-app . Google expressly says robots is not privacy/indexing protection and sitemap does not guarantee indexing. Pending hosted acceptance after manual deploy.
 
 Hosted acceptance: release09726f7bcdf5 verified on2026-10-29. Seven route checks, five public sitemap URLs, robots, parsed WebSite JSON and actual social/mobile pixels passed. See submission/seo-hosted-after.json. Payment execution remains disabled. No rankings or field performance score measured.
+
+Brand asset revision: owner-selected M1-refined infinity/spark mark replaces the public header tile and OG image mark. F-favicon variant supplied for SVG/ICO. Exact source assets retained; teal remains a placeholder and no trademark search/registration is claimed. No metadata/legal/feature assurance expanded.

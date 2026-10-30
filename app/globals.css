@@ -61,7 +61,7 @@ html[data-theme=dark] .desk-widget:has(.ap-public)>.desk-topbar{background:#041A
 html[data-theme=dark] .ap-public .ap-solid:hover{background:var(--ap-pink);color:var(--ap-navy)}
 .ap-hero-wrap .ap-text-link{color:#fff;border-bottom-color:rgba(255,255,255,.45)}
 /* Specimen: white morphism card with brutal border + hard shadow, slight tilt */
-.ap-specimen-window{background:#fff;border:3px solid var(--ap-navy);border-radius:20px;box-shadow:10px 10px 0 rgba(4,26,82,.85);transform:rotate(.6deg)}
+.ap-specimen-window{background:#fff;border:3px solid var(--ap-navy);border-radius:20px;box-shadow:10px 10px 0 rgba(4,26,82,.85)}
 html[data-theme=dark] .ap-specimen-window{background:#fff;border-color:var(--ap-navy);box-shadow:10px 10px 0 rgba(4,26,82,.85)}
 .ap-demo-top{border-bottom:2px solid #E3E9F7}
 .ap-demo-top strong,.ap-demo-welcome{color:var(--ap-ink)}
@@ -167,3 +167,27 @@ html[data-theme=dark] .ap-product-frame{background:#fff}
 /* Boundaries band contrast: white heading + readable intro on deep blue */
 .ap-public .ap-boundaries h2,html[data-theme=dark] .ap-public .ap-boundaries h2{color:#fff!important}
 .ap-public .ap-boundaries>div>p:last-child,html[data-theme=dark] .ap-public .ap-boundaries>div>p:last-child{color:#C7D4F2!important}
+
+/* Specimen contrast fix (parent feedback): navy ink, no tilt */
+.ap-public .ap-specimen-window .ap-demo-welcome{color:#0A1B3D!important}
+.ap-public .ap-specimen-window .ap-demo-top strong{color:#0A1B3D!important}
+
+/* Suite theme: pricing page (pass 2) */
+.desk-widget:has(.ap-suite){background:#fff}
+.desk-widget:has(.ap-suite)>.desk-topbar,html[data-theme=dark] .desk-widget:has(.ap-suite)>.desk-topbar{background:#041A52!important;border-color:rgba(255,255,255,.16)!important}
+.desk-widget:has(.ap-suite)>.desk-topbar .desk-theme{color:#C7D4F2!important}
+.desk-widget:has(.ap-suite)>.desk-topbar select{background:#09318D!important;color:#fff!important;border:1.5px solid rgba(255,255,255,.35);border-radius:9px}
+.ap-suite{color:#0A1B3D}
+.ap-suite h1,.ap-suite h2{color:#0A1B3D;letter-spacing:-1.5px}
+.ap-suite .text-gray-500{color:#4A5878}
+.ap-suite a{color:#09318D;text-decoration-color:#C9D2EA}
+.ap-suite article{background:#fff;border:2.5px solid #041A52!important;border-radius:16px;box-shadow:6px 6px 0 #C9D2EA;transition:transform .12s ease,box-shadow .12s ease}
+.ap-suite article:hover{transform:translate(-1px,-1px);box-shadow:8px 8px 0 #C9D2EA}
+.ap-suite article.ring-2{border-color:#09318D!important;box-shadow:6px 6px 0 #FD91CC;--tw-ring-color:#FD91CC}
+.ap-suite article>button,.ap-suite article button[aria-pressed]{background:#FD91CC;color:#041A52;border:2px solid #041A52;border-radius:12px;box-shadow:4px 4px 0 rgba(4,26,82,.85);font-weight:700}
+.ap-suite article>button:hover{background:#E25FAE}
+.ap-suite article>button[aria-pressed=true]{background:#09318D;color:#fff}
+.ap-suite div[role=group] button{border:2px solid #041A52;border-radius:11px;background:#fff;color:#0A1B3D;font-weight:600}
+.ap-suite div[role=group] button[aria-pressed=true]{background:#09318D;color:#fff}
+.ap-suite section[role=status]{background:#fff;border:2.5px solid #041A52!important;border-radius:16px;box-shadow:6px 6px 0 #C9D2EA}
+.ap-suite a:focus-visible,.ap-suite button:focus-visible{outline:2px solid #FD91CC;outline-offset:3px}

@@ -1,0 +1,121 @@
+/* DashShell - FlowAI-inspired workspace shell in brand palette + Convix softness + plan v5 motion.
+   HyperUI neobrutalism influence (MIT): hard chips/badges. Lucide icons (ISC). */
+.desk-widget:has(.ap-dash){background:#EEF1F8}
+.desk-widget:has(.ap-dash)>.desk-topbar{background:#041A52!important;border-color:rgba(255,255,255,.16)!important}
+.desk-widget:has(.ap-dash)>.desk-topbar .desk-theme{color:#C7D4F2!important}
+.desk-widget:has(.ap-dash)>.desk-topbar select{background:#09318D!important;color:#fff!important;border:1.5px solid rgba(255,255,255,.35);border-radius:9px}
+
+.ap-dash{display:grid;grid-template-columns:230px 1fr;min-height:calc(100vh - 44px);background:#EEF1F8;color:#0A1B3D;font-family:'Inter','Segoe UI',system-ui,sans-serif}
+
+/* Sidebar */
+.ap-dash-side{position:sticky;top:0;height:calc(100vh - 44px);display:flex;flex-direction:column;gap:6px;background:#041A52;color:#DCE4F7;padding:20px 14px}
+.ap-dash-brand{display:flex;align-items:center;gap:10px;color:#fff;font-weight:650;font-size:16px;text-decoration:none;padding:4px 8px 16px;letter-spacing:-.4px}
+.ap-dash-side nav{display:flex;flex-direction:column;gap:4px}
+.ap-dash-side nav a{display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:12px;font-size:13.5px;font-weight:500;color:#B9C7EA;text-decoration:none;transition:background .15s ease,color .15s ease}
+.ap-dash-side nav a:hover{background:rgba(255,255,255,.08);color:#fff}
+.ap-dash-side nav a.ap-dash-active{background:#FD91CC;color:#041A52;font-weight:650;box-shadow:3px 3px 0 rgba(255,255,255,.28)}
+.ap-dash-side-foot{margin-top:auto;display:flex;flex-direction:column;gap:2px;border-top:1px solid rgba(255,255,255,.14);padding-top:12px}
+.ap-dash-side-foot a{display:flex;align-items:center;gap:9px;padding:8px 12px;font-size:12px;color:#7E93C9;text-decoration:none;border-radius:9px}
+.ap-dash-side-foot a:hover{color:#fff;background:rgba(255,255,255,.06)}
+
+/* Top bar */
+.ap-dash-main{display:flex;flex-direction:column;min-width:0}
+.ap-dash-top{position:sticky;top:0;z-index:15;display:flex;align-items:center;gap:12px;background:rgba(238,241,248,.88);backdrop-filter:blur(10px);padding:14px 22px;border-bottom:1px solid #DDE3F0}
+.ap-dash-crumb{margin:0;font-size:13px;font-weight:600;color:#0A1B3D;white-space:nowrap}
+.ap-dash-crumb span{color:#93A3C7;font-weight:400}
+.ap-dash-search{display:flex;align-items:center;gap:8px;flex:1;max-width:380px;background:#fff;border:1.5px solid #DDE3F0;border-radius:999px;padding:8px 14px;color:#7A88AC}
+.ap-dash-search input{border:0;outline:0;background:transparent;font-size:13px;width:100%;color:#0A1B3D}
+.ap-dash-ask{display:inline-flex;align-items:center;gap:7px;margin-left:auto;background:#041A52;color:#fff;font-size:12.5px;font-weight:600;border-radius:999px;padding:9px 15px;text-decoration:none;transition:background .15s ease}
+.ap-dash-ask:hover{background:#0E2E74}
+.ap-dash-bell{position:relative;display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:#fff;border:1.5px solid #DDE3F0;color:#0A1B3D;cursor:pointer}
+.ap-dash-bell span{position:absolute;top:-5px;right:-5px;min-width:17px;height:17px;border-radius:999px;background:#FD91CC;color:#041A52;font-size:10px;font-weight:700;display:grid;place-items:center;padding:0 4px;border:1.5px solid #041A52}
+.ap-dash-mobilenav{display:none}
+
+/* Body */
+.ap-dash-body{padding:22px;display:flex;flex-direction:column;gap:18px;max-width:1180px;width:100%;margin:0 auto}
+
+/* Cards + KPI */
+.ap-dash-card{background:#fff;border:1.5px solid #E2E7F2;border-radius:18px;padding:20px;box-shadow:0 1px 4px rgba(9,49,141,.05)}
+.ap-dash-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.ap-dash-kpi{background:#fff;border:1.5px solid #E2E7F2;border-radius:16px;padding:16px;animation:ap-dash-up .66s cubic-bezier(.22,1,.36,1) both}
+.ap-dash-kpi h3{margin:0;font-size:11px;font-weight:600;color:#7A88AC;display:flex;align-items:center;gap:7px}
+.ap-dash-kpi h3 svg{color:#09318D}
+.ap-dash-kpi p{margin:8px 0 0;font-size:28px;font-weight:650;letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:#0A1B3D}
+.ap-dash-kpi .ap-dash-chip{display:inline-flex;margin-top:8px;font-size:10px;font-weight:600;color:#4A5878;background:#F0F3FA;border-radius:999px;padding:3px 9px}
+.ap-dash-kpi.ap-dash-kpi-alert{border-color:#FD91CC;box-shadow:0 0 0 3px rgba(253,145,204,.22)}
+.ap-dash-kpi.ap-dash-kpi-alert h3 svg{color:#E25FAE}
+
+/* Badges + table-ish lists */
+.ap-dash-badge{display:inline-flex;align-items:center;font-size:10px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;border-radius:6px;padding:3px 8px;border:1.5px solid #041A52}
+.ap-dash-b-err{background:#FD91CC;color:#041A52}
+.ap-dash-b-ok{background:#DFF3E4;color:#14532D;border-color:#14532D}
+.ap-dash-b-info{background:#E3EBFF;color:#09318D;border-color:#09318D}
+.ap-dash-b-mut{background:#F0F3FA;color:#4A5878;border-color:#C9D2EA}
+.ap-dash-row{display:flex;flex-direction:column;gap:5px;padding:13px 0;border-top:1px solid #EEF1F8;font-size:13px;line-height:1.55}
+.ap-dash-row:first-child{border-top:0}
+.ap-dash-row a{color:#09318D;font-weight:600}
+.ap-dash-row small{color:#7A88AC;font-size:11px}
+
+/* Headings inside pages */
+.ap-dash-kicker{font-size:10px;letter-spacing:.5px;text-transform:uppercase;color:#E25FAE;font-weight:600}
+.ap-dash-h1{margin:6px 0 0;font-size:clamp(26px,3.4vw,36px);font-weight:600;letter-spacing:-1.2px;color:#0A1B3D}
+.ap-dash-h2{margin:0;font-size:16px;font-weight:650;letter-spacing:-.3px;color:#0A1B3D}
+.ap-dash-sub{margin:8px 0 0;font-size:13px;line-height:1.65;color:#4A5878;max-width:560px}
+.ap-dash-muted{font-size:11.5px;line-height:1.65;color:#7A88AC}
+.ap-dash-btn{display:inline-flex;align-items:center;gap:7px;background:#041A52;color:#fff;border:0;border-radius:999px;padding:10px 17px;font-size:12.5px;font-weight:600;cursor:pointer;text-decoration:none;transition:background .15s ease}
+.ap-dash-btn:hover{background:#0E2E74}
+.ap-dash-btn:disabled{opacity:.4;cursor:default}
+.ap-dash-btn-ghost{background:#fff;color:#0A1B3D;border:1.5px solid #DDE3F0}
+.ap-dash-btn-ghost:hover{background:#F4F6FB}
+.ap-dash-toggle{display:inline-flex;gap:5px;background:#fff;border:1.5px solid #DDE3F0;border-radius:999px;padding:4px}
+.ap-dash-toggle button{border:0;background:transparent;border-radius:999px;padding:6px 13px;font-size:11.5px;font-weight:600;color:#4A5878;cursor:pointer}
+.ap-dash-toggle button[aria-pressed=true]{background:#041A52;color:#fff}
+.ap-dash-grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+
+/* Notifications slide-over */
+.ap-dash-overlay{position:fixed;inset:0;background:rgba(4,26,82,.35);backdrop-filter:blur(3px);z-index:40;animation:ap-dash-fade .25s ease both}
+.ap-dash-notifs{position:fixed;top:0;right:0;bottom:0;width:min(400px,94vw);background:#fff;z-index:41;display:flex;flex-direction:column;box-shadow:-18px 0 50px rgba(4,26,82,.25);animation:ap-dash-slide .38s cubic-bezier(.22,1,.36,1) both}
+.ap-dash-notifs-head{display:flex;align-items:center;justify-content:space-between;padding:18px 18px 12px}
+.ap-dash-notifs-head h2{margin:0;font-size:16px;font-weight:650}
+.ap-dash-notifs-head>div{display:flex;align-items:center;gap:10px}
+.ap-dash-markall{background:none;border:0;font-size:11.5px;color:#09318D;text-decoration:underline;cursor:pointer}
+.ap-dash-close{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;border:1.5px solid #E2E7F2;background:#fff;cursor:pointer;color:#0A1B3D}
+.ap-dash-tabs{display:flex;gap:6px;padding:0 18px 12px;border-bottom:1px solid #EEF1F8}
+.ap-dash-tabs button{border:1.5px solid #DDE3F0;background:#fff;border-radius:999px;padding:6px 12px;font-size:11.5px;font-weight:600;color:#4A5878;cursor:pointer}
+.ap-dash-tabs button[aria-selected=true]{background:#041A52;color:#fff;border-color:#041A52}
+.ap-dash-tabs button span{opacity:.75;font-weight:500}
+.ap-dash-notifs-list{flex:1;overflow-y:auto;padding:12px 14px;display:flex;flex-direction:column;gap:9px}
+.ap-dash-notif{display:flex;gap:11px;background:#F8FAFD;border:1.5px solid #E7EBF4;border-radius:14px;padding:13px;animation:ap-dash-up .5s cubic-bezier(.22,1,.36,1) both}
+.ap-dash-notif.ap-dash-read{opacity:.62}
+.ap-dash-nicon{flex-shrink:0;display:grid;place-items:center;width:30px;height:30px;border-radius:50%}
+.ap-dash-n-error{background:#FD91CC;color:#041A52}
+.ap-dash-n-success{background:#DFF3E4;color:#14532D}
+.ap-dash-n-info{background:#E3EBFF;color:#09318D}
+.ap-dash-notif h3{margin:0;font-size:12.5px;font-weight:650;color:#0A1B3D}
+.ap-dash-notif p{margin:4px 0 0;font-size:11.5px;line-height:1.55;color:#4A5878;word-break:break-word}
+.ap-dash-notif small{display:block;margin-top:6px;font-size:10px;color:#93A3C7}
+.ap-dash-notif small b{font-weight:600}
+.ap-dash-empty{padding:26px 10px;text-align:center;font-size:12px;color:#93A3C7}
+.ap-dash-notifs-foot{margin:0;padding:12px 18px;border-top:1px solid #EEF1F8;font-size:10px;color:#93A3C7}
+
+/* Entrance motion (plan v5) */
+.ap-dash-ln{display:inline-block;overflow:hidden;padding-bottom:6px;margin-bottom:-6px;vertical-align:bottom}
+.ap-dash-ln>span{display:inline-block;animation:ap-dash-rise .9s cubic-bezier(.22,.85,.24,1) both}
+.ap-dash-card,.ap-dash-kpis,.ap-dash-headrow{animation:ap-dash-up .66s cubic-bezier(.22,1,.36,1) both}
+@keyframes ap-dash-rise{from{transform:translateY(120%)}to{transform:none}}
+@keyframes ap-dash-up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes ap-dash-fade{from{opacity:0}to{opacity:1}}
+@keyframes ap-dash-slide{from{transform:translateX(40px);opacity:0}to{transform:none;opacity:1}}
+@media(prefers-reduced-motion:reduce){.ap-dash-ln>span,.ap-dash-card,.ap-dash-kpis,.ap-dash-kpi,.ap-dash-headrow,.ap-dash-notif,.ap-dash-notifs,.ap-dash-overlay{animation:none!important;opacity:1;transform:none}}
+
+@media(max-width:900px){
+.ap-dash{grid-template-columns:1fr}
+.ap-dash-side{display:none}
+.ap-dash-mobilenav{display:flex;gap:6px;overflow-x:auto;padding:10px 16px;border-bottom:1px solid #DDE3F0;background:#fff;position:sticky;top:63px;z-index:14}
+.ap-dash-mobilenav a{display:inline-flex;align-items:center;gap:7px;white-space:nowrap;font-size:12px;font-weight:600;color:#4A5878;text-decoration:none;border:1.5px solid #DDE3F0;border-radius:999px;padding:7px 13px}
+.ap-dash-mobilenav a.ap-dash-active{background:#FD91CC;color:#041A52;border-color:#041A52}
+.ap-dash-kpis{grid-template-columns:repeat(2,1fr)}
+.ap-dash-grid2{grid-template-columns:1fr}
+.ap-dash-search{display:none}
+.ap-dash-body{padding:16px}
+}

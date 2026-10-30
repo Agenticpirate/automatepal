@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import DeskShell from '../components/DeskShell';
 import './pricing.css';
+import Gauge from '../components/Gauge';
 
 /* Lucide (ISC) inline icons */
 const P: Record<string, React.ReactNode> = {
@@ -19,21 +20,6 @@ const P: Record<string, React.ReactNode> = {
 const Icon=({name,size=14}:{name:keyof typeof P;size?:number})=>(
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{P[name]}</svg>
 );
-
-/* Reusable 40-tick semicircle gauge (Convix pattern). value 0-100. */
-function Gauge({value,color='#FD91CC',label}:{value:number;color?:string;label:string}){
-  const ticks=Array.from({length:40},(_,i)=>{
-    const a=Math.PI+(i/39)*Math.PI;
-    const active=i<Math.round(value/100*40);
-    const r=80,cx=100,cy=100;
-    const x1=cx+Math.cos(a)*(r-10),y1=cy+Math.sin(a)*(r-10);
-    const x2=cx+Math.cos(a)*r,y2=cy+Math.sin(a)*r;
-    return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke={active?color:'#D8DEE9'} strokeWidth={2.5} strokeLinecap="round"/>;
-  });
-  return <div className="ap-cx-gauge" role="img" aria-label={label}>
-    <svg viewBox="0 0 200 120">{ticks}<text x={100} y={110} textAnchor="middle" fontSize={22} fontWeight={600} fill="#0A1B3D">{value}%</text></svg>
-  </div>;
-}
 
 const tiers=[{name:'Starter',monthly:'29.50',annual:'234',equivalent:'19.50'},{name:'Growth',monthly:'64.50',annual:'474',equivalent:'39.50'},{name:'Scale',monthly:'214.50',annual:'1,554',equivalent:'129.50'}];
 const NAV=[{label:'Home',href:'/',icon:'home' as const},{label:'Product',href:'/#workflow',icon:'grid' as const},{label:'Pricing',href:'/pricing',icon:'tag' as const,active:true},{label:'Contact',href:'/contact',icon:'mail' as const}];
@@ -86,7 +72,7 @@ export default function Pricing(){
             <h2 className="ap-cx-tier"><i/>How demo prices relate to the reference</h2>
             <p className="ap-cx-line" style={{marginTop:12}}>Demo figures are 50% of SiteGPT&apos;s publicly listed monthly and annual prices checked October 29, 2026. This is arithmetic only, not a feature, capacity, support or reliability comparison.</p>
           </div>
-          <Gauge value={50} color="#FD91CC" label="Demo prices are 50 percent of the reference pricing, arithmetic only"/>
+          <div className="ap-cx-gauge"><Gauge value={50} color="#FD91CC" label="Demo prices are 50 percent of the reference pricing, arithmetic only"/></div>
         </article>
       </section>
 

@@ -133,7 +133,10 @@
 .ap-dash-ticket-active{border-color:#FD91CC!important;box-shadow:0 0 0 3px rgba(253,145,204,.28)}
 .ap-dash-ticket-id{background:none;border:0;padding:0;font-size:12.5px;font-weight:700;color:#09318D;text-decoration:underline;cursor:pointer}
 
-html[data-theme=dark] .desk-ui .ap-dash{color-scheme:light}
+html[data-theme=dark] .desk-ui .ap-dash{color-scheme:light;--desk-bg:#EEF1F8;--desk-panel:#fff;--desk-text:#0A1B3D;--desk-muted:#4A5878;--desk-border:#E2E7F2;--desk-soft:#F4F6FB;--desk-blue:#09318D;--desk-blue-soft:#EAF0FE;--desk-warn:#FFF7E7}
 
 /* Widget studio */
 .ap-dash-snippet{overflow:auto;white-space:pre-wrap;word-break:break-all;background:#F4F6FB;border:1.5px solid #E2E7F2;border-radius:12px;padding:14px;font-size:11.5px;margin-top:12px;color:#33406B}
+
+/* Knowledge page */
+.ap-dash-guidance{border:1.5px solid #C9D6F5;background:#F0F4FE;border-radius:14px;padding:14px}

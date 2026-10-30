@@ -1,0 +1,92 @@
+/* Pricing - Convix design language in brand palette (Ravi 8:18 PM).
+   Instrument Serif (OFL, Google Fonts) for the italic accent. Lucide icons (ISC, inline). */
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap');
+
+.ap-cx{background:#F4F6FB;padding:16px;font-family:'Inter','Segoe UI',system-ui,sans-serif;min-height:100vh;color:#0A1B3D}
+.ap-cx-frame{position:relative;width:100%;background:#E9EDF7;border-radius:24px;overflow:hidden;padding:clamp(18px,3vw,28px) clamp(14px,3vw,32px) clamp(36px,5vh,56px)}
+.ap-cx-frame::before{content:'';position:absolute;inset:0;background:radial-gradient(40% 32% at 82% 8%,rgba(253,145,204,.30),transparent 70%),radial-gradient(36% 30% at 8% 4%,rgba(9,49,141,.12),transparent 70%);pointer-events:none}
+.ap-cx-inner{position:relative;z-index:1;max-width:1020px;margin:0 auto}
+
+/* Floating white pill nav */
+.ap-cx-navwrap{display:flex;justify-content:center;padding-top:4px}
+.ap-cx-nav{display:flex;align-items:center;gap:clamp(14px,2.4vw,26px);background:#fff;border:1px solid #E2E7F2;border-radius:999px;box-shadow:0 2px 10px rgba(9,49,141,.08);padding:8px 10px 8px 14px;width:min(760px,100%)}
+.ap-cx-logo{display:flex;align-items:center;gap:8px;font-weight:600;font-size:14px;color:#0A1B3D;text-decoration:none;flex-shrink:0}
+.ap-cx-links{display:flex;align-items:center;gap:clamp(12px,2vw,22px);margin-left:auto}
+.ap-cx-links a{position:relative;display:inline-flex;align-items:center;gap:6px;font-size:13.5px;font-weight:500;color:#0A1B3D;opacity:.55;text-decoration:none;padding:4px 2px;transition:opacity .15s ease}
+.ap-cx-links a:hover{opacity:.8}
+.ap-cx-links a.ap-cx-active{opacity:1}
+.ap-cx-links a.ap-cx-active::after{content:'';position:absolute;left:50%;bottom:-2px;width:4px;height:4px;border-radius:50%;background:#FD91CC;transform:translateX(-50%)}
+.ap-cx-signin{display:inline-flex;align-items:center;gap:6px;background:#041A52;color:#fff;font-size:13px;font-weight:500;border-radius:999px;padding:9px 16px;text-decoration:none;flex-shrink:0;transition:background .15s ease}
+.ap-cx-signin:hover{background:#0E2E74}
+.ap-cx-burger{display:none;background:#fff;border:1px solid #E2E7F2;border-radius:50%;width:42px;height:42px;align-items:center;justify-content:center;color:#0A1B3D;cursor:pointer}
+.ap-cx-menu{position:absolute;top:64px;left:10px;right:10px;background:#fff;border:1px solid #E2E7F2;border-radius:16px;box-shadow:0 16px 44px rgba(9,49,141,.16);padding:10px;z-index:20;display:flex;flex-direction:column;gap:2px}
+.ap-cx-menu a{display:flex;align-items:center;gap:9px;padding:11px 12px;border-radius:10px;font-size:14px;font-weight:500;color:#0A1B3D;text-decoration:none}
+.ap-cx-menu a:hover{background:#F4F6FB}
+
+/* Hero */
+.ap-cx-hero{display:flex;flex-direction:column;align-items:center;text-align:center;padding:clamp(28px,5vh,44px) 8px clamp(20px,3vh,28px)}
+.ap-cx-badge{display:inline-flex;align-items:center;gap:8px;background:#fff;border-radius:999px;padding:7px 16px;box-shadow:0 1px 6px rgba(9,49,141,.10);font-size:13px;font-weight:500;color:#0A1B3D}
+.ap-cx-badge i{width:8px;height:8px;border-radius:50%;background:#FD91CC;display:inline-block}
+.ap-cx-h1{margin:20px 0 0;font-size:clamp(34px,7vw,64px);line-height:1.05;font-weight:550;letter-spacing:-.02em;max-width:720px;color:#0A1B3D}
+.ap-cx-h1 em{font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;color:#E25FAE}
+.ap-cx-sub{margin:16px auto 0;max-width:560px;font-size:clamp(13px,3.5vw,15.5px);line-height:1.65;color:#4A5878}
+
+/* Interval toggle pill */
+.ap-cx-toggle{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid #E2E7F2;border-radius:999px;padding:5px;margin:26px auto 0;box-shadow:0 1px 6px rgba(9,49,141,.08)}
+.ap-cx-toggle button{border:0;background:transparent;border-radius:999px;padding:9px 18px;font-size:13.5px;font-weight:600;color:#4A5878;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:background .15s ease,color .15s ease}
+.ap-cx-toggle button[aria-pressed=true]{background:#041A52;color:#fff;box-shadow:0 2px 8px rgba(4,26,82,.3)}
+.ap-cx-trial-note{display:block;margin-top:12px;font-size:12px;color:#7A88AC}
+
+/* Tray + cards */
+.ap-cx-tray{background:#F0E9F4;border-radius:24px;padding:clamp(14px,2.4vw,24px);margin-top:clamp(24px,4vh,36px)}
+.ap-cx-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.ap-cx-card{background:#fff;border:1.5px solid #E7EBF4;border-radius:18px;padding:22px;display:flex;flex-direction:column;transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease}
+.ap-cx-card:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(9,49,141,.10)}
+.ap-cx-card.ap-cx-selected{border-color:#FD91CC;box-shadow:0 0 0 3px rgba(253,145,204,.35),0 12px 30px rgba(226,95,174,.16)}
+.ap-cx-tier{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600;color:#0A1B3D}
+.ap-cx-tier i{width:8px;height:8px;border-radius:50%;background:#09318D;display:inline-block}
+.ap-cx-price{margin:18px 0 0;font-size:30px;font-weight:600;letter-spacing:-.02em;color:#0A1B3D}
+.ap-cx-price span{font-size:13px;font-weight:400;color:#7A88AC}
+.ap-cx-line{margin:10px 0 0;font-size:13px;line-height:1.6;color:#33456E}
+.ap-cx-note{margin:8px 0 0;font-size:11.5px;line-height:1.6;color:#7A88AC}
+.ap-cx-select{margin-top:18px;width:100%;display:inline-flex;align-items:center;justify-content:center;gap:8px;background:#041A52;color:#fff;border:0;border-radius:999px;padding:12px 16px;font-size:13.5px;font-weight:600;cursor:pointer;transition:background .15s ease,transform .15s ease}
+.ap-cx-select:hover{background:#0E2E74;transform:translateY(-1px)}
+.ap-cx-select[aria-pressed=true]{background:#FD91CC;color:#041A52}
+.ap-cx-select small{display:block;font-size:10.5px;font-weight:400;opacity:.75}
+.ap-cx-state{margin-top:18px;border-top:1px solid #EEF1F8;padding-top:14px;font-size:11.5px;line-height:1.65;color:#7A88AC}
+
+/* Gauge card */
+.ap-cx-gauge-card{grid-column:1/-1;display:flex;align-items:center;gap:clamp(16px,3vw,32px);flex-wrap:wrap}
+.ap-cx-gauge-card>div{flex:1;min-width:220px}
+.ap-cx-gauge{flex-shrink:0;width:min(240px,70vw)}
+.ap-cx-gauge svg{display:block;width:100%;height:auto}
+
+/* Status + footnotes */
+.ap-cx-status{margin-top:16px;background:#fff;border:1.5px solid #E7EBF4;border-radius:18px;padding:22px}
+.ap-cx-status h2{font-size:16px;font-weight:600;color:#0A1B3D}
+.ap-cx-status p{margin:10px 0 0;font-size:13px;line-height:1.7;color:#33456E}
+.ap-cx-status .ap-cx-note{font-size:11.5px;color:#7A88AC}
+.ap-cx-clear{margin-top:12px;background:none;border:0;color:#09318D;font-size:13px;text-decoration:underline;cursor:pointer;padding:0}
+.ap-cx-foot{margin:26px auto 0;max-width:720px;font-size:12.5px;line-height:1.75;color:#4A5878;display:flex;flex-direction:column;gap:12px}
+.ap-cx-foot a{color:#09318D}
+@media(max-width:860px){.ap-cx-grid{grid-template-columns:1fr}.ap-cx-links{display:none}.ap-cx-burger{display:inline-flex;margin-left:auto}.ap-cx-signin{display:none}}
+@media(max-width:560px){.ap-cx{padding:10px}.ap-cx-frame{border-radius:18px}.ap-cx-tray{border-radius:18px}}
+
+/* Headline masked-line rise (motion system) */
+.ap-cx-ln{display:inline-block;overflow:hidden;padding-bottom:6px;margin-bottom:-6px;vertical-align:bottom}
+.ap-cx-ln>span{display:inline-block;animation:ap-cx-rise .98s cubic-bezier(.22,.85,.24,1) both}
+.ap-cx-ln:nth-child(2)>span{animation-delay:.09s}
+@keyframes ap-cx-rise{from{transform:translateY(120%)}to{transform:none}}
+.ap-cx-badge{animation:ap-cx-fade .62s cubic-bezier(.22,1,.36,1) .12s both}
+.ap-cx-sub{animation:ap-cx-up .72s cubic-bezier(.22,1,.36,1) .34s both}
+.ap-cx-toggle{animation:ap-cx-wipe .7s cubic-bezier(.16,1,.3,1) .5s both}
+.ap-cx-trial-note{animation:ap-cx-fade .55s cubic-bezier(.25,1,.5,1) .62s both}
+.ap-cx-card{animation:ap-cx-up .66s cubic-bezier(.22,1,.36,1) both}
+.ap-cx-card:nth-child(1){animation-delay:.74s}.ap-cx-card:nth-child(2){animation-delay:.825s}.ap-cx-card:nth-child(3){animation-delay:.91s}.ap-cx-card:nth-child(4){animation-delay:1s}
+.ap-cx-status{animation:ap-cx-up .62s cubic-bezier(.22,1,.36,1) 1.1s both}
+.ap-cx-foot{animation:ap-cx-fade .62s cubic-bezier(.22,1,.36,1) 1.16s both}
+@keyframes ap-cx-up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes ap-cx-fade{from{opacity:0}to{opacity:1}}
+@keyframes ap-cx-wipe{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+@media(max-width:720px){.ap-cx-badge,.ap-cx-sub,.ap-cx-toggle,.ap-cx-trial-note,.ap-cx-card,.ap-cx-status,.ap-cx-foot,.ap-cx-ln>span{animation-duration:.85s}}
+@media(prefers-reduced-motion:reduce){.ap-cx-badge,.ap-cx-sub,.ap-cx-toggle,.ap-cx-trial-note,.ap-cx-card,.ap-cx-status,.ap-cx-foot,.ap-cx-ln>span{animation:none!important;opacity:1;transform:none;clip-path:none}}

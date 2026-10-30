@@ -119,3 +119,18 @@
 .ap-dash-search{display:none}
 .ap-dash-body{padding:16px}
 }
+
+/* Tickets page */
+.ap-dash-filters{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.ap-dash-field{display:flex;flex-direction:column;gap:6px;font-size:11px;font-weight:600;color:#4A5878}
+.desk-ui .ap-dash .ap-dash-select.ap-dash-select{margin-top:0;width:100%;border:1.5px solid #DDE3F0;border-radius:10px;background:#fff;padding:9px 11px;font-size:12.5px;color:#0A1B3D;outline:none}
+.desk-ui .ap-dash .ap-dash-select.ap-dash-select:focus{border-color:#09318D;box-shadow:0 0 0 3px rgba(9,49,141,.12)}
+.ap-dash-checkrow{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:#4A5878}
+.ap-dash-ticketgrid{display:grid;gap:18px;align-items:start}
+@media(min-width:1100px){.ap-dash-ticketgrid{grid-template-columns:1fr 1fr}}
+.ap-dash-ticket{transition:border-color .18s,box-shadow .18s,transform .18s}
+.ap-dash-ticket:hover{border-color:#B9C6E4;box-shadow:0 6px 22px rgba(4,26,82,.07);transform:translateY(-1px)}
+.ap-dash-ticket-active{border-color:#FD91CC!important;box-shadow:0 0 0 3px rgba(253,145,204,.28)}
+.ap-dash-ticket-id{background:none;border:0;padding:0;font-size:12.5px;font-weight:700;color:#09318D;text-decoration:underline;cursor:pointer}
+
+html[data-theme=dark] .desk-ui .ap-dash{color-scheme:light}

@@ -416,3 +416,9 @@ html[data-theme=dark] .ap-public .ap-start>p:last-child{color:#B9C7EA}
 .ap-auth-card,.ap-status-card{animation:ap-m-up-in .66s var(--ap-e-quint) .05s both}
 .ap-auth-nav{animation:ap-m-up-in .55s var(--ap-e-quint) both}
 @media(prefers-reduced-motion:reduce){.ap-auth-card,.ap-status-card,.ap-auth-nav{animation:none}}
+/* Landing: video-design hero as homepage (Ravi pick Oct 31) - static variant of /preview/video single-viewport hero. */
+.vp.vp-static{position:relative;inset:auto;height:auto;min-height:100dvh;overflow:hidden;z-index:0}
+.vp.vp-static .vp-page{height:auto;min-height:100dvh;overflow:visible}
+.ap-spec-sec{display:flex;justify-content:center;padding:80px 6vw;background:#fff}
+html[data-theme=dark] .ap-spec-sec{background:#fff}
+.ap-spec-sec .ap-specimen{width:100%;max-width:600px}

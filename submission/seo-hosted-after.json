@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-29T04:10:33.010Z",
+  "checkedAt": "2026-10-30T12:18:45.536Z",
   "results": [
     {
       "path": "/",
@@ -7,7 +7,7 @@
       "title": "AutomatePal - source-backed support preview",
       "description": "Explore source-backed answers, owner-reviewed service desk workflows and PayPal sandbox plan evidence. Fictional-data preview. No live payments.",
       "canonical": "https://automatepal.onrender.com/",
-      "og": "https://automatepal.onrender.com/opengraph-image?9e7aa7cba771028c",
+      "og": "https://automatepal.onrender.com/opengraph-image?e5a66ccec45f3d0e",
       "twitter": "summary_large_image",
       "h1": 1,
       "robotsHeader": null

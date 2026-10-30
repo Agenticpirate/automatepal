@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-29T05:59:46.230Z",
+  "checkedAt": "2026-10-30T12:18:37.470Z",
   "results": [
     {
       "path": "/",
@@ -79,7 +79,7 @@
       "robotsHeader": "noindex, nofollow"
     }
   ],
-  "sitemap": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n<url>\n<loc>https://automatepal.onrender.com</loc>\n</url>\n<url>\n<loc>https://automatepal.onrender.com/pricing</loc>\n</url>\n<url>\n<loc>https://automatepal.onrender.com/privacy</loc>\n</url>\n<url>\n<loc>https://automatepal.onrender.com/terms</loc>\n</url>\n<url>\n<loc>https://automatepal.onrender.com/status</loc>\n</url>\n</urlset>\n",
+  "sitemap": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n<url>\n<loc>https://automatepal.onrender.com</loc>\n</url>\n<url>\n<loc>https://automatepal.onrender.com/pricing</loc>\n</url>\n<url>\n<loc>https://automatepal.onrender.com/privacy</loc>\n</url>\n<url>\n<loc>https://automatepal.onrender.com/terms</loc>\n</url>\n<url>\n<loc>https://automatepal.onrender.com/status</loc>\n</url>\n<url>\n<loc>https://automatepal.onrender.com/contact</loc>\n</url>\n</urlset>\n",
   "robots": "User-Agent: *\nAllow: /\nDisallow: /api/\n\nSitemap: https://automatepal.onrender.com/sitemap.xml\n",
   "structuredData": {
     "@context": "https://schema.org",

@@ -164,3 +164,14 @@ html[data-theme=dark] .desk-ui .ap-dash{color-scheme:light;--desk-bg:#EEF1F8;--d
 .ap-chart-danswered{fill:none;stroke:#09318D;stroke-width:9;stroke-linecap:round}
 .ap-chart-dun{fill:none;stroke:#FD91CC;stroke-width:9;stroke-linecap:round}
 .ap-chart-dnum{fill:#0A1B3D;font-size:17px;font-weight:700}
+.ap-chart-bar,.ap-chart-bar-un{transform-box:fill-box;transform-origin:50% 100%;animation:ap-chart-grow .66s var(--ap-e-quint,cubic-bezier(.22,1,.36,1)) both;transition:filter .15s ease}
+.ap-chart-bar:hover,.ap-chart-bar-un:hover{filter:brightness(1.12)}
+@keyframes ap-chart-grow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+.ap-chart-guide{opacity:0;animation:ap-chart-fade-in .5s var(--ap-e-quart,cubic-bezier(.25,1,.5,1)) .55s both}
+.ap-chart-chip{opacity:0;animation:ap-chart-fade-in .5s var(--ap-e-quart,cubic-bezier(.25,1,.5,1)) .68s both}
+.ap-chart-lab{opacity:0;animation:ap-chart-fade-in .4s ease .5s both}
+.ap-chart-sweep{animation:ap-chart-sweep .8s var(--ap-e-expo,cubic-bezier(.16,1,.3,1)) both}
+@keyframes ap-chart-sweep{from{stroke-dashoffset:var(--len)}to{stroke-dashoffset:0}}
+@keyframes ap-chart-fade-in{to{opacity:1}}
+.ap-chart-dnum{opacity:0;animation:ap-chart-fade-in .4s ease .45s both}
+@media(prefers-reduced-motion:reduce){.ap-chart-bar,.ap-chart-bar-un,.ap-chart-guide,.ap-chart-chip,.ap-chart-lab,.ap-chart-sweep,.ap-chart-dnum{animation:none;opacity:1;stroke-dashoffset:0;transform:none}}

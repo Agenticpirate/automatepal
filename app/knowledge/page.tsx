@@ -4,7 +4,7 @@ import DashShell,{DashNotif,DIcon} from'../components/DashShell';
 import DeskShell from'../components/DeskShell';import{extractPdf}from'../../lib/pdf-text';import{authHeaders}from'../../lib/browser-auth';import{knowledgeCsv,downloadCsv}from'../../lib/exports';
 import{csvToReviewText}from'../../lib/csv-text';
 import CustomResponses from'./components/CustomResponses';
-import UnansweredDigest from'./components/UnansweredDigest';
+import UnansweredDigest from'./components/UnansweredDigest';import {UsageRing} from '../owner/charts';
 type Attempt={id:string;source_id:string;status:string;started_at:string;finished_at:string|null;stale:boolean};
 type Doc={id:string;title:string;published:boolean;content:string;updated_at:string;source_kind:'text'|'owner_guidance';applicability:string;effective_from:string|null;effective_until:string|null};
 function buildNotifs(docs:Doc[],attempts:Attempt[],nowTs:number):DashNotif[]{const out:DashNotif[]=[];
@@ -27,8 +27,8 @@ export default function Knowledge(){const[sourceKind,setSourceKind]=useState<'te
 <p role="status" className="ap-dash-muted" style={{marginTop:10,wordBreak:'break-word'}}>{notice}</p>
 </header>
 <div className="ap-dash-kpis" style={{gridTemplateColumns:'repeat(auto-fit,minmax(150px,1fr))'}}>
-<article className="ap-dash-kpi"><h3><DIcon name="knowledge" size={13}/>Sources</h3><p>{docs.length}/30</p><span className="ap-dash-chip">live snapshot</span></article>
-<article className="ap-dash-kpi"><h3><DIcon name="audit" size={13}/>Page units</h3><p>{usage}/360</p><span className="ap-dash-chip">live snapshot</span></article>
+<article className="ap-dash-kpi"><h3><DIcon name="knowledge" size={13}/>Sources</h3><div style={{display:'flex',alignItems:'center',gap:10}}><p>{docs.length}/30</p><UsageRing used={docs.length} limit={30} label="Sources"/></div><span className="ap-dash-chip">live snapshot</span></article>
+<article className="ap-dash-kpi"><h3><DIcon name="audit" size={13}/>Page units</h3><div style={{display:'flex',alignItems:'center',gap:10}}><p>{usage}/360</p><UsageRing used={usage} limit={360} label="Page units"/></div><span className="ap-dash-chip">live snapshot</span></article>
 <article className="ap-dash-kpi"><h3><DIcon name="checkcircle" size={13}/>Published</h3><p>{docs.filter(d=>d.published).length}</p><span className="ap-dash-chip">live snapshot</span></article>
 </div>
 <CustomResponses/>

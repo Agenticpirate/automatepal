@@ -18,7 +18,7 @@ return <DeskShell widget><DashShell crumb="Overview" notifications={d?buildNotif
 {d&&<>
 <div className="ap-dash-card" style={{display:'flex',flexWrap:'wrap',alignItems:'center',gap:12}}>
 <span className="ap-dash-toggle">{([7,30] as const).map(n=><button key={n} aria-pressed={days===n} onClick={()=>setDays(n)}>{n} days</button>)}</span>
-<SplitDonut answered={week.answered} unanswered={week.unanswered}/>
+<SplitDonut key={days} answered={week.answered} unanswered={week.unanswered}/>
 <p className="ap-dash-muted" style={{margin:0}}>Last {days} days (from the loaded snapshot): <strong>{week.answered} answered</strong> · <strong>{week.unanswered} unanswered</strong> · <strong>{week.reviews} review requests</strong> ({week.leads} follow-ups) · {weekQueries.length?Math.round(100*week.answered/weekQueries.length)+'% answered':'no questions yet'} · {week.rated?Math.round(100*week.helpful/week.rated)+'% of '+week.rated+' ratings helpful':'no ratings yet'}</p>
 </div>
 <section className="ap-dash-kpis">{kpis.map(([label,icon,n,isAlert],i)=><article key={label} className={'ap-dash-kpi ap-dash-kpi-cchip'+(isAlert?' ap-dash-kpi-alert':'')} style={{animationDelay:`${.06*i}s`}}><h3><DIcon name={icon} size={13}/>{label}</h3><p>{n}</p></article>)}</section>
@@ -43,7 +43,7 @@ return <DeskShell widget><DashShell crumb="Overview" notifications={d?buildNotif
 <section className="ap-dash-card"><h2 className="ap-dash-h2">Question trend</h2>
 <button disabled={!d?.queries?.length} onClick={()=>downloadCsv('automatepal-fictional-unanswered.csv',unansweredCsv(d?.queries??[]))} className="ap-dash-btn ap-dash-btn-ghost" style={{marginTop:10}}>Export unanswered questions CSV</button>
 <p className="ap-dash-muted" style={{margin:'10px 0 0'}}>{days} UTC days, loaded rows only. Bars show total queries; the pink cap marks unanswered ones.</p>
-<TrendChart rows={Array.from({length:days},(_,i)=>{const day=new Date(Date.parse(d.asOf)-(days-1-i)*86400000).toISOString().slice(0,10),qs=d.queries.filter(x=>x.created_at.startsWith(day));return {day,total:qs.length,unanswered:qs.filter(x=>!x.supported).length};})}/>
+<TrendChart key={days} rows={Array.from({length:days},(_,i)=>{const day=new Date(Date.parse(d.asOf)-(days-1-i)*86400000).toISOString().slice(0,10),qs=d.queries.filter(x=>x.created_at.startsWith(day));return {day,total:qs.length,unanswered:qs.filter(x=>!x.supported).length};})}/>
 <p className="ap-dash-muted" style={{margin:'4px 0 0',fontSize:10}}>Daily rows</p>
 <ol className="ap-dash-trend">{Array.from({length:days},(_,i)=>{const day=new Date(Date.parse(d.asOf)-(days-1-i)*86400000).toISOString().slice(0,10),qs=d.queries.filter(x=>x.created_at.startsWith(day));return <li key={day} className="ap-dash-row" style={{flexDirection:'row',justifyContent:'space-between'}}><span>{day}</span><span>{qs.length} queries · {qs.filter(x=>!x.supported).length} unanswered</span></li>;})}</ol></section>
 <section className="ap-dash-card"><h2 className="ap-dash-h2">Recent queries</h2>

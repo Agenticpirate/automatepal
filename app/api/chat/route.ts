@@ -3,7 +3,7 @@ import { validOrigin } from "../../../lib/origin";
 import { NextRequest, NextResponse } from "next/server";
 import { allowRequest } from "../../../lib/rate-limit";
 import { z } from "zod";
-import { authenticate, requestContext } from "../../../lib/session";
+import { authenticate, requestContext } from "../../../lib/session";import {demoLocked} from "../../../lib/demo-open";
 import { runAgent } from "../../../lib/agent";
 const input = z.object({
   history: z.array(z.object({ role: z.enum(["user", "model"]), text: z.string().max(8000) })).max(30).default([]),
@@ -12,7 +12,7 @@ const input = z.object({
 export async function POST(req: NextRequest) {
   if (Number(req.headers.get("content-length") ?? 0) > 128000) return NextResponse.json({ error: "Request too large" }, { status: 413 });
   const session = await authenticate(req);
-  if (!session) return NextResponse.json({ error: "Please sign in." }, { status: 401 });
+  if (!session) { const d=demoLocked(); if(d) return d; return NextResponse.json({ error: "Please sign in." }, { status: 401 }); }
   if (!allowRequest(session.userId)) return NextResponse.json({error:"Please wait a minute before sending more messages."},{status:429});
   if (!validOrigin(req)) return NextResponse.json({ error: "Invalid origin" }, { status: 403 });
   let body;

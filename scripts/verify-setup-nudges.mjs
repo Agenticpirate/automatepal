@@ -2,7 +2,7 @@ import assert from'node:assert/strict';
 import{spawn}from'node:child_process';
 import{chromium}from'@playwright/test';
 const PORT=3234,BASE=`http://127.0.0.1:${PORT}`;
-const server=spawn('npm',['run','start','--','--port',String(PORT)],{stdio:'ignore'});
+const server=spawn('npm',['run','start','--','--port',String(PORT)],{stdio:'ignore',env:{...process.env,NEXT_PUBLIC_DEMO_OPEN:'false'}});
 function ok(n){console.log('PASS',n);}
 async function waitServer(){const dl=Date.now()+60000;while(Date.now()<dl){try{const r=await fetch(BASE+'/setup');if(r.status<500)return;}catch{}await new Promise(r=>setTimeout(r,1000));}throw Error('no server');}
 const docs=[{id:'d1',title:'Fictional refund FAQ',published:true,content:'x'.repeat(30),updated_at:'2026-10-30',source_kind:'text',applicability:'',effective_from:null,effective_until:null},{id:'d2',title:'Draft shipping notes',published:false,content:'y'.repeat(30),updated_at:'2026-10-30',source_kind:'text',applicability:'',effective_from:null,effective_until:null},{id:'d3',title:'Draft hours',published:false,content:'z'.repeat(30),updated_at:'2026-10-30',source_kind:'text',applicability:'',effective_from:null,effective_until:null}];

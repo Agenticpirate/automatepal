@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {spawn} from 'node:child_process';
 import {chromium} from '@playwright/test';
-const server=spawn(process.execPath,['node_modules/next/dist/bin/next','start','-p','3107'],{stdio:'ignore'});
+const server=spawn(process.execPath,['node_modules/next/dist/bin/next','start','-p','3107'],{stdio:'ignore',env:{...process.env,NEXT_PUBLIC_DEMO_OPEN:'false'}});
 const b=await chromium.launch();
 try {
  const p=await b.newPage({viewport:{width:390,height:844}});

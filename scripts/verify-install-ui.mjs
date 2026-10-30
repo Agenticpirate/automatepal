@@ -2,7 +2,7 @@ import assert from'node:assert/strict';
 import{spawn}from'node:child_process';
 import{chromium}from'@playwright/test';
 const PORT=3232,BASE=`http://127.0.0.1:${PORT}`;
-const server=spawn('npm',['run','start','--','--port',String(PORT)],{stdio:'ignore'});
+const server=spawn('npm',['run','start','--','--port',String(PORT)],{stdio:'ignore',env:{...process.env,NEXT_PUBLIC_DEMO_OPEN:'false'}});
 function ok(n){console.log('PASS',n);}
 async function waitServer(){const dl=Date.now()+60000;while(Date.now()<dl){try{const r=await fetch(BASE+'/setup');if(r.status<500)return;}catch{}await new Promise(r=>setTimeout(r,1000));}throw Error('no server');}
 const variants={

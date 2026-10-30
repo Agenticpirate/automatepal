@@ -1,3 +1,4 @@
+import{demoLocked}from'../../../../lib/demo-open';
 import{NextRequest,NextResponse}from'next/server';import{z}from'zod';
 import dns from'node:dns/promises';
 import{authenticate}from'../../../../lib/session';
@@ -40,7 +41,7 @@ async function fetchPage(start:URL):Promise<{html:string;finalUrl:string}>{
 }
 export async function POST(req:NextRequest){
   const ctx=await authenticate(req);
-  if(!ctx)return NextResponse.json({error:'Please sign in.'},{status:401});
+  if(!ctx){const d=demoLocked();if(d)return d;return NextResponse.json({error:'Please sign in.'},{status:401});}
   if(!validOrigin(req))return NextResponse.json({error:'Invalid origin'},{status:403});
   if(!allowRequest('verify-install:'+ctx.userId))return NextResponse.json({error:'Please wait a minute.'},{status:429});
   try{

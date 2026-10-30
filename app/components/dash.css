@@ -175,3 +175,33 @@ html[data-theme=dark] .desk-ui .ap-dash{color-scheme:light;--desk-bg:#EEF1F8;--d
 @keyframes ap-chart-fade-in{to{opacity:1}}
 .ap-chart-dnum{opacity:0;animation:ap-chart-fade-in .4s ease .45s both}
 @media(prefers-reduced-motion:reduce){.ap-chart-bar,.ap-chart-bar-un,.ap-chart-guide,.ap-chart-chip,.ap-chart-lab,.ap-chart-sweep,.ap-chart-dnum{animation:none;opacity:1;stroke-dashoffset:0;transform:none}}
+
+/* In-house line/area, sparkline, stacked bars, radial rings (charts.tsx) - brand palette */
+.ap-line-grid{stroke:#E8EDF8;stroke-width:1;stroke-dasharray:4 6}
+.ap-line-area{fill:#09318D;fill-opacity:.12;opacity:0;animation:ap-chart-fade-in .6s ease .65s both}
+.ap-line-main{fill:none;stroke:#09318D;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.ap-line-alt{fill:none;stroke:#FD91CC;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.ap-line-dot{fill:#fff;stroke:#09318D;stroke-width:2;opacity:0;animation:ap-chart-fade-in .4s ease .55s both}
+.ap-line-dot-peak{fill:#FD91CC;stroke:#041A52}
+.ap-line-draw{stroke-dasharray:1;stroke-dashoffset:1;animation:ap-line-draw 1s var(--ap-e-expo,cubic-bezier(.16,1,.3,1)) .1s both}
+@keyframes ap-line-draw{to{stroke-dashoffset:0}}
+.ap-spark{display:block;width:96px;height:30px;margin-top:6px}
+.ap-spark-line{fill:none;stroke:#09318D;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ap-spark-alt{stroke:#FD91CC}
+.ap-spark-fill{fill:#09318D;fill-opacity:.09;opacity:0;animation:ap-chart-fade-in .5s ease .5s both}
+.ap-spark-fill-alt{fill:#FD91CC}
+.ap-stack-seg{transform-box:fill-box;transform-origin:50% 100%;animation:ap-chart-grow .6s var(--ap-e-quint,cubic-bezier(.22,1,.36,1)) both;transition:filter .15s ease}
+.ap-stack-seg:hover{filter:brightness(1.12)}
+.ap-stack-0{fill:#09318D}
+.ap-stack-1{fill:#FD91CC}
+.ap-stack-2{fill:#041A52}
+.ap-ring-track{fill:none;stroke:#E8EDF8;stroke-width:8}
+.ap-ring{fill:none;stroke-width:8;stroke-linecap:round}
+.ap-ring-0{stroke:#09318D}
+.ap-ring-1{stroke:#FD91CC}
+.ap-ring-2{stroke:#041A52}
+@media(prefers-reduced-motion:reduce){.ap-line-draw,.ap-line-area,.ap-line-dot,.ap-spark-fill,.ap-stack-seg,.ap-ring{animation:none;opacity:1;stroke-dashoffset:0;transform:none}}
+
+/* Open demo preview banner */
+.ap-demo-banner{position:sticky;top:0;z-index:60;padding:8px 14px;background:#FD91CC;color:#041A52;font-size:12px;font-weight:600;text-align:center;border-bottom:2px solid #041A52}
+.ap-demo-banner a{color:#09318D;text-decoration:underline}

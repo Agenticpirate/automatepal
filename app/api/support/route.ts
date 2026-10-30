@@ -1,3 +1,4 @@
+import{demoGate,demoLocked}from'../../../lib/demo-open';
 import {knowledgeDiagnostic} from '../../../lib/telemetry';
 import {billingPreview} from '../../../lib/billing-preview';
 import{widgetSettings}from'../../../lib/widget';
@@ -7,8 +8,7 @@ import { createClient } from '@supabase/supabase-js';
 import { randomBytes,randomUUID,createHash } from 'node:crypto';
 import {answerKnowledge,safeKnowledge,embedKnowledge,exactCustomAnswer,instructionExtraction} from '../../../lib/knowledge';
 import { z } from 'zod';
-import {authenticate} from '../../../lib/session';
-import {validOrigin} from '../../../lib/origin';
+import {authenticate} from '../../../lib/session';import {validOrigin} from '../../../lib/origin';
 import {allowRequest} from '../../../lib/rate-limit';
 const tokenSchema=z.string().regex(/^[a-f0-9]{64}$/);
 const hash=(t:string)=>createHash('sha256').update(t).digest('hex');
@@ -19,7 +19,7 @@ export async function GET(req:NextRequest){
   const {data,error}=await publicClient().rpc('support_case_view',{p_hash:hash(token)});
   return NextResponse.json(error||!data?{error:'This fictional demo link is unavailable or expired.'}:{case:{...data,billing:billingPreview(data)}},{status:error||!data?404:200,headers:{'Cache-Control':'no-store','Referrer-Policy':'no-referrer'}});
  }
- const ctx=await authenticate(req);if(!ctx)return NextResponse.json({error:'Please sign in.'},{status:401});
+ const ctx=await authenticate(req);if(!ctx){const d=demoGate(req,'support');if(d)return d;return NextResponse.json({error:'Please sign in.'},{status:401});}
  const {data,error}=await ctx.client.from('support_requests').select('id,case_id,created_at,kind,message,status,contact_email,contact_consent').eq('user_id',ctx.userId).order('created_at',{ascending:false}).limit(100);
  const cases=await ctx.client.from('support_cases').select('id,created_at,expires_at,order_label,inbox_state').eq('user_id',ctx.userId).order('created_at',{ascending:false}).limit(100);
  const settings=await ctx.client.from('widget_settings').select('label,color,initials,prompts,controls').eq('user_id',ctx.userId).maybeSingle();
@@ -41,7 +41,7 @@ export async function POST(req:NextRequest){
    const {data,error}=await publicClient().rpc('support_case_contact',{p_hash:hash(d.token),p_kind:d.kind,p_message:d.message,p_email:d.email??null,p_consent:d.consent});
    if(error)throw Error('Request unavailable, expired or limit reached.');return NextResponse.json({id:data,note:'Sent to the demo owner for review. No refund, payment or email has been sent.'});
   }
-  const ctx=await authenticate(req);if(!ctx)return NextResponse.json({error:'Please sign in.'},{status:401});
+  const ctx=await authenticate(req);if(!ctx){const d=demoLocked();if(d)return d;return NextResponse.json({error:'Please sign in.'},{status:401});}
   if(!allowRequest(ctx.userId))return NextResponse.json({error:'Please wait a minute.'},{status:429});
   if(body?.action==='inbox'){const d=z.object({id:z.string().uuid(),state:z.enum(['open','taken_over','closed'])}).parse(body);const{data,error}=await ctx.client.rpc('set_support_inbox',{p_id:d.id,p_state:d.state});if(error||!data)throw Error('Case unavailable.');return NextResponse.json({note:'Case state updated. No message or payment sent.'});}
   if(body?.action==='settings'){

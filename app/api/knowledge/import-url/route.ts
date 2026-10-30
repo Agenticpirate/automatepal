@@ -1,3 +1,4 @@
+import{demoLocked}from'../../../../lib/demo-open';
 import{NextRequest,NextResponse}from'next/server';
 import dns from'node:dns/promises';
 import{authenticate}from'../../../../lib/session';
@@ -14,7 +15,7 @@ async function readCapped(res:Response):Promise<{text:string;bytes:number;trunca
 }
 export async function POST(req:NextRequest){
  if(!validOrigin(req))return NextResponse.json({error:'Invalid origin'},{status:403});
- const ctx=await authenticate(req);if(!ctx)return NextResponse.json({error:'Please sign in.'},{status:401});
+ const ctx=await authenticate(req);if(!ctx){const d=demoLocked();if(d)return d;return NextResponse.json({error:'Please sign in.'},{status:401});}
  if(!allowRequest('url-import:'+ctx.userId))return NextResponse.json({error:'Please wait a minute between imports.'},{status:429});
  let body:{url?:string};try{body=await req.json();}catch{return NextResponse.json({error:'Invalid request.'},{status:400});}
  const url=(body?.url??'').slice(0,500);

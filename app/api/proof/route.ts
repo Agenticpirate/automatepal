@@ -1,8 +1,8 @@
+import{demoGate,demoLocked}from'../../../lib/demo-open';
 import {limitedJson} from '../../../lib/limited-json';
 import { NextRequest,NextResponse } from 'next/server';
 import { randomUUID } from 'node:crypto';
-import { authenticate } from '../../../lib/session';
-import { validOrigin } from '../../../lib/origin';
+import { authenticate } from '../../../lib/session';import { validOrigin } from '../../../lib/origin';
 import { allowRequest } from '../../../lib/rate-limit';
 import { proofInput,fetchEvidence,assessEvidence } from '../../../lib/proof';
 import { requestContext } from '../../../lib/session';
@@ -12,7 +12,7 @@ import { allEvents } from '../../../lib/store';
 import { z } from 'zod';
 import {reconcileProof} from '../../../lib/proof-reconciliation';
 export async function GET(req:NextRequest){
- const ctx=await authenticate(req);if(!ctx)return NextResponse.json({error:'Please sign in.'},{status:401});
+ const ctx=await authenticate(req);if(!ctx){const d=demoGate(req,'proof');if(d)return d;return NextResponse.json({error:'Please sign in.'},{status:401});}
  const {data,error}=await ctx.client.from('proof_contracts').select('*').eq('user_id',ctx.userId).order('created_at',{ascending:false}).limit(30);
  if(error)return NextResponse.json({error:'Could not load proof contracts.'},{status:503});
  const ids=(data??[]).map(c=>c.id);const assessments=ids.length?await ctx.client.from('proof_assessments').select('*').eq('user_id',ctx.userId).in('contract_id',ids).order('created_at',{ascending:false}).limit(60):{data:[]};
@@ -20,7 +20,7 @@ export async function GET(req:NextRequest){
  return NextResponse.json({contracts:data,assessments:assessments.data??[],events:events.filter(e=>e.meta?.contractId)},{headers:{'Cache-Control':'no-store'}});
 }
 export async function POST(req:NextRequest){
- const ctx=await authenticate(req);if(!ctx)return NextResponse.json({error:'Please sign in.'},{status:401});
+ const ctx=await authenticate(req);if(!ctx){const d=demoLocked();if(d)return d;return NextResponse.json({error:'Please sign in.'},{status:401});}
  if(!validOrigin(req))return NextResponse.json({error:'Invalid origin'},{status:403});
  if(!allowRequest(ctx.userId))return NextResponse.json({error:'Please wait a minute.'},{status:429});
  const body=await limitedJson(req,16000).then(v=>v as Record<string,unknown>|null).catch(()=>null);

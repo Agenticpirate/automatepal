@@ -1,7 +1,7 @@
 import assert from'node:assert/strict';
 import{spawn}from'node:child_process';
 const PORT=3253,BASE=`http://127.0.0.1:${PORT}`;
-const server=spawn('npm',['run','start','--','--port',String(PORT)],{stdio:'ignore'});
+const server=spawn('npm',['run','start','--','--port',String(PORT)],{stdio:'ignore',env:{...process.env,NEXT_PUBLIC_DEMO_OPEN:'false'}});
 async function waitServer(){const dl=Date.now()+60000;while(Date.now()<dl){try{const r=await fetch(BASE+'/widget.js');if(r.status<500)return;}catch{}await new Promise(r=>setTimeout(r,1000));}throw Error('no server');}
 try{
  await waitServer();

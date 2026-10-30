@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { authHeaders } from "../../lib/browser-auth";
 import Link from "next/link";
-import { AgGridReact } from "ag-grid-react";
+import { AgGridReact } from "ag-grid-react";import { LineArea } from "../components/charts";import "../components/dash.css";
 import { AllCommunityModule, ModuleRegistry, ColDef, CellStyle, themeQuartz } from "ag-grid-community";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -25,11 +25,12 @@ export default function Dashboard() {
   const [demo,setDemo]=useState<Stats|null>(null);
   const [showDemo,setShowDemo]=useState(false);
   const [stats, setStats] = useState<Stats | null>(null);
+  const [anchor,setAnchor]=useState(0);
 
   useEffect(() => {
     authHeaders().then(headers => fetch("/api/dashboard", {headers})).then((r) => r.json()).then((d) => {
       if(d.error){setError(d.error);return;}
-      setEvents(d.events??[]); setStats(d.stats);setDemo(d.demoStats);
+      setEvents(d.events??[]); setStats(d.stats);setDemo(d.demoStats);setAnchor(Date.now());
     }).catch(()=>setError("Could not load your activity."));
   }, []);
 
@@ -56,6 +57,7 @@ export default function Dashboard() {
     </div>
   );
 
+  const vol=(anchor?Array.from({length:14},(_,i)=>{const day=new Date(anchor-(13-i)*86400000).toISOString().slice(0,10);return {day,total:events.filter(e=>e.source===(showDemo?"simulation":"paypal_sandbox")&&e.kind==="payment_succeeded"&&e.ts.startsWith(day)).reduce((a,e)=>a+(e.amount??0),0)};}):[]);
   return (
     <main className="mx-auto max-w-6xl p-4">
       <header className="mb-4 flex items-center justify-between">
@@ -76,6 +78,7 @@ export default function Dashboard() {
         {card("Succeeded", selected ? String(selected.succeededPayments) : "-")}
       </div>
       <p className="mb-3 text-xs text-gray-400">PayPal is a trademark of PayPal, Inc. AutomatePal is not affiliated with or endorsed by PayPal.</p>
+      {anchor>0&&<section className="mb-4 rounded-xl border bg-white p-4 shadow-sm"><h3 className="text-sm font-semibold">Succeeded volume per day</h3><p className="mt-1 text-xs text-gray-400">{showDemo?'FICTIONAL DEMO':'PayPal sandbox'} · loaded events only, by UTC day. Empty days mean no loaded events, not zero sales proof.</p><LineArea rows={vol} primaryLabel="Succeeded volume per day" money/></section>}
       <div style={{ height: 560 }}>
         <AgGridReact
           theme={themeQuartz}

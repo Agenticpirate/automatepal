@@ -2,7 +2,7 @@ import assert from'node:assert/strict';
 import{spawn}from'node:child_process';
 import{chromium,request as pwrequest}from'@playwright/test';
 const PORT=3219,BASE=`http://127.0.0.1:${PORT}`;
-const server=spawn('npm',['run','start','--','--port',String(PORT)],{stdio:'ignore'});
+const server=spawn('npm',['run','start','--','--port',String(PORT)],{stdio:'ignore',env:{...process.env,NEXT_PUBLIC_DEMO_OPEN:'false'}});
 const results={viewport_checks:[],mutation_requests:[],anonymous_status:null,checks:[]};
 function ok(name){results.checks.push(name);console.log('PASS',name);}
 async function waitServer(){const deadline=Date.now()+120000;while(Date.now()<deadline){try{const r=await fetch(BASE+'/knowledge');if(r.status<500)return;}catch{}await new Promise(r=>setTimeout(r,1500));}throw Error('dev server did not start');}

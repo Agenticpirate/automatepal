@@ -22,7 +22,6 @@ try{
    else if(u.includes('/api/webhooks'))body={webhook:null,events:[]};
    else if(u.includes('/api/account-data'))body={events:[],retention:'ok'};
    r.fulfill({status:200,contentType:'application/json',body:JSON.stringify(body)});});
-  const shots=[];
   await p.goto(BASE+'/knowledge');await p.waitForLoadState('networkidle');
   await p.getByText('No sources yet. Add your first above').waitFor({state:'visible',timeout:15000});
   await p.goto(BASE+'/tickets');await p.waitForLoadState('networkidle');

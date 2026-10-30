@@ -366,3 +366,36 @@ html[data-theme=dark] .ap-start{background:#020F33}
 html[data-theme=dark] .ap-public .ap-start h2{color:#fff}
 html[data-theme=dark] .ap-public .ap-start>p:last-child{color:#B9C7EA}
 .ap-footer>.ap-footer-grid{display:grid}
+
+/* === Public auth/status pages: navy band, dot texture, morphism card (Oct 30). === */
+.ap-auth-band{min-height:calc(100vh - 50px);background:radial-gradient(rgba(255,255,255,.13) 1px,transparent 1.6px) 0 0/26px 26px,linear-gradient(160deg,#041A52 0%,#09318D 55%,#0B3CA8 100%);padding:20px 5vw 70px;display:flex;flex-direction:column}
+.ap-auth-nav{display:flex;justify-content:space-between;align-items:center;gap:16px;max-width:1160px;width:100%;margin:0 auto 8px}
+.ap-auth-nav .ap-mark{color:#fff;font-size:18px;font-weight:650;letter-spacing:-.6px}
+.ap-auth-back{color:#C7D4F2;font-size:12px;border-bottom:1px solid rgba(255,255,255,.4);padding:6px 0}
+.ap-auth-card,.ap-status-card{background:#fff;border:3px solid var(--ap-navy,#041A52);border-radius:20px;box-shadow:10px 10px 0 rgba(4,26,82,.85);max-width:560px;width:100%;margin:34px auto;padding:38px 40px;color:var(--ap-ink,#0A1B3D)}
+.ap-status-card{max-width:680px}
+.ap-auth-card .ap-kicker{font-family:var(--font-geist-mono),monospace;font-size:10px;letter-spacing:1.6px;color:#E25FAE}
+.ap-auth-card h1,.ap-status-card h1{font-size:clamp(30px,4vw,42px);font-weight:650;letter-spacing:-1.8px;line-height:1.08;margin:12px 0 14px}
+.ap-auth-intro{font-size:14px;line-height:1.7;color:var(--ap-muted,#4A5878);margin-bottom:22px}
+.ap-auth-google{width:100%;background:var(--ap-navy,#041A52);color:#fff;border:3px solid var(--ap-navy,#041A52);border-radius:12px;padding:13px;font-size:13px;font-weight:700;min-height:48px;transition:transform .12s ease,box-shadow .12s ease;box-shadow:4px 4px 0 rgba(4,26,82,.3)}
+.ap-auth-google:not(:disabled):hover{transform:translate(-1px,-1px);box-shadow:6px 6px 0 rgba(4,26,82,.3)}
+.ap-auth-or{text-align:center;font-family:var(--font-geist-mono),monospace;font-size:10px;color:var(--ap-muted,#4A5878);margin:16px 0;position:relative}
+.ap-auth-card form label{display:block;font-size:12px;font-weight:600}
+.ap-auth-card form input{display:block;width:100%;margin-top:6px;border:2px solid var(--ap-rule,#C9D2EA);border-radius:10px;padding:11px 12px;font-size:13px;background:#F4F7FE;color:var(--ap-ink,#0A1B3D)}
+.ap-auth-card form input:focus-visible{outline:2px solid var(--ap-blue,#09318D);outline-offset:2px}
+.ap-auth-submit{width:100%;margin-top:14px;background:var(--ap-pink,#FD91CC);color:var(--ap-navy,#041A52);border:3px solid var(--ap-navy,#041A52);border-radius:12px;box-shadow:4px 4px 0 var(--ap-navy,#041A52);padding:13px;font-size:13px;font-weight:700;min-height:48px;transition:transform .12s ease,box-shadow .12s ease}
+.ap-auth-submit:not(:disabled):hover{transform:translate(-1px,-1px);box-shadow:6px 6px 0 var(--ap-navy,#041A52)}
+.ap-auth-submit:not(:disabled):active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ap-navy,#041A52)}
+.ap-auth-verify{margin-top:20px;border-top:2px solid #E3E9F7;padding-top:18px}
+.ap-auth-ghost{width:100%;margin-top:12px;background:#fff;color:var(--ap-navy,#041A52);border:3px solid var(--ap-navy,#041A52);border-radius:12px;padding:12px;font-size:13px;font-weight:700;min-height:46px;transition:background .12s ease}
+.ap-auth-ghost:not(:disabled):hover{background:#F4F7FE}
+.ap-auth-message{margin:18px 0 4px;font-size:13px;line-height:1.65;min-height:1.4em;color:var(--ap-ink,#0A1B3D)}
+.ap-auth-note{margin-top:16px;border-radius:12px;background:#EAF0FC;border:2px solid #E3E9F7;padding:14px 16px;font-size:11px;line-height:1.7;color:var(--ap-muted,#4A5878)}
+.ap-auth-foot{margin-top:16px;font-size:11px;color:var(--ap-muted,#4A5878)}
+.ap-auth-foot a{border-bottom:1px solid var(--ap-rule,#C9D2EA)}
+.ap-status-dl{display:grid;gap:14px;border:2px solid #E3E9F7;border-radius:14px;background:#F4F7FE;padding:18px 20px;margin-bottom:22px;font-size:13px}
+.ap-status-dl dt{font-family:var(--font-geist-mono),monospace;font-size:9px;letter-spacing:1.2px;color:var(--ap-muted,#4A5878)}
+.ap-status-dl dd{margin-top:4px;font-weight:600}
+.ap-status-links{display:flex;gap:22px;flex-wrap:wrap}
+.ap-status-links .ap-text-link{color:var(--ap-blue,#09318D);border-bottom-color:var(--ap-rule,#C9D2EA)}
+@media(max-width:760px){.ap-auth-band{padding:14px 5vw 50px}.ap-auth-card,.ap-status-card{padding:26px 20px;margin-top:22px;box-shadow:6px 6px 0 rgba(4,26,82,.85)}}

@@ -152,3 +152,15 @@ html[data-theme=dark] .desk-ui .ap-dash{color-scheme:light;--desk-bg:#EEF1F8;--d
 .ap-dash-platform-active{border-color:#041A52!important;background:#E3EBFF!important;color:#09318D!important}
 .ap-dash-kpi-cchip::after{content:'live snapshot';display:inline-flex;margin-top:8px;font-size:10px;font-weight:600;color:#4A5878;background:#F0F3FA;border-radius:999px;padding:3px 9px}
 .ap-dash-trend{list-style:none;margin:10px 0 0;padding:0}
+.ap-chart{display:block;width:100%;height:auto;margin-top:12px}
+.ap-chart-bar{fill:#DCE4F5}
+.ap-chart-bar-peak{fill:#09318D}
+.ap-chart-bar-un{fill:#FD91CC}
+.ap-chart-guide{stroke:#FD91CC;stroke-width:1.5;stroke-dasharray:5 5}
+.ap-chart-chip rect{fill:#041A52}
+.ap-chart-chip text{fill:#fff;font-size:12px;font-weight:600}
+.ap-chart-lab{fill:#7A88A6;font-size:11px}
+.ap-chart-dtrack{fill:none;stroke:#E8EDF8;stroke-width:9}
+.ap-chart-danswered{fill:none;stroke:#09318D;stroke-width:9;stroke-linecap:round}
+.ap-chart-dun{fill:none;stroke:#FD91CC;stroke-width:9;stroke-linecap:round}
+.ap-chart-dnum{fill:#0A1B3D;font-size:17px;font-weight:700}

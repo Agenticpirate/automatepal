@@ -107,7 +107,7 @@ export default function VideoPreviewPage() {
       <div className="vp-page">
         <header className={open ? 'vp-header vp-open' : 'vp-header'}>
           <Link href="/" className="vp-logo" aria-label="AutomatePal home">
-            <Image src="/automatepal-mark.svg" alt="" width={52} height={52} />
+            <Image src="/automatepal-logo.png" alt="" width={104} height={51} />
           </Link>
           <nav className="vp-nav" aria-label="Primary">
             {NAV.map((n) => (

@@ -30,7 +30,7 @@ export default function Pricing(){
   return <DeskShell widget darkDefault><main className="ap-cx"><div className="ap-cx-frame"><div className="ap-cx-inner">
     <div className="ap-cx-navwrap">
       <nav className="ap-cx-nav" aria-label="Primary">
-        <Link href="/" className="ap-cx-logo"><Image src="/automatepal-mark.svg" alt="" width={26} height={26}/>AutomatePal</Link>
+        <Link href="/" className="ap-cx-logo"><Image src="/automatepal-logo.png" alt="" width={45} height={22}/>AutomatePal</Link>
         <div className="ap-cx-links">
           {NAV.map(n=><Link key={n.label} href={n.href} className={n.active?'ap-cx-active':undefined}><Icon name={n.icon} size={13}/>{n.label}</Link>)}
         </div>

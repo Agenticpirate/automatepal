@@ -47,7 +47,7 @@ export default function DashShell({crumb,notifications=[],search,onSearch,childr
   const navItems=<>{NAV.map(([href,label,icon])=><Link key={href} href={href} aria-current={path===href?'page':undefined} className={path===href?'ap-dash-active':''}><DIcon name={icon} size={16}/><span>{label}</span></Link>)}</>;
   return <div className="ap-dash">
     <aside className="ap-dash-side">
-      <Link href="/" className="ap-dash-brand"><Image src="/automatepal-mark.svg" alt="" width={30} height={30}/><span>AutomatePal</span></Link>
+      <Link href="/" className="ap-dash-brand"><Image src="/automatepal-logo.png" alt="" width={53} height={26}/><span>AutomatePal</span></Link>
       <nav aria-label="Workspace">{navItems}</nav>
       <div className="ap-dash-side-foot">
         <Link href="/sandbox-catalog"><DIcon name="catalog" size={14}/><span>Sandbox plans</span></Link>

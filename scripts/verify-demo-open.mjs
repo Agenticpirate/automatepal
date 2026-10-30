@@ -2,7 +2,8 @@ import assert from'node:assert/strict';
 import{spawn}from'node:child_process';
 import{chromium}from'@playwright/test';
 /* Open demo preview mode: unauthenticated visitors can view the app surfaces with the
-   in-repo fictional fixtures; writes stay locked; noindex + robots; banner visible;
+   in-repo fictional fixtures; writes stay locked; public pages indexable, app surfaces
+   noindex, API never crawled; banner visible;
    the new in-house charts render from the fixture rows. Server runs with the flag's
    default (ON). No route interception - the point is that the real demo path works. */
 const PORT=3260,BASE=`http://127.0.0.1:${PORT}`;
@@ -25,8 +26,12 @@ try{
  assert.equal(chat.status,403,'chat blocked in demo');
  ok('writes and AI chat return read-only 403 in demo mode');
  const robots=await(await fetch(BASE+'/robots.txt')).text();
- assert.ok(/Disallow: \//.test(robots),'robots disallows all in demo mode');
- ok('robots.txt disallows all in demo mode');
+ assert.ok(/Allow: \/\n/.test(robots)&&/Disallow: \/api\//.test(robots)&&!/Disallow: \/\n/.test(robots),'robots allows public pages, blocks API');
+ assert.ok(robots.includes('Sitemap: https://automatepal.onrender.com/sitemap.xml'),'robots sitemap');
+ for(const path of['/owner','/tickets','/dashboard','/operations','/knowledge']){
+  const r=await fetch(BASE+path);assert.ok((r.headers.get('x-robots-tag')??'').includes('noindex'),path+' noindex header');
+ }
+ ok('robots.txt allows public pages and blocks /api/; demo app surfaces carry noindex headers');
  const b=await chromium.launch();
  try{
  for(const[name,vp]of[['desktop',{width:1280,height:900}],['mobile',{width:390,height:844}]]){
@@ -34,8 +39,9 @@ try{
   const mutations=[];p.on('request',r=>{if(r.url().includes('/api/')&&r.method()!=='GET')mutations.push(r.method()+' '+r.url());});
   const home=await p.goto(BASE+'/');await p.waitForLoadState('networkidle');
   const robotsMeta=await p.evaluate(()=>document.querySelector('meta[name=robots]')?.content??'');
-  assert.ok(/noindex/.test(robotsMeta),'noindex meta on /');
-  ok(name+' homepage carries noindex/nofollow meta');
+  assert.ok(/index, follow/.test(robotsMeta)&&!/noindex/.test(robotsMeta),'homepage indexable');
+  assert.ok(await p.locator('link[rel=icon][href^="/favicon.ico"]').count()===1,'favicon link');
+  ok(name+' homepage is indexable and links the favicon');
   await p.goto(BASE+'/owner');await p.waitForLoadState('networkidle');
   await p.getByText('Open demo preview').waitFor({state:'visible',timeout:15000});
   await p.getByText('Fictional Launch Kit order').first().waitFor({state:'visible'});

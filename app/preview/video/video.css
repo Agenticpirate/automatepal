@@ -29,7 +29,7 @@
 .vp-header{flex-shrink:0;display:flex;align-items:center;justify-content:center;gap:clamp(18px,2.8vw,28px);width:min(720px,100%);animation:vp-slideDown .7s cubic-bezier(.22,1,.36,1) both;z-index:30}
 .vp-logo{display:grid;place-items:center;width:clamp(40px,4.4vw,46px);height:clamp(40px,4.4vw,46px);border-radius:50%;background:#fff;box-shadow:var(--vp-nav-shadow);transition:transform .2s ease;flex-shrink:0}
 .vp-logo:hover{transform:scale(1.04)}
-.vp-logo img{width:72%;height:72%;object-fit:contain}
+.vp-logo img{width:82%;height:82%;object-fit:contain}
 .vp-nav{flex:1;max-width:430px;height:clamp(44px,5.2vw,48px);background:#fff;border-radius:999px;box-shadow:var(--vp-nav-shadow);display:flex;align-items:center;justify-content:center;gap:clamp(10px,2vw,26px);padding:4px 8px}
 .vp-nav a{position:relative;font-weight:500;font-size:clamp(13px,1.4vw,15px);letter-spacing:-.01em;color:var(--vp-nav-text);opacity:.5;text-decoration:none;transition:opacity .15s ease;padding:6px 2px}
 .vp-nav a:hover{opacity:.75}

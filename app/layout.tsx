@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -19,9 +19,13 @@ export const metadata: Metadata = {
  alternates:{canonical:'/'},
  openGraph:{type:'website',siteName:'AutomatePal',url:'/',title:'AutomatePal - support with a clear next step',description:'Source-backed answers and owner review. Fictional-data preview, no live payments.',images:[{url:'/opengraph-image',width:1200,height:630,alt:'AutomatePal: source-backed answers, owner review, fictional-data preview'}]},
  twitter:{card:'summary_large_image',title:'AutomatePal - source-backed support preview',description:'Source-backed answers and owner review. Fictional-data preview, no live payments.',images:['/opengraph-image']},
- robots:process.env.NEXT_PUBLIC_DEMO_OPEN!=='false'?{index:false,follow:false}:{index:true,follow:true},
- icons:{icon:[{url:'/icon.svg',type:'image/svg+xml'},{url:'/favicon.ico',sizes:'any'}]},
+ // Public pages stay indexable in both demo modes so search engines can list the site and its favicon.
+ // App surfaces that show demo fixtures keep their X-Robots-Tag noindex headers (next.config.ts).
+ robots:{index:true,follow:true},
 };
+
+// Brand navy tints the mobile browser address bar (Chrome on Android, Safari).
+export const viewport: Viewport = { themeColor: '#041A52' };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (

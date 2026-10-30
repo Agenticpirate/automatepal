@@ -191,3 +191,64 @@ html[data-theme=dark] .ap-product-frame{background:#fff}
 .ap-suite div[role=group] button[aria-pressed=true]{background:#09318D;color:#fff}
 .ap-suite section[role=status]{background:#fff;border:2.5px solid #041A52!important;border-radius:16px;box-shadow:6px 6px 0 #C9D2EA}
 .ap-suite a:focus-visible,.ap-suite button:focus-visible{outline:2px solid #FD91CC;outline-offset:3px}
+
+/* === Section 1+2: real components, premium bar (Oct 30 evening). Sources: Aceternity Resizable Navbar + Spotlight New (free tier, commercial OK); Magic UI Dot Pattern / Animated Gradient Text / Shimmer Button / Animated Circular Progress Bar / Magic Card (MIT); HyperUI neobrutalism (MIT). CSS-only. === */
+/* Section 1 - Resizable Navbar (Aceternity pattern) */
+.ap-nav-pill{position:sticky;top:12px;z-index:60;width:min(1160px,93vw);margin:14px auto -88px;background:rgba(4,26,82,.78);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:2px solid rgba(255,255,255,.16);border-radius:999px;padding:12px 24px;box-shadow:5px 5px 0 rgba(4,26,82,.4);color:#fff}
+.ap-nav-pill .ap-mark{color:#fff}
+.ap-nav-pill>div a{color:#DCE5F8}
+.ap-nav-pill .ap-nav-login{color:#fff;border-bottom:2px solid var(--ap-pink);padding:6px 0}
+.ap-nav-pill>div a:hover{color:var(--ap-pink)}
+@supports (animation-timeline: scroll()){
+.ap-nav-pill{animation:ap-nav-shrink linear both;animation-timeline:scroll(root);animation-range:0 220px}
+@keyframes ap-nav-shrink{to{padding:7px 18px;width:min(980px,93vw);box-shadow:4px 4px 0 rgba(4,26,82,.55);background:rgba(4,26,82,.92)}}
+}
+/* Section 2 - Hero: Spotlight New (Aceternity) over dot texture (Magic UI Dot Pattern) */
+.ap-hero-spot{position:relative;overflow:hidden;background:radial-gradient(rgba(255,255,255,.14) 1px,transparent 1.6px) 0 0/26px 26px,linear-gradient(160deg,#041A52 0%,#09318D 55%,#0B3CA8 100%)}
+.ap-hero-spot::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(560px 380px at 18% 12%,rgba(253,145,204,.30),transparent 68%),radial-gradient(700px 460px at 85% 8%,rgba(120,160,255,.26),transparent 70%),radial-gradient(900px 500px at 50% 115%,rgba(253,145,204,.14),transparent 72%)}
+.ap-hero-spot>*{position:relative}
+/* Staggered word reveal (Text Generate pattern, CSS-only) */
+.ap-w{display:inline-block;opacity:0;transform:translateY(.38em);filter:blur(7px);animation:ap-w-in .62s cubic-bezier(.2,.65,.25,1) forwards;animation-delay:calc(var(--i)*95ms)}
+@keyframes ap-w-in{to{opacity:1;transform:none;filter:blur(0)}}
+@media(prefers-reduced-motion:reduce){.ap-w{opacity:1;transform:none;filter:none;animation:none}}
+/* Animated Gradient Text (Magic UI) */
+.ap-w-grad{background:linear-gradient(92deg,#FD91CC 10%,#FFFFFF 45%,#FD91CC 80%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;animation:ap-w-in .62s cubic-bezier(.2,.65,.25,1) forwards,ap-grad-move 5.5s linear infinite;animation-delay:calc(var(--i)*95ms),0s}
+@keyframes ap-grad-move{to{background-position:220% 0}}
+@media(prefers-reduced-motion:reduce){.ap-w-grad{animation:none}}
+/* Shimmer sweep on the beam CTA (Magic UI Shimmer Button pattern) */
+.ap-beam-btn>span{position:relative;overflow:hidden}
+.ap-beam-btn>span::after{content:'';position:absolute;inset:-40% -70%;background:linear-gradient(105deg,transparent 42%,rgba(255,255,255,.55) 50%,transparent 58%);transform:translateX(-120%);animation:ap-shimmer 3.4s ease-in-out infinite}
+@keyframes ap-shimmer{0%,55%{transform:translateX(-120%)}100%{transform:translateX(120%)}}
+@media(prefers-reduced-motion:reduce){.ap-beam-btn>span::after{animation:none;display:none}}
+/* Magic Card spotlight hover on the specimen window (CSS-only radial mask) */
+.ap-specimen-window{position:relative}
+.ap-specimen-window::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:radial-gradient(320px 200px at 70% 0%,rgba(253,145,204,.20),transparent 70%);opacity:0;transition:opacity .25s ease}
+.ap-specimen-window:hover::after{opacity:1}
+/* Floating pink gauge card (Magic UI Animated Circular Progress Bar pattern) */
+.ap-specimen{position:relative}
+.ap-gauge-card{position:absolute;left:-34px;bottom:44px;display:flex;align-items:center;gap:12px;background:var(--ap-pink);color:var(--ap-navy);border:2.5px solid var(--ap-navy);border-radius:16px;padding:12px 18px 12px 12px;box-shadow:6px 6px 0 rgba(4,26,82,.85);transform:rotate(-2deg);z-index:3}
+.ap-gauge-card strong{display:block;font-size:12px;letter-spacing:-.2px}
+.ap-gauge-card p{font-size:9px;color:rgba(4,26,82,.65);margin-top:2px}
+.ap-gauge-track{fill:none;stroke:rgba(4,26,82,.18);stroke-width:9}
+.ap-gauge-fill{fill:none;stroke:#041A52;stroke-width:9;stroke-linecap:round;stroke-dasharray:188.5;stroke-dashoffset:188.5;transform:rotate(-90deg);transform-origin:center;animation:ap-gauge 1.4s cubic-bezier(.3,.7,.3,1) .5s forwards}
+@keyframes ap-gauge{to{stroke-dashoffset:11.3}}
+@media(prefers-reduced-motion:reduce){.ap-gauge-fill{animation:none;stroke-dashoffset:11.3}}
+.ap-gauge-num{font:700 15px var(--font-geist-sans),Arial,sans-serif;fill:#041A52}
+@media(max-width:1250px){.ap-gauge-card{left:-8px}}
+@media(max-width:760px){.ap-gauge-card{position:static;transform:none;margin:14px 0 0;width:fit-content}}
+
+/* Section 1+2 fixes: mobile pill, gauge placement */
+@media(max-width:760px){
+.ap-nav-pill{width:94vw;padding:9px 16px;margin:10px auto -68px}
+.ap-nav-pill>div{gap:14px}
+.ap-nav-pill>div a:not(.ap-nav-login){display:none}
+.ap-nav-pill a{white-space:nowrap}
+.ap-hero{padding-top:64px}
+}
+.ap-gauge-card{bottom:70px}
+@media(max-width:760px){.ap-gauge-card{bottom:auto}}
+
+/* Gauge card docks over the demo footer strip; footer text clears it */
+.ap-gauge-card{bottom:30px}
+.ap-public .ap-demo-footer{padding-left:218px;text-align:left}
+@media(max-width:760px){.ap-gauge-card{bottom:auto}.ap-public .ap-demo-footer{padding-left:20px}}

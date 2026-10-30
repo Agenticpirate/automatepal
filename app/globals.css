@@ -252,3 +252,47 @@ html[data-theme=dark] .ap-product-frame{background:#fff}
 .ap-gauge-card{bottom:30px}
 .ap-public .ap-demo-footer{padding-left:218px;text-align:left}
 @media(max-width:760px){.ap-gauge-card{bottom:auto}.ap-public .ap-demo-footer{padding-left:20px}}
+
+/* === Specimen brand restyle (no white slab): navy surface, pink accents, white as accent. Both themes forced. === */
+.ap-public .ap-specimen-window,html[data-theme=dark] .ap-public .ap-specimen-window{background:linear-gradient(165deg,#041A52 0%,#09318D 88%);border:3px solid #FD91CC;border-radius:20px;box-shadow:10px 10px 0 rgba(253,145,204,.34)}
+.ap-public .ap-demo-top,html[data-theme=dark] .ap-public .ap-demo-top{border-bottom:1px solid rgba(255,255,255,.16)}
+.ap-public .ap-demo-top strong,html[data-theme=dark] .ap-public .ap-demo-top strong{color:#fff!important}
+.ap-public .ap-demo-top p,html[data-theme=dark] .ap-public .ap-demo-top p{color:#C7D4F2!important}
+.ap-public .ap-demo-avatar,html[data-theme=dark] .ap-public .ap-demo-avatar{background:#FD91CC;color:#041A52}
+.ap-public .ap-demo-state,html[data-theme=dark] .ap-public .ap-demo-state{background:#FD91CC;color:#041A52;border-radius:999px;padding:5px 12px;font-weight:700}
+.ap-public .ap-demo-welcome,html[data-theme=dark] .ap-public .ap-demo-welcome{color:#fff!important}
+.ap-public .ap-demo-conversation label,html[data-theme=dark] .ap-public .ap-demo-conversation label{color:#C7D4F2!important}
+.ap-public .ap-demo-conversation select,html[data-theme=dark] .ap-public .ap-demo-conversation select{background:#062668;color:#fff;border:2px solid rgba(255,255,255,.28);border-radius:12px}
+.ap-public .ap-demo-conversation .ap-demo-submit,html[data-theme=dark] .ap-public .ap-demo-conversation .ap-demo-submit{background:#FD91CC;color:#041A52;border:2.5px solid #041A52;border-radius:12px;box-shadow:4px 4px 0 rgba(3,18,58,.9);font-weight:700}
+.ap-public .ap-demo-conversation .ap-demo-submit:hover,html[data-theme=dark] .ap-public .ap-demo-conversation .ap-demo-submit:hover{background:#E25FAE;border:2.5px solid #041A52;transform:translate(1px,1px);box-shadow:2px 2px 0 rgba(3,18,58,.9)}
+.ap-public .ap-demo-answer>p:nth-child(2),html[data-theme=dark] .ap-public .ap-demo-answer>p:nth-child(2){color:#EAF0FC!important}
+.ap-public .ap-demo-answer .ap-kicker{color:#FD91CC!important}
+.ap-public .ap-demo-answer details,html[data-theme=dark] .ap-public .ap-demo-answer details{color:#C7D4F2!important}
+.ap-public .ap-demo-answer summary{color:#FD91CC}
+.ap-public .ap-demo-empty,html[data-theme=dark] .ap-public .ap-demo-empty{color:#C7D4F2!important}
+.ap-public .ap-demo-empty span{color:#FD91CC}
+.ap-public .ap-demo-footer,html[data-theme=dark] .ap-public .ap-demo-footer{background:#03123A;color:#C7D4F2;border-top:1px solid rgba(255,255,255,.14);padding-left:218px;text-align:left}
+@media(max-width:760px){.ap-public .ap-demo-footer{padding-left:20px}}
+.ap-specimen-window::after{background:radial-gradient(320px 200px at 70% 0%,rgba(253,145,204,.16),transparent 70%)}
+
+/* === Section 3 - Statement: pink marker Highlighter (Magic UI pattern) + Blur Fade entrance === */
+.ap-hl{position:relative;white-space:nowrap}
+.ap-hl::after{content:'';position:absolute;left:-2%;right:-2%;bottom:.04em;height:.34em;background:#FD91CC;z-index:-1;transform:skew(-8deg) rotate(-.6deg)}
+.ap-statement h2,.ap-statement>p{opacity:1}
+.ap-rv-off{opacity:0;transform:translateY(24px);filter:blur(8px)}
+.ap-rv-off .ap-hl::after{transform:skew(-8deg) rotate(-.6deg) scaleX(0)}
+.ap-rv-in{opacity:1;transform:none;filter:none;transition:opacity .7s cubic-bezier(.2,.65,.25,1),transform .7s cubic-bezier(.2,.65,.25,1),filter .7s cubic-bezier(.2,.65,.25,1)}
+.ap-rv-in .ap-hl::after{transform:skew(-8deg) rotate(-.6deg) scaleX(1);transition:transform .55s ease .3s;transform-origin:left}
+@media(prefers-reduced-motion:reduce){.ap-rv-off{opacity:1;transform:none;filter:none}.ap-rv-off .ap-hl::after{transform:skew(-8deg) rotate(-.6deg) scaleX(1)}.ap-rv-in{transition:none}.ap-rv-in .ap-hl::after{transition:none}}
+
+/* === Section 4 - Workflow: Border Beam on brutal cards (Magic UI pattern, CSS-only) === */
+@property --ap-bb{syntax:'<angle>';initial-value:0deg;inherits:false}
+.ap-flow-steps article{position:relative}
+.ap-flow-steps article::before{content:'';position:absolute;inset:-3.5px;border-radius:19px;padding:3.5px;background:conic-gradient(from var(--ap-bb),transparent 62%,#FD91CC 82%,#fff 88%,transparent 100%);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;opacity:0;transition:opacity .25s ease;pointer-events:none}
+.ap-flow-steps article:hover::before,.ap-flow-steps article:focus-within::before{opacity:1;animation:ap-bb-spin 2.6s linear infinite}
+@keyframes ap-bb-spin{to{--ap-bb:360deg}}
+@media(prefers-reduced-motion:reduce){.ap-flow-steps article:hover::before,.ap-flow-steps article:focus-within::before{animation:none}}
+
+/* Highlighter stacking fix + mobile hero breathing room */
+.ap-hl{isolation:isolate}
+@media(max-width:760px){.ap-hero{padding-top:78px}}

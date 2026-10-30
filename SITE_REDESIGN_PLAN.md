@@ -49,6 +49,9 @@ Animation principle: CSS-first (keyframes, @property, IntersectionObserver where
 16. LOGIN. Centered card on deep-blue Spotlight background; pink submit.
 17. STATUS. DeskShell theme; green/amber/pink status dots kept semantic.
 
+## Reusable entrance-motion system (Ravi 8:24 PM: "We can also use this animations in any of our sections as well with our brand colours" + cybersecurity-landing spec)
+Extract the motion, not the page: masked headline-line rise (per-line overflow hidden, pad-bottom 6 / margin-bottom -6 to protect descenders, inner spans from translateY(120%)), clip-path inset(0 100% 0 0) wipe on primary CTAs (draw, not fade), rule draw-in (scaleY 0->1), staggered rise for stats/labels/cards (7-14px), logo scale .9->1, burger overlay with staggered rows and a pink top rule that draws in. Easings: EXPO cubic-bezier(.16,1,.3,1), QUINT cubic-bezier(.22,1,.36,1), QUART cubic-bezier(.25,1,.5,1), TYPE cubic-bezier(.22,.85,.24,1). Timeline ~1.9s master (staggered 0.05-0.09s steps); phone durations x0.86. Armed before paint, no flash; reduced-motion shows final state; no-JS safe; CSS-only implementation (no animation dependency). Apply across landing sections, /preview/video and Part 2 pages where it fits (pink #FD91CC replaces the red rule). Do NOT ship: cybersecurity copy, its 300+/99%/$5M+ stats, the stranger CloudFront video/LUT layers. Space Grotesk + JetBrains Mono are OFL if used.
+
 ## Per-section gate (every step above)
 
 tsc + eslint + next build clean; matching verify-*.mjs spec PASS (verify-landing.mjs selectors preserved or test updated); desktop+mobile screenshots in light+dark inspected against the premium bar (spacing, type hierarchy, contrast, alignment) - fix before moving on; commit; Drive backup to "AutomatePal candidate backups" with get-file verify; report to parent in batches of 2-3 sections.

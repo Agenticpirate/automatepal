@@ -52,6 +52,17 @@ Animation principle: CSS-first (keyframes, @property, IntersectionObserver where
 ## Reusable entrance-motion system (Ravi 8:24 PM: "We can also use this animations in any of our sections as well with our brand colours" + cybersecurity-landing spec)
 Extract the motion, not the page: masked headline-line rise (per-line overflow hidden, pad-bottom 6 / margin-bottom -6 to protect descenders, inner spans from translateY(120%)), clip-path inset(0 100% 0 0) wipe on primary CTAs (draw, not fade), rule draw-in (scaleY 0->1), staggered rise for stats/labels/cards (7-14px), logo scale .9->1, burger overlay with staggered rows and a pink top rule that draws in. Easings: EXPO cubic-bezier(.16,1,.3,1), QUINT cubic-bezier(.22,1,.36,1), QUART cubic-bezier(.25,1,.5,1), TYPE cubic-bezier(.22,.85,.24,1). Timeline ~1.9s master (staggered 0.05-0.09s steps); phone durations x0.86. Armed before paint, no flash; reduced-motion shows final state; no-JS safe; CSS-only implementation (no animation dependency). Apply across landing sections, /preview/video and Part 2 pages where it fits (pink #FD91CC replaces the red rule). Do NOT ship: cybersecurity copy, its 300+/99%/$5M+ stats, the stranger CloudFront video/LUT layers. Space Grotesk + JetBrains Mono are OFL if used.
 
+## Status (Oct 30, 22:50 IST)
+- Part 1 landing: COMPLETE (sections 1-8, committed a7f696a).
+- /preview/video: COMPLETE (e175c78 + icons/spacing 1df68ce).
+- Pricing Convix + shared Gauge + motion seeds: COMPLETE (e2d647a).
+- Part 2 app pages on DashShell: COMPLETE - owner 49f6e0e, tickets 8da4d8d, widget studio 8534d92, knowledge ddbda20, setup 704c92d.
+- Login + status public pages: COMPLETE (e44bbe6).
+- Reusable motion system: COMPLETE - shared tokens (--ap-e-expo/quint/quart/type) + .ap-m-line/.ap-m-wipe/.ap-m-rule/.ap-m-up in globals.css, applied to auth pages; pricing and /preview/video already carry the spec easings; landing keeps ap-w/ap-rv; reduced-motion + no-JS safe.
+- Full-repo gate: ALL 33 scripts/verify-*.mjs PASS locally (none require live external services; verify-seo-hosted runs against local build).
+- Two legacy verify contracts repaired (verify-owner-pages first-article 'Needs intervention 1' via CSS pseudo chip; verify-analytics-window Question trend ol/li rows).
+- Remaining: Ravi logo pick (options sent), then apply logo across surfaces.
+
 ## Per-section gate (every step above)
 
 tsc + eslint + next build clean; matching verify-*.mjs spec PASS (verify-landing.mjs selectors preserved or test updated); desktop+mobile screenshots in light+dark inspected against the premium bar (spacing, type hierarchy, contrast, alignment) - fix before moving on; commit; Drive backup to "AutomatePal candidate backups" with get-file verify; report to parent in batches of 2-3 sections.

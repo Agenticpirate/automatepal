@@ -150,3 +150,5 @@ html[data-theme=dark] .desk-ui .ap-dash{color-scheme:light;--desk-bg:#EEF1F8;--d
 .ap-dash-note-warn{margin:12px 0 0;border:1.5px solid #F3D9A8;background:#FFF9EC;color:#92600B;border-radius:12px;padding:12px 14px;font-size:11.5px;line-height:1.65}
 .ap-dash-note-ok{margin:12px 0 0;border:1.5px solid #BBE4C3;background:#F0FAF1;color:#166534;border-radius:12px;padding:12px 14px;font-size:11.5px;line-height:1.65}
 .ap-dash-platform-active{border-color:#041A52!important;background:#E3EBFF!important;color:#09318D!important}
+.ap-dash-kpi-cchip::after{content:'live snapshot';display:inline-flex;margin-top:8px;font-size:10px;font-weight:600;color:#4A5878;background:#F0F3FA;border-radius:999px;padding:3px 9px}
+.ap-dash-trend{list-style:none;margin:10px 0 0;padding:0}

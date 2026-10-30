@@ -35,8 +35,13 @@ Animation principle: CSS-first (keyframes, @property, IntersectionObserver where
 ## Part 2 - Pages, page by page (after landing sections complete)
 
 9. PRICING. Already themed (f3e7c48): brutal tier cards, pink selected shadow, navy toggle. Upgrade: Magic UI "Magic Card" spotlight hover on tier cards; keep the sandbox disclaimers untouched.
-10. SHARED DESKSHELL. Theme tokens (navy/blue/pink, brutal card, hard shadows) into desk-ui: topbar, nav pills, buttons, inputs. Real components from HyperUI neobrutalism (MIT): buttons, inputs, selects, tabs, badges, progress bars, cards - adapted to palette. One design language across the app.
-11. OWNER OVERVIEW. DeskShell theme + stat tiles as brutal mini-cards; "Needs intervention" list gets Animated List stagger (CSS).
+10. SHARED DESKSHELL -> PREMIUM DASHBOARD SHELL (Ravi 8:11 PM: FlowAI dashboard + notifications screenshots = "Dashboard and notifications design inspiration", "Enhace more and update"). Theme tokens (navy/blue/pink, brutal card, hard shadows) into desk-ui. Real components from HyperUI neobrutalism (MIT): buttons, inputs, selects, tabs, badges, progress bars, cards - adapted to palette. One design language across the app. Dashboard shell structure inspired by the FlowAI reference (structure only, no copied code or assets):
+  - LEFT SIDEBAR: workspace nav (Overview, Tickets, Widget studio, Knowledge, Setup, Status), grouped sections, active item = pink brutal chip, collapse to icons on mobile.
+  - TOP BAR: breadcrumb (Workspace > page), global search input, "Ask AI" style action button (routes to the existing widget demo flow - no fake AI), notifications bell with unread count chip, theme picker kept.
+  - KPI CARDS: real AutomatePal metrics only (needs-intervention count, open/new tickets, unanswered questions, human handoffs, taken-over) as brutal cards with trend chips vs the prior UTC day (computed from existing snapshot data; if no prior data, show "first snapshot" instead of inventing deltas).
+  - RECENT ITEMS TABLE: recent tickets/questions with status badges (needs intervention / open / answered / handed off) in semantic colors kept inside palette.
+  - NOTIFICATIONS PANEL: right slide-over, tabs All / Errors / Success / Info with live counts, "mark all read", cards with colored status chips and relative times. Fed by REAL AutomatePal events only: owner alerts, unanswered questions, escalations, import attempts, health/token status. Persisted read state locally. No invented notifications or numbers.
+11. OWNER OVERVIEW. First page on the new shell: KPI cards row, "Needs intervention" list with Animated List stagger (CSS), notifications panel wired to real owner events.
 12. TICKETS. DeskShell theme; escalation filter pills in navy/pink; row hover states.
 13. WIDGET STUDIO (support). DeskShell theme; preview pane in Safari-style frame; pink accent for active config.
 14. KNOWLEDGE. DeskShell theme; source cards brutal style; import-url input with Border Beam on focus.

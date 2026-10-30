@@ -119,3 +119,6 @@
 .vp-stat{gap:8px}
 .vp-sheet a{display:flex;align-items:center;gap:10px}
 @media(max-width:720px){.vp-hero{padding-bottom:20px}.vp-stats{row-gap:22px}}
+
+/* Mobile: keep the two-line pixel headline inside the viewport (nowrap spans clip otherwise) */
+@media(max-width:720px){.ap-public .vp-headline,.vp .vp-headline{font-size:clamp(17px,5.35vw,40px);letter-spacing:-.03em}}

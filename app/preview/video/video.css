@@ -103,3 +103,19 @@
 /* polish: pixel-font icons render small - bump; mobile headline breathing room */
 .vp-stat-icon{font-size:clamp(26px,3.6vw,40px)}
 @media(max-width:420px){.vp-headline{font-size:clamp(22px,8.1vw,32px)}}
+
+/* Icon pass + spacing rhythm (Ravi 8:21 PM: "include icons and fix the spacing") */
+.vp-nav a{display:inline-flex;align-items:center;gap:6px}
+.vp-signin{gap:7px}
+.vp-trust-pill{gap:7px}
+.vp-ring>span{color:#09318D;display:grid;place-items:center}
+.vp-stat-icon{display:grid;place-items:center;height:clamp(26px,3.6vw,40px);color:var(--vp-pink)}
+.vp-cta-arrow{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:rgba(4,26,82,.14)}
+.vp-hero{justify-content:center;padding-bottom:clamp(28px,6vh,64px)}
+.vp-trust{margin-bottom:clamp(18px,2.8vh,28px)}
+.vp-sub{margin-top:clamp(16px,2.4vh,24px)}
+.vp-cta{margin-top:clamp(20px,3.2vh,32px)}
+.vp-stats{padding-bottom:clamp(4px,1vh,12px)}
+.vp-stat{gap:8px}
+.vp-sheet a{display:flex;align-items:center;gap:10px}
+@media(max-width:720px){.vp-hero{padding-bottom:20px}.vp-stats{row-gap:22px}}

@@ -1,0 +1,22 @@
+import assert from'node:assert/strict';
+import{knowledgeCsv,unansweredCsv,csvCell}from'../lib/exports';
+function ok(n:string){console.log('PASS',n);}
+const doc={id:'d1',title:'Refund "FAQ", v2',published:true,source_kind:'text',applicability:'',effective_from:null,effective_until:null,updated_at:'2026-10-30T10:00:00Z',content:'x'.repeat(42)};
+let csv=knowledgeCsv([doc]);
+assert.ok(csv.startsWith('Source,Full ID,Kind,Applicability'));
+assert.ok(csv.includes('"Refund ""FAQ"", v2"'),'quotes doubled');
+assert.ok(csv.includes('"42"'),'character count');
+ok('knowledgeCsv header, quote escaping, character count');
+assert.ok(knowledgeCsv([]).split('\n').length===1,'empty -> header only');
+ok('knowledgeCsv empty list is header only');
+const qs=[{id:'q1',case_id:'c1',created_at:'2026-10-30T09:00:00Z',question:'Do you ship to Pune?',supported:false,feedback:null},{id:'q2',case_id:null,created_at:'2026-10-30T09:05:00Z',question:'Hours?',supported:true,feedback:1}];
+csv=unansweredCsv(qs);
+assert.ok(csv.includes('Do you ship to Pune?')&&!csv.includes('Hours?'),'only unanswered');
+ok('unansweredCsv filters to unsupported questions');
+assert.equal(csvCell('=HYPERLINK("http://evil")'),'"\'=HYPERLINK(""http://evil"")"');
+assert.equal(csvCell('+1234'),'"\'+1234"');
+assert.equal(csvCell('-5'),'"\'-5"');
+assert.equal(csvCell('@x'),'"\'@x"');
+assert.equal(csvCell('plain'),'"plain"');
+ok('csvCell formula-injection guard');
+console.log('verify-exports: all unit tests passed');

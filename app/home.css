@@ -12,10 +12,63 @@
 .hm-cta-ghost:active,.vp-cta:active,.hm-tabs button:active{transform:scale(.97)}
 @media(hover:hover) and (pointer:fine){.hm-cta-ghost:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.4)}.hm-cta-ghost:hover svg{transform:translateX(3px)}}
 
-/* Capability marquee: constant motion, linear, pauses on hover */
-.hm-marquee{display:flex;overflow:hidden;background:#041A52;border-top:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.08);-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+/* Hero fits the first screen below the 36px theme bar, with the capability marquee as its
+   bottom edge. Spacing scales with viewport height so short laptop screens still fit. */
+.ap-home{--hm-topbar:36px;--hm-pad-x:clamp(14px,3vw,32px)}
+.ap-home .vp.vp-static,.ap-home .vp.vp-static .vp-page{min-height:calc(100dvh - var(--hm-topbar))}
+.ap-home .vp.vp-static .vp-page{padding-bottom:0}
+.ap-home .vp-hero{padding-bottom:clamp(14px,3.2vh,40px)}
+.ap-home .vp-sub{max-width:min(590px,92%)}
+@media(min-width:721px){
+ .ap-home .vp-headline{font-size:clamp(34px,min(6.2vw,8.6vh),80px)}
+ .ap-home .vp-trust{margin-bottom:clamp(12px,2.4vh,28px)}
+ .ap-home .vp-sub{margin-top:clamp(10px,2vh,24px)}
+ .ap-home .hm-hero-ctas{margin-top:clamp(14px,2.6vh,32px)}
+}
+@media(min-width:721px) and (max-height:860px){
+ .ap-home .vp-stat{gap:5px}
+ .ap-home .vp-stat-icon{height:26px}
+ .ap-home .vp-stat-icon svg{width:22px;height:22px}
+ .ap-home .vp-stat-value{font-size:clamp(17px,2.6vh,22px)}
+}
+/* Short screens: drop the decorative stat icons and tighten type so the marquee stays on screen */
+@media(max-height:720px){
+ .ap-home .vp-stat-icon{display:none}
+ .ap-home .vp-stat{gap:2px}
+}
+@media(min-width:721px) and (max-height:720px){
+ .ap-home .vp-headline{font-size:clamp(34px,min(6.2vw,7.8vh),80px)}
+ .ap-home .vp-sub{font-size:15px;line-height:1.5}
+ .ap-home .vp-trust{--trust-size:34px}
+}
+.ap-home .vp-sub{text-wrap:balance}
+@media(max-width:720px){
+ /* Phones: let each headline line wrap at a readable size instead of shrinking to one line */
+ .ap-home .vp .vp-headline{font-size:clamp(26px,8.6vw,44px);letter-spacing:-.04em;line-height:1.04;text-wrap:balance}
+ .ap-home .vp .vp-headline span{white-space:normal}
+ .ap-home .vp-stats{row-gap:12px}
+ .ap-home .vp-stat{gap:3px}
+ .ap-home .vp-stat-icon{height:24px}
+ .ap-home .vp-stat-icon svg{width:20px;height:20px}
+ .ap-home .vp-stat-value{font-size:18px}
+ .ap-home .vp-sub{font-size:14.5px;line-height:1.5}
+}
+
+/* Short phones: tighter rhythm and no stat icons, so the marquee still lands on the first screen */
+@media(max-width:720px) and (max-height:780px){
+ .ap-home .vp-stat-icon{display:none}
+ .ap-home .vp .vp-headline{font-size:clamp(24px,7.6vw,40px)}
+ .ap-home .vp-sub{font-size:14px;line-height:1.45;margin-top:10px}
+ .ap-home .vp-trust{margin-bottom:12px}
+ .ap-home .hm-hero-ctas{margin-top:14px}
+ .ap-home .vp-hero{padding-bottom:10px}
+ .ap-home .hm-marquee{margin-top:10px}
+}
+
+/* Capability marquee: constant motion, linear, pauses on hover. Full-bleed bottom edge of the hero. */
+.hm-marquee{position:relative;z-index:1;flex-shrink:0;display:flex;overflow:hidden;align-self:stretch;margin:clamp(14px,2.6vh,30px) calc(-1*var(--hm-pad-x)) 0;background:linear-gradient(180deg,rgba(4,26,82,.15),rgba(4,26,82,.55));border-top:1px solid rgba(255,255,255,.1);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);-webkit-mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent)}
 .hm-marquee-track{display:flex;flex-shrink:0;align-items:center;gap:0;margin:0;padding:0;list-style:none;animation:hm-marquee 46s linear infinite}
-.hm-marquee-track li{display:flex;align-items:center;gap:14px;padding:16px 0 16px 28px;white-space:nowrap;color:#C7D4F2;font-size:13px;font-weight:500;letter-spacing:-.005em}
+.hm-marquee-track li{display:flex;align-items:center;gap:14px;padding:clamp(11px,1.8vh,16px) 0 clamp(11px,1.8vh,16px) 28px;white-space:nowrap;color:#C7D4F2;font-size:13px;font-weight:500;letter-spacing:-.005em}
 .hm-marquee-track li::after{content:'';width:5px;height:5px;border-radius:50%;background:#FD91CC;margin-left:14px;opacity:.9}
 @media(hover:hover) and (pointer:fine){.hm-marquee:hover .hm-marquee-track{animation-play-state:paused}}
 @keyframes hm-marquee{to{transform:translateX(-100%)}}
@@ -179,10 +232,11 @@
 
 /* Reduced motion: final states, no movement; colour/opacity changes stay instant */
 @media(prefers-reduced-motion:reduce){
- .hm-marquee{-webkit-mask-image:none;mask-image:none}
- .hm-marquee-track{animation:none;flex-wrap:wrap;justify-content:center;flex-shrink:1;padding:6px 4vw}
+ /* No movement: one static row the visitor can scroll sideways */
+ .hm-marquee{overflow-x:auto;scrollbar-width:none}
+ .hm-marquee::-webkit-scrollbar{display:none}
+ .hm-marquee-track{animation:none}
  .hm-marquee-track[aria-hidden=true]{display:none}
- .hm-marquee-track li{padding:8px 0 8px 22px}
  .ap-home .ap-rv-in{transition-delay:0s}
  .ap-home .hm-clip .ap-product-frame,.ap-home .hm-clip.ap-rv-off:not(.ap-rv-in) .ap-product-frame{clip-path:none;transition:none}
  .hm-node,.hm-out,.hm-pipe-q,.hm-link::after,.hm-card,.hm-v-rows li,.hm-v-switch,.hm-v-switch i,.hm-v-toggle-a,.hm-v-toggle-b,.hm-v-launcher,.hm-v-bars span::before,.hm-v-quote mark::before,.hm-cta-ghost,.hm-cta-ghost svg{transition:none}

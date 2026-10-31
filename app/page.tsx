@@ -156,14 +156,13 @@ export default function Landing(){
       <div className="vp-stats" ref={statsRef}>
         {STATS.map((s,i)=>(<div className="vp-stat vp-anim" key={s.label} style={{'--d':`${0.5+i*0.08}s`} as React.CSSProperties}><span className="vp-stat-icon" aria-hidden="true"><Icon name={s.icon} size={26} strokeWidth={1.9}/></span><span className="vp-stat-value" data-target={s.target} data-suffix={s.suffix} data-decimals={s.decimals}>0{s.suffix}</span><span className="vp-stat-label">{s.label}</span></div>))}
       </div>
+      <div className="hm-marquee vp-anim" style={{'--d':'0.85s'} as React.CSSProperties} aria-label="Capabilities">
+        <ul className="hm-marquee-track">{CAPABILITIES.map(c=><li key={c}>{c}</li>)}</ul>
+        <ul className="hm-marquee-track" aria-hidden="true">{CAPABILITIES.map(c=><li key={c}>{c}</li>)}</ul>
+      </div>
     </div>
     <noscript><style>{'.vp-anim,.vp-headline span,.vp-header{animation:none;opacity:1;transform:none;filter:none}'}</style></noscript>
   </section>
-
-  <div className="hm-marquee" aria-label="Capabilities">
-    <ul className="hm-marquee-track">{CAPABILITIES.map(c=><li key={c}>{c}</li>)}</ul>
-    <ul className="hm-marquee-track" aria-hidden="true">{CAPABILITIES.map(c=><li key={c}>{c}</li>)}</ul>
-  </div>
 
   <section id="how" className="hm-sec hm-how" aria-labelledby="how-title">
     <div className="hm-head ap-rv">

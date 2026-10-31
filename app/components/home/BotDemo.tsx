@@ -1,6 +1,7 @@
 'use client';
 import {useEffect,useRef,useState} from 'react';
 import Link from 'next/link';
+import {BotMark,ProfileMark} from './BotMark';
 
 /* Interactive chat demo for the home page (SiteGPT-style "see it for yourself" section).
    Scripted, fictional North Dock store with PayPal sandbox-style records. Nothing leaves the
@@ -52,6 +53,7 @@ const I={
  card:<g><rect width="20" height="14" x="2" y="5" rx="2"/><path d="M2 10h20"/></g>,
  restart:<g><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></g>,
  check:<path d="M20 6 9 17l-5-5"/>,
+ x:<g><path d="M18 6 6 18"/><path d="m6 6 12 12"/></g>,
 };
 const Ico=({d,s=14}:{d:React.ReactNode;s?:number})=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{d}</svg>;
 
@@ -74,6 +76,7 @@ export default function BotDemo(){
  const[busy,setBusy]=useState(false);
  const[queue,setQueue]=useState<(QueueItem&{id:number})[]>([]);
  const[tally,setTally]=useState({answered:0,review:0});
+ const[open,setOpen]=useState(true);
  const logRef=useRef<HTMLDivElement>(null);
  const timers=useRef<number[]>([]);
  const nextId=useRef(1);
@@ -119,19 +122,23 @@ export default function BotDemo(){
   </div>
 
   <div className="hm-chat-wrap">
-   <div className="hm-chat">
+   <div className="hm-chat-stage">
+   <div className="hm-chat" data-open={open} aria-hidden={!open} inert={!open}>
     <header className="hm-chat-head">
-     <span className="hm-chat-avatar" aria-hidden="true">N</span>
-     <div><strong>North Dock Support</strong><p><i aria-hidden="true"/>Sources · PayPal sandbox</p></div>
+     <span className="hm-chat-avatar"><BotMark size={34} typing={typing}/></span>
+     <div><strong>North Dock Assistant</strong><p><i aria-hidden="true"/>{typing?'Typing…':'Answers from sources · PayPal sandbox'}</p></div>
      <button type="button" className="hm-chat-reset" onClick={reset} aria-label="Restart demo" title="Restart demo"><Ico d={I.restart}/></button>
     </header>
     <div className="hm-chat-log" ref={logRef} role="log" aria-live="polite" aria-label="Demo conversation">
-     {msgs.map(m=><div key={m.id} className={'hm-msg hm-msg-'+m.from}>
-      <div className="hm-bubble"><p>{m.text}</p></div>
-      {m.card&&<BillCard kind={m.card}/>}
-      {m.source&&<details className="hm-src"><summary><Ico d={I.check} s={12}/>{m.source.label}</summary><p>{m.source.quote}</p></details>}
-     </div>)}
-     {typing&&<div className="hm-msg hm-msg-bot"><div className="hm-bubble hm-typing" aria-label="North Dock is typing"><i/><i/><i/></div></div>}
+     {msgs.map((m,i)=>{const last=i===msgs.length-1?!(typing&&m.from==='bot'):msgs[i+1].from!==m.from;return <div key={m.id} className={'hm-row hm-row-'+m.from}>
+      <span className="hm-av">{last&&(m.from==='bot'?<BotMark size={28}/>:<ProfileMark size={28}/>)}</span>
+      <div className={'hm-msg hm-msg-'+m.from}>
+       <div className="hm-bubble"><p>{m.text}</p></div>
+       {m.card&&<BillCard kind={m.card}/>}
+       {m.source&&<details className="hm-src"><summary><Ico d={I.check} s={12}/>{m.source.label}</summary><p>{m.source.quote}</p></details>}
+      </div>
+     </div>;})}
+     {typing&&<div className="hm-row hm-row-bot"><span className="hm-av"><BotMark size={28} typing/></span><div className="hm-msg hm-msg-bot"><div className="hm-bubble hm-typing" aria-label="North Dock is typing"><i/><i/><i/></div></div></div>}
     </div>
     <div className="hm-chat-quick" role="group" aria-label="Suggested questions">
      {SCENARIOS.map((s,i)=><button type="button" key={s.label} data-group={s.group} disabled={busy} onClick={()=>run(i)}>{s.label}</button>)}
@@ -144,6 +151,12 @@ export default function BotDemo(){
      </select>
      <button type="submit" disabled={busy} aria-label="Ask: try this question"><span>Ask</span><Ico d={I.send}/></button>
     </form>
+   </div>
+   <p className="hm-chat-teaser" data-show={!open} aria-hidden={open}>Questions about an order or a bill? Ask me.</p>
+   <button type="button" className="hm-launcher" aria-expanded={open} aria-label={open?'Close chat':'Open chat'} onClick={()=>setOpen(o=>!o)}>
+    <span className="hm-launcher-face" data-face="bot"><BotMark size={40}/></span>
+    <span className="hm-launcher-face" data-face="x"><Ico d={I.x} s={20}/></span>
+   </button>
    </div>
    <p className="hm-chat-note">Scripted walkthrough on fictional data. No AI call, payment or message leaves this page. <Link href="/support">Create your one-hour live widget demo ↗</Link></p>
   </div>

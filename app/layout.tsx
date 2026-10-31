@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
  metadataBase:new URL('https://automatepal.onrender.com'),
  title:{default:'AutomatePal - source-backed support preview',template:'%s | AutomatePal'},
- description:'Explore source-backed answers, owner-reviewed service desk workflows and PayPal sandbox plan evidence. Fictional-data preview. No live payments.',
+ description:'Source-quoted AI customer support that also answers billing questions, with an owner-reviewed service desk. Fictional-data preview. No live payments.',
  alternates:{canonical:'/'},
  openGraph:{type:'website',siteName:'AutomatePal',url:'/',title:'AutomatePal - support with a clear next step',description:'Source-backed answers and owner review. Fictional-data preview, no live payments.',images:[{url:'/opengraph-image',width:1200,height:630,alt:'AutomatePal: source-backed answers, owner review, fictional-data preview'}]},
  twitter:{card:'summary_large_image',title:'AutomatePal - source-backed support preview',description:'Source-backed answers and owner review. Fictional-data preview, no live payments.',images:['/opengraph-image']},

@@ -44,8 +44,8 @@ export default function Pricing(){
     </div>
 
     <header className="ap-cx-hero">
-      <span className="ap-cx-badge"><i/>Fictional PayPal sandbox configuration</span>
-      <h1 className="ap-cx-h1"><span className="ap-cx-ln"><span>Sandbox demo</span></span> <span className="ap-cx-ln"><span><em>pricing.</em></span></span></h1>
+      <span className="ap-cx-badge"><i/>Fictional test-mode configuration</span>
+      <h1 className="ap-cx-h1"><span className="ap-cx-ln"><span>Demo</span></span> <span className="ap-cx-ln"><span><em>pricing.</em></span></span></h1>
       <p className="ap-cx-sub">Not a real commercial offer. No checkout, charges or subscriptions are available. Every plan starts with a fictional USD $1 three-day trial, followed by the selected recurring configuration below.</p>
       <div role="group" aria-label="Billing interval" className="ap-cx-toggle">
         <button type="button" aria-pressed={interval==='month'} onClick={()=>setInterval('month')}>Monthly {interval==='month'&&<Icon name="check" size={13}/>}</button>
@@ -55,17 +55,17 @@ export default function Pricing(){
     </header>
 
     <div className="ap-cx-tray">
-      <section aria-label="Sandbox plan options" className="ap-cx-grid">
+      <section aria-label="Plan options" className="ap-cx-grid">
         {tiers.map(t=><article key={t.name} className={'ap-cx-card'+(selected===t.name?' ap-cx-selected':'')}>
           <h2 className="ap-cx-tier"><i/>{t.name}</h2>
           <p className="ap-cx-price">${interval==='month'?t.monthly:t.equivalent}<span> / month{interval==='year'?' equivalent':''}</span></p>
           <p className="ap-cx-line">{interval==='year'?`$${t.annual} billed yearly after the trial.`:`$${t.monthly} billed monthly after the trial.`}</p>
           <p className="ap-cx-note">{interval==='year'?'Annual total is charged once per year in this configuration, not monthly.':`Annual option: $${t.annual}/year ($${t.equivalent}/month equivalent).`}</p>
-          <button type="button" aria-pressed={selected===t.name} aria-label={`Select ${t.name} sandbox plan`} onClick={()=>setSelected(t.name)} className="ap-cx-select">
+          <button type="button" aria-pressed={selected===t.name} aria-label={`Select ${t.name} plan`} onClick={()=>setSelected(t.name)} className="ap-cx-select">
             {selected===t.name?<><Icon name="check" size={14}/>Selected</>:<>Select {t.name}<Icon name="arrow" size={14}/></>}
           </button>
           <span className="ap-cx-note" style={{marginTop:8,textAlign:'center'}}>Demo only · no checkout</span>
-          <div className="ap-cx-state">Sandbox plan state: CREATED, not subscribable. Tier names label test prices only. No different feature limits or customer entitlements are implemented by these plans.</div>
+          <div className="ap-cx-state">Test plan state: CREATED, not subscribable. Tier names label test prices only. No different feature limits or customer entitlements are implemented by these plans.</div>
         </article>)}
         <article className="ap-cx-card ap-cx-gauge-card">
           <div>
@@ -81,14 +81,14 @@ export default function Pricing(){
           <p>Fictional $1 for 3 days, then ${interval==='year'?choice.annual:choice.monthly} per {interval==='year'?'year':'month'}. {interval==='year'?'The annual total is not billed monthly.':'Recurring monthly configuration.'}</p>
           <p className="ap-cx-note">Selection is local to this page and resets when reloaded. Nothing was saved, subscribed or charged. No feature entitlement changes.</p>
           <button type="button" className="ap-cx-clear" onClick={()=>setSelected(null)}>Clear selection</button></>
-        :<p>Choose monthly or annual billing, then select a sandbox plan to preview its terms. No checkout will open.</p>}
+        :<p>Choose monthly or annual billing, then select a plan to preview its terms. No checkout will open.</p>}
       </section>
     </div>
 
     <section className="ap-cx-foot">
       <p>All six configurations share the same $1 three-day trial. No setup fee is configured. These records do not establish customer eligibility, tax, shipping, fees or a refund policy.</p>
       <p>The earlier $19 monthly test record and $12 demo records are retained separately, not offered in this table. Payment execution stays off.</p>
-      <p><a className="underline" href="https://sitegpt.ai/pricing">Reference pricing ↗</a> · <Link className="underline" href="/sandbox-catalog">Owner-only live sandbox configuration reads ↗</Link></p>
+      <p><a className="underline" href="https://sitegpt.ai/pricing">Reference pricing ↗</a> · <Link className="underline" href="/sandbox-catalog">Owner-only live test-mode configuration reads ↗</Link></p>
     </section>
   </div></div></main></DeskShell>;
 }

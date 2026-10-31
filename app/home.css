@@ -348,16 +348,16 @@
 .desk-ui .ap-home .hm-chat-quick button{flex-shrink:0;display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border-radius:999px;border:1.5px solid #DCE3F2;background:#fff;color:#0A1B3D;font-size:12.5px;font-weight:500;white-space:nowrap;cursor:pointer;transition:background-color .18s ease,border-color .18s ease,transform .14s var(--ap-e-quint)}
 .hm-chat-quick button::before{content:'';width:6px;height:6px;border-radius:50%;background:#09318D}
 .hm-chat-quick button[data-group=Billing]::before{background:#E25FAE}
-.desk-ui .ap-home .hm-chat-quick button:active:not(:disabled){transform:scale(.97)}
-.desk-ui .ap-home .hm-chat-quick button:disabled{opacity:.45;cursor:default}
-@media(hover:hover) and (pointer:fine){.desk-ui .ap-home .hm-chat-quick button:not(:disabled):hover{background:#F4F6FB;border-color:#B9C6E4}}
+.desk-ui .ap-home .hm-chat-quick button:active:not([aria-disabled=true]){transform:scale(.97)}
+.desk-ui .ap-home .hm-chat-quick button[aria-disabled=true]{opacity:.45;cursor:default}
+@media(hover:hover) and (pointer:fine){.desk-ui .ap-home .hm-chat-quick button:not([aria-disabled=true]):hover{background:#F4F6FB;border-color:#B9C6E4}}
 .hm-chat-composer{display:flex;gap:8px;padding:10px 12px 12px;background:#fff}
 .desk-ui .ap-home .hm-chat-composer select#demo-scenario{flex:1;min-width:0;margin:0;appearance:none;-webkit-appearance:none;border:1.5px solid #DCE3F2;border-radius:12px;background:#F7F9FD url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2309318D' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center;padding:11px 34px 11px 12px;font-size:14px;color:#0A1B3D;outline:none;text-overflow:ellipsis}
 .desk-ui .ap-home .hm-chat-composer select#demo-scenario:focus-visible{border-color:#09318D;box-shadow:0 0 0 3px rgba(9,49,141,.14)}
 .desk-ui .ap-home .hm-chat-composer button{display:inline-flex;align-items:center;gap:6px;padding:0 16px;border:0;border-radius:12px;background:#041A52;color:#fff;font-size:13.5px;font-weight:600;cursor:pointer;transition:background-color .18s ease,transform .14s var(--ap-e-quint)}
-.desk-ui .ap-home .hm-chat-composer button:active:not(:disabled){transform:scale(.97)}
-.desk-ui .ap-home .hm-chat-composer button:disabled{opacity:.5;cursor:default}
-@media(hover:hover) and (pointer:fine){.desk-ui .ap-home .hm-chat-composer button:not(:disabled):hover{background:#0E2E74}}
+.desk-ui .ap-home .hm-chat-composer button:active:not([aria-disabled=true]){transform:scale(.97)}
+.desk-ui .ap-home .hm-chat-composer button[aria-disabled=true]{opacity:.5;cursor:default}
+@media(hover:hover) and (pointer:fine){.desk-ui .ap-home .hm-chat-composer button:not([aria-disabled=true]):hover{background:#0E2E74}}
 .ap-public .hm-chat-note{margin:8px 2px 0;font-size:12px;line-height:1.6;color:var(--ap-muted)}
 .ap-public .hm-chat-note a{color:var(--ap-blue);border-bottom:1px solid var(--ap-pink);font-weight:600}
 
@@ -375,3 +375,75 @@
  .hm-typing i{animation:none;opacity:.6}
  .desk-ui .ap-home .hm-chat-quick button,.desk-ui .ap-home .hm-chat-composer button,.desk-ui .ap-home .hm-chat-reset{transition:none}
 }
+
+/* Demo: question-type tabs above the suggestion chips; extra bill tone */
+.hm-bill-row b[data-tone=warn]{color:#B4237A}
+.hm-chat-tabs{display:flex;gap:4px;padding:8px 12px 0;background:#fff;border-top:1px solid #EEF1F8}
+.desk-ui .ap-home .hm-chat-tabs button{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border:0;border-radius:999px;background:transparent;color:#4A5878;font-size:12px;font-weight:600;cursor:pointer;transition:background-color .18s ease,color .18s ease}
+.hm-chat-tabs button span{font:600 10px var(--font-geist-mono),monospace;padding:1px 6px;border-radius:999px;background:#EEF1F8;color:#4A5878}
+.desk-ui .ap-home .hm-chat-tabs button[aria-selected=true]{background:#041A52;color:#fff}
+.hm-chat-tabs button[aria-selected=true] span{background:rgba(255,255,255,.16);color:#fff}
+@media(hover:hover) and (pointer:fine){.desk-ui .ap-home .hm-chat-tabs button[aria-selected=false]:hover{background:#F4F6FB;color:#0A1B3D}}
+.hm-chat-quick{border-top:0}
+.hm-chat-quick button[data-group=Complex]::before{background:#7B2FBF}
+.hm-chat-quick button{animation:hm-chip-in .24s var(--ap-e-quint) both}
+@keyframes hm-chip-in{from{opacity:0;transform:translateY(3px)}}
+
+/* 02 - Before / after */
+.hm-compare{background:#fff}
+.hm-compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.hm-compare-col{border-radius:22px;padding:26px 26px 22px}
+.hm-compare-before{background:#F4F6FB;border:1.5px solid #E2E7F2}
+.hm-compare-after{background:linear-gradient(160deg,#041A52,#09318D 70%,#0B3CA8);border:2px solid #041A52;box-shadow:8px 8px 0 rgba(253,145,204,.55);color:#fff}
+.hm-compare-label{margin:0 0 14px;font:600 11px var(--font-geist-mono),monospace;letter-spacing:.04em;text-transform:uppercase;color:#6B7A99}
+.hm-compare-after .hm-compare-label{color:#FD91CC}
+.hm-compare-col ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column}
+.hm-compare-col li{display:flex;gap:12px;align-items:flex-start;padding:13px 0;border-top:1px solid #E2E7F2;font-size:15px;line-height:1.5;color:#4A5878}
+.hm-compare-col li:first-child{border-top:0}
+.hm-compare-after li{border-top-color:rgba(255,255,255,.12);color:#E4EAF8}
+.hm-compare-col li>span{flex-shrink:0;display:grid;place-items:center;width:24px;height:24px;margin-top:1px;border-radius:50%;background:#E2E7F2;color:#7A88AC}
+.hm-compare-after li>span{background:#FD91CC;color:#041A52}
+
+/* 05 - Add-ons */
+.hm-addons-sec{background:var(--hm-tint)}
+.hm-addon-tabs{display:inline-flex;flex-wrap:wrap;gap:4px;padding:4px;margin-bottom:22px;border-radius:999px;background:#fff;border:1.5px solid #E2E7F2}
+.desk-ui .ap-home .hm-addon-tabs button{display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border:0;border-radius:999px;background:transparent;color:#4A5878;font-size:13px;font-weight:600;cursor:pointer;transition:background-color .18s ease,color .18s ease,transform .14s var(--ap-e-quint)}
+.desk-ui .ap-home .hm-addon-tabs button:active{transform:scale(.97)}
+.hm-addon-tabs button span{font:600 10.5px var(--font-geist-mono),monospace;padding:1px 7px;border-radius:999px;background:#EEF1F8}
+.desk-ui .ap-home .hm-addon-tabs button[aria-selected=true]{background:#041A52;color:#fff}
+.hm-addon-tabs button[aria-selected=true] span{background:rgba(255,255,255,.16)}
+@media(hover:hover) and (pointer:fine){.desk-ui .ap-home .hm-addon-tabs button[aria-selected=false]:hover{background:#F4F6FB;color:#0A1B3D}}
+.hm-addons{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:0;padding:0;list-style:none}
+.hm-addon{position:relative;display:flex;flex-direction:column;gap:14px;padding:18px;border-radius:18px;background:#fff;border:1.5px solid #E2E7F2;animation:hm-addon-in .38s var(--ap-e-quint) both;animation-delay:calc(min(var(--i,0),8)*35ms);transition:border-color .2s ease,transform .2s var(--ap-e-quint),box-shadow .2s var(--ap-e-quint)}
+@keyframes hm-addon-in{from{opacity:0;transform:translateY(8px)}}
+@media(hover:hover) and (pointer:fine){.hm-addon:hover{border-color:#B9C6E4;transform:translateY(-2px);box-shadow:0 12px 24px -16px rgba(4,26,82,.35)}}
+.hm-addon-mono{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;color:#fff;font:700 12px var(--font-geist-mono),monospace;letter-spacing:.02em}
+.ap-public .hm-addon h3{margin:0 0 5px;font-size:15px;font-weight:650;letter-spacing:-.01em;color:#041A52}
+.ap-public .hm-addon p{margin:0;font-size:13px;line-height:1.55;color:var(--ap-muted)}
+.hm-addon-status{position:absolute;top:18px;right:16px;font-style:normal;font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:999px;background:#E5F6EC;color:#1D6B3E}
+.hm-addon[data-status=Preview] .hm-addon-status{background:#FDE7F3;color:#A3226F}
+.hm-addon[data-status='Coming soon'] .hm-addon-status{background:#EEF1F8;color:#4A5878}
+.hm-addon[data-status='Coming soon'] .hm-addon-mono{opacity:.75}
+
+/* 09 - FAQ */
+.hm-faq{background:#fff}
+.hm-faq-grid{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(32px,5vw,72px);align-items:start}
+.hm-faq-grid .hm-head{position:sticky;top:24px;margin-bottom:0}
+.hm-inline-link{color:var(--ap-blue);font-weight:600;border-bottom:1.5px solid var(--ap-pink)}
+.hm-faq-list{display:flex;flex-direction:column;border-top:1.5px solid #E2E7F2}
+.hm-faq-item{border-bottom:1.5px solid #E2E7F2}
+.hm-faq-item summary{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:20px 2px;font-size:16.5px;font-weight:600;letter-spacing:-.01em;color:#041A52;cursor:pointer;list-style:none}
+.hm-faq-item summary::-webkit-details-marker{display:none}
+.hm-faq-item summary>span{position:relative;flex-shrink:0;width:28px;height:28px;border-radius:50%;background:#F4F6FB;transition:background-color .2s ease,transform .25s var(--ap-e-quint)}
+.hm-faq-item summary>span::before,.hm-faq-item summary>span::after{content:'';position:absolute;left:50%;top:50%;width:11px;height:2px;margin:-1px 0 0 -5.5px;border-radius:2px;background:#041A52;transition:transform .25s var(--ap-e-quint)}
+.hm-faq-item summary>span::after{transform:rotate(90deg)}
+.hm-faq-item[open] summary>span{background:#FD91CC;transform:rotate(180deg)}
+.hm-faq-item[open] summary>span::after{transform:rotate(0)}
+@media(hover:hover) and (pointer:fine){.hm-faq-item summary:hover>span{background:#E8EDF9}.hm-faq-item[open] summary:hover>span{background:#FD91CC}}
+.ap-public .hm-faq-item p{margin:0;padding:0 44px 22px 2px;font-size:15px;line-height:1.65;color:var(--ap-muted);animation:hm-faq-in .3s var(--ap-e-quint) both}
+@keyframes hm-faq-in{from{opacity:0;transform:translateY(-4px)}}
+
+@media(max-width:1100px){.hm-addons{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:860px){.hm-addons{grid-template-columns:repeat(2,minmax(0,1fr))}.hm-faq-grid{grid-template-columns:minmax(0,1fr)}.hm-faq-grid .hm-head{position:static}}
+@media(max-width:640px){.hm-addon-tabs{display:flex;flex-wrap:nowrap;max-width:100%;overflow-x:auto;scrollbar-width:none}.hm-addon-tabs::-webkit-scrollbar{display:none}.desk-ui .ap-home .hm-addon-tabs button{flex-shrink:0;padding:7px 10px;font-size:12.5px;gap:5px}.hm-addon-tabs button span{display:none}.hm-compare-grid{grid-template-columns:minmax(0,1fr)}.hm-compare-col{padding:20px}.hm-addons{grid-template-columns:minmax(0,1fr)}.hm-addon{flex-direction:row;align-items:flex-start;padding:16px 16px 16px 16px}.hm-addon-status{position:static;align-self:flex-start;margin-left:auto;white-space:nowrap}.hm-addon>div{min-width:0;flex:1}.ap-public .hm-faq-item p{padding-right:4px}.hm-faq-item summary{font-size:15.5px}}
+@media(prefers-reduced-motion:reduce){.hm-addon,.hm-chat-quick button,.ap-public .hm-faq-item p{animation:none}.hm-faq-item summary>span,.hm-faq-item summary>span::before,.hm-faq-item summary>span::after,.hm-addon{transition:none}}

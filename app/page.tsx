@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';import Image from 'next/image';import {useEffect,useRef,useState} from 'react';import DeskShell from './components/DeskShell';
 import AnswerPipeline from './components/home/AnswerPipeline';
+import BotDemo from './components/home/BotDemo';
 import './preview/video/video.css';
 import './home.css';
 
@@ -120,13 +121,11 @@ function spot(e: React.PointerEvent<HTMLElement>) {
   e.currentTarget.style.setProperty('--mx', `${e.clientX - r.left}px`);
   e.currentTarget.style.setProperty('--my', `${e.clientY - r.top}px`);
 }
-const examples=[{question:'How many seats are in the student plan?',answer:'The fictional North Dock student plan includes 25 seats.',source:'Student plan exception · fictional source',type:'Answer with a source',ticket:'No review request created'},{question:'Can someone review my refund request?',answer:'This needs an owner review. No refund has been issued.',source:'Human review · no automatic money movement',type:'Owner review needed',ticket:'Service request · refund review · pending'}];
 export default function Landing(){
-  const[example,setExample]=useState(0),[sent,setSent]=useState(false),[open,setOpen]=useState(false);
+  const[open,setOpen]=useState(false);
   const statsRef=useRef<HTMLDivElement>(null);useCountUp(statsRef);
   useEffect(()=>{const els=Array.from(document.querySelectorAll('.ap-rv'));els.forEach(el=>el.classList.add('ap-rv-off'));const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('ap-rv-in');io.unobserve(e.target);}}),{threshold:.18});els.forEach(el=>io.observe(el));return()=>io.disconnect();},[]);
   useEffect(()=>{const onKey=(e:KeyboardEvent)=>{if(e.key==='Escape')setOpen(false);};const onResize=()=>{if(window.innerWidth>720)setOpen(false);};window.addEventListener('keydown',onKey);window.addEventListener('resize',onResize);return()=>{window.removeEventListener('keydown',onKey);window.removeEventListener('resize',onResize);};},[]);
-  const d=examples[example];
   const stagger=(i:number)=>({'--i':i} as React.CSSProperties);
   return <DeskShell widget darkDefault><main id="main-content" className="ap-public ap-home"><script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify({"@context":"https://schema.org","@type":"WebSite",name:"AutomatePal",url:"https://automatepal.onrender.com/",description:"Source-quoted AI customer support with an owner-reviewed service desk. Fictional-data preview, no live payments."}).replace(/</g,"\\u003c")}}/>
   <section className="vp vp-static" aria-label="Intro">
@@ -150,7 +149,7 @@ export default function Landing(){
         <p className="vp-sub vp-anim" style={{'--d':'0.28s'} as React.CSSProperties}>AutomatePal answers customers from your own knowledge and attaches the exact passage it used. When the source isn’t there, the question goes to your review queue instead of becoming a guess.</p>
         <div className="hm-hero-ctas vp-anim" style={{'--d':'0.4s'} as React.CSSProperties}>
           <Link href="/setup" className="vp-cta" style={{animationName:'vp-revealPulse'} as React.CSSProperties}>Start building <span className="vp-cta-arrow"><Icon name="arrowupright" size={14} strokeWidth={2.4}/></span></Link>
-          <a href="#how" className="hm-cta-ghost">See how it works <Icon name="arrowright" size={14}/></a>
+          <a href="#demo" className="hm-cta-ghost">Try the demo <Icon name="arrowright" size={14}/></a>
         </div>
       </div>
       <div className="vp-stats" ref={statsRef}>
@@ -164,18 +163,19 @@ export default function Landing(){
     <noscript><style>{'.vp-anim,.vp-headline span,.vp-header{animation:none;opacity:1;transform:none;filter:none}'}</style></noscript>
   </section>
 
+  <section id="demo" className="hm-sec hm-demo" aria-labelledby="demo-title">
+    <BotDemo/>
+  </section>
+
   <section id="how" className="hm-sec hm-how" aria-labelledby="how-title">
     <div className="hm-head ap-rv">
-      <p className="hm-kicker">01 / How every answer is made</p>
+      <p className="hm-kicker">02 / How every answer is made</p>
       <h2 id="how-title" className="hm-h2">Grounded answers, <span className="ap-hl">by design</span>.</h2>
       <p className="hm-lede">Each reply passes the same checks before a customer sees it. If any check fails, nothing is sent and your team gets a review item with the full context.</p>
     </div>
     <div className="ap-rv" style={stagger(1)}><AnswerPipeline/></div>
   </section>
 
-  <section id="specimen" className="ap-spec-sec" aria-label="Interactive specimen">
-    <div className="ap-specimen"><div className="ap-specimen-caption"><span>02 / Try it</span><span>Interactive specimen</span></div><div className="ap-specimen-window"><div className="ap-demo-top"><span className="ap-demo-avatar">N</span><div><strong>North Dock</strong><p>Fictional help desk</p></div><span className="ap-demo-state">Preview</span></div><div className="ap-demo-conversation"><p className="ap-demo-welcome">A useful answer.<br/>Or the right next step.</p><label htmlFor="demo-scenario">Choose a fictional question</label><select id="demo-scenario" value={example} onChange={e=>{setExample(Number(e.target.value));setSent(false);}}>{examples.map((x,i)=><option value={i} key={x.question}>{x.question}</option>)}</select><button className="ap-demo-submit" onClick={()=>setSent(true)}>Try this question <span>↗</span></button>{sent?<div className="ap-demo-answer" role="status"><p className="ap-kicker">{d.type}</p><p>{d.answer}</p><details><summary>{d.source}</summary><p>{example===0?'Fictional source text: "The North Dock student plan includes 25 seats."':'A person must review sensitive requests. This local illustration does not submit a ticket or send a message.'}</p></details></div>:<div className="ap-demo-empty"><span>Knowledge → answer → review</span><p>Try either path. Nothing leaves this page.</p></div>}</div><div className="ap-demo-footer"><span>{sent?d.ticket:'Source-backed help, with an owner in control.'}</span></div></div><div className="ap-gauge-card"><svg viewBox="0 0 72 72" width="58" height="58" role="img" aria-label="Fictional gauge showing 94 percent"><circle cx="36" cy="36" r="30" className="ap-gauge-track"/><circle cx="36" cy="36" r="30" className="ap-gauge-fill"/><text x="36" y="41" textAnchor="middle" className="ap-gauge-num">94%</text></svg><div><strong>Reviewed on time</strong><p>Fictional stat</p></div></div><p className="ap-specimen-note">Local interaction, not a live AI answer or customer record. <Link href="/support">Create your one-hour live widget demo ↗</Link></p></div>
-  </section>
 
   <section id="features" className="hm-sec hm-features" aria-labelledby="features-title">
     <div className="hm-head ap-rv">

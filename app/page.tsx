@@ -3,6 +3,8 @@ import Link from 'next/link';import Image from 'next/image';import {useEffect,us
 import AnswerPipeline from './components/home/AnswerPipeline';
 import BotDemo from './components/home/BotDemo';
 import AddOns from './components/home/AddOns';
+import {PlatformGlyph,CheckMark,ClockMark,VerifiedMark,type PlatformIcon} from './components/home/PlatformIcons';
+import {SITE_URL,CONTACT_EMAIL,REPO_URL,COPYRIGHT_HOLDER} from '../lib/site';
 import './preview/video/video.css';
 import './home.css';
 
@@ -53,24 +55,24 @@ const VP_NAV: { label: string; href: string; icon: keyof typeof PATHS; active?: 
 ];
 /* Capability strip: every item is a shipped preview feature (see FEATURES.md). */
 const CAPABILITIES = ['Exact source quotes','Independent grounding check','Impact × urgency priority','Human takeover','Effective-dated owner exceptions','Exact custom answers','PDF, Markdown and URL import','Consent-gated publishing','Origin and path rules','Signed webhooks','Scoped, expiring API tokens','Row-level tenant isolation','Unanswered-question CSV','Tested in English, Hindi and Telugu'];
-type Feature = { icon: keyof typeof PATHS; title: string; body: string; wide?: boolean; visual: React.ReactNode };
+type Feature = { icon: PlatformIcon; title: string; body: string; wide?: boolean; visual: React.ReactNode };
 const FEATURES: Feature[] = [
-  { icon: 'quote', wide: true, title: 'Answers that cite their source', body: 'Every reply carries the exact passage it came from, so customers and your team can check it. A separate grounding check must agree before anything is sent.',
-    visual: <div className="hm-v-chat"><p className="hm-v-ask">How many seats are in the student plan?</p><p className="hm-v-reply">The student plan includes 25 seats.</p><blockquote className="hm-v-quote"><p>“…the North Dock student plan includes <mark>25 seats</mark>.”</p><span>Student plan exception · grounding passed</span></blockquote><div className="hm-v-langs" aria-label="Tested languages"><span>EN</span><span>HI</span><span>TE</span></div></div> },
-  { icon: 'inbox', title: 'A review queue built for service teams', body: 'Incidents, requests and questions with a 3×3 impact and urgency matrix, guarded status changes and private notes.',
+  { icon: 'quote', wide: true, title: 'Answers your customers can check', body: 'Every reply comes with the exact passage it was built from, so customers and your team can see where it came from. A separate grounding check has to agree before anything is sent.',
+    visual: <div className="hm-v-chat"><p className="hm-v-ask">How many seats are in the student plan?</p><p className="hm-v-reply">The student plan includes 25 seats.</p><blockquote className="hm-v-quote"><p>“…the North Dock student plan includes <mark>25 seats</mark>.”</p><span><VerifiedMark/>Student plan exception · grounding passed</span></blockquote><div className="hm-v-langs" aria-label="Tested languages"><span>EN</span><span>HI</span><span>TE</span></div></div> },
+  { icon: 'inbox', title: 'One queue for what it can’t answer', body: 'Incidents, requests and open questions land in one place, ranked by impact and urgency, with guarded status changes and private notes.',
     visual: <ul className="hm-v-rows"><li><b>Incident</b>Checkout error<em data-tone="hot">High · urgent</em></li><li><b>Request</b>Refund review<em>Owner decision</em></li><li><b>Question</b>Student plan seats<em data-tone="ok">Answered</em></li></ul> },
-  { icon: 'usercheck', title: 'Step in at any moment', body: 'Take over a conversation, pause in-flight AI answers, then release or resolve it.',
+  { icon: 'usercheck', title: 'Jump in whenever you like', body: 'Take over a conversation, pause AI answers mid-reply, then hand it back or resolve it yourself.',
     visual: <div className="hm-v-toggle"><span className="hm-v-switch" aria-hidden="true"><i/></span><span className="hm-v-toggle-a">AI answering</span><span className="hm-v-toggle-b">You have control</span></div> },
-  { icon: 'sliders', title: 'Guidance the AI follows', body: 'Add exceptions with effective dates, or exact answers for questions you never want paraphrased.',
+  { icon: 'sliders', title: 'Teach it your exceptions', body: 'Add exceptions with start and end dates, or exact answers for the questions you never want reworded.',
     visual: <div className="hm-v-chips"><span><b>Exception</b>Nov 1 – Dec 31 · 25 seats</span><span><b>Exact answer</b>“What are your hours?”</span></div> },
-  { icon: 'filetext', title: 'Knowledge you approve', body: 'Import text, Markdown, PDFs or a public URL. Nothing answers a customer until you consent and publish.',
-    visual: <ul className="hm-v-files"><li><Icon name="check" size={12} strokeWidth={3}/>pricing.pdf<em>Published</em></li><li><Icon name="check" size={12} strokeWidth={3}/>faq.md<em>Published</em></li><li data-pending="true"><Icon name="clock" size={12} strokeWidth={2.4}/>help.example.com/returns<em>In review</em></li></ul> },
-  { icon: 'appwindow', title: 'Your widget, your brand', body: 'Colors, starter questions, placement, allowed origins and excluded paths. Optional lead capture asks for consent.',
-    visual: <div className="hm-v-widget"><span className="hm-v-swatches" aria-hidden="true"><i/><i/><i/></span><span className="hm-v-launcher" aria-hidden="true"><Icon name="sparkles" size={14}/></span></div> },
-  { icon: 'barchart', title: 'See what’s missing', body: 'Unanswered questions, answer feedback and seven-day trends, with a formula-safe CSV export.',
+  { icon: 'filetext', title: 'Start with the docs you have', body: 'Paste text, upload Markdown or a PDF, or import a public URL. Nothing reaches a customer until you consent and publish.',
+    visual: <ul className="hm-v-files"><li><CheckMark/>pricing.pdf<em>Published</em></li><li><CheckMark/>faq.md<em>Published</em></li><li data-pending="true"><ClockMark/>help.example.com/returns<em>In review</em></li></ul> },
+  { icon: 'appwindow', title: 'Looks like your brand', body: 'Pick the colors, starter questions and placement, and choose which sites and pages show the widget. Optional lead capture asks for consent first.',
+    visual: <div className="hm-v-widget" aria-hidden="true"><span className="hm-v-swatches"><i/><i/><i/></span><span className="hm-v-greet">Hi! Ask me anything.</span><span className="hm-v-launcher"><Icon name="sparkles" size={14}/></span></div> },
+  { icon: 'barchart', title: 'Know what customers ask', body: 'See unanswered questions, answer feedback and seven-day trends, then export them as a formula-safe CSV.',
     visual: <div className="hm-v-bars" aria-label="Illustrative unanswered questions"><span style={{'--w':'86%'} as React.CSSProperties}>Shipping to Canada</span><span style={{'--w':'62%'} as React.CSSProperties}>Team discounts</span><span style={{'--w':'38%'} as React.CSSProperties}>Invoice copies</span><em>Illustrative</em></div> },
-  { icon: 'code', title: 'Built for your stack', body: 'Read-only API tokens that are scoped, expiring and revocable, plus webhooks signed with HMAC-SHA256.',
-    visual: <pre className="hm-v-code" aria-label="Example token and webhook settings"><span>token</span>  ••••••  <i>support</i> <i>24h</i>{'\n'}<span>webhook</span> HMAC-SHA256(ts + body)</pre> },
+  { icon: 'code', title: 'Fits into your stack', body: 'Read-only API tokens that are scoped, expiring and revocable, plus webhooks signed with HMAC-SHA256.',
+    visual: <pre className="hm-v-code" aria-label="Example token and webhook settings"><span className="hm-v-ln"><span>token</span>  ••••••  <i>support</i> <i>24h</i></span><span className="hm-v-ln"><span>webhook</span> HMAC-SHA256(ts + body)</span></pre> },
 ];
 const TRUST: { icon: keyof typeof PATHS; title: string; body: string }[] = [
   { icon: 'database', title: 'Tenant isolation', body: 'Postgres row-level security separates every workspace. Tests deny cross-tenant reads, forged writes and foreign RPC calls.' },
@@ -81,20 +83,21 @@ const TRUST: { icon: keyof typeof PATHS; title: string; body: string }[] = [
   { icon: 'shieldcheck', title: 'Consent and deletion', body: 'Knowledge needs explicit processing and publishing consent. Owners can delete their workspace data themselves.' },
 ];
 const COMPARE:[string,string][]=[
-  ['Generic bots guess when the answer isn’t in your content.','Every answer carries its source, or it isn’t sent.'],
-  ['Billing questions bounce between inboxes.','Order, invoice and payment questions are answered from your billing records.'],
-  ['Refund requests arrive with no context.','Refunds arrive as review items with the order attached, and no money moves on its own.'],
-  ['Policy exceptions live in someone’s head.','Exceptions have start and end dates, and the bot follows them.'],
-  ['You learn about gaps from unhappy customers.','Unanswered questions are grouped for you, ready to become answers.'],
+  ['Generic bots make up an answer when your content is silent.','Every answer shows its source, or it doesn’t go out.'],
+  ['Billing questions bounce between inboxes for days.','Order, invoice and payment questions are answered from your billing records.'],
+  ['Refund requests show up with no context.','Refund requests arrive as review items with the order attached. No money moves on its own.'],
+  ['Policy exceptions live in one person’s head.','Exceptions have start and end dates, and the agent follows them.'],
+  ['You hear about gaps from unhappy customers.','Unanswered questions are grouped for you, ready to become answers.'],
 ];
 const FAQ:[string,string][]=[
-  ['How is this different from a regular AI chatbot?','Each answer comes with the exact passage it used, and a separate check has to agree with it before the reply is sent. When nothing in your sources supports an answer, the question goes to your review queue instead of becoming a guess.'],
-  ['What happens when the bot doesn’t know?','Nothing is sent to the customer. The question becomes a review item with the conversation attached, and it appears in your unanswered list so you can add the missing answer once.'],
+  ['How is this different from a regular AI chatbot?','A regular chatbot answers whether or not your content backs it up. AutomatePal attaches the exact passage it used, and a separate check has to agree before the reply is sent. When nothing in your sources supports an answer, the question goes to your review queue instead of becoming a guess.'],
+  ['What happens when it doesn’t know the answer?','Nothing is sent to the customer. The question becomes a review item with the conversation attached, and it shows up in your unanswered list so you only have to add the missing answer once.'],
   ['Can it handle billing questions?','Yes. It answers order status, invoice and payment-history questions from your billing records after the customer confirms their order, and it explains declines and retries. Refunds always go to a person for a decision; the bot never moves money. Billing lookups are in preview.'],
   ['Can it handle complicated or multi-part questions?','It works through multi-part questions one piece at a time, follows date-limited exceptions you set, answers in the customer’s language when your sources cover the topic, and ignores instructions written into a message.'],
   ['Which languages does it support?','It replies in the language the customer writes in when your sources cover the answer. We have tested English, Hindi and Telugu so far.'],
   ['Can my whole team use it?','Yes. Invite admins, managers and agents with private links. Each role has its own permissions, enforced in the database, and every change is recorded with who made it.'],
   ['How long does setup take?','About an hour: add a source, test a few questions, set the widget’s look and starters, then paste one script tag on your site.'],
+  ['Do I need a developer?','No. Sources, testing and the widget’s look are all set up in the dashboard. Going live means pasting one script tag into your site, the same way you would add an analytics snippet.'],
   ['Is my data safe?','Each workspace is isolated at the database level, API tokens are scoped and expire, and you can delete your workspace data yourself. AutomatePal does not yet hold SOC 2 or HIPAA certification.'],
 ];
 function useCountUp(ref: React.RefObject<HTMLDivElement | null>) {
@@ -145,7 +148,7 @@ export default function Landing(){
   useEffect(()=>{const els=Array.from(document.querySelectorAll('.ap-rv'));els.forEach(el=>el.classList.add('ap-rv-off'));const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('ap-rv-in');io.unobserve(e.target);}}),{threshold:.18});els.forEach(el=>io.observe(el));return()=>io.disconnect();},[]);
   useEffect(()=>{const onKey=(e:KeyboardEvent)=>{if(e.key==='Escape')setOpen(false);};const onResize=()=>{if(window.innerWidth>720)setOpen(false);};window.addEventListener('keydown',onKey);window.addEventListener('resize',onResize);return()=>{window.removeEventListener('keydown',onKey);window.removeEventListener('resize',onResize);};},[]);
   const stagger=(i:number)=>({'--i':i} as React.CSSProperties);
-  return <DeskShell widget darkDefault><main id="main-content" className="ap-public ap-home"><script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify({"@context":"https://schema.org","@type":"WebSite",name:"AutomatePal",url:"https://automatepal.onrender.com/",description:"Source-quoted AI customer support with an owner-reviewed service desk. Fictional-data preview, no live payments."}).replace(/</g,"\\u003c")}}/>
+  return <DeskShell widget><main id="main-content" className="ap-public ap-home"><script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify({"@context":"https://schema.org","@type":"WebSite",name:"AutomatePal",url:SITE_URL+"/",description:"Source-quoted AI customer support with an owner-reviewed service desk. Fictional-data preview, no live payments.",inLanguage:"en",publisher:{"@type":"Organization",name:"AutomatePal",url:SITE_URL+"/",logo:SITE_URL+"/icon-512.png",sameAs:[REPO_URL],contactPoint:{"@type":"ContactPoint",contactType:"customer support",email:CONTACT_EMAIL,availableLanguage:"en"}}}).replace(/</g,"\\u003c")}}/>
   <section className="vp vp-static" aria-label="Intro">
     <div className="vp-bg" aria-hidden="true"/><div className="vp-bg-tint" aria-hidden="true"/>
     <div className="vp-page">
@@ -158,15 +161,15 @@ export default function Landing(){
       {open&&(<><div className="vp-overlay" onClick={()=>setOpen(false)}/><nav className="vp-sheet" aria-label="Mobile">{VP_NAV.map((n,i)=>(<Link key={n.label} href={n.href} className={n.active?'vp-active':undefined} style={{animationDelay:`${0.05+i*0.05}s`}} onClick={()=>setOpen(false)}><Icon name={n.icon} size={15}/>{n.label}</Link>))}<Link href="/login" className="vp-sheet-signin" style={{animationDelay:'0.25s'}} onClick={()=>setOpen(false)}><Icon name="login" size={15}/>Sign in</Link></nav></>)}
       <div className="vp-hero">
         <div className="vp-trust vp-anim" style={{'--d':'0.05s'} as React.CSSProperties}>
-          <span className="vp-ring"><span aria-label="Source quotes"><Icon name="quote" size={15} strokeWidth={2.2}/></span></span>
-          <span className="vp-ring"><span aria-label="Owner review"><Icon name="shieldcheck" size={15} strokeWidth={2.2}/></span></span>
-          <span className="vp-ring"><span aria-label="A person in control"><Icon name="usercheck" size={15} strokeWidth={2.2}/></span></span>
+          <span className="vp-ring"><span role="img" aria-label="Source quotes"><Icon name="quote" size={15} strokeWidth={2.2}/></span></span>
+          <span className="vp-ring"><span role="img" aria-label="Owner review"><Icon name="shieldcheck" size={15} strokeWidth={2.2}/></span></span>
+          <span className="vp-ring"><span role="img" aria-label="A person in control"><Icon name="usercheck" size={15} strokeWidth={2.2}/></span></span>
           <span className="vp-trust-pill"><Icon name="sparkles" size={13}/>AI support that shows its work</span>
         </div>
         <h1 className="vp-headline"><span>Every question answered.</span><span>Every miss handled.</span></h1>
-        <p className="vp-sub vp-anim" style={{'--d':'0.28s'} as React.CSSProperties}>AutomatePal answers customers from your own knowledge and attaches the exact passage it used. When the source isn’t there, the question goes to your review queue instead of becoming a guess.</p>
+        <p className="vp-sub vp-anim" style={{'--d':'0.28s'} as React.CSSProperties}>Turn your help docs, FAQs and policies into an AI support agent. It answers from your content, shows the exact line it used, and hands anything it can’t back up to your team.</p>
         <div className="hm-hero-ctas vp-anim" style={{'--d':'0.4s'} as React.CSSProperties}>
-          <Link href="/setup" className="vp-cta" style={{animationName:'vp-revealPulse'} as React.CSSProperties}>Start building <span className="vp-cta-arrow"><Icon name="arrowupright" size={14} strokeWidth={2.4}/></span></Link>
+          <Link href="/setup" className="vp-cta" style={{animationName:'vp-revealPulse'} as React.CSSProperties}>Build your agent <span className="vp-cta-arrow"><Icon name="arrowupright" size={14} strokeWidth={2.4}/></span></Link>
           <a href="#demo" className="hm-cta-ghost">Try the demo <Icon name="arrowright" size={14}/></a>
         </div>
       </div>
@@ -188,7 +191,8 @@ export default function Landing(){
   <section id="compare" className="hm-sec hm-compare" aria-labelledby="compare-title">
     <div className="hm-head ap-rv">
       <p className="hm-kicker">02 / Before and after</p>
-      <h2 id="compare-title" className="hm-h2">From guessing bots to answers you can check.</h2>
+      <h2 id="compare-title" className="hm-h2">Stop guessing. Start <span className="ap-hl">citing sources</span>.</h2>
+      <p className="hm-lede">Most support bots sound confident even when they are wrong. AutomatePal only answers when your own content backs it up, and your team handles the rest.</p>
     </div>
     <div className="hm-compare-grid">
       <div className="hm-compare-col hm-compare-before ap-rv"><p className="hm-compare-label">Without AutomatePal</p><ul>{COMPARE.map(([b])=><li key={b}><span aria-hidden="true"><Icon name="ban" size={14}/></span>{b}</li>)}</ul></div>
@@ -199,8 +203,8 @@ export default function Landing(){
   <section id="how" className="hm-sec hm-how" aria-labelledby="how-title">
     <div className="hm-head ap-rv">
       <p className="hm-kicker">03 / How every answer is made</p>
-      <h2 id="how-title" className="hm-h2">Grounded answers, <span className="ap-hl">by design</span>.</h2>
-      <p className="hm-lede">Each reply passes the same checks before a customer sees it. If any check fails, nothing is sent and your team gets a review item with the full context.</p>
+      <h2 id="how-title" className="hm-h2">No source, <span className="ap-hl">no answer</span>.</h2>
+      <p className="hm-lede">Every reply goes through the same four steps: ask, retrieve, quote, verify. If any step fails, nothing goes to the customer, and your team gets a review item with the full conversation.</p>
     </div>
     <div className="ap-rv" style={stagger(1)}><AnswerPipeline/></div>
   </section>
@@ -209,13 +213,13 @@ export default function Landing(){
   <section id="features" className="hm-sec hm-features" aria-labelledby="features-title">
     <div className="hm-head ap-rv">
       <p className="hm-kicker">04 / Platform</p>
-      <h2 id="features-title" className="hm-h2">Everything a support team needs to trust its AI.</h2>
-      <p className="hm-lede">From the first imported source to the last resolved ticket, every step stays visible and under your control.</p>
+      <h2 id="features-title" className="hm-h2">Everything you need to hand support to AI, <span className="ap-hl">safely</span>.</h2>
+      <p className="hm-lede">From the first doc you import to the last ticket you close, you can see what the agent did and step in at any point.</p>
     </div>
     <div className="hm-bento">
       {FEATURES.map((f,i)=>(<div key={f.title} className={'hm-cell ap-rv'+(f.wide?' hm-card-wide':'')} style={stagger(i%3)}><article className="hm-card" onPointerMove={spot}>
         <div className="hm-card-visual">{f.visual}</div>
-        <div className="hm-card-copy"><span className="hm-card-icon"><Icon name={f.icon} size={16}/></span><h3>{f.title}</h3><p>{f.body}</p></div>
+        <div className="hm-card-copy"><div className="hm-card-title"><span className="hm-card-icon"><PlatformGlyph name={f.icon}/></span><h3>{f.title}</h3></div><p>{f.body}</p></div>
       </article></div>))}
     </div>
   </section>
@@ -223,21 +227,21 @@ export default function Landing(){
   <section id="addons" className="hm-sec hm-addons-sec" aria-labelledby="addons-title">
     <div className="hm-head ap-rv">
       <p className="hm-kicker">05 / Add-ons and integrations</p>
-      <h2 id="addons-title" className="hm-h2">Plug into the tools you already use.</h2>
-      <p className="hm-lede">Start with the built-in desk, then add the pieces your team needs. Each add-on is marked as available, in preview or coming soon.</p>
+      <h2 id="addons-title" className="hm-h2">Connect the tools your team already uses.</h2>
+      <p className="hm-lede">Start with the built-in service desk, then add what you need. Each add-on is labelled available, in preview or coming soon, so you know what works today.</p>
     </div>
     <AddOns/>
   </section>
 
-  <section id="workflow" className="ap-flow"><div className="ap-section-label"><span>06 / Go live</span><p>Three steps to live.<br/>Visible at every one.</p></div><div className="ap-flow-steps"><article><span>01</span><div><h3>Bring your sources.</h3><p>Paste reference text, upload a PDF or Markdown file, or import a public URL. You review everything before it can answer anyone.</p><Link href="/knowledge">Knowledge workspace ↗</Link></div></article><article><span>02</span><div><h3>Shape the answers.</h3><p>Test questions against your sources, add exceptions and exact answers, and set the widget’s look, starters and allowed sites.</p><Link href="/support">Widget studio ↗</Link></div></article><article><span>03</span><div><h3>Launch and stay in charge.</h3><p>Embed one script. Work a focused queue with impact and urgency, take over conversations and record refund-review decisions.</p><Link href="/tickets">Ticket workspace ↗</Link></div></article></div></section>
+  <section id="workflow" className="ap-flow"><div className="ap-section-label"><span>06 / Go live</span><p>Three steps to your<br/>own support agent.</p></div><div className="ap-flow-steps"><article><span>01</span><div><h3>Bring your sources.</h3><p>Paste text, upload a PDF or Markdown file, or import a public URL. You review everything before it can answer anyone.</p><Link href="/knowledge">Knowledge workspace ↗</Link></div></article><article><span>02</span><div><h3>Shape the answers.</h3><p>Ask it test questions, add exceptions and exact answers, then pick the widget’s colors, starter questions and the sites it can appear on.</p><Link href="/support">Widget studio ↗</Link></div></article><article><span>03</span><div><h3>Go live and stay in charge.</h3><p>Paste one script tag. Work a short queue ranked by impact and urgency, take over any conversation, and record refund decisions.</p><Link href="/tickets">Ticket workspace ↗</Link></div></article></div></section>
 
-  <section className="ap-product"><div className="ap-product-head"><div><p className="ap-kicker">07 / The owner’s view</p><h2>See what needs you.<br/>Skip the rest.</h2></div><p>The queue, unanswered questions and handoffs in one quiet overview, with interventions, drafts and the full record one click away.</p></div><div className="hm-clip ap-rv"><div className="ap-product-frame"><div className="ap-product-bar"><span className="ap-chrome-dots" aria-hidden="true"><i/><i/><i/></span><span className="ap-chrome-url">AutomatePal / owner overview</span><span className="ap-chrome-tag">Rendered product · fictional test data</span></div><div className="ap-product-crop"><Image src="/product-owner-dark.png" alt="Actual AutomatePal owner overview rendered with fictional test data, including intervention counts, questions and draft rules." width={1280} height={2183}/></div></div></div><Link href="/owner" className="ap-text-link">Open the owner overview ↗</Link></section>
+  <section className="ap-product"><div className="ap-product-head"><div><p className="ap-kicker">07 / The owner’s view</p><h2>See what needs you.<br/>Skip the rest.</h2></div><p>Your queue, unanswered questions and handoffs on one calm screen. Anything that needs a person is at the top, and the full record is one click away.</p></div><div className="hm-clip ap-rv"><div className="ap-product-frame"><div className="ap-product-bar"><span className="ap-chrome-dots" aria-hidden="true"><i/><i/><i/></span><span className="ap-chrome-url">AutomatePal / owner overview</span><span className="ap-chrome-tag">Rendered product · fictional test data</span></div><div className="ap-product-crop"><Image src="/product-owner.png" alt="Actual AutomatePal owner overview rendered with fictional test data, including intervention counts, trends and the needs-intervention list." width={1280} height={2183}/></div></div></div><Link href="/owner" className="ap-text-link">Open the owner overview ↗</Link></section>
 
   <section id="trust" className="hm-sec hm-trust" aria-labelledby="trust-title">
     <div className="hm-head ap-rv">
       <p className="hm-kicker">08 / Trust</p>
-      <h2 id="trust-title" className="hm-h2">Controls your security review will ask about.</h2>
-      <p className="hm-lede">Built in from the start and covered by automated tests, not added after launch.</p>
+      <h2 id="trust-title" className="hm-h2">The controls your security review will ask about.</h2>
+      <p className="hm-lede">Built in from day one and covered by automated tests, not bolted on after launch.</p>
     </div>
     <ul className="hm-trust-grid">
       {TRUST.map((t,i)=>(<li key={t.title} className="ap-rv" style={stagger(i%3)}><div className="hm-trust-item"><span className="hm-trust-icon"><Icon name={t.icon} size={18}/></span><h3>{t.title}</h3><p>{t.body}</p></div></li>))}
@@ -249,12 +253,12 @@ export default function Landing(){
     <div className="hm-faq-grid">
       <div className="hm-head ap-rv">
         <p className="hm-kicker">09 / Questions</p>
-        <h2 id="faq-title" className="hm-h2">Frequently asked questions.</h2>
-        <p className="hm-lede">Can’t find what you need? <Link href="/contact" className="hm-inline-link">Contact us ↗</Link></p>
+        <h2 id="faq-title" className="hm-h2">Questions, answered.</h2>
+        <p className="hm-lede">Have a question we didn’t cover? <Link href="/contact" className="hm-inline-link">Send it to us ↗</Link> and a person will read it.</p>
       </div>
       <div className="hm-faq-list">{FAQ.map(([q,a])=><details key={q} className="hm-faq-item"><summary>{q}<span aria-hidden="true"/></summary><p>{a}</p></details>)}</div>
     </div>
   </section>
 
-  <section className="ap-start"><p className="ap-kicker">Free preview. Fictional data. Real workflow.</p><h2>Your AI support desk is<br/>about an hour away.</h2><Link href="/setup" className="ap-beam-btn"><span>Start the guided setup <span>↗</span></span></Link><p>Sign in → add a source → review → launch your widget.</p></section>
-  <footer className="ap-footer"><div className="ap-footer-grid"><div className="ap-footer-brand"><Link className="ap-mark" href="/"><Image src="/automatepal-logo.png" alt="" width={57} height={28} className="ap-logo"/>AutomatePal</Link><p>Source-quoted AI support<br/>with a person in control.</p><p className="ap-footer-note">Fictional-data preview. No live payments. No uptime, SLA or certification claim.</p></div><nav className="ap-footer-col" aria-label="Product"><h3>Product</h3><a href="#how">How it works</a><a href="#features">Platform</a><a href="#trust">Trust</a><a href="#addons">Add-ons</a><a href="#faq">FAQ</a><Link href="/pricing">Pricing</Link></nav><nav className="ap-footer-col" aria-label="Get started"><h3>Get started</h3><Link href="/setup">Guided setup</Link><Link href="/login">Sign in</Link><Link href="/support">One-hour demo</Link><Link href="/knowledge">Knowledge workspace</Link></nav><nav className="ap-footer-col" aria-label="Company"><h3>Company</h3><Link href="/status">Status</Link><Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link><Link href="/contact">Contact</Link></nav></div><div className="ap-footer-bar"><span>AutomatePal - candidate preview build.</span><span>Answers quote their sources. A person keeps the final say.</span></div></footer></main></DeskShell>;}
+  <section className="ap-start"><p className="ap-kicker">Free preview. Fictional data. Real workflow.</p><h2>Your AI support agent is<br/>about an hour away.</h2><Link href="/setup" className="ap-beam-btn"><span>Start the guided setup <span>↗</span></span></Link><p>Sign in → add a source → test it → paste one script tag.</p></section>
+  <footer className="ap-footer"><div className="ap-footer-grid"><div className="ap-footer-brand"><Link className="ap-mark" href="/"><Image src="/automatepal-logo.png" alt="" width={57} height={28} className="ap-logo"/>AutomatePal</Link><p>Source-quoted AI support<br/>with a person in control.</p><p className="ap-footer-note">Fictional-data preview. No live payments. No uptime, SLA or certification claim.</p></div><nav className="ap-footer-col" aria-label="Product"><h3>Product</h3><a href="#how">How it works</a><a href="#features">Platform</a><a href="#trust">Trust</a><a href="#addons">Add-ons</a><a href="#faq">FAQ</a><Link href="/pricing">Pricing</Link></nav><nav className="ap-footer-col" aria-label="Get started"><h3>Get started</h3><Link href="/setup">Guided setup</Link><Link href="/login">Sign in</Link><Link href="/support">One-hour demo</Link><Link href="/knowledge">Knowledge workspace</Link></nav><nav className="ap-footer-col" aria-label="Company"><h3>Company</h3><Link href="/status">Status</Link><Link href="/security">Security</Link><Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link><Link href="/contact">Contact</Link><a href={REPO_URL} rel="noreferrer" target="_blank">GitHub</a></nav></div><div className="ap-footer-bar"><span>© 2026 {COPYRIGHT_HOLDER}. AutomatePal - candidate preview build.</span><span>Answers quote their sources. A person keeps the final say.</span></div></footer></main></DeskShell>;}

@@ -1,0 +1,22 @@
+/* Section 03 motion (AnswerPipeline.tsx). Layout lives in home.css.
+   Each step's icon draws on as the step lights up; the question types in when it arrives;
+   the outcome icon draws when the result lands. A soft ping marks the demo as live while it
+   auto-plays. Only transform, opacity, clip-path and stroke-dashoffset animate. */
+
+.hm-pipe-qt{display:inline-block;font-weight:inherit}
+.hm-pipe-q[data-on=true] .hm-pipe-qt{animation:hm-pipe-type .55s var(--ap-e-quint) both}
+@keyframes hm-pipe-type{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+
+.hm-node[data-on=true] .hm-ico .d{animation:hm-ico-redraw .6s var(--ap-e-expo) calc(var(--k,0)*110ms) both}
+.hm-node[data-on=true] .hm-ico .p{animation:hm-ico-pop-in .32s var(--ap-e-quint) calc(260ms + var(--k,0)*70ms) both}
+.hm-node[data-on=true] [data-ico=step-1] .a{animation:hm-ico-scan .7s var(--hm-e-inout,cubic-bezier(.77,0,.175,1)) .45s}
+.hm-out[data-on=true] .hm-ico .d{animation:hm-ico-redraw .6s var(--ap-e-expo) calc(150ms + var(--k,0)*120ms) both}
+
+.hm-pipe-live i{position:relative}
+.hm-pipe-live i::after{content:'';position:absolute;inset:0;border-radius:50%;background:#FD91CC;opacity:0}
+.hm-pipe[data-live=true] .hm-pipe-live i::after{animation:hm-pipe-ping 1.8s var(--ap-e-quint) infinite}
+@keyframes hm-pipe-ping{0%{opacity:.55;transform:scale(1)}80%,100%{opacity:0;transform:scale(2.6)}}
+
+@media(prefers-reduced-motion:reduce){
+.hm-pipe-q .hm-pipe-qt,.hm-pipe .hm-pipe-live i::after{animation:none!important}
+}

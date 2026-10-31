@@ -1,0 +1,26 @@
+/* Draw-on line icons shared by the home page sections (draw.tsx).
+   Only transform, opacity and stroke-dashoffset animate. Sections decide when to draw. */
+.hm-ico{display:block;flex-shrink:0;overflow:visible;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.hm-ico .d{stroke-dasharray:1 1;stroke-dashoffset:0}
+.hm-ico :is(.p,.h){fill:currentColor;stroke:none}
+.hm-ico :is(g,.p,.h){transform-box:fill-box;transform-origin:center}
+.hm-ico .h{opacity:0}
+
+@keyframes hm-ico-redraw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+@keyframes hm-ico-pop-in{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
+@keyframes hm-ico-slide{from{opacity:0;transform:translateX(-3px)}to{opacity:1;transform:none}}
+@keyframes hm-ico-out-l{50%{transform:translateX(-1.5px)}}
+@keyframes hm-ico-out-r{50%{transform:translateX(1.5px)}}
+@keyframes hm-ico-drop{0%{opacity:0;transform:translateY(-3px)}55%{opacity:1;transform:translateY(1px)}100%{opacity:1;transform:none}}
+@keyframes hm-ico-ring{0%{transform:none}20%{transform:rotate(14deg)}40%{transform:rotate(-10deg)}60%{transform:rotate(6deg)}80%{transform:rotate(-3deg)}100%{transform:none}}
+@keyframes hm-ico-pop{0%,100%{transform:none}45%{transform:scale(1.7)}}
+@keyframes hm-ico-nudge{from{opacity:.35;transform:translate(-1.5px,-1.5px)}to{opacity:1;transform:none}}
+@keyframes hm-ico-spin{from{transform:rotate(-90deg)}to{transform:none}}
+@keyframes hm-ico-fall{0%{opacity:0;transform:translateY(-5px)}30%{opacity:1}75%{opacity:1;transform:translateY(2.5px)}100%{opacity:0;transform:translateY(2.5px)}}
+@keyframes hm-ico-bob{0%,100%{transform:none}40%{transform:translateY(-2px)}}
+@keyframes hm-ico-buzz{0%,100%{transform:none}20%{transform:rotate(-9deg)}40%{transform:rotate(7deg)}60%{transform:rotate(-5deg)}80%{transform:rotate(3deg)}}
+@keyframes hm-ico-scan{0%,100%{transform:none}35%{transform:translate(-1.5px,-1px)}70%{transform:translate(1px,.5px)}}
+@keyframes hm-ico-grow{from{transform:scaleY(.35)}to{transform:none}}
+@keyframes hm-ico-sweep{from{transform:rotate(-300deg)}to{transform:none}}
+
+@media(prefers-reduced-motion:reduce){.hm-ico *{animation:none!important;transition:none!important}}

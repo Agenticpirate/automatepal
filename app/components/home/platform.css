@@ -1,0 +1,72 @@
+/* Section 04 motion (PlatformIcons.tsx + the card visuals in app/page.tsx). Layout lives in home.css.
+   Cards already reveal through the page's .ap-rv observer (.ap-rv-off -> .ap-rv-in). On reveal:
+   the card icon draws on, and each visual plays one short sequence. On hover (pointer devices):
+   one small icon flourish per card. Without JS nothing is hidden; reduced motion shows final states. */
+
+/* Card icon draw-on */
+.ap-rv-off:not(.ap-rv-in) .hm-card-icon .hm-ico .d{stroke-dashoffset:1}
+.ap-rv-in .hm-card-icon .hm-ico .d{transition:stroke-dashoffset .8s var(--ap-e-expo) calc(var(--i,0)*70ms + 280ms + var(--k,0)*90ms)}
+
+/* Answers card: reply, quote and languages arrive in order, then the grounding check draws. */
+.hm-v-quote span{display:inline-flex;align-items:center;gap:5px}
+.hm-v-quote [data-ico=verified]{color:#1D6B3E}
+.ap-rv-off:not(.ap-rv-in) :is(.hm-v-reply,.hm-v-quote,.hm-v-langs){opacity:0;transform:translateY(6px)}
+.ap-rv-in :is(.hm-v-reply,.hm-v-quote,.hm-v-langs){transition:opacity .45s var(--ap-e-quint),transform .45s var(--ap-e-quint)}
+.ap-rv-in .hm-v-reply{transition-delay:.25s}
+.ap-rv-in .hm-v-quote{transition-delay:.4s}
+.ap-rv-in .hm-v-langs{transition-delay:.55s}
+.ap-rv-in .hm-v-quote mark::before{transition-delay:.7s}
+.ap-rv-off:not(.ap-rv-in) [data-ico=verified] .d{stroke-dashoffset:1}
+.ap-rv-in [data-ico=verified] .d{transition:stroke-dashoffset .6s var(--ap-e-expo) calc(.95s + var(--k,0)*150ms)}
+
+/* Exceptions card: the two rules settle in one after the other. */
+.ap-rv-off:not(.ap-rv-in) .hm-v-chips>span{opacity:0;transform:translateY(6px)}
+.ap-rv-in .hm-v-chips>span{transition:opacity .4s var(--ap-e-quint),transform .4s var(--ap-e-quint)}
+.ap-rv-in .hm-v-chips>span:nth-child(2){transition-delay:.08s}
+
+/* Docs card: published checks draw in turn; the in-review clock hand sweeps once. */
+.ap-rv-off:not(.ap-rv-in) .hm-v-files .hm-ico .d{stroke-dashoffset:1}
+.ap-rv-in .hm-v-files .hm-ico .d{transition:stroke-dashoffset .5s var(--ap-e-expo) calc(.35s + var(--k,0)*120ms)}
+.ap-rv-in .hm-v-files li:nth-child(2) .hm-ico .d{transition-delay:.5s}
+.ap-rv-in .hm-v-files li:nth-child(3) .hm-ico .d{transition-delay:calc(.65s + var(--k,0)*120ms)}
+.hm-v-files [data-ico=clock] .hand{transform-box:view-box;transform-origin:12px 12px}
+.ap-rv-in .hm-v-files [data-ico=clock] .hand{animation:hm-ico-sweep 1.4s var(--ap-e-quint) .8s both}
+
+/* Brand card: swatches pop in, then a greeting appears next to the launcher. */
+.hm-v-greet{position:absolute;right:64px;bottom:22px;padding:6px 11px;border-radius:12px 12px 4px 12px;background:#fff;border:1px solid var(--hm-line);box-shadow:0 6px 16px -10px rgba(4,26,82,.35);color:#041A52;font-size:11.5px;font-weight:500;white-space:nowrap;transform-origin:100% 100%;transition:opacity .4s var(--ap-e-quint) .8s,transform .45s var(--ap-e-quint) .8s}
+.ap-rv-off:not(.ap-rv-in) .hm-v-greet{opacity:0;transform:scale(.92) translateY(4px)}
+.ap-rv-off:not(.ap-rv-in) .hm-v-swatches i{opacity:0;transform:scale(.6)}
+.ap-rv-in .hm-v-swatches i{transition:opacity .3s ease,transform .4s var(--ap-e-quint)}
+.ap-rv-in .hm-v-swatches i:nth-child(1){transition-delay:.15s}
+.ap-rv-in .hm-v-swatches i:nth-child(2){transition-delay:.22s}
+.ap-rv-in .hm-v-swatches i:nth-child(3){transition-delay:.29s}
+
+/* Stack card: the two settings lines type in. */
+.hm-v-ln{display:block}
+.ap-rv-off:not(.ap-rv-in) .hm-v-ln{clip-path:inset(0 100% 0 0)}
+.ap-rv-in .hm-v-ln{clip-path:inset(0 0 0 0);transition:clip-path .7s steps(18,end) .3s}
+.ap-rv-in .hm-v-ln+.hm-v-ln{transition-delay:1.05s}
+
+/* Hover flourishes */
+@media(hover:hover) and (pointer:fine){
+.hm-card:hover .hm-card-icon .w{animation:hm-ico-redraw .6s var(--ap-e-expo) calc(var(--k,0)*70ms) both}
+.hm-card:hover [data-ico=inbox] .h{animation:hm-ico-fall .8s var(--ap-e-quint)}
+.hm-card:hover [data-ico=sliders] .a.r{animation:hm-ico-out-r .55s var(--hm-e-inout,cubic-bezier(.77,0,.175,1))}
+.hm-card:hover [data-ico=sliders] .a.l{animation:hm-ico-out-l .55s var(--hm-e-inout,cubic-bezier(.77,0,.175,1))}
+.hm-card:hover [data-ico=appwindow] .h{animation:hm-ico-pop-in .35s var(--ap-e-quint) .15s both}
+.hm-card:hover [data-ico=barchart] .a{transform-box:fill-box;transform-origin:50% 100%;animation:hm-ico-grow .5s var(--ap-e-quint) calc(var(--k,0)*60ms) both}
+.hm-card:hover [data-ico=code] .l{animation:hm-ico-out-l .5s var(--hm-e-inout,cubic-bezier(.77,0,.175,1))}
+.hm-card:hover [data-ico=code] .r{animation:hm-ico-out-r .5s var(--hm-e-inout,cubic-bezier(.77,0,.175,1))}
+.hm-card:hover .hm-v-files [data-ico=clock] .hand{animation:hm-v-sweep-again 1s var(--ap-e-quint)}
+.hm-card:hover .hm-v-launcher{animation:hm-ico-bob .5s var(--hm-e-inout,cubic-bezier(.77,0,.175,1))}
+}
+/* Separate name so hovering restarts the sweep instead of resuming the finished reveal. */
+@keyframes hm-v-sweep-again{from{transform:rotate(-300deg)}to{transform:none}}
+
+@media(prefers-reduced-motion:reduce){
+.ap-rv-off:not(.ap-rv-in) :is(.hm-card-icon,.hm-v-files,.hm-v-quote) .hm-ico .d{stroke-dashoffset:0}
+.ap-rv-off:not(.ap-rv-in) :is(.hm-v-reply,.hm-v-quote,.hm-v-langs,.hm-v-greet,.hm-v-swatches i,.hm-v-chips>span){opacity:1;transform:none}
+.ap-rv-off:not(.ap-rv-in) .hm-v-ln{clip-path:none}
+.hm-v-greet,.hm-v-swatches i,.hm-v-ln,.hm-v-reply,.hm-v-quote,.hm-v-langs,.hm-v-chips>span{transition:none!important}
+.hm-card .hm-v-launcher{animation:none!important}
+}

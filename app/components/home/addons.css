@@ -1,0 +1,48 @@
+/* Add-on icons: tinted brand tiles with line glyphs (AddOnIcons.tsx).
+   Motion: one staggered draw-on when the grid first scrolls into view, then a small,
+   icon-specific flourish on card hover (pointer devices only). Only transform, opacity and
+   stroke-dashoffset animate. Reduced motion renders the icons drawn, with no movement. */
+
+.hm-addon-ico{--tone:#09318D;position:relative;display:grid;place-items:center;flex-shrink:0;width:40px;height:40px;border-radius:12px;color:var(--tone);
+  background-color:#EEF2FC;background-color:color-mix(in srgb,var(--tone) 10%,#F4F7FF);
+  background-image:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,0) 70%);
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--tone) 20%,transparent),0 1px 2px color-mix(in srgb,var(--tone) 12%,transparent);
+  transition:background-color .2s ease}
+/* Planned add-ons stay neutral so live ones read first. */
+.hm-addon[data-status='Coming soon'] .hm-addon-ico{--tone:#8792AD;background-color:#F6F7FA;box-shadow:inset 0 0 0 1px #E3E8F2}
+
+/* Status pill gets a small leading dot. */
+.hm-addon .hm-addon-status{display:inline-flex;align-items:center;gap:5px}
+.hm-addon .hm-addon-status::before{content:'';width:5px;height:5px;border-radius:50%;background:currentColor;opacity:.75}
+
+/* Draw-on entrance. AddOns.tsx sets data-icons="armed" before the grid is visible, then "drawn". */
+[data-icons=armed] .hm-addon-ico{opacity:0;transform:scale(.94)}
+[data-icons=armed] .hm-ico .d{stroke-dashoffset:1}
+[data-icons=armed] .hm-ico .p{opacity:0;transform:scale(.5)}
+[data-icons=drawn] .hm-addon-ico{--t:calc(min(var(--i,0),12)*40ms);transition:opacity .45s var(--ap-e-quint) var(--t),transform .55s var(--ap-e-quint) var(--t),background-color .2s ease}
+[data-icons=drawn] .hm-ico .d{transition:stroke-dashoffset .9s var(--ap-e-expo) calc(var(--t) + 140ms + var(--k,0)*90ms)}
+[data-icons=drawn] .hm-ico .p{transition:opacity .3s ease calc(var(--t) + 520ms + var(--k,0)*45ms),transform .4s var(--ap-e-quint) calc(var(--t) + 520ms + var(--k,0)*45ms)}
+
+/* Hover flourishes. Small amplitudes so a mid-animation hover-out never visibly jumps. */
+@media(hover:hover) and (pointer:fine){
+.hm-addon:hover .hm-addon-ico{background-color:color-mix(in srgb,var(--tone) 15%,#F4F7FF)}
+.hm-addon:hover .hm-ico .w{animation:hm-ico-redraw .6s var(--ap-e-expo) calc(var(--k,0)*70ms) both}
+.hm-addon:hover [data-ico=team] .a{animation:hm-ico-slide .5s var(--ap-e-quint) both}
+.hm-addon:hover [data-ico=api] .l{animation:hm-ico-out-l .5s var(--hm-e-inout,cubic-bezier(.77,0,.175,1))}
+.hm-addon:hover [data-ico=api] .r{animation:hm-ico-out-r .5s var(--hm-e-inout,cubic-bezier(.77,0,.175,1))}
+.hm-addon:hover [data-ico=csv] .a{animation:hm-ico-drop .55s var(--ap-e-quint) both}
+.hm-addon:hover [data-ico=email] .a{transform-origin:50% 0;animation:hm-ico-ring .7s var(--ap-e-quint)}
+.hm-addon:hover [data-ico=digest] .p{animation:hm-ico-pop .42s var(--ap-e-quint) calc(var(--k,0)*45ms)}
+.hm-addon:hover [data-ico=automation] .a{animation:hm-ico-nudge .5s var(--ap-e-quint) .12s both}
+.hm-addon:hover [data-ico=ticket] .a{animation:hm-ico-spin .5s var(--ap-e-quint)}
+.hm-addon:hover [data-ico=inbox] .h{animation:hm-ico-fall .8s var(--ap-e-quint)}
+.hm-addon:hover [data-ico=messenger] .p{animation:hm-ico-bob .5s var(--hm-e-inout,cubic-bezier(.77,0,.175,1)) calc(var(--k,0)*90ms)}
+.hm-addon:hover [data-ico=whatsapp] .a{animation:hm-ico-buzz .55s var(--ap-e-quint)}
+}
+/* Keyframes (hm-ico-*) live in draw.css. */
+
+@media(prefers-reduced-motion:reduce){
+[data-icons] .hm-addon-ico{opacity:1;transform:none;transition:background-color .2s ease}
+[data-icons] .hm-ico .d{stroke-dashoffset:0}
+[data-icons] .hm-ico .p{opacity:1;transform:none}
+}

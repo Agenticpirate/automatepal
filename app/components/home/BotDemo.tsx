@@ -129,16 +129,16 @@ export default function BotDemo(){
 
  return <div className="hm-demo-grid">
   <div className="hm-demo-head">
-   <p className="hm-kicker">01 / Interactive demo</p>
-   <h2 id="demo-title" className="hm-h2">Support and billing, <span className="ap-hl">in one chat</span>.</h2>
-   <p className="hm-lede">Ask North Dock, a fictional store. Product questions are answered from its published sources with the quote attached. Billing questions are checked against the store’s billing records, harder questions are handled step by step, and anything risky waits for the owner.</p>
+   <p className="hm-kicker">01 / See it in action</p>
+   <h2 id="demo-title" className="hm-h2">Ask it something. <span className="ap-hl">Watch it work</span>.</h2>
+   <p className="hm-lede">Meet the assistant for North Dock, a made-up store. Pick a question and watch it answer from published sources with the quote attached, look up an order or invoice, work through a multi-part question, and pass refunds to the owner instead of guessing.</p>
   </div>
   <div className="hm-demo-side">
    <ul className="hm-demo-points">
-    <li><span><Ico d={I.quote} s={15}/></span><div><b>Answers cite the exact passage</b><small>A separate check must agree before the reply is sent.</small></div></li>
+    <li><span><Ico d={I.quote} s={15}/></span><div><b>Answers cite the exact passage</b><small>A second check has to agree before the reply goes out.</small></div></li>
     <li><span><Ico d={I.card} s={15}/></span><div><b>Orders, invoices and payments <em className="hm-tag">Preview</em></b><small>Read-only lookups in your billing records after the customer confirms their order.</small></div></li>
     <li><span><Ico d={I.spark} s={15}/></span><div><b>Handles the hard questions</b><small>Multi-part billing questions, date-limited exceptions, other languages, and instructions hidden inside a message.</small></div></li>
-    <li><span><Ico d={I.inbox} s={15}/></span><div><b>Refunds and unknowns go to you</b><small>The bot opens a review item instead of guessing or moving money.</small></div></li>
+    <li><span><Ico d={I.inbox} s={15}/></span><div><b>Refunds and unknowns go to you</b><small>It opens a review item for you instead of guessing or moving money.</small></div></li>
    </ul>
    <section className="hm-queue" aria-label="Owner review queue">
     <div className="hm-queue-head"><b>Owner review queue</b><span>{tally.answered} answered · {tally.review} sent to review</span></div>

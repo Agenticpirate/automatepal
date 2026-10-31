@@ -16,7 +16,8 @@ export function demoLocked():NextResponse|null{
 const H=3600000,D=86400000;
 const iso=(msAgo:number)=>new Date(Date.now()-msAgo).toISOString();
 const day=(n:number,h=8)=>iso(n*D+h*H);
-const cid=(n:number)=>`de100000-0000-4000-8000-00000000000${n}`;
+// The first 8 hex digits differ per case so short ticket labels (T-DE100001...) stay distinct.
+const cid=(n:number)=>`de10000${n}-0000-4000-8000-00000000000${n}`;
 const qid=(n:number)=>`de200000-0000-4000-8000-00000000000${n}`;
 const rid=(n:number)=>`de300000-0000-4000-8000-00000000000${n}`;
 const expires=()=>new Date(Date.now()+30*D).toISOString();

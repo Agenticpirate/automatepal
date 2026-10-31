@@ -1,87 +1,291 @@
 'use client';
 import DeskShell from '../components/DeskShell';
-import DashShell,{DashNotif,DIcon} from '../components/DashShell';
-import ServiceFields from './service-fields';
+import DashShell,{type DashNotif} from '../components/DashShell';
+import ServiceFields,{QaDraft} from './service-fields';
 import {useEffect,useState} from 'react';
 import Link from 'next/link';
 import {authHeaders} from '../../lib/browser-auth';
 import {ticketLabel,ageLabel,ticketCsv,transitions,type Ticket} from '../../lib/tickets';
+import {I,type IconName,VIEWS,type ViewKey,needsYou,isOpenTicket,aiPaused,statusMeta,PRIORITY_COLOR,cap,words,shortAgo,whenLabel,fmtDur,weekSummary} from './inbox-ui';
+import './inbox.css';
+
 type Event={id:string;created_at:string;kind:string;body:string};
 type Timeline={events:Event[];requests:{id:string;created_at:string;kind:string;message:string;status:string;contact_email?:string|null}[];questions:{id:string;created_at:string;question:string;supported:boolean;feedback:number|null}[];coverage:string};
+type Item={id:string;created_at:string;label:string;body:string;team:boolean;chip?:string};
+type Action={label:string;icon?:IconName;primary?:boolean;run?:()=>void;href?:string};
+type CheckState='done'|'todo'|'wait'|'run';
+
+/* Only called from event handlers and effects, never while rendering. */
+const clock=()=>Date.now();
 const statuses=['new','open','pending','resolved','closed'],priorities=['low','normal','high','urgent'],categories=['general','billing','refund','receipt','handoff','knowledge'];
+const SORTS:[string,string][]=[['updated','Newest'],['oldest','Oldest'],['priority','Priority']];
+/* Demo and older rows can hold values outside today's lists; keep the current value selectable. */
+const withCurrent=(list:string[],cur:string)=>list.includes(cur)?list:[cur,...list];
+
 function buildNotifs(rows:Ticket[]):DashNotif[]{const out:DashNotif[]=[];
-for(const t of rows){const open=!['resolved','closed'].includes(t.ticket_status);
-const attn=open&&(t.inbox_state==='attention'||['high','urgent'].includes(t.priority)||['refund','handoff'].includes(t.category));
-if(attn)out.push({id:'t-'+t.id,kind:'error',title:'Ticket needs intervention',body:`${ticketLabel(t.id)} · ${t.order_label} · ${t.ticket_status} / ${t.priority} / ${t.category}`,ts:t.ticket_updated_at});
+for(const t of rows){const open=isOpenTicket(t);
+if(needsYou(t))out.push({id:'t-'+t.id,kind:'error',title:'Ticket needs intervention',body:`${ticketLabel(t.id)} · ${t.order_label} · ${t.ticket_status} / ${t.priority} / ${t.category}`,ts:t.ticket_updated_at});
 else if(!open)out.push({id:'t-'+t.id,kind:'success',title:'Ticket '+t.ticket_status,body:`${ticketLabel(t.id)} · ${t.order_label}`,ts:t.ticket_updated_at});
 else out.push({id:'t-'+t.id,kind:'info',title:t.ticket_status==='new'?'New ticket':'Ticket '+t.ticket_status,body:`${ticketLabel(t.id)} · ${t.order_label} · ${t.priority} / ${t.category}`,ts:t.ticket_updated_at});}
 return out.sort((a,b)=>b.ts.localeCompare(a.ts));}
-export default function Tickets(){const[rows,setRows]=useState<Ticket[]>([]),[asOf,setAsOf]=useState(0),[notice,setNotice]=useState(''),[busy,setBusy]=useState(false),[search,setSearch]=useState(''),[status,setStatus]=useState('all'),[priority,setPriority]=useState('all'),[category,setCategory]=useState('all'),[assignment,setAssignment]=useState('all'),[sort,setSort]=useState('updated'),[selected,setSelected]=useState<string[]>([]),[bulk,setBulk]=useState('open'),[active,setActive]=useState<string|null>(null),[timeline,setTimeline]=useState<Timeline|null>(null),[note,setNote]=useState(''),[tags,setTags]=useState('');
-async function load(){const r=await fetch('/api/tickets',{headers:await authHeaders()}),d=await r.json();if(!r.ok)throw Error(d.error);setRows(d.tickets);setAsOf(Date.now());return d.truncated;}
-async function detail(id:string){setActive(id);setTimeline(null);setNote('');setTags(rows.find(t=>t.id===id)?.tags.join(', ')??'');try{const r=await fetch('/api/tickets?id='+id,{headers:await authHeaders()}),d=await r.json();if(!r.ok)throw Error(d.error);setTimeline(d);}catch{setNotice('Could not load ticket timeline.');}}
-useEffect(()=>{authHeaders().then(headers=>fetch('/api/tickets',{headers})).then(r=>r.json()).then(d=>{if(d.error)throw Error(d.error);setRows(d.tickets);setAsOf(Date.now());const requested=new URLSearchParams(location.search).get('ticket');const initial=d.tickets.find((t:Ticket)=>t.id===requested);if(initial){setActive(initial.id);setTags(initial.tags.join(', '));authHeaders().then(headers=>fetch('/api/tickets?id='+initial.id,{headers})).then(r=>r.json()).then(x=>{if(x.error)throw Error(x.error);setTimeline(x);}).catch(()=>setNotice('Could not load ticket timeline.'));}setNotice(d.truncated?'Latest 200 only. Filters cover loaded rows.':'Latest up to 200 tickets loaded.');}).catch(()=>setNotice('Please sign in or retry when the service recovers.'));},[]);
-async function act(body:unknown){setBusy(true);try{const r=await fetch('/api/tickets',{method:'POST',headers:{'Content-Type':'application/json',...await authHeaders()},body:JSON.stringify(body)}),d=await r.json();setNotice(d.note??d.error);await load();if(r.ok){setSelected([]);if(active)await detail(active);}}catch{setNotice('Outcome unconfirmed. Refresh before retrying.');}finally{setBusy(false);}}
-const visible=rows.filter(t=>(status==='all'||t.ticket_status===status)&&(priority==='all'||t.priority===priority)&&(category==='all'||t.category===category)&&(assignment==='all'||(assignment==='owner')===t.assigned_to_owner)&&`${ticketLabel(t.id)} ${t.id} ${t.order_label} ${t.tags.join(' ')}`.toLowerCase().includes(search.toLowerCase())).sort((a,b)=>sort==='oldest'?a.created_at.localeCompare(b.created_at):sort==='priority'?priorities.indexOf(b.priority)-priorities.indexOf(a.priority):b.ticket_updated_at.localeCompare(a.ticket_updated_at));
-const current=rows.find(t=>t.id===active),events=timeline?[...timeline.events.map(e=>({...e,label:e.kind.replaceAll('_',' ')})),...timeline.requests.map(e=>({...e,body:e.message+(e.contact_email?'\nFollow-up email (visitor consented): '+e.contact_email:''),label:'Visitor request: '+e.kind.replaceAll('_',' ')})),...timeline.questions.map(e=>({...e,body:e.question,label:`Visitor question · ${e.supported?'supported':'unanswered'}${e.feedback===-1?' · negative feedback':''}`}))].sort((a,b)=>a.created_at.localeCompare(b.created_at)):[];
-function exportCsv(){const blob=new Blob([ticketCsv(visible)],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='automatepal-fictional-tickets.csv';a.click();URL.revokeObjectURL(url);}
-const pb=(p:string)=>['high','urgent'].includes(p)?'ap-dash-b-err':p==='normal'?'ap-dash-b-info':'ap-dash-b-mut';
-const sb=(s:string)=>['resolved','closed'].includes(s)?'ap-dash-b-ok':s==='pending'?'ap-dash-b-info':'ap-dash-b-err';
-return <DeskShell widget><DashShell crumb="Tickets" notifications={buildNotifs(rows)}><main style={{display:'contents'}}>
-<header>
-<p className="ap-dash-kicker">Fictional support workspace</p>
-<h1 className="ap-dash-h1"><span className="ap-dash-ln"><span>Tickets, with a clear next step.</span></span></h1>
-<p className="ap-dash-sub">One ticket per demo case. Unanswered questions, negative feedback and review requests open it for attention. Notes are internal, not customer replies. Demo access still expires after one hour. No real customer data, email, refund or SLA.</p>
-<div style={{display:'flex',alignItems:'center',gap:12,marginTop:14,flexWrap:'wrap'}}>
-<button disabled={busy} onClick={()=>{setBusy(true);load().then(()=>setNotice('Tickets refreshed.')).catch(()=>setNotice('Refresh failed.')).finally(()=>setBusy(false));}} className="ap-dash-btn"><DIcon name="refresh" size={13}/>Refresh tickets</button>
-<button onClick={()=>{setStatus('all');setCategory('handoff');setSort('updated');}} className="ap-dash-btn ap-dash-btn-ghost"><DIcon name="alert" size={13}/>Escalations only</button>
-<button onClick={exportCsv} className="ap-dash-btn ap-dash-btn-ghost">Export filtered CSV</button>
-<span className="ap-dash-muted" style={{margin:0}}>{visible.length} shown · loaded rows only, no notes or contacts in CSV</span>
-</div>
-<p role="status" className="ap-dash-muted" style={{marginTop:10}}>{notice}</p>
-</header>
-<section aria-label="Ticket filters" className="ap-dash-card ap-dash-filters">
-<label className="ap-dash-field">Search ticket, fixture or tag<input value={search} onChange={e=>setSearch(e.target.value)} maxLength={160} className="ap-dash-select"/></label>
-{([['Status',status,setStatus,statuses],['Priority',priority,setPriority,priorities],['Category',category,setCategory,categories],['Assignee',assignment,setAssignment,['owner','unassigned']],['Sort',sort,setSort,['updated','oldest','priority']]] as const).map(([label,value,set,choices])=><label key={label} className="ap-dash-field">{label}<select value={value} onChange={e=>set(e.target.value)} className="ap-dash-select">{label!=='Sort'&&<option value="all">All</option>}{choices.map(v=><option key={v} value={v}>{v}</option>)}</select></label>)}
-</section>
-<div className="ap-dash-card" style={{display:'flex',flexWrap:'wrap',alignItems:'center',gap:12}}>
-<label className="ap-dash-checkrow"><input type="checkbox" checked={visible.length>0&&visible.slice(0,50).every(t=>selected.includes(t.id))} onChange={e=>setSelected(e.target.checked?visible.slice(0,50).map(t=>t.id):[])}/>Select first 50 shown</label>
-<label className="ap-dash-field" style={{flexDirection:'row',alignItems:'center',gap:8}}>Bulk status<select aria-label="Bulk status" value={bulk} onChange={e=>setBulk(e.target.value)} className="ap-dash-select" style={{marginTop:0,width:'auto'}}>{statuses.map(s=><option key={s}>{s}</option>)}</select></label>
-<button disabled={busy||!selected.length} onClick={()=>act({ids:selected,patch:{status:bulk}})} className="ap-dash-btn ap-dash-btn-ghost">Apply to {selected.length} selected</button>
-</div>
-<div className="ap-dash-ticketgrid">
-<section aria-label="Ticket list" style={{display:'flex',flexDirection:'column',gap:10}}>
-{!visible.length&&<p className="ap-dash-card ap-dash-muted" style={{borderStyle:'dashed'}}>No loaded tickets match. <Link href="/setup" style={{color:'#09318D',textDecoration:'underline'}}>Create a fictional demo in Quick setup</Link>.</p>}
-{visible.map((t,i)=><article key={t.id} className={'ap-dash-card ap-dash-ticket'+(active===t.id?' ap-dash-ticket-active':'')} style={{animationDelay:`${Math.min(i,10)*.05}s`}}>
-<div style={{display:'flex',alignItems:'flex-start',gap:11}}>
-<input type="checkbox" aria-label={'Select '+ticketLabel(t.id)} checked={selected.includes(t.id)} onChange={e=>setSelected(e.target.checked?[...selected,t.id].slice(0,50):selected.filter(id=>id!==t.id))} style={{marginTop:3}}/>
-<div style={{minWidth:0,flex:1}}>
-<button onClick={()=>detail(t.id)} className="ap-dash-ticket-id">{ticketLabel(t.id)}</button>
-<p style={{margin:'4px 0 0',fontSize:13,fontWeight:550,color:'#0A1B3D',wordBreak:'break-word'}}>{t.order_label}</p>
-<div style={{marginTop:9,display:'flex',flexWrap:'wrap',gap:6}}><span className={'ap-dash-badge '+sb(t.ticket_status)}>{t.ticket_status}</span><span className={'ap-dash-badge '+pb(t.priority)}>{t.priority}</span><span className="ap-dash-badge ap-dash-b-mut">{t.category}</span></div>
-<p className="ap-dash-muted" style={{margin:'9px 0 0'}}>Age {ageLabel(t.created_at,asOf)} · {t.assigned_to_owner?'Owner':'Unassigned'} · {t.first_reviewed_at?'First owner review after '+ageLabel(t.created_at,Date.parse(t.first_reviewed_at)):'Awaiting first owner review'}</p>
-<p className="ap-dash-muted" style={{margin:'4px 0 0'}}>AI {['taken_over','closed'].includes(t.inbox_state)?'paused':'available'} · {Date.parse(t.expires_at)<=asOf?'Demo link expired':'Demo link active'}</p>
-<p className="ap-dash-muted" style={{margin:'4px 0 0'}}>{t.ticket_type??'question'} · queue {t.assignment_queue??'general'}</p>
-{t.tags.length>0&&<p style={{margin:'7px 0 0',fontSize:11,color:'#09318D',wordBreak:'break-word'}}>{t.tags.join(' · ')}</p>}
-</div></div></article>)}
-</section>
-{current&&<section aria-label="Ticket details" className="ap-dash-card" style={{alignSelf:'start'}}>
-<h2 className="ap-dash-h2">{ticketLabel(current.id)}</h2>
-<p className="ap-dash-muted" style={{margin:'6px 0 0',wordBreak:'break-all'}}>Full ticket ID: {current.id}</p>
-<div className="ap-dash-filters" style={{marginTop:14}}>
-{([['Status','status',current.ticket_status,statuses],['Priority','priority',current.priority,priorities],['Category','category',current.category,categories]] as const).map(([label,key,value,choices])=><label key={key} className="ap-dash-field">{label}<select aria-label={'Ticket '+label} disabled={busy} value={value} onChange={e=>act({ids:[current.id],patch:{[key]:e.target.value}})} className="ap-dash-select">{choices.filter(v=>key!=='status'||v===current.ticket_status||transitions[current.ticket_status]?.includes(v)).map(v=><option key={v}>{v}</option>)}</select></label>)}
-<label className="ap-dash-field">Assignee<select aria-label="Ticket assignee" disabled={busy} value={current.assigned_to_owner?'owner':'unassigned'} onChange={e=>act({ids:[current.id],patch:{assigned:e.target.value==='owner'}})} className="ap-dash-select"><option value="unassigned">Unassigned</option><option value="owner">Owner (single workspace owner)</option></select></label>
-</div>
-<div style={{display:'flex',flexWrap:'wrap',gap:8,marginTop:12}}><button disabled={busy} onClick={()=>act({ids:[current.id],patch:{takeover:current.inbox_state!=='taken_over',status:'pending'}})} className="ap-dash-btn ap-dash-btn-ghost">{current.inbox_state==='taken_over'?'Release AI':'Take over / pause AI'}</button></div>
-<p className="ap-dash-muted" style={{margin:'10px 0 0'}}>Resolved/closed also pause AI. Reopening does not extend the demo link. First owner review is not a customer-response or SLA metric. Team assignments and outbound replies are not enabled.</p>
-<label className="ap-dash-field" style={{marginTop:12}}>Tags, comma-separated (max 8, letters/numbers/_/-)<input value={tags} onChange={e=>setTags(e.target.value)} maxLength={210} className="ap-dash-select"/></label>
-<button disabled={busy} onClick={()=>act({ids:[current.id],patch:{tags:tags.split(',').map(t=>t.trim()).filter(Boolean)}})} className="ap-dash-btn ap-dash-btn-ghost" style={{marginTop:8}}>Save tags</button>
-<label className="ap-dash-field" style={{marginTop:12}}>Internal note<textarea value={note} maxLength={2000} onChange={e=>setNote(e.target.value)} rows={3} placeholder="Fictional details only. No secrets or customer information." className="ap-dash-select" style={{resize:'vertical',fontFamily:'inherit'}}/></label>
-<button disabled={busy||!note.trim()} onClick={()=>act({action:'note',id:current.id,body:note})} className="ap-dash-btn" style={{marginTop:8}}>Save internal note</button>
-<ServiceFields key={current.id+current.ticket_updated_at} ticket={current} rows={rows} busy={busy} act={act}/>
-<h3 className="ap-dash-h2" style={{borderTop:'1.5px solid #EEF1F8',paddingTop:16,marginTop:18}}>Activity stream (internal work notes)</h3>
-<p className="ap-dash-muted" style={{margin:'6px 0 0'}}>{timeline?.coverage??'Loading...'}</p>
-<ol style={{listStyle:'none',margin:'12px 0 0',padding:0,display:'flex',flexDirection:'column',gap:14}}>{events.map((e,i)=><li key={e.id+'-'+i} style={{borderLeft:'2.5px solid #FD91CC',paddingLeft:12}}><p className="ap-dash-muted" style={{margin:0,fontSize:10}}>{new Date(e.created_at).toISOString()} · {e.label}</p><p style={{margin:'6px 0 0',fontSize:13,lineHeight:1.6,color:'#0A1B3D',whiteSpace:'pre-wrap',wordBreak:'break-word'}}>{e.body}</p></li>)}</ol>
-</section>}
-</div>
-</main></DashShell></DeskShell>;
+
+function Check({state,text,status,extra}:{state:CheckState;text:string;status:string;extra?:React.ReactNode}){
+ return <li className={'ap-ib-chk is-'+state}>
+  <span className="ap-ib-chk-ic" aria-hidden="true">{state==='done'?<I n="tick" s={10} sw={3.2}/>:state==='todo'?'!':null}</span>
+  <span className="ap-ib-chk-t">{text}</span>
+  {extra}
+  <span className="ap-ib-chk-s">{status}</span>
+ </li>;
+}
+
+export default function Tickets(){
+ const[rows,setRows]=useState<Ticket[]>([]),[asOf,setAsOf]=useState(0),[loaded,setLoaded]=useState(false),[loadError,setLoadError]=useState(''),[loadNote,setLoadNote]=useState('');
+ const[toast,setToast]=useState<{text:string;ok:boolean;n:number}|null>(null),[busy,setBusy]=useState(false);
+ const[search,setSearch]=useState(''),[view,setView]=useState<ViewKey>('all'),[status,setStatus]=useState('all'),[priority,setPriority]=useState('all'),[category,setCategory]=useState('all'),[sort,setSort]=useState('updated'),[filtersOpen,setFiltersOpen]=useState(false);
+ const[selected,setSelected]=useState<string[]>([]),[bulk,setBulk]=useState('open');
+ const[active,setActive]=useState<string|null>(null),[timeline,setTimeline]=useState<Timeline|null>(null),[note,setNote]=useState(''),[tags,setTags]=useState(''),[editTags,setEditTags]=useState(false),[showAll,setShowAll]=useState(false);
+ /* n changes on every message so a repeated toast re-mounts and replays its entrance. */
+ const say=(text:string,ok:boolean)=>setToast(prev=>({text,ok,n:(prev?.n??0)+1}));
+
+ useEffect(()=>{if(!toast)return;const id=window.setTimeout(()=>setToast(null),6000);return()=>window.clearTimeout(id);},[toast]);
+
+ async function load(){const r=await fetch('/api/tickets',{headers:await authHeaders()}),d=await r.json();if(!r.ok)throw Error(d.error);setRows(d.tickets);setAsOf(clock());setLoaded(true);setLoadError('');setLoadNote(d.truncated?'Latest 200 only. Filters cover loaded rows.':'Latest up to 200 tickets loaded.');return d.tickets as Ticket[];}
+ async function readTimeline(id:string){try{const r=await fetch('/api/tickets?id='+id,{headers:await authHeaders()}),d=await r.json();if(!r.ok)throw Error(d.error);setTimeline(d);}catch{say('Could not load ticket timeline.',false);}}
+ function open(t:Ticket){setActive(t.id);setTimeline(null);setNote('');setTags(t.tags.join(', '));setEditTags(false);setShowAll(false);try{history.replaceState(null,'','?ticket='+t.id);}catch{}void readTimeline(t.id);}
+ function close(){setActive(null);setTimeline(null);try{history.replaceState(null,'',location.pathname);}catch{}}
+
+ useEffect(()=>{authHeaders().then(headers=>fetch('/api/tickets',{headers})).then(r=>r.json()).then(d=>{if(d.error)throw Error(d.error);setRows(d.tickets);setAsOf(clock());setLoaded(true);setLoadNote(d.truncated?'Latest 200 only. Filters cover loaded rows.':'Latest up to 200 tickets loaded.');
+  const requested=new URLSearchParams(location.search).get('ticket');const initial=d.tickets.find((t:Ticket)=>t.id===requested);
+  if(initial){setActive(initial.id);setTags(initial.tags.join(', '));authHeaders().then(headers=>fetch('/api/tickets?id='+initial.id,{headers})).then(r=>r.json()).then(x=>{if(x.error)throw Error(x.error);setTimeline(x);}).catch(()=>say('Could not load ticket timeline.',false));}
+ }).catch(()=>{setLoaded(true);setLoadError('Please sign in or retry when the service recovers.');});},[]);
+
+ async function act(body:unknown,after?:()=>void){setBusy(true);let ok=false;try{const r=await fetch('/api/tickets',{method:'POST',headers:{'Content-Type':'application/json',...await authHeaders()},body:JSON.stringify(body)}),d=await r.json().catch(()=>({}));ok=r.ok;say(d.note??d.error??(ok?'Saved.':'Update rejected.'),ok);const fresh=await load();if(ok){setSelected([]);after?.();if(active){const t=fresh.find(x=>x.id===active);if(t)setTags(t.tags.join(', '));await readTimeline(active);}}}catch{say('Outcome unconfirmed. Refresh before retrying.',false);}finally{setBusy(false);}return ok;}
+ function refresh(){setBusy(true);load().then(()=>say('Tickets refreshed.',true)).catch(()=>say('Refresh failed.',false)).finally(()=>setBusy(false));}
+
+ const viewDef=VIEWS.find(v=>v.key===view)!;
+ const needle=search.toLowerCase();
+ const visible=rows.filter(t=>viewDef.match(t)&&(status==='all'||t.ticket_status===status)&&(priority==='all'||t.priority===priority)&&(category==='all'||t.category===category)&&`${ticketLabel(t.id)} ${t.id} ${t.order_label} ${t.tags.join(' ')}`.toLowerCase().includes(needle)).sort((a,b)=>sort==='oldest'?a.created_at.localeCompare(b.created_at):sort==='priority'?priorities.indexOf(b.priority)-priorities.indexOf(a.priority):b.ticket_updated_at.localeCompare(a.ticket_updated_at));
+ const filterCount=[status,priority,category].filter(x=>x!=='all').length;
+ const current=rows.find(t=>t.id===active);
+ const week=weekSummary(rows,asOf);
+ const attentionCount=rows.filter(needsYou).length;
+
+ function exportCsv(){const blob=new Blob([ticketCsv(visible)],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='automatepal-fictional-tickets.csv';a.click();URL.revokeObjectURL(url);}
+ function clearFilters(){setStatus('all');setPriority('all');setCategory('all');setSearch('');setView('all');}
+ const focusNote=()=>document.getElementById('ap-ib-note')?.focus();
+
+ /* Conversation: visitor questions and requests plus internal events, oldest first. */
+ const items:Item[]=timeline?[
+  ...timeline.events.map(e=>({id:e.id,created_at:e.created_at,label:words(e.kind),body:e.body,team:true})),
+  ...timeline.requests.map(e=>({id:e.id,created_at:e.created_at,label:'Visitor request: '+words(e.kind),body:e.message+(e.contact_email?'\nFollow-up email (visitor consented): '+e.contact_email:''),team:false,chip:e.status==='pending_review'?'Pending review':cap(e.status)})),
+  ...timeline.questions.map(e=>({id:e.id,created_at:e.created_at,label:`Visitor question · ${e.supported?'supported':'unanswered'}${e.feedback===-1?' · negative feedback':''}`,body:e.question,team:false,chip:e.supported?'Answered from sources':'No source found'})),
+ ].sort((a,b)=>a.created_at.localeCompare(b.created_at)):[];
+ const hidden=showAll?0:Math.max(0,items.length-8),shownItems=items.slice(hidden);
+
+ const qs=timeline?.questions??[],unsupported=qs.filter(q=>!q.supported).length,negative=qs.filter(q=>q.feedback===-1).length,reqs=timeline?.requests??[],pendingReq=reqs.filter(r=>r.status==='pending_review').length;
+
+ function nextStep(t:Ticket):{text:string;actions:Action[]}{
+  const can=(s:string)=>!!transitions[t.ticket_status]?.includes(s);
+  const setTo=(s:string)=>()=>void act({ids:[t.id],patch:{status:s}});
+  const takeover=()=>void act({ids:[t.id],patch:{takeover:t.inbox_state!=='taken_over',status:'pending'}});
+  const review=(decision:string)=>()=>void act({action:'review',id:t.id,decision});
+  const resolve:Action[]=can('resolved')?[{label:'Mark resolved',icon:'check',primary:true,run:setTo('resolved')}]:[];
+  if(t.ticket_status==='closed')return{text:'Closed. Reopen it if the visitor comes back. Reopening does not extend the demo link.',actions:can('open')?[{label:'Reopen ticket',primary:true,run:setTo('open')}]:[]};
+  if(t.ticket_status==='resolved')return{text:'Resolved. Save the answer as reusable Q&A, then close the ticket.',actions:[{label:'Prepare Q&A',icon:'note',primary:true,run:()=>document.getElementById('ap-ib-qa-q')?.focus()},...(can('closed')?[{label:'Close ticket',run:setTo('closed')}]:[])]};
+  if(t.category==='refund'&&t.review_decision==='pending')return{text:'An owner refund review is pending. Record the decision. Approval is not a refund and moves no money.',actions:[{label:'Record approved review',primary:true,run:review('approved')},{label:'Record rejected review',run:review('rejected')}]};
+  if(t.category==='refund'&&!t.review_decision)return{text:'Refund question. Request an owner review before anyone replies.',actions:[{label:'Request owner review',primary:true,run:review('pending')}]};
+  if(t.inbox_state==='taken_over')return{text:'AI is paused, so this ticket waits on a person. Resolve it once the visitor is sorted, then release AI.',actions:[...resolve,{label:'Release AI',icon:'bot',run:takeover}]};
+  if(t.category==='handoff')return{text:'The visitor asked for a person. Take over to pause AI, then follow up.',actions:[{label:'Take over / pause AI',icon:'pause',primary:true,run:takeover}]};
+  if(unsupported>0)return{text:`${unsupported} visitor question${unsupported>1?'s':''} had no source. Add the answer to Knowledge so the next visitor gets one.`,actions:[{label:'Open Knowledge',primary:true,href:'/knowledge'}]};
+  if(t.ticket_status==='new')return{text:'New ticket. Open it to start work.',actions:can('open')?[{label:'Open ticket',primary:true,run:setTo('open')}]:[]};
+  if(!t.assigned_to_owner)return{text:'Nobody owns this ticket yet. Assign it to the owner.',actions:[{label:'Assign to owner',icon:'userPlus',primary:true,run:()=>void act({ids:[t.id],patch:{assigned:true}})}]};
+  return{text:'Nothing is blocking. Resolve it once the visitor is sorted.',actions:resolve};
+ }
+
+ function detail(t:Ticket){
+  const st=statusMeta(t.ticket_status),step=nextStep(t),paused=aiPaused(t);
+  /* Refund review buttons live in the next step when it offers them, otherwise on the check row. */
+  const stepReview=step.actions.some(a=>/review/i.test(a.label));
+  const exp=t.expires_at?Date.parse(t.expires_at):NaN,created=Date.parse(t.created_at),expired=!Number.isNaN(exp)&&exp<=asOf;
+  const linkPct=Number.isNaN(exp)?0:Math.min(100,Math.max(0,100*(asOf-created)/Math.max(1,exp-created)));
+  const statusOpts=withCurrent(statuses,t.ticket_status).filter(v=>v===t.ticket_status||transitions[t.ticket_status]?.includes(v));
+  const patch=(p:Record<string,unknown>)=>void act({ids:[t.id],patch:p});
+  return <>
+   <header className="ap-ib-dhead">
+    <button type="button" className="ap-ib-back" onClick={close}><I n="chevronLeft" s={15}/>All tickets</button>
+    <span className="ap-ib-did" title={'Full ticket ID: '+t.id}>{ticketLabel(t.id)}</span>
+    <button type="button" className="ap-ib-icon" aria-label="Copy ticket link" title="Copy ticket link" onClick={()=>{navigator.clipboard?.writeText(location.origin+'/tickets?ticket='+t.id).then(()=>say('Ticket link copied.',true),()=>say('Copy failed. Use the address bar.',false));}}><I n="link" s={14}/></button>
+    <div className="ap-ib-dhead-r">
+     <button type="button" disabled={busy} className={'ap-ib-btn'+(t.inbox_state==='taken_over'?' pink':'')} onClick={()=>patch({takeover:t.inbox_state!=='taken_over',status:'pending'})}><I n={t.inbox_state==='taken_over'?'bot':'pause'} s={14}/>{t.inbox_state==='taken_over'?'Release AI':'Take over'}</button>
+     <button type="button" disabled={busy} className="ap-ib-btn" onClick={()=>patch({assigned:!t.assigned_to_owner})}><I n={t.assigned_to_owner?'userX':'userPlus'} s={14}/>{t.assigned_to_owner?'Unassign':'Assign to owner'}</button>
+    </div>
+   </header>
+
+   <div className="ap-ib-dbody">
+    <h2 className="ap-ib-title">{t.order_label}</h2>
+    <div className="ap-ib-chips">
+     <label className="ap-ib-chip"><span className="ap-ib-dot" style={{background:st.dot}}/><select aria-label="Ticket Status" disabled={busy} value={t.ticket_status} onChange={e=>patch({status:e.target.value})}>{statusOpts.map(v=><option key={v} value={v}>{statusMeta(v).label}</option>)}</select><I n="chevronDown" s={12}/></label>
+     <label className="ap-ib-chip"><select aria-label="Ticket Category" disabled={busy} value={t.category} onChange={e=>patch({category:e.target.value})}>{withCurrent(categories,t.category).map(v=><option key={v} value={v}>{cap(v)}</option>)}</select><I n="chevronDown" s={12}/></label>
+     <label className="ap-ib-chip"><span className="ap-ib-bar" style={{background:PRIORITY_COLOR[t.priority]??'#C2D1F2'}}/><select aria-label="Ticket Priority" disabled={busy} value={t.priority} onChange={e=>patch({priority:e.target.value})}>{withCurrent(priorities,t.priority).map(v=><option key={v} value={v}>{cap(v)}</option>)}</select><I n="chevronDown" s={12}/></label>
+     <span className="ap-ib-created">Created {whenLabel(t.created_at,asOf)} via widget</span>
+     <span className={'ap-ib-ai'+(paused?' off':'')}><I n={paused?'pause':'bot'} s={13}/>AI {paused?'paused':'available'}</span>
+    </div>
+
+    <dl className="ap-ib-props">
+     <dt>Assignee</dt>
+     <dd><label className="ap-ib-inline"><span className={'ap-ib-av'+(t.assigned_to_owner?'':' none')}>{t.assigned_to_owner?'OW':''}</span><select aria-label="Ticket assignee" disabled={busy} value={t.assigned_to_owner?'owner':'unassigned'} onChange={e=>patch({assigned:e.target.value==='owner'})}><option value="unassigned">Unassigned</option><option value="owner">Workspace owner</option></select><I n="chevronDown" s={12}/></label></dd>
+     <dt>Service</dt>
+     <dd>{cap(t.ticket_type??'question')} · {t.assignment_queue||'general'} queue{typeof t.impact==='number'&&typeof t.urgency==='number'?` · impact ${t.impact} / urgency ${t.urgency}`:''}</dd>
+     <dt>Tags</dt>
+     <dd>{editTags?<div className="ap-ib-tagedit">
+       <input aria-label="Tags, comma-separated (max 8, letters/numbers/_/-)" value={tags} onChange={e=>setTags(e.target.value)} maxLength={210} placeholder="refund, vip"/>
+       <button type="button" disabled={busy} className="ap-ib-btn primary sm" onClick={()=>void act({ids:[t.id],patch:{tags:tags.split(',').map(x=>x.trim()).filter(Boolean)}},()=>setEditTags(false))}>Save tags</button>
+       <button type="button" className="ap-ib-btn sm" onClick={()=>{setTags(t.tags.join(', '));setEditTags(false);}}>Cancel</button>
+       <span className="ap-ib-hint">Max 8, letters, numbers, _ or -</span>
+      </div>:<div className="ap-ib-tags">{t.tags.length?t.tags.map(x=><span key={x} className="ap-ib-tag">{x}</span>):<span className="ap-ib-faint">No tags</span>}<button type="button" className="ap-ib-textbtn" onClick={()=>setEditTags(true)}>Edit</button></div>}</dd>
+     <dt>Timing</dt>
+     <dd className="ap-ib-timers">
+      <div><p><b>{ageLabel(t.created_at,asOf)}</b> old</p><small>{t.first_reviewed_at?'First owner review after '+ageLabel(t.created_at,Date.parse(t.first_reviewed_at)):'Awaiting first owner review'}</small></div>
+      <div><p className={expired?'late':''}><b>{Number.isNaN(exp)?'No':expired?'Expired':fmtDur(exp-asOf)}</b> {Number.isNaN(exp)?'expiry':expired?'':'left'}</p><span className="ap-ib-track"><i style={{width:linkPct+'%',background:expired?'#E25FAE':'#041A52'}}/></span><small>{Number.isNaN(exp)?'Demo link has no expiry':'Demo link '+(expired?'expired ':'expires ')+new Date(exp).toLocaleString(undefined,{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}</small></div>
+     </dd>
+    </dl>
+
+    <section className="ap-ib-card" aria-label="Ticket check">
+     <header><span className="ap-ib-card-ic"><I n="clipboard" s={14}/></span><h3>Ticket check</h3><span className="ap-ib-card-via">{timeline?'From this workspace':<><span className="ap-ib-spin"/>Checking</>}</span></header>
+     <ul className="ap-ib-checks">
+      {t.first_reviewed_at?<Check state="done" text={'First owner review after '+ageLabel(t.created_at,Date.parse(t.first_reviewed_at))} status="Done"/>:<Check state="wait" text={'Awaiting first owner review · '+ageLabel(t.created_at,asOf)} status="Waiting"/>}
+      {!timeline?<Check state="run" text="Checking visitor questions" status="Running now"/>:!qs.length?<Check state="done" text="No visitor questions recorded" status="Clear"/>:unsupported?<Check state="todo" text={`${unsupported} of ${qs.length} question${qs.length>1?'s':''} had no source`} status="Needs review"/>:<Check state="done" text={`${qs.length} question${qs.length>1?'s':''} answered from sources`} status="Done"/>}
+      {timeline&&negative>0&&<Check state="todo" text={`Negative feedback on ${negative} answer${negative>1?'s':''}`} status="Needs review"/>}
+      {timeline&&reqs.length>0&&(pendingReq?<Check state="todo" text={`${pendingReq} visitor request${pendingReq>1?'s':''} pending review`} status="Needs review"/>:<Check state="done" text={`${reqs.length} visitor request${reqs.length>1?'s':''} handled`} status="Done"/>)}
+      {t.category==='refund'&&(t.review_decision==='pending'
+       ?<Check state="todo" text="Owner refund review pending" status="Needs decision" extra={!stepReview&&<span className="ap-ib-chk-x">{(['approved','rejected'] as const).map(d=><button key={d} type="button" disabled={busy} className="ap-ib-textbtn" onClick={()=>void act({action:'review',id:t.id,decision:d})}>{d==='approved'?'Record approved review':'Record rejected review'}</button>)}</span>}/>
+       :<Check state={t.review_decision?'done':'wait'} text={t.review_decision?'Refund review recorded: '+words(t.review_decision):'Owner refund review not requested'} status={t.review_decision?'Done':'Not started'} extra={!stepReview&&<span className="ap-ib-chk-x"><button type="button" disabled={busy} className="ap-ib-textbtn" onClick={()=>void act({action:'review',id:t.id,decision:'pending'})}>Request owner review</button></span>}/>)}
+      {expired&&<Check state="todo" text="Demo link expired" status="Expired"/>}
+     </ul>
+     <div className="ap-ib-step">
+      <p className="ap-ib-step-k">Next step</p>
+      <p className="ap-ib-step-t">{step.text}</p>
+      <div className="ap-ib-step-a">
+       {step.actions.map(a=>a.href?<Link key={a.label} href={a.href} className={'ap-ib-btn'+(a.primary?' primary':'')}>{a.icon&&<I n={a.icon} s={14}/>}{a.label}</Link>:<button key={a.label} type="button" disabled={busy} onClick={a.run} className={'ap-ib-btn'+(a.primary?' primary':'')}>{a.icon&&<I n={a.icon} s={14}/>}{a.label}</button>)}
+       <button type="button" className="ap-ib-btn" onClick={focusNote}><I n="note" s={14}/>Add internal note</button>
+      </div>
+     </div>
+    </section>
+
+    {!isOpenTicket(t)&&<QaDraft key={'qa'+t.id}/>}
+
+    <section className="ap-ib-svcbox" aria-label="Service record fields">
+     <header><h3>Service record</h3><small>{cap(t.ticket_type??'question')} · {t.assignment_queue||'general'} queue</small></header>
+     <ServiceFields key={t.id+t.ticket_updated_at} ticket={t} rows={rows} busy={busy} act={act}/>
+    </section>
+
+    <section className="ap-ib-thread" aria-label="Activity stream (internal work notes)">
+     <header><h3><I n="message" s={14}/>Conversation &amp; activity</h3>{hidden>0&&<button type="button" className="ap-ib-textbtn" onClick={()=>setShowAll(true)}>Show {hidden} earlier</button>}</header>
+     <p className="ap-ib-note">{timeline?.coverage??'Loading...'}</p>
+     {timeline&&!items.length&&<p className="ap-ib-faint">Nothing recorded on this ticket yet.</p>}
+     <ol className="ap-ib-msgs">{shownItems.map((e,i)=><li key={e.id+'-'+i} className={'ap-ib-msg'+(e.team?' team':'')+(e.chip==='No source found'||e.chip==='Pending review'?' flag':'')}>
+      <span className="ap-ib-msg-av" aria-hidden="true">{e.team?<I n="note" s={13}/>:'V'}</span>
+      <div className="ap-ib-msg-b">
+       <p className="ap-ib-msg-meta">{e.team?'Internal · ':''}{e.label} · <time dateTime={e.created_at} title={new Date(e.created_at).toISOString()}>{whenLabel(e.created_at,asOf)}</time></p>
+       <p className="ap-ib-msg-text">{e.body}</p>
+       {e.chip&&<span className="ap-ib-msg-chip">{e.chip}</span>}
+      </div>
+     </li>)}</ol>
+    </section>
+    <p className="ap-ib-foot">Full ticket ID: {t.id}. Resolved/closed also pause AI. Reopening does not extend the demo link. First owner review is not a customer-response or SLA metric. Team assignments and outbound replies are not enabled.</p>
+   </div>
+
+   <form className="ap-ib-compose" onSubmit={e=>{e.preventDefault();if(note.trim())void act({action:'note',id:t.id,body:note},()=>setNote(''));}}>
+    <div className="ap-ib-tabs" role="tablist" aria-label="Message type">
+     <button type="button" role="tab" aria-selected="true">Internal note</button>
+     <button type="button" role="tab" aria-selected="false" disabled title="Outbound replies are not enabled. Nothing is sent to the visitor."><I n="lock" s={11}/>Reply to visitor</button>
+    </div>
+    <div className="ap-ib-compose-row">
+     <textarea id="ap-ib-note" aria-label="Internal note" value={note} maxLength={2000} rows={2} onChange={e=>setNote(e.target.value)} onKeyDown={e=>{if(e.key==='Enter'&&(e.metaKey||e.ctrlKey)){e.preventDefault();e.currentTarget.form?.requestSubmit();}}} placeholder="Write an internal note. Fictional details only, no secrets or customer information."/>
+     <button type="submit" className="ap-ib-send" aria-label="Save internal note" title="Save internal note (Ctrl/⌘ + Enter)" disabled={busy||!note.trim()}><I n="arrowUp" s={15} sw={2.4}/></button>
+    </div>
+   </form>
+  </>;
+ }
+
+ const allShownSelected=visible.length>0&&visible.slice(0,50).every(t=>selected.includes(t.id));
+
+ return <DeskShell widget><DashShell crumb="Tickets" notifications={buildNotifs(rows)}>
+ <main className={'ap-ib'+(current?' has-active':'')}>
+  <h1 className="ap-ib-sr">Tickets</h1>
+  <div className="ap-ib-left">
+   <nav className="ap-ib-rail" aria-label="Ticket views">
+    <div className="ap-ib-rail-head"><b>Support inbox</b><span>{loaded&&!loadError?`${rows.length} loaded`:'Fictional workspace'}</span></div>
+    <label className="ap-ib-search"><I n="search" s={14}/><input type="search" aria-label="Search ticket, fixture or tag" placeholder="Search" value={search} onChange={e=>setSearch(e.target.value)} maxLength={160}/></label>
+    <div className="ap-ib-rail-views">{(['Inbox','Queues'] as const).map(g=><div key={g} className="ap-ib-rail-group">
+     <p className="ap-ib-rail-k">{g}</p>
+     {VIEWS.filter(v=>v.group===g).map(v=>{const n=rows.filter(v.match).length;return <button key={v.key} type="button" aria-pressed={view===v.key} className={v.key==='attention'&&n>0?'hot':''} onClick={()=>{setView(v.key);setSelected([]);}}><I n={v.icon} s={15}/><span className="ap-ib-rail-l">{v.label}</span>{loaded&&<span className="ap-ib-rail-n">{n}</span>}</button>;})}
+    </div>)}</div>
+   </nav>
+
+   <section className="ap-ib-list" aria-label="Ticket list">
+    <header className="ap-ib-lhead">
+     <h2>{viewDef.label}</h2>
+     <label className="ap-ib-sort"><select aria-label="Sort tickets" value={sort} onChange={e=>setSort(e.target.value)}>{SORTS.map(([v,l])=><option key={v} value={v}>{l}</option>)}</select><I n="chevronDown" s={12}/></label>
+     <button type="button" className={'ap-ib-icon'+(filtersOpen||filterCount?' on':'')} aria-label={'Filters'+(filterCount?` (${filterCount} active)`:'')} aria-expanded={filtersOpen} onClick={()=>setFiltersOpen(!filtersOpen)}><I n="filter" s={14}/>{filterCount>0&&<span className="ap-ib-badge">{filterCount}</span>}</button>
+     <button type="button" className="ap-ib-icon" aria-label="Refresh tickets" title="Refresh tickets" disabled={busy} onClick={refresh}><I n="refresh" s={14}/></button>
+    </header>
+
+    {filtersOpen&&<div className="ap-ib-filters">
+     {([['Status',status,setStatus,statuses],['Priority',priority,setPriority,priorities],['Category',category,setCategory,categories]] as const).map(([label,value,set,choices])=><label key={label} className="ap-ib-field">{label}<select value={value} onChange={e=>set(e.target.value)}><option value="all">All</option>{choices.map(v=><option key={v} value={v}>{cap(v)}</option>)}</select></label>)}
+     <div className="ap-ib-filters-a"><button type="button" className="ap-ib-btn sm" onClick={exportCsv}><I n="download" s={13}/>Export filtered CSV</button>{(filterCount>0||view!=='all'||search)&&<button type="button" className="ap-ib-textbtn" onClick={clearFilters}>Clear all</button>}</div>
+     <p className="ap-ib-note">{visible.length} shown · loaded rows only, no notes or contacts in CSV</p>
+    </div>}
+
+
+    <div className="ap-ib-scroll">
+     {loaded&&rows.length>0&&<div className="ap-ib-week">
+      <p className="ap-ib-week-k">{week.thisWeek?'This week':'Loaded tickets'}</p>
+      <p className="ap-ib-week-t"><b>{week.resolved}</b> of {week.total} ticket{week.total===1?'':'s'} resolved or closed, <b>{week.attention}</b> need{week.attention===1?'s':''} you.{week.median!=null&&<> Median first owner review after <b>{fmtDur(week.median)}</b>.</>}</p>
+      <div className="ap-ib-seg" aria-hidden="true">{week.resolved>0&&<i style={{flex:week.resolved,background:'#041A52'}}/>}{week.attention>0&&<i style={{flex:week.attention,background:'#FD91CC'}}/>}{week.open>0&&<i style={{flex:week.open,background:'#C2D1F2'}}/>}</div>
+      <p className="ap-ib-legend"><span><i style={{background:'#041A52'}}/>Resolved {week.resolved}</span><span><i style={{background:'#FD91CC'}}/>Needs you {week.attention}</span><span><i style={{background:'#C2D1F2'}}/>Open {week.open}</span></p>
+     </div>}
+
+     {!loaded&&<ul className="ap-ib-items" aria-label="Loading tickets">{[0,1,2,3].map(i=><li key={i} className="ap-ib-skel"><i/><i/><i/></li>)}</ul>}
+     {loadError&&<div className="ap-ib-empty"><p>{loadError}</p><button type="button" className="ap-ib-btn sm" disabled={busy} onClick={refresh}><I n="refresh" s={13}/>Retry</button></div>}
+     {loaded&&!loadError&&!rows.length&&<div className="ap-ib-empty"><p>No tickets yet.</p><Link href="/setup" className="ap-ib-link">Create a fictional demo in Quick setup</Link></div>}
+     {loaded&&rows.length>0&&!visible.length&&<div className="ap-ib-empty"><p>No loaded tickets match this view.</p><button type="button" className="ap-ib-textbtn" onClick={clearFilters}>Clear filters</button></div>}
+
+     {visible.length>0&&<div className={'ap-ib-bulkbar'+(selected.length?' on':'')}>
+      <label className="ap-ib-checkrow"><input type="checkbox" aria-label="Select first 50 shown" checked={allShownSelected} onChange={e=>setSelected(e.target.checked?visible.slice(0,50).map(t=>t.id):[])}/>{selected.length?`${selected.length} selected`:`${visible.length} ticket${visible.length===1?'':'s'}`}</label>
+      {selected.length>0&&<>
+       <select aria-label="Bulk status" value={bulk} onChange={e=>setBulk(e.target.value)}>{statuses.map(s=><option key={s} value={s}>{statusMeta(s).label}</option>)}</select>
+       <button type="button" disabled={busy} onClick={()=>void act({ids:selected,patch:{status:bulk}})} className="ap-ib-btn primary sm">Apply to {selected.length} selected</button>
+       <button type="button" className="ap-ib-icon" aria-label="Clear selection" onClick={()=>setSelected([])}><I n="x" s={14}/></button>
+      </>}
+     </div>}
+     {visible.length>0&&<ul className={'ap-ib-items'+(selected.length?' has-sel':'')}>{visible.map(t=>{const st=statusMeta(t.ticket_status),on=active===t.id;return <li key={t.id} className={'ap-ib-item'+(on?' on':'')} style={{'--stripe':PRIORITY_COLOR[t.priority]??'#C2D1F2'} as React.CSSProperties}>
+      {<input type="checkbox" className="ap-ib-check" aria-label={'Select '+ticketLabel(t.id)} checked={selected.includes(t.id)} onChange={e=>setSelected(e.target.checked?[...selected,t.id].slice(0,50):selected.filter(id=>id!==t.id))}/>}
+      <button type="button" className="ap-ib-item-b" aria-current={on?'true':undefined} aria-label={ticketLabel(t.id)} aria-describedby={'ib-t-'+t.id+' ib-m-'+t.id} onClick={()=>open(t)}>
+       <span className="ap-ib-item-top"><span className="ap-ib-item-id">{ticketLabel(t.id)}</span><span className="ap-ib-item-time">{shortAgo(t.ticket_updated_at,asOf)}</span></span>
+       <span className="ap-ib-item-title" id={'ib-t-'+t.id}>{t.order_label}</span>
+       <span className="ap-ib-item-meta" id={'ib-m-'+t.id}>
+        <span className={'ap-ib-av sm'+(t.assigned_to_owner?'':' none')} aria-hidden="true">{t.assigned_to_owner?'OW':''}</span>
+        <span className="ap-ib-item-who">{t.assigned_to_owner?'Owner':'Unassigned'} · {cap(t.category)}</span>
+        {t.inbox_state==='taken_over'?<span className="ap-ib-pill navy"><I n="pause" s={11}/>AI paused</span>:needsYou(t)?<span className="ap-ib-pill pink">Needs you</span>:<span className="ap-ib-state"><span className="ap-ib-dot" style={{background:st.dot}}/>{words(t.ticket_status)}</span>}
+       </span>
+      </button>
+     </li>;})}</ul>}
+     {loaded&&!loadError&&rows.length>0&&<p className="ap-ib-loadnote">{loadNote}</p>}
+    </div>
+   </section>
+  </div>
+
+  <section className="ap-ib-detail" aria-label="Ticket details">
+   {current?<div key={current.id} className="ap-ib-dwrap">{detail(current)}</div>:<div className="ap-ib-pick">
+    <span className="ap-ib-pick-ic"><I n="inbox" s={22}/></span>
+    <h2>Pick a ticket</h2>
+    <p>Its conversation, checks and next step open here. Notes are internal, never customer replies.</p>
+    {attentionCount>0&&view!=='attention'&&<button type="button" className="ap-ib-btn" onClick={()=>setView('attention')}><I n="alert" s={14}/>Show the {attentionCount} that need you</button>}
+   </div>}
+  </section>
+
+  <div className="ap-ib-toast" role="status" aria-live="polite">{toast&&<span key={toast.n} className={toast.ok?'ok':'err'}><I n={toast.ok?'check':'alert'} s={15}/>{toast.text}</span>}</div>
+ </main>
+ </DashShell></DeskShell>;
 }

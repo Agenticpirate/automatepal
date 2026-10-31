@@ -3,6 +3,7 @@ import {useEffect,useMemo,useState} from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import {usePathname} from 'next/navigation';
+import {authHeaders,selectWorkspace,selectedWorkspace} from '../../lib/browser-auth';
 import './dash.css';
 
 /* Lucide (ISC) inline icons */
@@ -23,13 +24,37 @@ export const DP: Record<string, React.ReactNode> = {
   refresh:(<><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></>),
   audit:(<><path d="M14 2v6h6"/><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><path d="M9 15h6"/><path d="M9 11h2"/></>),
   catalog:(<><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/></>),
+  team:(<><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></>),
+  chevron:(<path d="m7 15 5 5 5-5M7 9l5-5 5 5"/>),
 };
 export const DIcon=({name,size=16,sw=2}:{name:keyof typeof DP;size?:number;sw?:number})=>(
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{DP[name]}</svg>
 );
 
 export type DashNotif={id:string;kind:'error'|'success'|'info';title:string;body:string;ts:string};
-const NAV:[string,string,keyof typeof DP][]=[['/owner','Overview','overview'],['/tickets','Tickets','tickets'],['/support','Widget studio','widget'],['/knowledge','Knowledge','knowledge'],['/setup','Setup','setup'],['/status','Status','status']];
+const NAV:[string,string,keyof typeof DP][]=[['/owner','Overview','overview'],['/tickets','Tickets','tickets'],['/support','Widget studio','widget'],['/knowledge','Knowledge','knowledge'],['/team','Team','team'],['/setup','Setup','setup'],['/status','Status','status']];
+type Ws={workspace_id:string;role:string;owner_email:string};
+type TeamCtx={me:{id:string};workspaces:Ws[];current:{workspace_id:string;role:string}|null;workspaceInvalid?:boolean};
+const ROLE_LABEL:Record<string,string>={owner:'Owner',admin:'Admin',manager:'Manager',agent:'Agent'};
+
+/* Workspace switcher: hidden unless the person belongs to another workspace. Fails silent. */
+function WorkspaceSwitcher(){
+  const[ctx,setCtx]=useState<TeamCtx|null>(null);
+  useEffect(()=>{let on=true;void Promise.resolve().then(async()=>{try{const r=await fetch('/api/team',{headers:await authHeaders()});
+        // Always read the body: an unread response keeps the request open in Chrome.
+        const j=await r.json().catch(()=>null);if(!on||!r.ok||!j||!Array.isArray(j.workspaces))return;if(j.workspaceInvalid&&selectedWorkspace()){selectWorkspace(null);location.reload();return;}setCtx(j);}catch{}});return()=>{on=false;};},[]);
+  if(!ctx?.current||ctx.workspaces.length<2)return null;
+  const label=(w:Ws)=>w.role==='owner'?'Your workspace':w.owner_email;
+  return <label className="ap-dash-ws">
+    <span className="ap-dash-ws-k">Workspace · {ROLE_LABEL[ctx.current.role]??ctx.current.role}</span>
+    <span className="ap-dash-ws-v">
+      <select aria-label="Switch workspace" value={ctx.current.workspace_id} onChange={e=>{const id=e.target.value;selectWorkspace(id===ctx.me.id?null:id);window.location.assign(new URL('/owner',window.location.origin));}}>
+        {ctx.workspaces.map(w=><option key={w.workspace_id} value={w.workspace_id}>{label(w)}</option>)}
+      </select>
+      <DIcon name="chevron" size={13}/>
+    </span>
+  </label>;
+}
 
 function rel(ts:string){const s=Math.max(0,Date.now()-Date.parse(ts))/1000;if(s<60)return 'just now';if(s<3600)return Math.floor(s/60)+'m ago';if(s<86400)return Math.floor(s/3600)+'h ago';return Math.floor(s/86400)+'d ago';}
 
@@ -48,6 +73,7 @@ export default function DashShell({crumb,notifications=[],search,onSearch,childr
   return <div className="ap-dash">
     <aside className="ap-dash-side">
       <Link href="/" className="ap-dash-brand"><Image src="/automatepal-logo.png" alt="" width={53} height={26}/><span>AutomatePal</span></Link>
+      <WorkspaceSwitcher/>
       <nav aria-label="Workspace">{navItems}</nav>
       <div className="ap-dash-side-foot">
         <Link href="/sandbox-catalog"><DIcon name="catalog" size={14}/><span>Sandbox plans</span></Link>

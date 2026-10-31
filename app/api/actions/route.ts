@@ -13,7 +13,7 @@ export async function GET(req:NextRequest) {
 }
 export async function POST(req:NextRequest) {
  const ctx=await authenticate(req); if(!ctx){const d=demoLocked();if(d)return d;return NextResponse.json({error:'Please sign in.'},{status:401});}
- if(!allowRequest('actions:'+ctx.userId))return NextResponse.json({error:'Please wait a minute.'},{status:429});
+ if(!allowRequest('actions:'+ctx.actorId))return NextResponse.json({error:'Please wait a minute.'},{status:429});
  if(!validOrigin(req))return NextResponse.json({error:'Invalid origin'},{status:403});
  const parsed=schema.safeParse(await limitedJson(req,4000).catch(()=>null));if(!parsed.success)return NextResponse.json({error:'Invalid action.'},{status:400});
  const {id,decision}=parsed.data;

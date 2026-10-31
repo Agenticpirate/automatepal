@@ -147,6 +147,22 @@ function demoFixture(key:string,req:NextRequest):NextResponse|null{
   return NextResponse.json({contracts:[],assessments:[],events:[]},{headers:noStore});
  case 'actions':
   return NextResponse.json({actions:[]},{headers:noStore});
+ case 'team':{
+  // Fictional teammates on example.com addresses; nobody here is a real person.
+  const ws='de500000-0000-4000-8000-000000000001';
+  return NextResponse.json({me:{id:ws,email:'owner@north-dock.example.com'},demo:true,
+   workspaces:[{workspace_id:ws,role:'owner',owner_email:'owner@north-dock.example.com',joined_at:day(40)}],
+   current:{workspace_id:ws,role:'owner'},
+   team:[
+    {user_id:ws,email:'owner@north-dock.example.com',role:'owner',joined_at:day(40),is_you:true},
+    {user_id:'de500000-0000-4000-8000-000000000002',email:'priya.admin@north-dock.example.com',role:'admin',joined_at:day(21),is_you:false},
+    {user_id:'de500000-0000-4000-8000-000000000003',email:'arjun.support@north-dock.example.com',role:'manager',joined_at:day(14),is_you:false},
+    {user_id:'de500000-0000-4000-8000-000000000004',email:'meera.agent@north-dock.example.com',role:'agent',joined_at:day(6),is_you:false},
+    {user_id:'de500000-0000-4000-8000-000000000005',email:'kiran.agent@north-dock.example.com',role:'agent',joined_at:day(2),is_you:false},
+   ],
+   invites:[{id:'de500000-0000-4000-8000-000000000010',email:'new.hire@north-dock.example.com',role:'agent',created_at:day(1),expires_at:iso(-6*D)}],
+  },{headers:noStore});
+ }
  default:return null;
  }
 }

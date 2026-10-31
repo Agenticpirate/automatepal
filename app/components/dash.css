@@ -205,3 +205,12 @@ html[data-theme=dark] .desk-ui .ap-dash{color-scheme:light;--desk-bg:#EEF1F8;--d
 /* Open demo preview banner */
 .ap-demo-banner{position:sticky;top:0;z-index:60;padding:8px 14px;background:#FD91CC;color:#041A52;font-size:12px;font-weight:600;text-align:center;border-bottom:2px solid #041A52}
 .ap-demo-banner a{color:#09318D;text-decoration:underline}
+
+/* Workspace switcher (sidebar) */
+.ap-dash-ws{display:flex;flex-direction:column;gap:4px;margin:0 0 12px;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);cursor:pointer}
+.ap-dash-ws-k{font-size:10px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;color:#7E93C9}
+.ap-dash-ws-v{position:relative;display:flex;align-items:center;color:#fff}
+.ap-dash-ws-v svg{position:absolute;right:0;pointer-events:none;color:#B9C7EA}
+.desk-ui .ap-dash .ap-dash-ws select{appearance:none;-webkit-appearance:none;width:100%;margin:0;padding:0 18px 0 0;border:0;background:transparent;color:#fff;font-size:12.5px;font-weight:600;outline:none;cursor:pointer;text-overflow:ellipsis}
+.desk-ui .ap-dash .ap-dash-ws select option{color:#0A1B3D}
+.ap-dash-ws:focus-within{border-color:#FD91CC}

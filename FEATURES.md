@@ -5,6 +5,7 @@ Updated 2026-10-28. "Hosted preview" means a bounded fictional/sandbox feature i
 | Capability | State | Evidence and limits |
 | --- | --- | --- |
 | Google sign-in and private owner workspace | Hosted preview | Owner sign-in checked; independent second-user acceptance still required. |
+| Team workspaces and roles | Built locally, not yet deployed or migrated on hosted DB | Owner/Admin/Manager/Agent enforced in RLS and 25 RPCs (`db/043`); once-shown, hashed, 7-day, email-bound invite links (nothing emailed); workspace switcher; actor recorded in audit and ticket history; teammate ticket assignment; 25-seat preview cap. Local Supabase gates: 69 DB, 23 API, 23 browser checks. No SSO, no email delivery of invites. |
 | Guided knowledge / look / test / script setup | Hosted preview | One-hour fictional demo links, not permanent customer identity. No card. |
 | TXT/MD and small text-PDF import | Hosted preview | Local PDF extraction/review, 2 MB / 10 pages; no OCR or crawling. |
 | Source edits, deletion, attempt history, quota | Hosted preview | Atomic revision-checked replacement, renewal of processing/publication consent, 30 sources / 360 character-based page units. Existing copies cannot be recalled. |

@@ -42,7 +42,7 @@ export async function POST(req:NextRequest){
    if(error)throw Error('Request unavailable, expired or limit reached.');return NextResponse.json({id:data,note:'Sent to the demo owner for review. No refund, payment or email has been sent.'});
   }
   const ctx=await authenticate(req);if(!ctx){const d=demoLocked();if(d)return d;return NextResponse.json({error:'Please sign in.'},{status:401});}
-  if(!allowRequest(ctx.userId))return NextResponse.json({error:'Please wait a minute.'},{status:429});
+  if(!allowRequest(ctx.actorId))return NextResponse.json({error:'Please wait a minute.'},{status:429});
   if(body?.action==='inbox'){const d=z.object({id:z.string().uuid(),state:z.enum(['open','taken_over','closed'])}).parse(body);const{data,error}=await ctx.client.rpc('set_support_inbox',{p_id:d.id,p_state:d.state});if(error||!data)throw Error('Case unavailable.');return NextResponse.json({note:'Case state updated. No message or payment sent.'});}
   if(body?.action==='settings'){
    const current=await ctx.client.from('widget_settings').select('controls').eq('user_id',ctx.userId).maybeSingle();if(current.error)throw Error('Could not load current settings.');const settings=widgetSettings.parse({...current.data?.controls,...(body.settings as Record<string,unknown>)});const{label,color,initials,prompts,...controls}=settings;

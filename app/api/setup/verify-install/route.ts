@@ -43,7 +43,7 @@ export async function POST(req:NextRequest){
   const ctx=await authenticate(req);
   if(!ctx){const d=demoLocked();if(d)return d;return NextResponse.json({error:'Please sign in.'},{status:401});}
   if(!validOrigin(req))return NextResponse.json({error:'Invalid origin'},{status:403});
-  if(!allowRequest('verify-install:'+ctx.userId))return NextResponse.json({error:'Please wait a minute.'},{status:429});
+  if(!allowRequest('verify-install:'+ctx.actorId))return NextResponse.json({error:'Please wait a minute.'},{status:429});
   try{
     const b=z.object({url:z.string().trim().min(8).max(500),token:z.string().trim().max(200).optional()}).parse(await limitedJson(req,2000));
     const u=await publicUrl(b.url);

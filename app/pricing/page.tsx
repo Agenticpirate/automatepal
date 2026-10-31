@@ -27,7 +27,7 @@ const NAV=[{label:'Home',href:'/',icon:'home' as const},{label:'Product',href:'/
 export default function Pricing(){
   const[interval,setInterval]=useState<'month'|'year'>('month'),[selected,setSelected]=useState<string|null>(null),[menu,setMenu]=useState(false);
   const choice=tiers.find(t=>t.name===selected);
-  return <DeskShell widget darkDefault><main className="ap-cx"><div className="ap-cx-frame"><div className="ap-cx-inner">
+  return <DeskShell widget><main id="main-content" className="ap-cx"><div className="ap-cx-frame"><div className="ap-cx-inner">
     <div className="ap-cx-navwrap">
       <nav className="ap-cx-nav" aria-label="Primary">
         <Link href="/" className="ap-cx-logo"><Image src="/automatepal-logo.png" alt="" width={45} height={22}/>AutomatePal</Link>

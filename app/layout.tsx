@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Inter, Instrument_Serif } from "next/font/google";
 import "./globals.css";
+import { SITE_URL } from "../lib/site";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -12,13 +13,18 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// Self-hosted at build time (no request to Google's font CDN, so the CSP stays first-party).
+// preload:false: the files download only on pages that use them (home hero, pricing accent).
+const inter = Inter({ variable: "--font-inter", subsets: ["latin"], weight: ["400", "500", "600"], display: "swap", preload: false });
+const instrumentSerif = Instrument_Serif({ variable: "--font-instrument-serif", subsets: ["latin"], weight: "400", style: ["normal", "italic"], display: "swap", preload: false });
+
 export const metadata: Metadata = {
- metadataBase:new URL('https://automatepal.onrender.com'),
- title:{default:'AutomatePal - source-backed support preview',template:'%s | AutomatePal'},
- description:'Source-quoted AI customer support that also answers billing questions, with an owner-reviewed service desk. Fictional-data preview. No live payments.',
+ metadataBase:new URL(SITE_URL),
+ title:{default:'AutomatePal - AI support that cites its sources',template:'%s | AutomatePal'},
+ description:'AI customer support that answers from your own docs, quotes the passage it used and sends anything it can’t back up to your team. Fictional-data preview. No live payments.',
  alternates:{canonical:'/'},
- openGraph:{type:'website',siteName:'AutomatePal',url:'/',title:'AutomatePal - support with a clear next step',description:'Source-backed answers and owner review. Fictional-data preview, no live payments.',images:[{url:'/opengraph-image',width:1200,height:630,alt:'AutomatePal: source-backed answers, owner review, fictional-data preview'}]},
- twitter:{card:'summary_large_image',title:'AutomatePal - source-backed support preview',description:'Source-backed answers and owner review. Fictional-data preview, no live payments.',images:['/opengraph-image']},
+ openGraph:{type:'website',siteName:'AutomatePal',url:'/',title:'AutomatePal - AI support that shows its work',description:'Answers from your own docs with the source attached, and a person for everything else. Fictional-data preview, no live payments.',images:[{url:'/opengraph-image',width:1200,height:630,alt:'AutomatePal: source-backed answers, owner review, fictional-data preview'}]},
+ twitter:{card:'summary_large_image',title:'AutomatePal - AI support that cites its sources',description:'Answers from your own docs with the source attached, and a person for everything else. Fictional-data preview, no live payments.',images:['/opengraph-image']},
  // Public pages stay indexable in both demo modes so search engines can list the site and its favicon.
  // App surfaces that show demo fixtures keep their X-Robots-Tag noindex headers (next.config.ts).
  robots:{index:true,follow:true},
@@ -31,9 +37,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${instrumentSerif.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        {/* Keyboard users jump past the navigation. Pages put id="main-content" on their main region. */}
+        <a href="#main-content" className="ap-skip">Skip to content</a>
+        {children}
+      </body>
     </html>
   );
 }

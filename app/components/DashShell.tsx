@@ -91,7 +91,7 @@ export default function DashShell({crumb,notifications=[],search,onSearch,childr
         </button>
       </header>
       <nav className="ap-dash-mobilenav" aria-label="Workspace">{navItems}</nav>
-      <div className="ap-dash-body">{children}</div>
+      <div className="ap-dash-body" id="main-content">{children}</div>
     </div>
     {open&&<>
       <div className="ap-dash-overlay" onClick={()=>setOpen(false)}/>

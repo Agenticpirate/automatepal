@@ -1,13 +1,13 @@
 {
-  "checkedAt": "2026-10-30T17:16:40.661Z",
+  "checkedAt": "2026-10-31T18:46:28.143Z",
   "results": [
     {
       "path": "/",
       "status": 200,
-      "title": "AutomatePal - source-backed support preview",
-      "description": "Explore source-backed answers, owner-reviewed service desk workflows and PayPal sandbox plan evidence. Fictional-data preview. No live payments.",
+      "title": "AutomatePal - AI support that cites its sources",
+      "description": "AI customer support that answers from your own docs, quotes the passage it used and sends anything it can’t back up to your team. Fictional-data preview. No live payments.",
       "canonical": "https://automatepal.onrender.com/",
-      "og": "https://automatepal.onrender.com/opengraph-image?e5a66ccec45f3d0e",
+      "og": "https://automatepal.onrender.com/opengraph-image?a6ac03da2353ea17",
       "twitter": "summary_large_image",
       "h1": 1,
       "robotsHeader": null
@@ -15,7 +15,7 @@
     {
       "path": "/pricing",
       "status": 200,
-      "title": "Sandbox demo pricing | AutomatePal",
+      "title": "Demo pricing | AutomatePal",
       "description": "Compare fictional Starter, Growth and Scale monthly or annual plans with a $1 three-day trial. Local preview only, no checkout or live charges.",
       "canonical": "https://automatepal.onrender.com/pricing",
       "og": "https://automatepal.onrender.com/opengraph-image",
@@ -70,8 +70,8 @@
     {
       "path": "/help",
       "status": 200,
-      "title": "AutomatePal - source-backed support preview",
-      "description": "Explore source-backed answers, owner-reviewed service desk workflows and PayPal sandbox plan evidence. Fictional-data preview. No live payments.",
+      "title": "AutomatePal - AI support that cites its sources",
+      "description": "AI customer support that answers from your own docs, quotes the passage it used and sends anything it can’t back up to your team. Fictional-data preview. No live payments.",
       "canonical": "https://automatepal.onrender.com/",
       "og": "https://automatepal.onrender.com/opengraph-image",
       "twitter": "summary_large_image",
@@ -79,14 +79,30 @@
       "robotsHeader": "noindex, nofollow"
     }
   ],
-  "sitemap": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n<url>\n<loc>https://automatepal.onrender.com</loc>\n</url>\n<url>\n<loc>https://automatepal.onrender.com/pricing</loc>\n</url>\n<url>\n<loc>https://automatepal.onrender.com/privacy</loc>\n</url>\n<url>\n<loc>https://automatepal.onrender.com/terms</loc>\n</url>\n<url>\n<loc>https://automatepal.onrender.com/status</loc>\n</url>\n<url>\n<loc>https://automatepal.onrender.com/contact</loc>\n</url>\n</urlset>\n",
+  "sitemap": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n<url>\n<loc>https://automatepal.onrender.com</loc>\n</url>\n<url>\n<loc>https://automatepal.onrender.com/pricing</loc>\n</url>\n<url>\n<loc>https://automatepal.onrender.com/security</loc>\n</url>\n<url>\n<loc>https://automatepal.onrender.com/privacy</loc>\n</url>\n<url>\n<loc>https://automatepal.onrender.com/terms</loc>\n</url>\n<url>\n<loc>https://automatepal.onrender.com/status</loc>\n</url>\n<url>\n<loc>https://automatepal.onrender.com/contact</loc>\n</url>\n</urlset>\n",
   "robots": "User-Agent: *\nAllow: /\nDisallow: /api/\n\nSitemap: https://automatepal.onrender.com/sitemap.xml\n",
   "structuredData": {
     "@context": "https://schema.org",
     "@type": "WebSite",
     "name": "AutomatePal",
     "url": "https://automatepal.onrender.com/",
-    "description": "Source-backed support and owner-reviewed service desk. Fictional-data preview, no live payments."
+    "description": "Source-quoted AI customer support with an owner-reviewed service desk. Fictional-data preview, no live payments.",
+    "inLanguage": "en",
+    "publisher": {
+      "@type": "Organization",
+      "name": "AutomatePal",
+      "url": "https://automatepal.onrender.com/",
+      "logo": "https://automatepal.onrender.com/icon-512.png",
+      "sameAs": [
+        "https://github.com/Agenticpirate/automatepal"
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer support",
+        "email": "raviteja@automatepal.com",
+        "availableLanguage": "en"
+      }
+    }
   },
   "limits": "No live ranking, real-user Core Web Vitals or full accessibility audit."
 }

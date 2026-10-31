@@ -1,6 +1,5 @@
 /* Pricing - Convix design language in brand palette (Ravi 8:18 PM).
-   Instrument Serif (OFL, Google Fonts) for the italic accent. Lucide icons (ISC, inline). */
-@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap');
+   Instrument Serif (OFL, self-hosted via next/font in app/layout.tsx) for the italic accent. Lucide icons (ISC, inline). */
 
 .ap-cx{background:#F4F6FB;padding:16px;font-family:'Inter','Segoe UI',system-ui,sans-serif;min-height:100vh;color:#0A1B3D}
 .ap-cx-frame{position:relative;width:100%;background:#E9EDF7;border-radius:24px;overflow:hidden;padding:clamp(18px,3vw,28px) clamp(14px,3vw,32px) clamp(36px,5vh,56px)}
@@ -28,7 +27,7 @@
 .ap-cx-badge{display:inline-flex;align-items:center;gap:8px;background:#fff;border-radius:999px;padding:7px 16px;box-shadow:0 1px 6px rgba(9,49,141,.10);font-size:13px;font-weight:500;color:#0A1B3D}
 .ap-cx-badge i{width:8px;height:8px;border-radius:50%;background:#FD91CC;display:inline-block}
 .ap-cx-h1{margin:20px 0 0;font-size:clamp(34px,7vw,64px);line-height:1.05;font-weight:550;letter-spacing:-.02em;max-width:720px;color:#0A1B3D}
-.ap-cx-h1 em{font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;color:#E25FAE}
+.ap-cx-h1 em{font-family:var(--font-instrument-serif),'Instrument Serif',serif;font-style:italic;font-weight:400;color:#E25FAE}
 .ap-cx-sub{margin:16px auto 0;max-width:560px;font-size:clamp(13px,3.5vw,15.5px);line-height:1.65;color:#4A5878}
 
 /* Interval toggle pill */

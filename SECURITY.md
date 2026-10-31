@@ -4,9 +4,11 @@ AutomatePal is an experimental beta (`automatepal.onrender.com`), built for the 
 
 ## Reporting
 
-Email raviteja.journal@gmail.com with a subject line starting `[security]`. Include the affected page or demo-link URL, what you observed, and when. Do not include secrets, credentials or other people's personal data in the report.
+Email raviteja@automatepal.com with a subject line starting `[security]`. Include the affected page or demo-link URL, what you observed, and when. Do not include secrets, credentials or other people's personal data in the report.
 
 Reports are reviewed manually by one maintainer. No response time or fix timeline is promised. Good-faith research reported this way will not be treated as hostile.
+
+The same policy, the list of security controls, service providers and known gaps are published at `/security` on the site. A machine-readable contact is at `/.well-known/security.txt` (RFC 9116); renew its `Expires` date before October 31, 2027.
 
 ## Scope notes
 

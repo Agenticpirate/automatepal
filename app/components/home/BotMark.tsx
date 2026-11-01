@@ -29,15 +29,18 @@ export function BotMark({size=40,typing=false,className=''}:{size?:number;typing
  </svg>;
 }
 
-/* Visitor profile avatar: navy gradient disc with a person silhouette and a pink ring. */
-export function ProfileMark({size=28}:{size?:number}){
+/* Visitor profile avatar: navy gradient disc with a person silhouette and a pink ring.
+   tone="owner" swaps to a pink disc with a navy ring and silhouette, so the business owner reads as a
+   different participant from the visitor in the owner inbox. */
+export function ProfileMark({size=28,tone='visitor'}:{size?:number;tone?:'visitor'|'owner'}){
  const u=useId().replace(/:/g,'');
- return <svg className="hm-profile" width={size} height={size} viewBox="0 0 32 32" aria-hidden="true">
+ const owner=tone==='owner';
+ return <svg className={'hm-profile'+(owner?' hm-profile-owner':'')} width={size} height={size} viewBox="0 0 32 32" aria-hidden="true">
   <defs>
-   <linearGradient id={`pf-${u}`} x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#2457E0"/><stop offset="1" stopColor="#041A52"/></linearGradient>
+   <linearGradient id={`pf-${u}`} x1="0" y1="0" x2="1" y2="1">{owner?<><stop offset="0" stopColor="#FFC4E4"/><stop offset="1" stopColor="#FD91CC"/></>:<><stop offset="0" stopColor="#2457E0"/><stop offset="1" stopColor="#041A52"/></>}</linearGradient>
    <clipPath id={`pc-${u}`}><circle cx="16" cy="16" r="14.5"/></clipPath>
   </defs>
-  <circle cx="16" cy="16" r="15.25" fill="#fff" stroke="#FD91CC" strokeWidth="1.5"/>
-  <g clipPath={`url(#pc-${u})`}><circle cx="16" cy="16" r="14.5" fill={`url(#pf-${u})`}/><circle cx="16" cy="12.6" r="5" fill="#fff" opacity=".95"/><path d="M5.5 32c.6-6.6 4.8-11.2 10.5-11.2S25.9 25.4 26.5 32z" fill="#fff" opacity=".95"/></g>
+  <circle cx="16" cy="16" r="15.25" fill="#fff" stroke={owner?'#041A52':'#FD91CC'} strokeWidth="1.5"/>
+  <g clipPath={`url(#pc-${u})`}><circle cx="16" cy="16" r="14.5" fill={`url(#pf-${u})`}/><circle cx="16" cy="12.6" r="5" fill={owner?'#041A52':'#fff'} opacity=".95"/><path d="M5.5 32c.6-6.6 4.8-11.2 10.5-11.2S25.9 25.4 26.5 32z" fill={owner?'#041A52':'#fff'} opacity=".95"/></g>
  </svg>;
 }

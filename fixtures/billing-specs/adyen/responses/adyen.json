@@ -1,0 +1,98 @@
+[
+ {
+  "name": "link-A1",
+  "method": "GET",
+  "path": "/v71/paymentLinks/PL61C53A8B97E6915A",
+  "status": 200,
+  "body": {
+   "merchantAccount": "FictionalECOM",
+   "updatedAt": "2026-10-02T10:00:00Z",
+   "expiresAt": "2026-11-02T10:00:00Z",
+   "id": "PL61C53A8B97E6915A",
+   "reference": "AP-ORDER-2001",
+   "status": "completed",
+   "amount": {
+    "value": 4900,
+    "currency": "EUR"
+   },
+   "shopperEmail": "alex.payer@example.test",
+   "url": "https://test.adyen.link/PL61C53A8B97E6915A"
+  }
+ },
+ {
+  "name": "link-B1",
+  "method": "GET",
+  "path": "/v71/paymentLinks/PL7B2D44E1A0C3F881",
+  "status": 200,
+  "body": {
+   "merchantAccount": "FictionalECOM",
+   "updatedAt": "2026-10-02T10:00:00Z",
+   "expiresAt": "2026-11-02T10:00:00Z",
+   "id": "PL7B2D44E1A0C3F881",
+   "reference": "AP-ORDER-2002",
+   "status": "active",
+   "amount": {
+    "value": 2900,
+    "currency": "EUR"
+   },
+   "shopperEmail": "blair.payer@example.test",
+   "url": "https://test.adyen.link/PL7B2D44E1A0C3F881"
+  }
+ },
+ {
+  "name": "link-other-merchant",
+  "method": "GET",
+  "path": "/v71/paymentLinks/PL9C9C9C9C9C9C9C9C",
+  "status": 200,
+  "body": {
+   "merchantAccount": "OtherMerchantECOM",
+   "updatedAt": "2026-10-02T10:00:00Z",
+   "expiresAt": "2026-11-02T10:00:00Z",
+   "id": "PL9C9C9C9C9C9C9C9C",
+   "reference": "OTHER-1",
+   "status": "completed",
+   "amount": {
+    "value": 100,
+    "currency": "EUR"
+   },
+   "shopperEmail": "alex.payer@example.test",
+   "url": "https://test.adyen.link/PL9C9C9C9C9C9C9C9C"
+  }
+ },
+ {
+  "name": "link-A1-mixed",
+  "method": "GET",
+  "path": "/v71/paymentLinks/PL61C53A8B97E6915A",
+  "status": 200,
+  "body": {
+   "merchantAccount": "FictionalECOM",
+   "updatedAt": "2026-10-02T10:00:00Z",
+   "expiresAt": "2026-11-02T10:00:00Z",
+   "id": "PL7B2D44E1A0C3F881",
+   "reference": "AP-ORDER-2002",
+   "status": "active",
+   "amount": {
+    "value": 2900,
+    "currency": "EUR"
+   },
+   "shopperEmail": "alex.payer@example.test",
+   "url": "https://test.adyen.link/PL7B2D44E1A0C3F881"
+  },
+  "modes": [
+   "mixed_customers"
+  ]
+ },
+ {
+  "name": "not-found",
+  "notFound": true,
+  "method": "GET",
+  "path": "/__not_found__",
+  "status": 404,
+  "body": {
+   "status": 404,
+   "errorCode": "000",
+   "message": "Payment link not found",
+   "errorType": "validation"
+  }
+ }
+]

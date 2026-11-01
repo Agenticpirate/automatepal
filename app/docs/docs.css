@@ -1,0 +1,20 @@
+/* Public docs (/docs). Builds on public-shell.css (PublicShell, Doc, DocHead) in the brand palette:
+   navy #041A52, deep blue #09318D, pink #FD91CC, white. No motion beyond the shell's colour transitions. */
+.dc-steps{margin:0 0 14px;padding-left:22px;display:flex;flex-direction:column;gap:6px}
+.dc-steps li::marker{color:#09318D;font-weight:600}
+.ps-body pre.dc-code{margin:4px 0 14px;padding:14px 16px;border-radius:12px;background:#041A52;color:#E4EAF8;font:12.5px/1.7 var(--font-geist-mono),monospace;white-space:pre-wrap;overflow-wrap:anywhere}
+.ps-body pre.dc-code code{padding:0;background:none;color:inherit;font:inherit}
+.ps-body h4{margin:0;font-size:15px;font-weight:600;color:#041A52}
+.dc-providers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:6px 0 16px}
+.dc-prov{min-width:0;padding:14px 16px;border-radius:14px;border:1.5px solid var(--ps-line);background:#fff}
+.dc-prov header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 10px;margin-bottom:8px}
+.ps-body .dc-prov p{margin:0 0 6px;font-size:13.5px;line-height:1.6;overflow-wrap:anywhere}
+.ps-body .dc-prov p:last-child{margin-bottom:0}
+.ps-body .dc-muted{color:var(--ps-muted)}
+.dc-badge{padding:2px 9px;border-radius:999px;background:#E8EDF9;color:#09318D;font:600 11px var(--font-geist-mono),monospace;white-space:nowrap}
+.dc-badge[data-conf=docs-derived]{background:#FDE7F3;color:#9C2B68}
+.dc-badge[data-conf=official-spec-early-access]{background:#FFF1DC;color:#7A4100}
+.dc-matrix th{white-space:nowrap}
+.dc-matrix td{white-space:nowrap}
+.ps-body .ps-table code{font-size:12px;overflow-wrap:anywhere}
+@media(max-width:760px){.dc-providers{grid-template-columns:minmax(0,1fr)}}

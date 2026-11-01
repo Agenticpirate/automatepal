@@ -1,0 +1,6024 @@
+{
+ "provider": "paddle",
+ "documents": [
+  {
+   "file": "v1/openapi.yaml",
+   "openapi": "3.1.0",
+   "info": {
+    "title": "Paddle API",
+    "version": "1.0",
+    "license": {
+     "name": "Paddle Market Ltd.",
+     "url": "https://www.paddle.com/legal/terms"
+    }
+   },
+   "servers": [
+    {
+     "url": "https://sandbox-api.paddle.com",
+     "variables": {}
+    },
+    {
+     "url": "https://api.paddle.com",
+     "variables": {}
+    }
+   ],
+   "security": [
+    {
+     "BearerAuth": []
+    }
+   ],
+   "paths": {
+    "/transactions/{transaction_id}": {
+     "get": {
+      "operationId": "get-transaction",
+      "parameters": [
+       {
+        "$ref": "#/components/parameters/BaseTransactionParams"
+       },
+       {
+        "$ref": "#/components/parameters/TransactionIdPathParam"
+       }
+      ],
+      "responses": {
+       "200": {
+        "headers": {
+         "Request-Id": {
+          "required": true,
+          "schema": {
+           "$ref": "#/components/schemas/RequestId"
+          }
+         }
+        },
+        "content": {
+         "application/json": {
+          "schema": {
+           "type": "object",
+           "required": [
+            "data",
+            "meta"
+           ],
+           "properties": {
+            "data": {
+             "$ref": "#/components/schemas/TransactionIncludes"
+            },
+            "meta": {
+             "$ref": "#/components/schemas/Meta"
+            }
+           }
+          }
+         }
+        }
+       },
+       "default": {
+        "content": {
+         "application/json": {
+          "schema": {
+           "$ref": "#/components/schemas/ErrorResponse"
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    "/transactions": {
+     "get": {
+      "operationId": "list-transactions",
+      "parameters": [
+       {
+        "$ref": "#/components/parameters/BaseTransactionParams"
+       },
+       {
+        "$ref": "#/components/parameters/FilterIdParam"
+       },
+       {
+        "$ref": "#/components/parameters/PaginationParams.after"
+       },
+       {
+        "$ref": "#/components/parameters/ListTransactionsQueryParams.billed_at"
+       },
+       {
+        "$ref": "#/components/parameters/ListTransactionsQueryParams.collection_mode"
+       },
+       {
+        "$ref": "#/components/parameters/ListTransactionsQueryParams.created_at"
+       },
+       {
+        "$ref": "#/components/parameters/ListTransactionsQueryParams.customer_id"
+       },
+       {
+        "$ref": "#/components/parameters/ListTransactionsQueryParams.invoice_number"
+       },
+       {
+        "$ref": "#/components/parameters/ListTransactionsQueryParams.origin"
+       },
+       {
+        "$ref": "#/components/parameters/ListTransactionsQueryParams.order_by"
+       },
+       {
+        "$ref": "#/components/parameters/ListTransactionsQueryParams.status"
+       },
+       {
+        "$ref": "#/components/parameters/ListTransactionsQueryParams.subscription_id"
+       },
+       {
+        "$ref": "#/components/parameters/ListTransactionsQueryParams.per_page"
+       },
+       {
+        "$ref": "#/components/parameters/ListTransactionsQueryParams.updated_at"
+       },
+       {
+        "$ref": "#/components/parameters/SkipCountHeader"
+       }
+      ],
+      "responses": {
+       "200": {
+        "headers": {
+         "Request-Id": {
+          "required": true,
+          "schema": {
+           "$ref": "#/components/schemas/RequestId"
+          }
+         }
+        },
+        "content": {
+         "application/json": {
+          "schema": {
+           "type": "object",
+           "required": [
+            "data",
+            "meta"
+           ],
+           "properties": {
+            "data": {
+             "type": "array",
+             "items": {
+              "$ref": "#/components/schemas/TransactionIncludes"
+             }
+            },
+            "meta": {
+             "$ref": "#/components/schemas/PaginatedMeta"
+            }
+           }
+          }
+         }
+        }
+       },
+       "default": {
+        "content": {
+         "application/json": {
+          "schema": {
+           "$ref": "#/components/schemas/ErrorResponse"
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    "/transactions/{transaction_id}/invoice": {
+     "get": {
+      "operationId": "get-transaction-invoice",
+      "parameters": [
+       {
+        "$ref": "#/components/parameters/TransactionIdPathParam"
+       },
+       {
+        "$ref": "#/components/parameters/GetInvoicePdfParams"
+       }
+      ],
+      "responses": {
+       "200": {
+        "headers": {
+         "Expires": {
+          "required": true,
+          "schema": {
+           "type": "string"
+          }
+         },
+         "Request-Id": {
+          "required": true,
+          "schema": {
+           "$ref": "#/components/schemas/RequestId"
+          }
+         }
+        },
+        "content": {
+         "application/json": {
+          "schema": {
+           "$ref": "#/components/schemas/GetInvoicePdfResponse"
+          }
+         }
+        }
+       },
+       "default": {
+        "content": {
+         "application/json": {
+          "schema": {
+           "$ref": "#/components/schemas/ErrorResponse"
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    "/subscriptions/{subscription_id}": {
+     "get": {
+      "operationId": "get-subscription",
+      "parameters": [
+       {
+        "$ref": "#/components/parameters/SubscriptionIncludeQuery"
+       },
+       {
+        "$ref": "#/components/parameters/SubscriptionIdPathParam"
+       }
+      ],
+      "responses": {
+       "200": {
+        "headers": {
+         "Request-Id": {
+          "required": true,
+          "schema": {
+           "$ref": "#/components/schemas/RequestId"
+          }
+         }
+        },
+        "content": {
+         "application/json": {
+          "schema": {
+           "type": "object",
+           "required": [
+            "data",
+            "meta"
+           ],
+           "properties": {
+            "data": {
+             "$ref": "#/components/schemas/SubscriptionIncludes"
+            },
+            "meta": {
+             "$ref": "#/components/schemas/Meta"
+            }
+           }
+          }
+         }
+        }
+       },
+       "default": {
+        "content": {
+         "application/json": {
+          "schema": {
+           "$ref": "#/components/schemas/ErrorResponse"
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    "/subscriptions": {
+     "get": {
+      "operationId": "list-subscriptions",
+      "parameters": [
+       {
+        "$ref": "#/components/parameters/FilterIdParam"
+       },
+       {
+        "$ref": "#/components/parameters/PaginationParams.after"
+       },
+       {
+        "$ref": "#/components/parameters/PaginationParams.per_page"
+       },
+       {
+        "$ref": "#/components/parameters/ListSubscriptionsQueryParams.address_id"
+       },
+       {
+        "$ref": "#/components/parameters/ListSubscriptionsQueryParams.collection_mode"
+       },
+       {
+        "$ref": "#/components/parameters/ListSubscriptionsQueryParams.customer_id"
+       },
+       {
+        "$ref": "#/components/parameters/ListSubscriptionsQueryParams.order_by"
+       },
+       {
+        "$ref": "#/components/parameters/ListSubscriptionsQueryParams.price_id"
+       },
+       {
+        "$ref": "#/components/parameters/ListSubscriptionsQueryParams.scheduled_change_action"
+       },
+       {
+        "$ref": "#/components/parameters/ListSubscriptionsQueryParams.next_billed_at"
+       },
+       {
+        "$ref": "#/components/parameters/ListSubscriptionsQueryParams.status"
+       },
+       {
+        "$ref": "#/components/parameters/SkipCountHeader"
+       }
+      ],
+      "responses": {
+       "200": {
+        "headers": {
+         "Request-Id": {
+          "required": true,
+          "schema": {
+           "$ref": "#/components/schemas/RequestId"
+          }
+         }
+        },
+        "content": {
+         "application/json": {
+          "schema": {
+           "type": "object",
+           "required": [
+            "data",
+            "meta"
+           ],
+           "properties": {
+            "data": {
+             "type": "array",
+             "items": {
+              "$ref": "#/components/schemas/Subscription"
+             }
+            },
+            "meta": {
+             "$ref": "#/components/schemas/PaginatedMeta"
+            }
+           }
+          }
+         }
+        }
+       },
+       "default": {
+        "content": {
+         "application/json": {
+          "schema": {
+           "$ref": "#/components/schemas/ErrorResponse"
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    "/customers/{customer_id}": {
+     "get": {
+      "operationId": "get-customer",
+      "parameters": [
+       {
+        "$ref": "#/components/parameters/CustomerIdPathParam"
+       }
+      ],
+      "responses": {
+       "200": {
+        "headers": {
+         "Request-Id": {
+          "required": true,
+          "schema": {
+           "$ref": "#/components/schemas/RequestId"
+          }
+         }
+        },
+        "content": {
+         "application/json": {
+          "schema": {
+           "type": "object",
+           "required": [
+            "data",
+            "meta"
+           ],
+           "properties": {
+            "data": {
+             "$ref": "#/components/schemas/CustomerIncludes"
+            },
+            "meta": {
+             "$ref": "#/components/schemas/Meta"
+            }
+           }
+          }
+         }
+        }
+       },
+       "default": {
+        "content": {
+         "application/json": {
+          "schema": {
+           "$ref": "#/components/schemas/ErrorResponse"
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    "/adjustments": {
+     "get": {
+      "operationId": "list-adjustments",
+      "parameters": [
+       {
+        "$ref": "#/components/parameters/FilterIdParam"
+       },
+       {
+        "$ref": "#/components/parameters/PaginationParams.after"
+       },
+       {
+        "$ref": "#/components/parameters/ListAdjustmentsQueryParams.action"
+       },
+       {
+        "$ref": "#/components/parameters/ListAdjustmentsQueryParams.customer_id"
+       },
+       {
+        "$ref": "#/components/parameters/ListAdjustmentsQueryParams.order_by"
+       },
+       {
+        "$ref": "#/components/parameters/ListAdjustmentsQueryParams.per_page"
+       },
+       {
+        "$ref": "#/components/parameters/ListAdjustmentsQueryParams.status"
+       },
+       {
+        "$ref": "#/components/parameters/ListAdjustmentsQueryParams.subscription_id"
+       },
+       {
+        "$ref": "#/components/parameters/ListAdjustmentsQueryParams.transaction_id"
+       },
+       {
+        "$ref": "#/components/parameters/SkipCountHeader"
+       }
+      ],
+      "responses": {
+       "200": {
+        "headers": {
+         "Request-Id": {
+          "required": true,
+          "schema": {
+           "$ref": "#/components/schemas/RequestId"
+          }
+         }
+        },
+        "content": {
+         "application/json": {
+          "schema": {
+           "type": "object",
+           "required": [
+            "data",
+            "meta"
+           ],
+           "properties": {
+            "data": {
+             "type": "array",
+             "items": {
+              "$ref": "#/components/schemas/Adjustment"
+             }
+            },
+            "meta": {
+             "$ref": "#/components/schemas/PaginatedMeta"
+            }
+           }
+          }
+         }
+        }
+       },
+       "default": {
+        "content": {
+         "application/json": {
+          "schema": {
+           "$ref": "#/components/schemas/ErrorResponse"
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   },
+   "components": {
+    "securitySchemes": {
+     "BearerAuth": {
+      "type": "http",
+      "scheme": "Bearer"
+     }
+    },
+    "parameters": {
+     "BaseTransactionParams": {
+      "name": "include",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "array",
+       "items": {
+        "$ref": "#/components/schemas/TransactionIncludeQuery"
+       }
+      },
+      "explode": false
+     },
+     "TransactionIdPathParam": {
+      "name": "transaction_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     },
+     "FilterIdParam": {
+      "name": "id",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "array",
+       "items": {
+        "type": "string"
+       }
+      },
+      "explode": false
+     },
+     "PaginationParams.after": {
+      "name": "after",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "string"
+      },
+      "explode": false
+     },
+     "ListTransactionsQueryParams.billed_at": {
+      "name": "billed_at",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "string"
+      },
+      "explode": false
+     },
+     "ListTransactionsQueryParams.collection_mode": {
+      "name": "collection_mode",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "$ref": "#/components/schemas/CollectionMode"
+      },
+      "explode": false
+     },
+     "ListTransactionsQueryParams.created_at": {
+      "name": "created_at",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "string"
+      },
+      "explode": false
+     },
+     "ListTransactionsQueryParams.customer_id": {
+      "name": "customer_id",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "array",
+       "items": {
+        "type": "string"
+       }
+      },
+      "explode": false
+     },
+     "ListTransactionsQueryParams.invoice_number": {
+      "name": "invoice_number",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "array",
+       "items": {
+        "type": "string"
+       }
+      },
+      "explode": false
+     },
+     "ListTransactionsQueryParams.origin": {
+      "name": "origin",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "array",
+       "items": {
+        "$ref": "#/components/schemas/TransactionOriginQuery"
+       }
+      },
+      "explode": false
+     },
+     "ListTransactionsQueryParams.order_by": {
+      "name": "order_by",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "string",
+       "default": "id[DESC]"
+      },
+      "explode": false
+     },
+     "ListTransactionsQueryParams.status": {
+      "name": "status",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "array",
+       "items": {
+        "$ref": "#/components/schemas/TransactionStatusQuery"
+       }
+      },
+      "explode": false
+     },
+     "ListTransactionsQueryParams.subscription_id": {
+      "name": "subscription_id",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "array",
+         "items": {
+          "type": "string"
+         }
+        },
+        {
+         "type": "null"
+        }
+       ]
+      },
+      "explode": false
+     },
+     "ListTransactionsQueryParams.per_page": {
+      "name": "per_page",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "maximum": 30,
+       "default": 30
+      },
+      "explode": false
+     },
+     "ListTransactionsQueryParams.updated_at": {
+      "name": "updated_at",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "string"
+      },
+      "explode": false
+     },
+     "SkipCountHeader": {
+      "name": "Skip-Count",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "type": "string"
+      }
+     },
+     "GetInvoicePdfParams": {
+      "name": "disposition",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "$ref": "#/components/schemas/Disposition",
+       "default": "attachment"
+      },
+      "explode": false
+     },
+     "SubscriptionIncludeQuery": {
+      "name": "include",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "array",
+       "items": {
+        "$ref": "#/components/schemas/SubscriptionIncludeEnum"
+       }
+      },
+      "explode": false
+     },
+     "SubscriptionIdPathParam": {
+      "name": "subscription_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string"
+      }
+     },
+     "PaginationParams.per_page": {
+      "name": "per_page",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "maximum": 200,
+       "default": 50
+      },
+      "explode": false
+     },
+     "ListSubscriptionsQueryParams.address_id": {
+      "name": "address_id",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "array",
+       "items": {
+        "type": "string"
+       }
+      },
+      "explode": false
+     },
+     "ListSubscriptionsQueryParams.collection_mode": {
+      "name": "collection_mode",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "$ref": "#/components/schemas/CollectionModeQuery"
+      },
+      "explode": false
+     },
+     "ListSubscriptionsQueryParams.customer_id": {
+      "name": "customer_id",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "array",
+       "items": {
+        "type": "string"
+       }
+      },
+      "explode": false
+     },
+     "ListSubscriptionsQueryParams.order_by": {
+      "name": "order_by",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "string",
+       "default": "id[DESC]"
+      },
+      "explode": false
+     },
+     "ListSubscriptionsQueryParams.price_id": {
+      "name": "price_id",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "array",
+       "items": {
+        "type": "string"
+       }
+      },
+      "explode": false
+     },
+     "ListSubscriptionsQueryParams.scheduled_change_action": {
+      "name": "scheduled_change_action",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "array",
+       "items": {
+        "$ref": "#/components/schemas/ScheduledChangeActionQuery"
+       }
+      },
+      "explode": false
+     },
+     "ListSubscriptionsQueryParams.next_billed_at": {
+      "name": "next_billed_at",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "array",
+         "items": {
+          "type": "string"
+         }
+        },
+        {
+         "type": "null"
+        }
+       ]
+      },
+      "explode": false
+     },
+     "ListSubscriptionsQueryParams.status": {
+      "name": "status",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "array",
+       "items": {
+        "$ref": "#/components/schemas/SubscriptionStatusQuery"
+       }
+      },
+      "explode": false
+     },
+     "CustomerIdPathParam": {
+      "name": "customer_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "$ref": "#/components/schemas/CustomerId"
+      }
+     },
+     "ListAdjustmentsQueryParams.action": {
+      "name": "action",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "array",
+       "items": {
+        "$ref": "#/components/schemas/AdjustmentActionQuery"
+       },
+       "title": "AdjustmentActionQuery"
+      },
+      "explode": false
+     },
+     "ListAdjustmentsQueryParams.customer_id": {
+      "name": "customer_id",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "array",
+       "items": {
+        "type": "string"
+       }
+      },
+      "explode": false
+     },
+     "ListAdjustmentsQueryParams.order_by": {
+      "name": "order_by",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "string",
+       "default": "id[DESC]"
+      },
+      "explode": false
+     },
+     "ListAdjustmentsQueryParams.per_page": {
+      "name": "per_page",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "maximum": 50,
+       "default": 10
+      },
+      "explode": false
+     },
+     "ListAdjustmentsQueryParams.status": {
+      "name": "status",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "array",
+       "items": {
+        "$ref": "#/components/schemas/AdjustmentStatusQuery"
+       }
+      },
+      "explode": false
+     },
+     "ListAdjustmentsQueryParams.subscription_id": {
+      "name": "subscription_id",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "array",
+       "items": {
+        "type": "string"
+       }
+      },
+      "explode": false
+     },
+     "ListAdjustmentsQueryParams.transaction_id": {
+      "name": "transaction_id",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "array",
+       "items": {
+        "type": "string"
+       }
+      },
+      "explode": false
+     }
+    },
+    "schemas": {
+     "RequestId": {
+      "type": "string"
+     },
+     "TransactionIncludes": {
+      "type": "object",
+      "required": [
+       "id",
+       "status",
+       "customer_id",
+       "address_id",
+       "business_id",
+       "custom_data",
+       "currency_code",
+       "origin",
+       "subscription_id",
+       "invoice_id",
+       "invoice_number",
+       "collection_mode",
+       "discount_id",
+       "billing_details",
+       "billing_period",
+       "items",
+       "details",
+       "payments",
+       "checkout",
+       "created_at",
+       "updated_at",
+       "billed_at",
+       "revised_at"
+      ],
+      "properties": {
+       "id": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/TransactionId"
+         }
+        ],
+        "readOnly": true
+       },
+       "status": {
+        "$ref": "#/components/schemas/TransactionStatus"
+       },
+       "customer_id": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/CustomerId"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "address_id": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/AddressId"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "business_id": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/BusinessId"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "custom_data": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/CustomData"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "currency_code": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/CurrencyCode"
+         }
+        ]
+       },
+       "origin": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/TransactionOrigin"
+         }
+        ]
+       },
+       "subscription_id": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/SubscriptionId"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "invoice_id": {
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "pattern": "^inv_[a-z\\d]{26}$",
+        "deprecated": true,
+        "readOnly": true
+       },
+       "invoice_number": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/DocumentNumber"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "collection_mode": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/CollectionMode"
+         }
+        ],
+        "default": "automatic"
+       },
+       "discount_id": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/DiscountId"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "billing_details": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/BillingDetails"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "billing_period": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/TimePeriod"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "items": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/TransactionItem"
+        },
+        "minItems": 1,
+        "maxItems": 100
+       },
+       "details": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/TransactionDetails"
+         }
+        ],
+        "readOnly": true
+       },
+       "payments": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/TransactionPaymentAttempt"
+        },
+        "readOnly": true
+       },
+       "checkout": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/TransactionCheckout"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "created_at": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/CreatedAt"
+         }
+        ],
+        "readOnly": true
+       },
+       "updated_at": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/UpdatedAt"
+         }
+        ],
+        "readOnly": true
+       },
+       "billed_at": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/Timestamp"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "readOnly": true
+       },
+       "revised_at": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/Timestamp"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "readOnly": true
+       },
+       "address": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/Address"
+         }
+        ]
+       },
+       "adjustments": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/Adjustment"
+        }
+       },
+       "adjustments_totals": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/TransactionAdjustmentsTotalsInclude"
+         }
+        ]
+       },
+       "business": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/Business"
+         }
+        ]
+       },
+       "customer": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/Customer"
+         }
+        ]
+       },
+       "discount": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/Discount"
+         }
+        ]
+       },
+       "available_payment_methods": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/PaymentMethodType"
+        },
+        "readOnly": true
+       }
+      },
+      "title": "Transaction with includes"
+     },
+     "Meta": {
+      "type": "object",
+      "required": [
+       "request_id"
+      ],
+      "properties": {
+       "request_id": {
+        "type": "string",
+        "readOnly": true
+       }
+      }
+     },
+     "ErrorResponse": {
+      "type": "object",
+      "required": [
+       "error",
+       "meta"
+      ],
+      "properties": {
+       "error": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/ApiError"
+         }
+        ]
+       },
+       "meta": {
+        "$ref": "#/components/schemas/Meta"
+       }
+      },
+      "title": "ErrorResponse"
+     },
+     "PaginatedMeta": {
+      "type": "object",
+      "required": [
+       "request_id",
+       "pagination"
+      ],
+      "properties": {
+       "request_id": {
+        "type": "string",
+        "readOnly": true
+       },
+       "pagination": {
+        "$ref": "#/components/schemas/Pagination"
+       }
+      }
+     },
+     "GetInvoicePdfResponse": {
+      "type": "object",
+      "required": [
+       "meta",
+       "data"
+      ],
+      "properties": {
+       "meta": {
+        "$ref": "#/components/schemas/Meta"
+       },
+       "data": {
+        "$ref": "#/components/schemas/GetInvoicePdf"
+       }
+      }
+     },
+     "SubscriptionIncludes": {
+      "type": "object",
+      "required": [
+       "id",
+       "status",
+       "customer_id",
+       "address_id",
+       "business_id",
+       "currency_code",
+       "created_at",
+       "updated_at",
+       "started_at",
+       "first_billed_at",
+       "next_billed_at",
+       "paused_at",
+       "canceled_at",
+       "discount",
+       "collection_mode",
+       "billing_details",
+       "current_billing_period",
+       "billing_cycle",
+       "scheduled_change",
+       "management_urls",
+       "items",
+       "custom_data",
+       "import_meta",
+       "consent_requirements"
+      ],
+      "properties": {
+       "id": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/SubscriptionId"
+         }
+        ]
+       },
+       "status": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/StatusSubscription"
+         }
+        ]
+       },
+       "customer_id": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/CustomerId"
+         }
+        ]
+       },
+       "address_id": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/AddressId"
+         }
+        ]
+       },
+       "business_id": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/BusinessId"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "currency_code": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/CurrencyCode"
+         }
+        ]
+       },
+       "created_at": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/CreatedAt"
+         }
+        ],
+        "readOnly": true
+       },
+       "updated_at": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/UpdatedAt"
+         }
+        ],
+        "readOnly": true
+       },
+       "started_at": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/Timestamp"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "readOnly": true
+       },
+       "first_billed_at": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/Timestamp"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "readOnly": true
+       },
+       "next_billed_at": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/Timestamp"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "paused_at": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/Timestamp"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "readOnly": true
+       },
+       "canceled_at": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/Timestamp"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "readOnly": true
+       },
+       "discount": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/SubscriptionDiscount"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "collection_mode": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/CollectionMode"
+         }
+        ],
+        "default": "automatic"
+       },
+       "billing_details": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/BillingDetails"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "current_billing_period": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/TimePeriod"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "readOnly": true
+       },
+       "billing_cycle": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/Duration"
+         }
+        ],
+        "readOnly": true
+       },
+       "scheduled_change": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/SubscriptionScheduledChange"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "management_urls": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/SubscriptionManagementUrls"
+         }
+        ],
+        "readOnly": true
+       },
+       "items": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/ItemSubscription"
+        },
+        "minItems": 1,
+        "maxItems": 100,
+        "readOnly": true
+       },
+       "custom_data": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/CustomData"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "import_meta": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/ImportMetaSubscription"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "consent_requirements": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/SubscriptionConsentRequirement"
+        }
+       },
+       "next_transaction": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/SubscriptionNextTransaction"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "recurring_transaction_details": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/TransactionPreviewDetails"
+         }
+        ],
+        "title": "Recurring transaction details"
+       }
+      },
+      "title": "SubscriptionIncludes"
+     },
+     "Subscription": {
+      "type": "object",
+      "required": [
+       "id",
+       "status",
+       "customer_id",
+       "address_id",
+       "business_id",
+       "currency_code",
+       "created_at",
+       "updated_at",
+       "started_at",
+       "first_billed_at",
+       "next_billed_at",
+       "paused_at",
+       "canceled_at",
+       "discount",
+       "collection_mode",
+       "billing_details",
+       "current_billing_period",
+       "billing_cycle",
+       "scheduled_change",
+       "management_urls",
+       "items",
+       "custom_data",
+       "import_meta",
+       "consent_requirements"
+      ],
+      "properties": {
+       "id": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/SubscriptionId"
+         }
+        ]
+       },
+       "status": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/StatusSubscription"
+         }
+        ]
+       },
+       "customer_id": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/CustomerId"
+         }
+        ]
+       },
+       "address_id": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/AddressId"
+         }
+        ]
+       },
+       "business_id": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/BusinessId"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "currency_code": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/CurrencyCode"
+         }
+        ]
+       },
+       "created_at": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/CreatedAt"
+         }
+        ],
+        "readOnly": true
+       },
+       "updated_at": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/UpdatedAt"
+         }
+        ],
+        "readOnly": true
+       },
+       "started_at": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/Timestamp"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "readOnly": true
+       },
+       "first_billed_at": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/Timestamp"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "readOnly": true
+       },
+       "next_billed_at": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/Timestamp"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "paused_at": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/Timestamp"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "readOnly": true
+       },
+       "canceled_at": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/Timestamp"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "readOnly": true
+       },
+       "discount": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/SubscriptionDiscount"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "collection_mode": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/CollectionMode"
+         }
+        ],
+        "default": "automatic"
+       },
+       "billing_details": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/BillingDetails"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "current_billing_period": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/TimePeriod"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "readOnly": true
+       },
+       "billing_cycle": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/Duration"
+         }
+        ],
+        "readOnly": true
+       },
+       "scheduled_change": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/SubscriptionScheduledChange"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "management_urls": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/SubscriptionManagementUrls"
+         }
+        ],
+        "readOnly": true
+       },
+       "items": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/ItemSubscription"
+        },
+        "minItems": 1,
+        "maxItems": 100,
+        "readOnly": true
+       },
+       "custom_data": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/CustomData"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "import_meta": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/ImportMetaSubscription"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "consent_requirements": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/SubscriptionConsentRequirement"
+        }
+       }
+      },
+      "title": "Subscription"
+     },
+     "CustomerIncludes": {
+      "type": "object",
+      "required": [
+       "id",
+       "name",
+       "email",
+       "marketing_consent",
+       "status",
+       "custom_data",
+       "locale",
+       "created_at",
+       "updated_at",
+       "import_meta"
+      ],
+      "properties": {
+       "id": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/CustomerId"
+         }
+        ],
+        "readOnly": true
+       },
+       "name": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/Name"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "email": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/Email"
+         }
+        ]
+       },
+       "marketing_consent": {
+        "type": "boolean",
+        "default": false
+       },
+       "status": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/Status"
+         }
+        ],
+        "default": "active"
+       },
+       "custom_data": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/CustomData"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "locale": {
+        "type": "string",
+        "default": "en"
+       },
+       "created_at": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/CreatedAt"
+         }
+        ],
+        "readOnly": true
+       },
+       "updated_at": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/UpdatedAt"
+         }
+        ],
+        "readOnly": true
+       },
+       "import_meta": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/ImportMeta"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       }
+      },
+      "title": "CustomerIncludes"
+     },
+     "Adjustment": {
+      "type": "object",
+      "required": [
+       "id",
+       "action",
+       "type",
+       "transaction_id",
+       "subscription_id",
+       "customer_id",
+       "reason",
+       "currency_code",
+       "status",
+       "items",
+       "totals",
+       "payout_totals",
+       "tax_rates_used",
+       "created_at",
+       "updated_at"
+      ],
+      "properties": {
+       "id": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/AdjustmentId"
+         }
+        ],
+        "readOnly": true
+       },
+       "action": {
+        "$ref": "#/components/schemas/AdjustmentAction"
+       },
+       "type": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/AdjustmentType"
+         }
+        ],
+        "default": "partial"
+       },
+       "transaction_id": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/TransactionId"
+         }
+        ]
+       },
+       "subscription_id": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/SubscriptionId"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "readOnly": true
+       },
+       "customer_id": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/CustomerId"
+         }
+        ],
+        "readOnly": true
+       },
+       "reason": {
+        "type": "string"
+       },
+       "credit_applied_to_balance": {
+        "anyOf": [
+         {
+          "type": "boolean"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "readOnly": true
+       },
+       "currency_code": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/CurrencyCode"
+         }
+        ],
+        "readOnly": true
+       },
+       "status": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/AdjustmentStatus"
+         }
+        ],
+        "readOnly": true
+       },
+       "items": {
+        "type": "array",
+        "items": {
+         "type": "object",
+         "properties": {
+          "id": {
+           "allOf": [
+            {
+             "$ref": "#/components/schemas/AdjustmentItemId"
+            }
+           ],
+           "readOnly": true
+          },
+          "item_id": {
+           "allOf": [
+            {
+             "$ref": "#/components/schemas/TransactionItemId"
+            }
+           ]
+          },
+          "type": {
+           "allOf": [
+            {
+             "$ref": "#/components/schemas/AdjustmentItemType"
+            }
+           ]
+          },
+          "amount": {
+           "anyOf": [
+            {
+             "type": "string"
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "proration": {
+           "anyOf": [
+            {
+             "$ref": "#/components/schemas/TransactionItemProration"
+            },
+            {
+             "type": "null"
+            }
+           ],
+           "readOnly": true
+          },
+          "totals": {
+           "allOf": [
+            {
+             "$ref": "#/components/schemas/AdjustmentItemTotals"
+            }
+           ],
+           "readOnly": true
+          }
+         },
+         "required": [
+          "id",
+          "item_id",
+          "type",
+          "amount",
+          "proration",
+          "totals"
+         ]
+        },
+        "minItems": 1,
+        "maxItems": 100
+       },
+       "totals": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/AdjustmentTotals"
+         }
+        ],
+        "readOnly": true
+       },
+       "payout_totals": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/AdjustmentPayoutTotals"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "readOnly": true
+       },
+       "tax_rates_used": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/AdjustmentTaxRatesUsed"
+        },
+        "readOnly": true
+       },
+       "created_at": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/CreatedAt"
+         }
+        ],
+        "readOnly": true
+       },
+       "updated_at": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/UpdatedAt"
+         }
+        ],
+        "readOnly": true
+       }
+      },
+      "title": "Adjustment"
+     },
+     "TransactionIncludeQuery": {
+      "type": "string",
+      "enum": [
+       "address",
+       "adjustments",
+       "adjustments_totals",
+       "available_payment_methods",
+       "business",
+       "customer",
+       "discount"
+      ]
+     },
+     "TransactionId": {
+      "type": "string",
+      "pattern": "^txn_[a-z\\d]{26}$",
+      "title": "Transaction ID"
+     },
+     "TransactionStatus": {
+      "type": "string",
+      "enum": [
+       "draft",
+       "ready",
+       "billed",
+       "paid",
+       "completed",
+       "canceled",
+       "past_due"
+      ]
+     },
+     "CustomerId": {
+      "type": "string",
+      "pattern": "^ctm_[a-z\\d]{26}$",
+      "title": "Customer ID"
+     },
+     "AddressId": {
+      "type": "string",
+      "pattern": "^add_[a-z\\d]{26}$",
+      "title": "Address ID"
+     },
+     "BusinessId": {
+      "type": "string",
+      "pattern": "^biz_[a-z\\d]{26}$",
+      "title": "Business ID"
+     },
+     "CustomData": {
+      "type": "object",
+      "unevaluatedProperties": {},
+      "title": "Custom Data"
+     },
+     "CurrencyCode": {
+      "type": "string",
+      "enum": [
+       "USD",
+       "EUR",
+       "GBP",
+       "JPY",
+       "AUD",
+       "CAD",
+       "CHF",
+       "HKD",
+       "SGD",
+       "SEK",
+       "ARS",
+       "BRL",
+       "CLP",
+       "CNY",
+       "COP",
+       "CZK",
+       "DKK",
+       "HUF",
+       "ILS",
+       "INR",
+       "KRW",
+       "MXN",
+       "NOK",
+       "NZD",
+       "PEN",
+       "PLN",
+       "RUB",
+       "THB",
+       "TRY",
+       "TWD",
+       "UAH",
+       "VND",
+       "ZAR"
+      ],
+      "title": "Currency code"
+     },
+     "TransactionOrigin": {
+      "$ref": "#/components/schemas/PublicTransactionOrigin"
+     },
+     "SubscriptionId": {
+      "type": "string",
+      "pattern": "^sub_[a-z\\d]{26}$",
+      "title": "Subscription ID"
+     },
+     "DocumentNumber": {
+      "type": "string",
+      "readOnly": true
+     },
+     "CollectionMode": {
+      "type": "string",
+      "enum": [
+       "automatic",
+       "manual"
+      ],
+      "title": "Collection mode"
+     },
+     "DiscountId": {
+      "type": "string",
+      "pattern": "^dsc_[a-z\\d]{26}$",
+      "title": "Discount ID"
+     },
+     "BillingDetails": {
+      "type": "object",
+      "required": [
+       "enable_checkout",
+       "purchase_order_number",
+       "additional_information",
+       "payment_terms"
+      ],
+      "properties": {
+       "enable_checkout": {
+        "type": "boolean",
+        "default": false
+       },
+       "purchase_order_number": {
+        "type": "string",
+        "maxLength": 100
+       },
+       "additional_information": {
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "maxLength": 1500
+       },
+       "payment_terms": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/Duration"
+         }
+        ]
+       }
+      },
+      "title": "Billing details"
+     },
+     "TimePeriod": {
+      "type": "object",
+      "required": [
+       "starts_at",
+       "ends_at"
+      ],
+      "properties": {
+       "starts_at": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/Timestamp"
+         }
+        ],
+        "format": "date-time"
+       },
+       "ends_at": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/Timestamp"
+         }
+        ],
+        "format": "date-time"
+       }
+      },
+      "title": "Time period"
+     },
+     "TransactionItem": {
+      "type": "object",
+      "required": [
+       "price",
+       "quantity",
+       "proration"
+      ],
+      "properties": {
+       "price": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/Price"
+         }
+        ],
+        "readOnly": true
+       },
+       "quantity": {
+        "type": "integer"
+       },
+       "proration": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/TransactionItemProration"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "readOnly": true
+       }
+      },
+      "title": "TransactionItem"
+     },
+     "TransactionDetails": {
+      "type": "object",
+      "required": [
+       "tax_rates_used",
+       "totals",
+       "adjusted_totals",
+       "payout_totals",
+       "adjusted_payout_totals",
+       "line_items"
+      ],
+      "properties": {
+       "tax_rates_used": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/TransactionDetailsTaxRatesUsedItem"
+        },
+        "readOnly": true
+       },
+       "totals": {
+        "$ref": "#/components/schemas/TransactionTotals"
+       },
+       "adjusted_totals": {
+        "$ref": "#/components/schemas/TransactionTotalsAdjusted"
+       },
+       "payout_totals": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/TransactionPayoutTotals"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "adjusted_payout_totals": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/TransactionPayoutTotalsAdjusted"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "line_items": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/TransactionDetailsLineItem"
+        }
+       }
+      },
+      "title": "TransactionDetails",
+      "readOnly": true
+     },
+     "TransactionPaymentAttempt": {
+      "type": "object",
+      "required": [
+       "payment_attempt_id",
+       "stored_payment_method_id",
+       "payment_method_id",
+       "amount",
+       "status",
+       "error_code",
+       "method_details",
+       "created_at",
+       "captured_at"
+      ],
+      "properties": {
+       "payment_attempt_id": {
+        "type": "string"
+       },
+       "stored_payment_method_id": {
+        "type": "string",
+        "deprecated": true
+       },
+       "payment_method_id": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/PaymentMethodId"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "amount": {
+        "type": "string"
+       },
+       "status": {
+        "$ref": "#/components/schemas/PaymentAttemptStatus"
+       },
+       "error_code": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/ErrorCode"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "method_details": {
+        "$ref": "#/components/schemas/MethodDetails"
+       },
+       "created_at": {
+        "$ref": "#/components/schemas/CreatedAt"
+       },
+       "captured_at": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/Timestamp"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       }
+      },
+      "title": "Transaction payment attempt",
+      "readOnly": true
+     },
+     "TransactionCheckout": {
+      "type": "object",
+      "required": [
+       "url"
+      ],
+      "properties": {
+       "url": {
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "minLength": 1,
+        "maxLength": 2048
+       }
+      },
+      "title": "TransactionCheckout"
+     },
+     "CreatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created at",
+      "readOnly": true
+     },
+     "UpdatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Updated at",
+      "readOnly": true
+     },
+     "Timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Timestamp"
+     },
+     "Address": {
+      "type": "object",
+      "required": [
+       "id",
+       "customer_id",
+       "description",
+       "first_line",
+       "second_line",
+       "city",
+       "postal_code",
+       "region",
+       "country_code",
+       "custom_data",
+       "status",
+       "created_at",
+       "updated_at",
+       "import_meta"
+      ],
+      "properties": {
+       "id": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/AddressId"
+         }
+        ],
+        "readOnly": true
+       },
+       "customer_id": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/CustomerId"
+         }
+        ],
+        "readOnly": true
+       },
+       "description": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/AddressDescription"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "first_line": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/AddressFirstLine"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "second_line": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/AddressSecondLine"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "city": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/AddressCity"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "postal_code": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/AddressPostalCode"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "region": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/AddressRegion"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "country_code": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/CountryCode"
+         }
+        ]
+       },
+       "custom_data": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/CustomData"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "status": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/Status"
+         }
+        ],
+        "default": "active"
+       },
+       "created_at": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/CreatedAt"
+         }
+        ],
+        "readOnly": true
+       },
+       "updated_at": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/UpdatedAt"
+         }
+        ],
+        "readOnly": true
+       },
+       "import_meta": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/ImportMeta"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       }
+      },
+      "title": "Address"
+     },
+     "TransactionAdjustmentsTotalsInclude": {
+      "type": "object",
+      "required": [
+       "subtotal",
+       "tax",
+       "total",
+       "fee",
+       "retained_fee",
+       "earnings",
+       "breakdown",
+       "currency_code"
+      ],
+      "properties": {
+       "subtotal": {
+        "type": "string",
+        "readOnly": true
+       },
+       "tax": {
+        "type": "string",
+        "readOnly": true
+       },
+       "total": {
+        "type": "string",
+        "readOnly": true
+       },
+       "fee": {
+        "type": "string",
+        "readOnly": true
+       },
+       "retained_fee": {
+        "type": "string",
+        "readOnly": true
+       },
+       "earnings": {
+        "type": "string",
+        "readOnly": true
+       },
+       "breakdown": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/TransactionAdjustmentsTotalsIncludeBreakdown"
+         }
+        ],
+        "title": "AdjustmentTotalsBreakdown"
+       },
+       "currency_code": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/CurrencyCode"
+         }
+        ]
+       }
+      },
+      "title": "Adjustment Totals",
+      "readOnly": true
+     },
+     "Business": {
+      "type": "object",
+      "required": [
+       "id",
+       "customer_id",
+       "name",
+       "company_number",
+       "tax_identifier",
+       "status",
+       "contacts",
+       "created_at",
+       "updated_at",
+       "custom_data",
+       "import_meta"
+      ],
+      "properties": {
+       "id": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/BusinessId"
+         }
+        ],
+        "readOnly": true
+       },
+       "customer_id": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/CustomerId"
+         }
+        ],
+        "readOnly": true
+       },
+       "name": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/Name"
+         }
+        ],
+        "minLength": 1
+       },
+       "company_number": {
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "maxLength": 1024
+       },
+       "tax_identifier": {
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "maxLength": 1024
+       },
+       "status": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/Status"
+         }
+        ],
+        "default": "active"
+       },
+       "contacts": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/BusinessContactsItem"
+        },
+        "maxItems": 100,
+        "uniqueItems": true
+       },
+       "created_at": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/CreatedAt"
+         }
+        ],
+        "readOnly": true
+       },
+       "updated_at": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/UpdatedAt"
+         }
+        ],
+        "readOnly": true
+       },
+       "custom_data": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/CustomData"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "import_meta": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/ImportMeta"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       }
+      },
+      "title": "Business"
+     },
+     "Customer": {
+      "type": "object",
+      "required": [
+       "id",
+       "name",
+       "email",
+       "marketing_consent",
+       "status",
+       "custom_data",
+       "locale",
+       "created_at",
+       "updated_at",
+       "import_meta"
+      ],
+      "properties": {
+       "id": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/CustomerId"
+         }
+        ],
+        "readOnly": true
+       },
+       "name": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/Name"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "email": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/Email"
+         }
+        ]
+       },
+       "marketing_consent": {
+        "type": "boolean",
+        "default": false
+       },
+       "status": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/Status"
+         }
+        ],
+        "default": "active"
+       },
+       "custom_data": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/CustomData"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "locale": {
+        "type": "string",
+        "default": "en"
+       },
+       "created_at": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/CreatedAt"
+         }
+        ],
+        "readOnly": true
+       },
+       "updated_at": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/UpdatedAt"
+         }
+        ],
+        "readOnly": true
+       },
+       "import_meta": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/ImportMeta"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       }
+      },
+      "title": "Customer"
+     },
+     "Discount": {
+      "type": "object",
+      "required": [
+       "id",
+       "status",
+       "description",
+       "enabled_for_checkout",
+       "code",
+       "type",
+       "mode",
+       "amount",
+       "currency_code",
+       "recur",
+       "maximum_recurring_intervals",
+       "usage_limit",
+       "restrict_to",
+       "expires_at",
+       "custom_data",
+       "times_used",
+       "discount_group_id",
+       "created_at",
+       "updated_at",
+       "import_meta"
+      ],
+      "properties": {
+       "id": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/DiscountId"
+         }
+        ],
+        "readOnly": true
+       },
+       "status": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/DiscountStatus"
+         }
+        ],
+        "default": "active"
+       },
+       "description": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 500
+       },
+       "enabled_for_checkout": {
+        "type": "boolean",
+        "default": true
+       },
+       "code": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/DiscountCode"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "type": {
+        "$ref": "#/components/schemas/DiscountType"
+       },
+       "mode": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/DiscountMode"
+         }
+        ],
+        "default": "standard"
+       },
+       "amount": {
+        "type": "string"
+       },
+       "currency_code": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/CurrencyCode"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "recur": {
+        "type": "boolean",
+        "default": false
+       },
+       "maximum_recurring_intervals": {
+        "anyOf": [
+         {
+          "type": "integer"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "minimum": 1
+       },
+       "usage_limit": {
+        "anyOf": [
+         {
+          "type": "integer"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "minimum": 1
+       },
+       "restrict_to": {
+        "anyOf": [
+         {
+          "type": "array",
+          "items": {
+           "$ref": "#/components/schemas/DiscountRestrictTo"
+          }
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "uniqueItems": true
+       },
+       "expires_at": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/Timestamp"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "custom_data": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/CustomData"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "times_used": {
+        "type": "integer",
+        "readOnly": true
+       },
+       "discount_group_id": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/DiscountGroupId"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "created_at": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/CreatedAt"
+         }
+        ],
+        "readOnly": true
+       },
+       "updated_at": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/UpdatedAt"
+         }
+        ],
+        "readOnly": true
+       },
+       "import_meta": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/ImportMeta"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       }
+      },
+      "title": "Discount"
+     },
+     "PaymentMethodType": {
+      "type": "string",
+      "enum": [
+       "alipay",
+       "apple_pay",
+       "bancontact",
+       "blik",
+       "card",
+       "google_pay",
+       "ideal",
+       "kakao_pay",
+       "korea_local",
+       "naver_pay",
+       "payco",
+       "samsung_pay",
+       "south_korea_local_card",
+       "mb_way",
+       "paypal",
+       "pix",
+       "upi",
+       "wechat_pay"
+      ],
+      "title": "payment_method_type"
+     },
+     "ApiError": {
+      "type": "object",
+      "required": [
+       "type",
+       "code",
+       "detail",
+       "documentation_url"
+      ],
+      "properties": {
+       "type": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/ErrorResponseType"
+         }
+        ]
+       },
+       "code": {
+        "type": "string"
+       },
+       "detail": {
+        "type": "string"
+       },
+       "documentation_url": {
+        "type": "string",
+        "format": "uri"
+       },
+       "errors": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/ErrorItem"
+        }
+       }
+      },
+      "title": "Error",
+      "additionalProperties": false
+     },
+     "TransactionOriginQuery": {
+      "type": "string",
+      "enum": [
+       "api",
+       "subscription_charge",
+       "subscription_payment_method_change",
+       "subscription_recurring",
+       "subscription_update",
+       "subscription_import",
+       "web"
+      ]
+     },
+     "TransactionStatusQuery": {
+      "type": "string",
+      "enum": [
+       "draft",
+       "ready",
+       "billed",
+       "paid",
+       "completed",
+       "canceled",
+       "past_due"
+      ]
+     },
+     "Pagination": {
+      "type": "object",
+      "required": [
+       "per_page",
+       "next",
+       "has_more"
+      ],
+      "properties": {
+       "per_page": {
+        "type": "integer",
+        "readOnly": true
+       },
+       "next": {
+        "type": "string",
+        "format": "uri",
+        "readOnly": true
+       },
+       "has_more": {
+        "type": "boolean",
+        "readOnly": true
+       },
+       "estimated_total": {
+        "type": "integer",
+        "readOnly": true
+       }
+      }
+     },
+     "Disposition": {
+      "type": "string",
+      "enum": [
+       "attachment",
+       "inline"
+      ],
+      "title": "Disposition"
+     },
+     "GetInvoicePdf": {
+      "type": "object",
+      "required": [
+       "url"
+      ],
+      "properties": {
+       "url": {
+        "type": "string"
+       }
+      },
+      "title": "Transaction invoice PDF"
+     },
+     "SubscriptionIncludeEnum": {
+      "type": "string",
+      "enum": [
+       "next_transaction",
+       "recurring_transaction_details"
+      ]
+     },
+     "StatusSubscription": {
+      "type": "string",
+      "enum": [
+       "active",
+       "canceled",
+       "past_due",
+       "paused",
+       "trialing"
+      ],
+      "title": "SubscriptionStatus",
+      "readOnly": true
+     },
+     "SubscriptionDiscount": {
+      "type": "object",
+      "required": [
+       "id",
+       "starts_at",
+       "ends_at",
+       "type"
+      ],
+      "properties": {
+       "id": {
+        "$ref": "#/components/schemas/DiscountId"
+       },
+       "starts_at": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/Timestamp"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "ends_at": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/Timestamp"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "type": {
+        "$ref": "#/components/schemas/SubscriptionDiscountType"
+       }
+      },
+      "title": "SubscriptionDiscountTimePeriod"
+     },
+     "Duration": {
+      "type": "object",
+      "required": [
+       "interval",
+       "frequency"
+      ],
+      "properties": {
+       "interval": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/DurationInterval"
+         }
+        ]
+       },
+       "frequency": {
+        "type": "integer",
+        "minimum": 1
+       }
+      },
+      "title": "Duration"
+     },
+     "SubscriptionScheduledChange": {
+      "type": "object",
+      "required": [
+       "action",
+       "effective_at",
+       "resume_at"
+      ],
+      "properties": {
+       "action": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/SubscriptionScheduledChangeAction"
+         }
+        ],
+        "title": "ScheduledChangeAction",
+        "readOnly": true
+       },
+       "effective_at": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/Timestamp"
+         }
+        ],
+        "readOnly": true
+       },
+       "resume_at": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/Timestamp"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "readOnly": true
+       }
+      },
+      "title": "Subscription scheduled change"
+     },
+     "SubscriptionManagementUrls": {
+      "type": "object",
+      "required": [
+       "update_payment_method",
+       "cancel",
+       "view_subscription"
+      ],
+      "properties": {
+       "update_payment_method": {
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "format": "uri"
+       },
+       "cancel": {
+        "type": "string",
+        "format": "uri"
+       },
+       "view_subscription": {
+        "type": "string",
+        "format": "uri"
+       }
+      },
+      "title": "Subscription Management Urls",
+      "readOnly": true
+     },
+     "ItemSubscription": {
+      "type": "object",
+      "required": [
+       "status",
+       "quantity",
+       "recurring",
+       "created_at",
+       "updated_at",
+       "previously_billed_at",
+       "next_billed_at",
+       "trial_dates",
+       "price",
+       "product"
+      ],
+      "properties": {
+       "status": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/ItemSubscriptionStatus"
+         }
+        ],
+        "title": "SubscriptionItemStatus",
+        "readOnly": true
+       },
+       "quantity": {
+        "type": "number",
+        "minimum": 1
+       },
+       "recurring": {
+        "type": "boolean",
+        "readOnly": true
+       },
+       "created_at": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/CreatedAt"
+         }
+        ],
+        "readOnly": true
+       },
+       "updated_at": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/UpdatedAt"
+         }
+        ],
+        "readOnly": true
+       },
+       "previously_billed_at": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/Timestamp"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "readOnly": true
+       },
+       "next_billed_at": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/Timestamp"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "readOnly": true
+       },
+       "trial_dates": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/TimePeriod"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "readOnly": true
+       },
+       "price": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/Price"
+         }
+        ],
+        "readOnly": true
+       },
+       "product": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/Product"
+         }
+        ],
+        "readOnly": true
+       }
+      },
+      "title": "Subscription item"
+     },
+     "ImportMetaSubscription": {
+      "type": "object",
+      "required": [
+       "imported_from"
+      ],
+      "properties": {
+       "external_id": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/ExternalId"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "imported_from": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 200
+       }
+      },
+      "title": "ImportMetaSubscription"
+     },
+     "SubscriptionConsentRequirement": {
+      "type": "object",
+      "required": [
+       "id",
+       "requirement",
+       "status",
+       "created_at",
+       "consent_period",
+       "granted_at",
+       "voided_at"
+      ],
+      "properties": {
+       "id": {
+        "$ref": "#/components/schemas/SubscriptionConsentRequirementId"
+       },
+       "requirement": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/SubscriptionConsentRequirementType"
+         }
+        ]
+       },
+       "status": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/SubscriptionConsentRequirementStatus"
+         }
+        ]
+       },
+       "created_at": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/CreatedAt"
+         }
+        ],
+        "readOnly": true
+       },
+       "consent_period": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/TimePeriod"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "granted_at": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/Timestamp"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "voided_at": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/Timestamp"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       }
+      },
+      "title": "SubscriptionConsentRequirement"
+     },
+     "SubscriptionNextTransaction": {
+      "type": "object",
+      "required": [
+       "billing_period",
+       "details",
+       "adjustments"
+      ],
+      "properties": {
+       "billing_period": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/TimePeriod"
+         }
+        ]
+       },
+       "details": {
+        "$ref": "#/components/schemas/TransactionPreviewDetails"
+       },
+       "adjustments": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/AdjustmentPreview"
+        }
+       }
+      },
+      "title": "Next transaction",
+      "readOnly": true
+     },
+     "TransactionPreviewDetails": {
+      "type": "object",
+      "required": [
+       "tax_rates_used",
+       "totals",
+       "line_items"
+      ],
+      "properties": {
+       "tax_rates_used": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/TransactionPreviewDetailsTaxRatesUsedItem"
+        },
+        "readOnly": true
+       },
+       "totals": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/TransactionTotals"
+         }
+        ]
+       },
+       "line_items": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/TransactionPreviewLineItem"
+        }
+       }
+      },
+      "title": "Transaction details (preview)",
+      "readOnly": true
+     },
+     "CollectionModeQuery": {
+      "type": "string",
+      "enum": [
+       "automatic",
+       "manual"
+      ]
+     },
+     "ScheduledChangeActionQuery": {
+      "type": "string",
+      "enum": [
+       "cancel",
+       "pause",
+       "resume",
+       "none"
+      ]
+     },
+     "SubscriptionStatusQuery": {
+      "type": "string",
+      "enum": [
+       "active",
+       "canceled",
+       "past_due",
+       "paused",
+       "trialing"
+      ]
+     },
+     "Name": {
+      "type": "string",
+      "maxLength": 1024,
+      "title": "Name"
+     },
+     "Email": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 320,
+      "format": "email",
+      "title": "Email address"
+     },
+     "Status": {
+      "type": "string",
+      "enum": [
+       "active",
+       "archived"
+      ],
+      "title": "Status"
+     },
+     "ImportMeta": {
+      "type": "object",
+      "required": [
+       "imported_from"
+      ],
+      "properties": {
+       "external_id": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/ExternalId"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "imported_from": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 200
+       }
+      },
+      "title": "ImportMeta"
+     },
+     "AdjustmentActionQuery": {
+      "type": "string",
+      "enum": [
+       "credit",
+       "refund",
+       "chargeback",
+       "chargeback_reverse",
+       "chargeback_warning",
+       "chargeback_warning_reverse",
+       "credit_reverse"
+      ],
+      "title": "AdjustmentActionQuery"
+     },
+     "AdjustmentStatusQuery": {
+      "type": "string",
+      "enum": [
+       "pending_approval",
+       "approved",
+       "rejected",
+       "reversed"
+      ]
+     },
+     "AdjustmentId": {
+      "type": "string",
+      "pattern": "^adj_[a-z\\d]{26}$",
+      "title": "Adjustment ID"
+     },
+     "AdjustmentAction": {
+      "type": "string",
+      "enum": [
+       "credit",
+       "refund",
+       "chargeback",
+       "chargeback_reverse",
+       "chargeback_warning",
+       "chargeback_warning_reverse",
+       "credit_reverse"
+      ],
+      "title": "AdjustmentAction"
+     },
+     "AdjustmentType": {
+      "type": "string",
+      "enum": [
+       "full",
+       "partial"
+      ],
+      "title": "AdjustmentType"
+     },
+     "AdjustmentStatus": {
+      "type": "string",
+      "enum": [
+       "pending_approval",
+       "approved",
+       "rejected",
+       "reversed"
+      ]
+     },
+     "AdjustmentItemId": {
+      "type": "string",
+      "pattern": "^adjitm_[a-z\\d]{26}$",
+      "title": "Adjustment item ID"
+     },
+     "TransactionItemId": {
+      "type": "string",
+      "pattern": "^txnitm_[a-z\\d]{26}$",
+      "title": "Transaction item ID"
+     },
+     "AdjustmentItemType": {
+      "type": "string",
+      "enum": [
+       "full",
+       "partial",
+       "tax",
+       "proration"
+      ],
+      "title": "AdjustmentItemType"
+     },
+     "TransactionItemProration": {
+      "type": "object",
+      "required": [
+       "rate",
+       "billing_period"
+      ],
+      "properties": {
+       "rate": {
+        "type": "string"
+       },
+       "billing_period": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/TimePeriod"
+         }
+        ]
+       }
+      },
+      "title": "Proration",
+      "readOnly": true
+     },
+     "AdjustmentItemTotals": {
+      "type": "object",
+      "required": [
+       "subtotal",
+       "tax",
+       "total"
+      ],
+      "properties": {
+       "subtotal": {
+        "type": "string",
+        "readOnly": true
+       },
+       "tax": {
+        "type": "string",
+        "readOnly": true
+       },
+       "total": {
+        "type": "string",
+        "readOnly": true
+       }
+      },
+      "title": "Adjustment item totals",
+      "readOnly": true
+     },
+     "AdjustmentTotals": {
+      "type": "object",
+      "required": [
+       "subtotal",
+       "tax",
+       "total",
+       "fee",
+       "earnings",
+       "currency_code"
+      ],
+      "properties": {
+       "subtotal": {
+        "type": "string",
+        "readOnly": true
+       },
+       "tax": {
+        "type": "string",
+        "readOnly": true
+       },
+       "total": {
+        "type": "string",
+        "readOnly": true
+       },
+       "fee": {
+        "type": "string",
+        "readOnly": true
+       },
+       "retained_fee": {
+        "type": "string",
+        "readOnly": true
+       },
+       "earnings": {
+        "type": "string",
+        "readOnly": true
+       },
+       "currency_code": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/CurrencyCode"
+         }
+        ],
+        "readOnly": true
+       }
+      },
+      "title": "AdjustmentTotals",
+      "readOnly": true
+     },
+     "AdjustmentPayoutTotals": {
+      "type": "object",
+      "required": [
+       "subtotal",
+       "tax",
+       "total",
+       "fee",
+       "retained_fee",
+       "earnings",
+       "currency_code"
+      ],
+      "properties": {
+       "subtotal": {
+        "type": "string"
+       },
+       "tax": {
+        "type": "string"
+       },
+       "total": {
+        "type": "string"
+       },
+       "fee": {
+        "type": "string"
+       },
+       "retained_fee": {
+        "type": "string",
+        "readOnly": true
+       },
+       "chargeback_fee": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/AdjustmentPayoutTotalsChargebackFee"
+         }
+        ]
+       },
+       "earnings": {
+        "type": "string"
+       },
+       "currency_code": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/CurrencyCodePayout"
+         }
+        ]
+       }
+      },
+      "title": "Payout totals (adjustment)"
+     },
+     "AdjustmentTaxRatesUsed": {
+      "type": "object",
+      "required": [
+       "tax_rate",
+       "totals"
+      ],
+      "properties": {
+       "tax_rate": {
+        "type": "string",
+        "readOnly": true
+       },
+       "totals": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/AdjustmentTaxRatesUsedItemTotals"
+         }
+        ],
+        "title": "AdjustmentTaxRateUsedTotals",
+        "readOnly": true
+       }
+      },
+      "title": "AdjustmentTaxRateUsed"
+     },
+     "PublicTransactionOrigin": {
+      "type": "string",
+      "enum": [
+       "api",
+       "subscription_charge",
+       "subscription_payment_method_change",
+       "subscription_recurring",
+       "subscription_update",
+       "web"
+      ]
+     },
+     "Price": {
+      "type": "object",
+      "required": [
+       "id",
+       "product_id",
+       "description",
+       "type",
+       "name",
+       "billing_cycle",
+       "trial_period",
+       "tax_mode",
+       "unit_price",
+       "unit_price_overrides",
+       "quantity",
+       "status",
+       "custom_data",
+       "import_meta",
+       "created_at",
+       "updated_at"
+      ],
+      "properties": {
+       "id": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/PriceId"
+         }
+        ],
+        "readOnly": true
+       },
+       "product_id": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/ProductId"
+         }
+        ]
+       },
+       "description": {
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 500
+       },
+       "type": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/CatalogType"
+         }
+        ],
+        "default": "standard"
+       },
+       "name": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/PriceName"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "billing_cycle": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/Duration"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "trial_period": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/PriceTrialDuration"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "tax_mode": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/TaxMode"
+         }
+        ],
+        "default": "account_setting"
+       },
+       "unit_price": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/Money"
+         }
+        ]
+       },
+       "unit_price_overrides": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/UnitPriceOverride"
+        },
+        "maxItems": 250
+       },
+       "quantity": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/PriceQuantity"
+         }
+        ]
+       },
+       "status": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/Status"
+         }
+        ],
+        "default": "active"
+       },
+       "custom_data": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/CustomData"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "import_meta": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/ImportMeta"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "created_at": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/CreatedAt"
+         }
+        ],
+        "readOnly": true
+       },
+       "updated_at": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/UpdatedAt"
+         }
+        ],
+        "readOnly": true
+       }
+      },
+      "title": "Price"
+     },
+     "TransactionDetailsTaxRatesUsedItem": {
+      "type": "object",
+      "required": [
+       "tax_rate",
+       "totals"
+      ],
+      "properties": {
+       "tax_rate": {
+        "type": "string",
+        "readOnly": true
+       },
+       "totals": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/Totals"
+         }
+        ]
+       }
+      }
+     },
+     "TransactionTotals": {
+      "type": "object",
+      "required": [
+       "subtotal",
+       "discount",
+       "tax",
+       "total",
+       "credit",
+       "credit_to_balance",
+       "balance",
+       "grand_total",
+       "grand_total_tax",
+       "fee",
+       "earnings",
+       "currency_code"
+      ],
+      "properties": {
+       "subtotal": {
+        "type": "string",
+        "readOnly": true
+       },
+       "discount": {
+        "type": "string",
+        "readOnly": true
+       },
+       "tax": {
+        "type": "string",
+        "readOnly": true
+       },
+       "total": {
+        "type": "string",
+        "readOnly": true
+       },
+       "credit": {
+        "type": "string"
+       },
+       "credit_to_balance": {
+        "type": "string"
+       },
+       "balance": {
+        "type": "string"
+       },
+       "grand_total": {
+        "type": "string"
+       },
+       "grand_total_tax": {
+        "type": "string",
+        "readOnly": true
+       },
+       "fee": {
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "earnings": {
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "currency_code": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/CurrencyCode"
+         }
+        ]
+       }
+      }
+     },
+     "TransactionTotalsAdjusted": {
+      "type": "object",
+      "required": [
+       "subtotal",
+       "tax",
+       "total",
+       "grand_total",
+       "grand_total_tax",
+       "fee",
+       "retained_fee",
+       "earnings",
+       "currency_code"
+      ],
+      "properties": {
+       "subtotal": {
+        "type": "string"
+       },
+       "tax": {
+        "type": "string"
+       },
+       "total": {
+        "type": "string"
+       },
+       "grand_total": {
+        "type": "string"
+       },
+       "grand_total_tax": {
+        "type": "string",
+        "readOnly": true
+       },
+       "fee": {
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "retained_fee": {
+        "type": "string",
+        "readOnly": true
+       },
+       "earnings": {
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "currency_code": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/CurrencyCode"
+         }
+        ]
+       }
+      },
+      "title": "Transaction totals (adjusted)",
+      "readOnly": true
+     },
+     "TransactionPayoutTotals": {
+      "type": "object",
+      "required": [
+       "subtotal",
+       "discount",
+       "tax",
+       "total",
+       "credit",
+       "credit_to_balance",
+       "balance",
+       "grand_total",
+       "grand_total_tax",
+       "fee",
+       "earnings",
+       "currency_code",
+       "exchange_rate",
+       "fee_rate"
+      ],
+      "properties": {
+       "subtotal": {
+        "type": "string"
+       },
+       "discount": {
+        "type": "string"
+       },
+       "tax": {
+        "type": "string"
+       },
+       "total": {
+        "type": "string"
+       },
+       "credit": {
+        "type": "string"
+       },
+       "credit_to_balance": {
+        "type": "string"
+       },
+       "balance": {
+        "type": "string"
+       },
+       "grand_total": {
+        "type": "string"
+       },
+       "grand_total_tax": {
+        "type": "string",
+        "readOnly": true
+       },
+       "fee": {
+        "type": "string"
+       },
+       "earnings": {
+        "type": "string"
+       },
+       "currency_code": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/CurrencyCodePayout"
+         }
+        ]
+       },
+       "exchange_rate": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/CurrencyExchangeRate"
+         }
+        ],
+        "default": "1"
+       },
+       "fee_rate": {
+        "type": "string"
+       }
+      },
+      "title": "Transaction payout totals",
+      "readOnly": true
+     },
+     "TransactionPayoutTotalsAdjusted": {
+      "type": "object",
+      "required": [
+       "subtotal",
+       "tax",
+       "total",
+       "fee",
+       "retained_fee",
+       "chargeback_fee",
+       "earnings",
+       "currency_code",
+       "exchange_rate"
+      ],
+      "properties": {
+       "subtotal": {
+        "type": "string"
+       },
+       "tax": {
+        "type": "string"
+       },
+       "total": {
+        "type": "string"
+       },
+       "fee": {
+        "type": "string"
+       },
+       "retained_fee": {
+        "type": "string",
+        "readOnly": true
+       },
+       "chargeback_fee": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/TransactionPayoutTotalsAdjustedChargebackFee"
+         }
+        ]
+       },
+       "earnings": {
+        "type": "string"
+       },
+       "currency_code": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/CurrencyCodePayout"
+         }
+        ]
+       },
+       "exchange_rate": {
+        "$ref": "#/components/schemas/CurrencyExchangeRate"
+       }
+      },
+      "title": "Transaction payout totals (adjusted)",
+      "readOnly": true
+     },
+     "TransactionDetailsLineItem": {
+      "type": "object",
+      "required": [
+       "price_id",
+       "quantity",
+       "proration",
+       "tax_rate",
+       "unit_totals",
+       "totals",
+       "product",
+       "id"
+      ],
+      "properties": {
+       "price_id": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/PriceId"
+         }
+        ],
+        "readOnly": true
+       },
+       "quantity": {
+        "type": "integer",
+        "readOnly": true
+       },
+       "proration": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/TransactionItemProration"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "readOnly": true
+       },
+       "tax_rate": {
+        "type": "string",
+        "readOnly": true
+       },
+       "unit_totals": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/Totals"
+         }
+        ],
+        "readOnly": true
+       },
+       "totals": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/Totals"
+         }
+        ],
+        "readOnly": true
+       },
+       "product": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/Product"
+         }
+        ],
+        "readOnly": true
+       },
+       "id": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/TransactionItemId"
+         }
+        ],
+        "readOnly": true
+       }
+      }
+     },
+     "PaymentMethodId": {
+      "type": "string",
+      "pattern": "^paymtd_[a-z\\d]{26}$",
+      "title": "Payment Method ID"
+     },
+     "PaymentAttemptStatus": {
+      "type": "string",
+      "enum": [
+       "authorized",
+       "authorized_flagged",
+       "canceled",
+       "captured",
+       "error",
+       "action_required",
+       "pending_no_action_required",
+       "created",
+       "unknown",
+       "dropped"
+      ],
+      "readOnly": true
+     },
+     "ErrorCode": {
+      "type": "string",
+      "enum": [
+       "already_canceled",
+       "already_refunded",
+       "authentication_failed",
+       "blocked_by_policy",
+       "blocked_card",
+       "canceled",
+       "declined",
+       "declined_not_retryable",
+       "expired_card",
+       "fraud",
+       "invalid_amount",
+       "invalid_payment_details",
+       "issuer_unavailable",
+       "not_enough_balance",
+       "preferred_network_not_supported",
+       "prepaid_card_not_supported",
+       "psp_error",
+       "redacted_payment_method",
+       "system_error",
+       "transaction_not_permitted",
+       "unknown"
+      ],
+      "title": "Error code"
+     },
+     "MethodDetails": {
+      "type": "object",
+      "required": [
+       "type",
+       "underlying_details",
+       "south_korea_local_card",
+       "card",
+       "paypal"
+      ],
+      "properties": {
+       "type": {
+        "$ref": "#/components/schemas/TransactionPaymentMethodType"
+       },
+       "underlying_details": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/UnderlyingDetails"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "deprecated": true,
+        "readOnly": true
+       },
+       "south_korea_local_card": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/SouthKoreaLocalCard"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "card": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/Card"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "paypal": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/TransactionPaypal"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       }
+      },
+      "title": "Method details"
+     },
+     "AddressDescription": {
+      "type": "string",
+      "maxLength": 1024,
+      "title": "Description"
+     },
+     "AddressFirstLine": {
+      "type": "string",
+      "maxLength": 1024,
+      "title": "First line"
+     },
+     "AddressSecondLine": {
+      "type": "string",
+      "maxLength": 1024,
+      "title": "Second line"
+     },
+     "AddressCity": {
+      "type": "string",
+      "maxLength": 200,
+      "title": "City"
+     },
+     "AddressPostalCode": {
+      "type": "string",
+      "maxLength": 200,
+      "title": "Postal Code"
+     },
+     "AddressRegion": {
+      "type": "string",
+      "maxLength": 200,
+      "title": "Region"
+     },
+     "CountryCode": {
+      "oneOf": [
+       {
+        "$ref": "#/components/schemas/CountryCodeSupported"
+       },
+       {
+        "$ref": "#/components/schemas/CountryCodeNonSupported"
+       }
+      ]
+     },
+     "TransactionAdjustmentsTotalsIncludeBreakdown": {
+      "type": "object",
+      "required": [
+       "credit",
+       "refund",
+       "chargeback"
+      ],
+      "properties": {
+       "credit": {
+        "type": "string"
+       },
+       "refund": {
+        "type": "string"
+       },
+       "chargeback": {
+        "type": "string"
+       }
+      },
+      "title": "AdjustmentTotalsBreakdown"
+     },
+     "BusinessContactsItem": {
+      "type": "object",
+      "required": [
+       "name",
+       "email"
+      ],
+      "properties": {
+       "name": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/Name"
+         }
+        ]
+       },
+       "email": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/Email"
+         }
+        ]
+       }
+      }
+     },
+     "DiscountStatus": {
+      "type": "string",
+      "enum": [
+       "active",
+       "archived"
+      ]
+     },
+     "DiscountCode": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 32,
+      "pattern": "^[a-zA-Z0-9]{1,32}$",
+      "title": "Discount code"
+     },
+     "DiscountType": {
+      "type": "string",
+      "enum": [
+       "flat",
+       "flat_per_seat",
+       "percentage"
+      ],
+      "title": "DiscountType"
+     },
+     "DiscountMode": {
+      "type": "string",
+      "enum": [
+       "standard",
+       "custom"
+      ],
+      "title": "DiscountMode"
+     },
+     "DiscountRestrictTo": {
+      "type": "string",
+      "pattern": "^(pri|pro)_[a-z\\d]{26}$"
+     },
+     "DiscountGroupId": {
+      "type": "string",
+      "pattern": "^dsg_[a-z\\d]{26}$",
+      "title": "Discount Group ID"
+     },
+     "ErrorResponseType": {
+      "type": "string",
+      "enum": [
+       "request_error",
+       "api_error"
+      ]
+     },
+     "ErrorItem": {
+      "type": "object",
+      "required": [
+       "field",
+       "message"
+      ],
+      "properties": {
+       "field": {
+        "type": "string"
+       },
+       "message": {
+        "type": "string"
+       }
+      },
+      "additionalProperties": false
+     },
+     "SubscriptionDiscountType": {
+      "type": "string",
+      "enum": [
+       "recurring",
+       "one-off"
+      ],
+      "title": "SubscriptionDiscountType"
+     },
+     "DurationInterval": {
+      "type": "string",
+      "enum": [
+       "day",
+       "week",
+       "month",
+       "year"
+      ]
+     },
+     "SubscriptionScheduledChangeAction": {
+      "type": "string",
+      "enum": [
+       "cancel",
+       "pause",
+       "resume"
+      ],
+      "title": "ScheduledChangeAction",
+      "readOnly": true
+     },
+     "ItemSubscriptionStatus": {
+      "type": "string",
+      "enum": [
+       "active",
+       "inactive",
+       "trialing"
+      ],
+      "title": "SubscriptionItemStatus",
+      "readOnly": true
+     },
+     "Product": {
+      "type": "object",
+      "required": [
+       "id",
+       "name",
+       "description",
+       "type",
+       "tax_category",
+       "image_url",
+       "custom_data",
+       "status",
+       "import_meta",
+       "created_at",
+       "updated_at"
+      ],
+      "properties": {
+       "id": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/ProductId"
+         }
+        ],
+        "readOnly": true
+       },
+       "name": {
+        "$ref": "#/components/schemas/ProductName"
+       },
+       "description": {
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "maxLength": 2048
+       },
+       "type": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/CatalogType"
+         }
+        ],
+        "default": "standard"
+       },
+       "tax_category": {
+        "$ref": "#/components/schemas/TaxCategory"
+       },
+       "image_url": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/ImageUrl"
+         },
+         {
+          "type": "null"
+         },
+         {
+          "$ref": "#/components/schemas/EmptyString"
+         }
+        ]
+       },
+       "custom_data": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/CustomData"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "status": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/Status"
+         }
+        ],
+        "default": "active"
+       },
+       "import_meta": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/ImportMeta"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "created_at": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/CreatedAt"
+         }
+        ],
+        "readOnly": true
+       },
+       "updated_at": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/UpdatedAt"
+         }
+        ],
+        "readOnly": true
+       }
+      },
+      "title": "Product"
+     },
+     "ExternalId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "title": "External ID",
+      "readOnly": true
+     },
+     "SubscriptionConsentRequirementId": {
+      "type": "string",
+      "pattern": "^subconreq_[a-z\\d]{26}$",
+      "title": "Subscription Consent Requirement ID"
+     },
+     "SubscriptionConsentRequirementType": {
+      "type": "string",
+      "enum": [
+       "trial_ending",
+       "introductory_discount_ending"
+      ]
+     },
+     "SubscriptionConsentRequirementStatus": {
+      "type": "string",
+      "enum": [
+       "pending",
+       "granted",
+       "voided"
+      ]
+     },
+     "AdjustmentPreview": {
+      "type": "object",
+      "required": [
+       "transaction_id",
+       "items",
+       "totals"
+      ],
+      "properties": {
+       "transaction_id": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/TransactionId"
+         }
+        ]
+       },
+       "items": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/AdjustmentItem"
+        },
+        "maxItems": 100
+       },
+       "totals": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/AdjustmentTotals"
+         }
+        ]
+       }
+      },
+      "title": "AdjustmentPreview"
+     },
+     "TransactionPreviewDetailsTaxRatesUsedItem": {
+      "type": "object",
+      "required": [
+       "tax_rate",
+       "totals"
+      ],
+      "properties": {
+       "tax_rate": {
+        "type": "string",
+        "readOnly": true
+       },
+       "totals": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/Totals"
+         }
+        ]
+       }
+      }
+     },
+     "TransactionPreviewLineItem": {
+      "type": "object",
+      "required": [
+       "price_id",
+       "quantity",
+       "tax_rate",
+       "unit_totals",
+       "totals",
+       "product",
+       "proration"
+      ],
+      "properties": {
+       "price_id": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/PriceId"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "readOnly": true
+       },
+       "quantity": {
+        "type": "integer",
+        "readOnly": true
+       },
+       "tax_rate": {
+        "type": "string",
+        "readOnly": true
+       },
+       "unit_totals": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/Totals"
+         }
+        ],
+        "readOnly": true
+       },
+       "totals": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/Totals"
+         }
+        ],
+        "readOnly": true
+       },
+       "product": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/ProductPreview"
+         }
+        ],
+        "readOnly": true
+       },
+       "proration": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/TransactionItemProration"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       }
+      },
+      "title": "Transaction line item (preview)"
+     },
+     "AdjustmentPayoutTotalsChargebackFee": {
+      "type": "object",
+      "required": [
+       "amount",
+       "original"
+      ],
+      "properties": {
+       "amount": {
+        "type": "string"
+       },
+       "original": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/AdjustmentPayoutTotalsChargebackFeeOriginal"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       }
+      }
+     },
+     "CurrencyCodePayout": {
+      "type": "string",
+      "enum": [
+       "AUD",
+       "CAD",
+       "CHF",
+       "CNY",
+       "CZK",
+       "DKK",
+       "EUR",
+       "GBP",
+       "HUF",
+       "PLN",
+       "SEK",
+       "USD",
+       "ZAR"
+      ],
+      "title": "Currency code (payouts)"
+     },
+     "AdjustmentTaxRatesUsedItemTotals": {
+      "type": "object",
+      "required": [
+       "subtotal",
+       "tax",
+       "total"
+      ],
+      "properties": {
+       "subtotal": {
+        "type": "string",
+        "readOnly": true
+       },
+       "tax": {
+        "type": "string",
+        "readOnly": true
+       },
+       "total": {
+        "type": "string",
+        "readOnly": true
+       }
+      },
+      "title": "AdjustmentTaxRateUsedTotals",
+      "readOnly": true
+     },
+     "PriceId": {
+      "type": "string",
+      "pattern": "^pri_[a-z\\d]{26}$",
+      "title": "Price ID"
+     },
+     "ProductId": {
+      "type": "string",
+      "pattern": "^pro_[a-z\\d]{26}$",
+      "title": "Product ID"
+     },
+     "CatalogType": {
+      "type": "string",
+      "enum": [
+       "custom",
+       "standard"
+      ],
+      "title": "CatalogType"
+     },
+     "PriceName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 150,
+      "title": "Price Name"
+     },
+     "PriceTrialDuration": {
+      "type": "object",
+      "required": [
+       "interval",
+       "frequency",
+       "requires_payment_method"
+      ],
+      "properties": {
+       "interval": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/DurationInterval"
+         }
+        ]
+       },
+       "frequency": {
+        "type": "integer",
+        "minimum": 1
+       },
+       "requires_payment_method": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/PriceRequiresPaymentMethod"
+         }
+        ],
+        "default": true
+       },
+       "unit_price": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/MoneyOptionalCurrency"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "unit_price_overrides": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/PriceTrialUnitPriceOverride"
+        },
+        "maxItems": 250
+       }
+      },
+      "title": "Price Trial Duration"
+     },
+     "TaxMode": {
+      "type": "string",
+      "enum": [
+       "account_setting",
+       "external",
+       "internal",
+       "location"
+      ],
+      "title": "Tax mode"
+     },
+     "Money": {
+      "type": "object",
+      "required": [
+       "amount",
+       "currency_code"
+      ],
+      "properties": {
+       "amount": {
+        "type": "string"
+       },
+       "currency_code": {
+        "$ref": "#/components/schemas/CurrencyCode"
+       }
+      },
+      "title": "Money"
+     },
+     "UnitPriceOverride": {
+      "type": "object",
+      "required": [
+       "country_codes",
+       "unit_price"
+      ],
+      "properties": {
+       "country_codes": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/CountryCode"
+        },
+        "minItems": 1,
+        "uniqueItems": true
+       },
+       "unit_price": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/Money"
+         }
+        ]
+       }
+      },
+      "title": "Unit price override",
+      "additionalProperties": false
+     },
+     "PriceQuantity": {
+      "type": "object",
+      "required": [
+       "minimum",
+       "maximum"
+      ],
+      "properties": {
+       "minimum": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 999999999,
+        "default": 1
+       },
+       "maximum": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 999999999,
+        "default": 100
+       }
+      },
+      "title": "price_quantity"
+     },
+     "Totals": {
+      "type": "object",
+      "required": [
+       "subtotal",
+       "discount",
+       "tax",
+       "total"
+      ],
+      "properties": {
+       "subtotal": {
+        "type": "string",
+        "readOnly": true
+       },
+       "discount": {
+        "type": "string",
+        "readOnly": true
+       },
+       "tax": {
+        "type": "string",
+        "readOnly": true
+       },
+       "total": {
+        "type": "string",
+        "readOnly": true
+       }
+      },
+      "title": "Totals",
+      "readOnly": true
+     },
+     "CurrencyExchangeRate": {
+      "type": "string",
+      "title": "currency_exchange_rate"
+     },
+     "TransactionPayoutTotalsAdjustedChargebackFee": {
+      "type": "object",
+      "required": [
+       "amount",
+       "original"
+      ],
+      "properties": {
+       "amount": {
+        "type": "string"
+       },
+       "original": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/TransactionPayoutTotalsAdjustedChargebackFeeOriginal"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       }
+      }
+     },
+     "TransactionPaymentMethodType": {
+      "type": "string",
+      "enum": [
+       "alipay",
+       "apple_pay",
+       "bancontact",
+       "blik",
+       "card",
+       "google_pay",
+       "ideal",
+       "kakao_pay",
+       "korea_local",
+       "south_korea_local_card",
+       "mb_way",
+       "naver_pay",
+       "offline",
+       "payco",
+       "paypal",
+       "pix",
+       "samsung_pay",
+       "unknown",
+       "upi",
+       "wechat_pay",
+       "wire_transfer"
+      ],
+      "title": "PaymentMethodType"
+     },
+     "UnderlyingDetails": {
+      "type": "object",
+      "required": [
+       "korea_local"
+      ],
+      "properties": {
+       "korea_local": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/KoreaLocalUnderlyingDetails"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "readOnly": true
+       }
+      },
+      "title": "PaymentMethodUnderlyingDetails",
+      "deprecated": true
+     },
+     "SouthKoreaLocalCard": {
+      "type": "object",
+      "properties": {
+       "type": {
+        "$ref": "#/components/schemas/SouthKoreaLocalCardType"
+       },
+       "last4": {
+        "$ref": "#/components/schemas/CardLast4"
+       }
+      },
+      "title": "SouthKoreaLocalCard"
+     },
+     "Card": {
+      "type": "object",
+      "required": [
+       "type",
+       "last4",
+       "expiry_month",
+       "expiry_year",
+       "cardholder_name"
+      ],
+      "properties": {
+       "type": {
+        "$ref": "#/components/schemas/CardType"
+       },
+       "last4": {
+        "$ref": "#/components/schemas/CardLast4"
+       },
+       "expiry_month": {
+        "$ref": "#/components/schemas/CardExpiryMonth"
+       },
+       "expiry_year": {
+        "$ref": "#/components/schemas/CardExpiryYear"
+       },
+       "cardholder_name": {
+        "$ref": "#/components/schemas/CardCardholderName"
+       }
+      },
+      "title": "Card"
+     },
+     "TransactionPaypal": {
+      "type": "object",
+      "required": [
+       "email",
+       "reference"
+      ],
+      "properties": {
+       "email": {
+        "type": "string"
+       },
+       "reference": {
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       }
+      },
+      "title": "PayPal (transaction)"
+     },
+     "CountryCodeSupported": {
+      "type": "string",
+      "enum": [
+       "AD",
+       "AE",
+       "AG",
+       "AI",
+       "AL",
+       "AM",
+       "AO",
+       "AR",
+       "AS",
+       "AT",
+       "AU",
+       "AW",
+       "AX",
+       "AZ",
+       "BA",
+       "BB",
+       "BD",
+       "BE",
+       "BF",
+       "BG",
+       "BH",
+       "BI",
+       "BJ",
+       "BL",
+       "BM",
+       "BN",
+       "BO",
+       "BQ",
+       "BR",
+       "BS",
+       "BT",
+       "BV",
+       "BW",
+       "BZ",
+       "CA",
+       "CC",
+       "CG",
+       "CH",
+       "CI",
+       "CK",
+       "CL",
+       "CM",
+       "CN",
+       "CO",
+       "CR",
+       "CV",
+       "CW",
+       "CX",
+       "CY",
+       "CZ",
+       "DE",
+       "DJ",
+       "DK",
+       "DM",
+       "DO",
+       "DZ",
+       "EC",
+       "EE",
+       "EG",
+       "EH",
+       "ER",
+       "ES",
+       "ET",
+       "FI",
+       "FJ",
+       "FK",
+       "FM",
+       "FO",
+       "FR",
+       "GA",
+       "GB",
+       "GD",
+       "GE",
+       "GF",
+       "GG",
+       "GH",
+       "GI",
+       "GL",
+       "GM",
+       "GN",
+       "GP",
+       "GQ",
+       "GR",
+       "GS",
+       "GT",
+       "GU",
+       "GW",
+       "GY",
+       "HK",
+       "HM",
+       "HN",
+       "HR",
+       "HU",
+       "ID",
+       "IE",
+       "IL",
+       "IM",
+       "IN",
+       "IO",
+       "IQ",
+       "IS",
+       "IT",
+       "JE",
+       "JM",
+       "JO",
+       "JP",
+       "KE",
+       "KG",
+       "KH",
+       "KI",
+       "KM",
+       "KN",
+       "KR",
+       "KW",
+       "KY",
+       "KZ",
+       "LA",
+       "LB",
+       "LC",
+       "LI",
+       "LK",
+       "LR",
+       "LS",
+       "LT",
+       "LU",
+       "LV",
+       "MA",
+       "MC",
+       "MD",
+       "ME",
+       "MF",
+       "MG",
+       "MH",
+       "MK",
+       "MN",
+       "MO",
+       "MP",
+       "MQ",
+       "MR",
+       "MS",
+       "MT",
+       "MU",
+       "MV",
+       "MW",
+       "MX",
+       "MY",
+       "MZ",
+       "NA",
+       "NC",
+       "NE",
+       "NF",
+       "NG",
+       "NL",
+       "NO",
+       "NP",
+       "NR",
+       "NU",
+       "NZ",
+       "OM",
+       "PA",
+       "PE",
+       "PF",
+       "PG",
+       "PH",
+       "PK",
+       "PL",
+       "PM",
+       "PN",
+       "PR",
+       "PS",
+       "PT",
+       "PW",
+       "PY",
+       "QA",
+       "RE",
+       "RO",
+       "RS",
+       "RW",
+       "SA",
+       "SB",
+       "SC",
+       "SE",
+       "SG",
+       "SH",
+       "SI",
+       "SJ",
+       "SK",
+       "SL",
+       "SM",
+       "SN",
+       "SR",
+       "ST",
+       "SV",
+       "SX",
+       "SZ",
+       "TC",
+       "TD",
+       "TF",
+       "TG",
+       "TH",
+       "TJ",
+       "TK",
+       "TL",
+       "TM",
+       "TN",
+       "TO",
+       "TR",
+       "TT",
+       "TV",
+       "TW",
+       "TZ",
+       "UA",
+       "UG",
+       "UM",
+       "US",
+       "UY",
+       "UZ",
+       "VA",
+       "VC",
+       "VG",
+       "VI",
+       "VN",
+       "VU",
+       "WF",
+       "WS",
+       "XK",
+       "YT",
+       "ZA",
+       "ZM"
+      ],
+      "title": "Country code (supported)"
+     },
+     "CountryCodeNonSupported": {
+      "type": "string",
+      "enum": [
+       "AF",
+       "AQ",
+       "AN",
+       "BY",
+       "CD",
+       "CF",
+       "CU",
+       "CS",
+       "HT",
+       "IR",
+       "KP",
+       "LY",
+       "ML",
+       "MM",
+       "NI",
+       "RU",
+       "SO",
+       "SS",
+       "SD",
+       "SY",
+       "VE",
+       "YE",
+       "ZW"
+      ],
+      "title": "Country code (unsupported)"
+     },
+     "ProductName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "title": "Product Name"
+     },
+     "TaxCategory": {
+      "type": "string",
+      "enum": [
+       "digital-goods",
+       "ebooks",
+       "implementation-services",
+       "professional-services",
+       "saas",
+       "software-programming-services",
+       "standard",
+       "training-services",
+       "website-hosting"
+      ],
+      "title": "Tax category"
+     },
+     "ImageUrl": {
+      "type": "string",
+      "minLength": 1,
+      "format": "uri",
+      "title": "Image Url"
+     },
+     "EmptyString": {
+      "type": "string",
+      "minLength": 0,
+      "maxLength": 0,
+      "title": "Empty String"
+     },
+     "AdjustmentItem": {
+      "type": "object",
+      "required": [
+       "item_id",
+       "type",
+       "amount",
+       "proration",
+       "totals"
+      ],
+      "properties": {
+       "item_id": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/TransactionItemId"
+         }
+        ]
+       },
+       "type": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/AdjustmentItemType"
+         }
+        ]
+       },
+       "amount": {
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "proration": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/TransactionItemProration"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "readOnly": true
+       },
+       "totals": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/AdjustmentItemTotals"
+         }
+        ],
+        "readOnly": true
+       }
+      },
+      "title": "Adjustment item"
+     },
+     "ProductPreview": {
+      "type": "object",
+      "required": [
+       "id",
+       "name",
+       "description",
+       "type",
+       "tax_category",
+       "image_url",
+       "custom_data",
+       "status",
+       "import_meta",
+       "created_at",
+       "updated_at"
+      ],
+      "properties": {
+       "id": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/ProductId"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "readOnly": true
+       },
+       "name": {
+        "$ref": "#/components/schemas/ProductName"
+       },
+       "description": {
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "maxLength": 2048
+       },
+       "type": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/CatalogType"
+         }
+        ],
+        "default": "standard"
+       },
+       "tax_category": {
+        "$ref": "#/components/schemas/TaxCategory"
+       },
+       "image_url": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/ImageUrl"
+         },
+         {
+          "type": "null"
+         },
+         {
+          "$ref": "#/components/schemas/EmptyString"
+         }
+        ]
+       },
+       "custom_data": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/CustomData"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "status": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/Status"
+         }
+        ],
+        "default": "active"
+       },
+       "import_meta": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/ImportMeta"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "created_at": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/CreatedAt"
+         }
+        ],
+        "readOnly": true
+       },
+       "updated_at": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/UpdatedAt"
+         }
+        ],
+        "readOnly": true
+       }
+      },
+      "title": "Product preview"
+     },
+     "AdjustmentPayoutTotalsChargebackFeeOriginal": {
+      "type": "object",
+      "required": [
+       "amount",
+       "currency_code"
+      ],
+      "properties": {
+       "amount": {
+        "type": "string"
+       },
+       "currency_code": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/CurrencyCodeChargeback"
+         }
+        ]
+       }
+      }
+     },
+     "PriceRequiresPaymentMethod": {
+      "type": "boolean",
+      "title": "Price Requires Payment Method"
+     },
+     "MoneyOptionalCurrency": {
+      "type": "object",
+      "required": [
+       "amount"
+      ],
+      "properties": {
+       "amount": {
+        "type": "string"
+       },
+       "currency_code": {
+        "$ref": "#/components/schemas/CurrencyCode"
+       }
+      },
+      "title": "Money with optional currency"
+     },
+     "PriceTrialUnitPriceOverride": {
+      "type": "object",
+      "required": [
+       "country_codes",
+       "unit_price"
+      ],
+      "properties": {
+       "country_codes": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/CountryCode"
+        },
+        "minItems": 1,
+        "uniqueItems": true
+       },
+       "unit_price": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/MoneyOptionalCurrency"
+         }
+        ]
+       }
+      },
+      "title": "Unit price trial override",
+      "additionalProperties": false
+     },
+     "TransactionPayoutTotalsAdjustedChargebackFeeOriginal": {
+      "type": "object",
+      "required": [
+       "amount",
+       "currency_code"
+      ],
+      "properties": {
+       "amount": {
+        "type": "string"
+       },
+       "currency_code": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/CurrencyCodeChargeback"
+         }
+        ]
+       }
+      }
+     },
+     "KoreaLocalUnderlyingDetails": {
+      "type": "object",
+      "required": [
+       "type"
+      ],
+      "properties": {
+       "type": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/KoreaLocalUnderlyingPaymentMethodType"
+         }
+        ],
+        "deprecated": true,
+        "readOnly": true
+       }
+      },
+      "title": "Korean market underlying details",
+      "deprecated": true
+     },
+     "SouthKoreaLocalCardType": {
+      "type": "string",
+      "enum": [
+       "bc",
+       "citi",
+       "hana",
+       "hyundai",
+       "jeju",
+       "jeonbuk",
+       "kakaobank",
+       "kbank",
+       "kdbbank",
+       "kookmin",
+       "kwangju",
+       "lotte",
+       "mg",
+       "nh",
+       "post",
+       "samsung",
+       "savingsbank",
+       "shinhan",
+       "shinhyup",
+       "suhyup",
+       "tossbank",
+       "unknown",
+       "woori"
+      ],
+      "title": "SouthKoreaLocalCardType"
+     },
+     "CardLast4": {
+      "type": "string",
+      "title": "Card Last Four"
+     },
+     "CardType": {
+      "type": "string",
+      "enum": [
+       "american_express",
+       "diners_club",
+       "discover",
+       "jcb",
+       "mada",
+       "maestro",
+       "mastercard",
+       "union_pay",
+       "unknown",
+       "visa"
+      ],
+      "title": "CardType"
+     },
+     "CardExpiryMonth": {
+      "type": "integer",
+      "title": "Card Expiry Month"
+     },
+     "CardExpiryYear": {
+      "type": "integer",
+      "title": "Card Expiry Year"
+     },
+     "CardCardholderName": {
+      "type": "string",
+      "title": "Cardholder Name"
+     },
+     "CurrencyCodeChargeback": {
+      "type": "string",
+      "enum": [
+       "AUD",
+       "CAD",
+       "EUR",
+       "GBP",
+       "USD"
+      ],
+      "title": "Currency code (chargebacks)"
+     },
+     "KoreaLocalUnderlyingPaymentMethodType": {
+      "type": "string",
+      "enum": [
+       "bc",
+       "citi",
+       "hana",
+       "hyundai",
+       "jeju",
+       "jeonbuk",
+       "kakaobank",
+       "kakaopay",
+       "kbank",
+       "kdbbank",
+       "kookmin",
+       "kwangju",
+       "lotte",
+       "mg",
+       "naverpaycard",
+       "naverpaypoint",
+       "nh",
+       "payco",
+       "post",
+       "samsung",
+       "samsungpay",
+       "savingsbank",
+       "shinhan",
+       "shinhyup",
+       "suhyup",
+       "tossbank",
+       "unknown",
+       "woori"
+      ],
+      "title": "Korean market underlying payment method type",
+      "deprecated": true,
+      "readOnly": true
+     }
+    }
+   }
+  }
+ ]
+}

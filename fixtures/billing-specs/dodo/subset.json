@@ -1,0 +1,5429 @@
+{
+ "provider": "dodo",
+ "documents": [
+  {
+   "file": "payments/get-payments-1",
+   "openapi": "3.1.0",
+   "info": {
+    "title": "public",
+    "version": "1.120.26",
+    "license": {
+     "name": "Apache 2.0",
+     "url": "https://www.apache.org/licenses/LICENSE-2.0"
+    }
+   },
+   "servers": [
+    {
+     "url": "https://test.dodopayments.com/"
+    },
+    {
+     "url": "https://live.dodopayments.com/"
+    }
+   ],
+   "security": [],
+   "paths": {
+    "/payments/{payment_id}": {
+     "get": {
+      "operationId": "get_payment_handler",
+      "parameters": [
+       {
+        "name": "payment_id",
+        "in": "path",
+        "required": true,
+        "schema": {
+         "type": "string"
+        }
+       }
+      ],
+      "responses": {
+       "200": {
+        "content": {
+         "application/json": {
+          "schema": {
+           "$ref": "#/components/schemas/PaymentResponse"
+          }
+         }
+        }
+       },
+       "500": {}
+      },
+      "security": [
+       {
+        "API_KEY": []
+       }
+      ]
+     }
+    }
+   },
+   "components": {
+    "securitySchemes": {
+     "API_KEY": {
+      "type": "http",
+      "scheme": "bearer"
+     }
+    },
+    "schemas": {
+     "PaymentResponse": {
+      "type": "object",
+      "required": [
+       "payment_id",
+       "business_id",
+       "total_amount",
+       "currency",
+       "is_update_payment_method",
+       "created_at",
+       "disputes",
+       "refunds",
+       "customer",
+       "is_multi_subscription",
+       "subscription_ids",
+       "includes_usage",
+       "service_periods",
+       "metadata",
+       "settlement_amount",
+       "settlement_currency",
+       "billing",
+       "brand_id",
+       "digital_products_delivered",
+       "retry_attempt",
+       "payment_provider"
+      ],
+      "properties": {
+       "billing": {
+        "$ref": "#/components/schemas/BillingAddress"
+       },
+       "brand_id": {
+        "type": "string"
+       },
+       "business_id": {
+        "type": "string"
+       },
+       "card_exp_month": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "card_exp_year": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "card_holder_name": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "card_issuing_country": {
+        "oneOf": [
+         {
+          "type": "null"
+         },
+         {
+          "$ref": "#/components/schemas/CountryCodeAlpha2"
+         }
+        ]
+       },
+       "card_last_four": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "card_network": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "card_type": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "charge_type": {
+        "oneOf": [
+         {
+          "type": "null"
+         },
+         {
+          "$ref": "#/components/schemas/ChargeType"
+         }
+        ]
+       },
+       "checkout_session_id": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "created_at": {
+        "type": "string",
+        "format": "date-time"
+       },
+       "currency": {
+        "$ref": "#/components/schemas/Currency"
+       },
+       "custom_field_responses": {
+        "type": [
+         "array",
+         "null"
+        ],
+        "items": {
+         "$ref": "#/components/schemas/CustomFieldResponse"
+        }
+       },
+       "customer": {
+        "$ref": "#/components/schemas/CustomerLimitedDetailsResponse"
+       },
+       "digital_products_delivered": {
+        "type": "boolean"
+       },
+       "discount_id": {
+        "type": [
+         "string",
+         "null"
+        ],
+        "deprecated": true
+       },
+       "discounts": {
+        "type": [
+         "array",
+         "null"
+        ],
+        "items": {
+         "$ref": "#/components/schemas/DiscountDetailResponse"
+        }
+       },
+       "disputes": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/DisputeResponse"
+        }
+       },
+       "error_code": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "error_message": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "includes_usage": {
+        "type": "boolean"
+       },
+       "invoice_id": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "invoice_url": {
+        "type": [
+         "string",
+         "null"
+        ],
+        "deprecated": true
+       },
+       "is_multi_subscription": {
+        "type": "boolean"
+       },
+       "is_update_payment_method": {
+        "type": "boolean"
+       },
+       "metadata": {
+        "$ref": "#/components/schemas/Metadata"
+       },
+       "payment_id": {
+        "type": "string"
+       },
+       "payment_link": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "payment_method": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "payment_method_id": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "payment_method_type": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "payment_provider": {
+        "$ref": "#/components/schemas/PaymentProvider"
+       },
+       "product_cart": {
+        "type": [
+         "array",
+         "null"
+        ],
+        "items": {
+         "$ref": "#/components/schemas/OneTimeProductCartItemResponse"
+        }
+       },
+       "refund_status": {
+        "oneOf": [
+         {
+          "type": "null"
+         },
+         {
+          "$ref": "#/components/schemas/PaymentRefundStatus"
+         }
+        ]
+       },
+       "refunds": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/RefundListItem"
+        }
+       },
+       "retry_attempt": {
+        "type": "integer",
+        "format": "int32"
+       },
+       "service_periods": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/SubscriptionServicePeriod"
+        }
+       },
+       "settlement_amount": {
+        "type": "integer",
+        "format": "int32"
+       },
+       "settlement_currency": {
+        "$ref": "#/components/schemas/Currency"
+       },
+       "settlement_tax": {
+        "type": [
+         "integer",
+         "null"
+        ],
+        "format": "int32"
+       },
+       "status": {
+        "oneOf": [
+         {
+          "type": "null"
+         },
+         {
+          "$ref": "#/components/schemas/IntentStatus"
+         }
+        ]
+       },
+       "subscription_id": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "subscription_ids": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       },
+       "tax": {
+        "type": [
+         "integer",
+         "null"
+        ],
+        "format": "int32"
+       },
+       "three_ds_flow": {
+        "oneOf": [
+         {
+          "type": "null"
+         },
+         {
+          "$ref": "#/components/schemas/ThreeDsFlow"
+         }
+        ]
+       },
+       "three_ds_status": {
+        "oneOf": [
+         {
+          "type": "null"
+         },
+         {
+          "$ref": "#/components/schemas/ThreeDsStatus"
+         }
+        ]
+       },
+       "three_ds_version": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "total_amount": {
+        "type": "integer",
+        "format": "int32"
+       },
+       "updated_at": {
+        "type": [
+         "string",
+         "null"
+        ],
+        "format": "date-time"
+       }
+      }
+     },
+     "BillingAddress": {
+      "type": "object",
+      "required": [
+       "country"
+      ],
+      "properties": {
+       "city": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "country": {
+        "$ref": "#/components/schemas/CountryCodeAlpha2"
+       },
+       "state": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "street": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "zipcode": {
+        "type": [
+         "string",
+         "null"
+        ]
+       }
+      }
+     },
+     "CountryCodeAlpha2": {
+      "type": "string",
+      "enum": [
+       "AF",
+       "AX",
+       "AL",
+       "DZ",
+       "AS",
+       "AD",
+       "AO",
+       "AI",
+       "AQ",
+       "AG",
+       "AR",
+       "AM",
+       "AW",
+       "AU",
+       "AT",
+       "AZ",
+       "BS",
+       "BH",
+       "BD",
+       "BB",
+       "BY",
+       "BE",
+       "BZ",
+       "BJ",
+       "BM",
+       "BT",
+       "BO",
+       "BQ",
+       "BA",
+       "BW",
+       "BV",
+       "BR",
+       "IO",
+       "BN",
+       "BG",
+       "BF",
+       "BI",
+       "KH",
+       "CM",
+       "CA",
+       "CV",
+       "KY",
+       "CF",
+       "TD",
+       "CL",
+       "CN",
+       "CX",
+       "CC",
+       "CO",
+       "KM",
+       "CG",
+       "CD",
+       "CK",
+       "CR",
+       "CI",
+       "HR",
+       "CU",
+       "CW",
+       "CY",
+       "CZ",
+       "DK",
+       "DJ",
+       "DM",
+       "DO",
+       "EC",
+       "EG",
+       "SV",
+       "GQ",
+       "ER",
+       "EE",
+       "ET",
+       "FK",
+       "FO",
+       "FJ",
+       "FI",
+       "FR",
+       "GF",
+       "PF",
+       "TF",
+       "GA",
+       "GM",
+       "GE",
+       "DE",
+       "GH",
+       "GI",
+       "GR",
+       "GL",
+       "GD",
+       "GP",
+       "GU",
+       "GT",
+       "GG",
+       "GN",
+       "GW",
+       "GY",
+       "HT",
+       "HM",
+       "VA",
+       "HN",
+       "HK",
+       "HU",
+       "IS",
+       "IN",
+       "ID",
+       "IR",
+       "IQ",
+       "IE",
+       "IM",
+       "IL",
+       "IT",
+       "JM",
+       "JP",
+       "JE",
+       "JO",
+       "KZ",
+       "KE",
+       "KI",
+       "KP",
+       "KR",
+       "KW",
+       "KG",
+       "LA",
+       "LV",
+       "LB",
+       "LS",
+       "LR",
+       "LY",
+       "LI",
+       "LT",
+       "LU",
+       "MO",
+       "MK",
+       "MG",
+       "MW",
+       "MY",
+       "MV",
+       "ML",
+       "MT",
+       "MH",
+       "MQ",
+       "MR",
+       "MU",
+       "YT",
+       "MX",
+       "FM",
+       "MD",
+       "MC",
+       "MN",
+       "ME",
+       "MS",
+       "MA",
+       "MZ",
+       "MM",
+       "NA",
+       "NR",
+       "NP",
+       "NL",
+       "NC",
+       "NZ",
+       "NI",
+       "NE",
+       "NG",
+       "NU",
+       "NF",
+       "MP",
+       "NO",
+       "OM",
+       "PK",
+       "PW",
+       "PS",
+       "PA",
+       "PG",
+       "PY",
+       "PE",
+       "PH",
+       "PN",
+       "PL",
+       "PT",
+       "PR",
+       "QA",
+       "RE",
+       "RO",
+       "RU",
+       "RW",
+       "BL",
+       "SH",
+       "KN",
+       "LC",
+       "MF",
+       "PM",
+       "VC",
+       "WS",
+       "SM",
+       "ST",
+       "SA",
+       "SN",
+       "RS",
+       "SC",
+       "SL",
+       "SG",
+       "SX",
+       "SK",
+       "SI",
+       "SB",
+       "SO",
+       "ZA",
+       "GS",
+       "SS",
+       "ES",
+       "LK",
+       "SD",
+       "SR",
+       "SJ",
+       "SZ",
+       "SE",
+       "CH",
+       "SY",
+       "TW",
+       "TJ",
+       "TZ",
+       "TH",
+       "TL",
+       "TG",
+       "TK",
+       "TO",
+       "TT",
+       "TN",
+       "TR",
+       "TM",
+       "TC",
+       "TV",
+       "UG",
+       "UA",
+       "AE",
+       "GB",
+       "UM",
+       "US",
+       "UY",
+       "UZ",
+       "VU",
+       "VE",
+       "VN",
+       "VG",
+       "VI",
+       "WF",
+       "EH",
+       "YE",
+       "ZM",
+       "ZW"
+      ]
+     },
+     "ChargeType": {
+      "type": "string",
+      "enum": [
+       "new",
+       "renewal",
+       "plan_change",
+       "on_demand"
+      ]
+     },
+     "Currency": {
+      "type": "string",
+      "enum": [
+       "AED",
+       "ALL",
+       "AMD",
+       "ANG",
+       "AOA",
+       "ARS",
+       "AUD",
+       "AWG",
+       "AZN",
+       "BAM",
+       "BBD",
+       "BDT",
+       "BGN",
+       "BHD",
+       "BIF",
+       "BMD",
+       "BND",
+       "BOB",
+       "BRL",
+       "BSD",
+       "BWP",
+       "BYN",
+       "BZD",
+       "CAD",
+       "CHF",
+       "CLP",
+       "CNY",
+       "COP",
+       "CRC",
+       "CUP",
+       "CVE",
+       "CZK",
+       "DJF",
+       "DKK",
+       "DOP",
+       "DZD",
+       "EGP",
+       "ETB",
+       "EUR",
+       "FJD",
+       "FKP",
+       "GBP",
+       "GEL",
+       "GHS",
+       "GIP",
+       "GMD",
+       "GNF",
+       "GTQ",
+       "GYD",
+       "HKD",
+       "HNL",
+       "HRK",
+       "HTG",
+       "HUF",
+       "IDR",
+       "ILS",
+       "INR",
+       "IQD",
+       "JMD",
+       "JOD",
+       "JPY",
+       "KES",
+       "KGS",
+       "KHR",
+       "KMF",
+       "KRW",
+       "KWD",
+       "KYD",
+       "KZT",
+       "LAK",
+       "LBP",
+       "LKR",
+       "LRD",
+       "LSL",
+       "LYD",
+       "MAD",
+       "MDL",
+       "MGA",
+       "MKD",
+       "MMK",
+       "MNT",
+       "MOP",
+       "MRU",
+       "MUR",
+       "MVR",
+       "MWK",
+       "MXN",
+       "MYR",
+       "MZN",
+       "NAD",
+       "NGN",
+       "NIO",
+       "NOK",
+       "NPR",
+       "NZD",
+       "OMR",
+       "PAB",
+       "PEN",
+       "PGK",
+       "PHP",
+       "PKR",
+       "PLN",
+       "PYG",
+       "QAR",
+       "RON",
+       "RSD",
+       "RUB",
+       "RWF",
+       "SAR",
+       "SBD",
+       "SCR",
+       "SEK",
+       "SGD",
+       "SHP",
+       "SLE",
+       "SLL",
+       "SOS",
+       "SRD",
+       "SSP",
+       "STN",
+       "SVC",
+       "SZL",
+       "THB",
+       "TND",
+       "TOP",
+       "TRY",
+       "TTD",
+       "TWD",
+       "TZS",
+       "UAH",
+       "UGX",
+       "USD",
+       "UYU",
+       "UZS",
+       "VES",
+       "VND",
+       "VUV",
+       "WST",
+       "XAF",
+       "XCD",
+       "XOF",
+       "XPF",
+       "YER",
+       "ZAR",
+       "ZMW"
+      ]
+     },
+     "CustomFieldResponse": {
+      "type": "object",
+      "required": [
+       "key",
+       "value"
+      ],
+      "properties": {
+       "key": {
+        "type": "string"
+       },
+       "value": {
+        "type": "string"
+       }
+      }
+     },
+     "CustomerLimitedDetailsResponse": {
+      "type": "object",
+      "required": [
+       "customer_id",
+       "name",
+       "email"
+      ],
+      "properties": {
+       "customer_id": {
+        "type": "string"
+       },
+       "email": {
+        "type": "string"
+       },
+       "metadata": {
+        "$ref": "#/components/schemas/Metadata"
+       },
+       "name": {
+        "type": "string"
+       },
+       "phone_number": {
+        "type": [
+         "string",
+         "null"
+        ]
+       }
+      }
+     },
+     "DiscountDetailResponse": {
+      "type": "object",
+      "required": [
+       "position",
+       "discount_id",
+       "business_id",
+       "type",
+       "code",
+       "amount",
+       "times_used",
+       "restricted_to",
+       "created_at",
+       "preserve_on_plan_change",
+       "metadata"
+      ],
+      "properties": {
+       "amount": {
+        "type": "integer",
+        "format": "int32"
+       },
+       "business_id": {
+        "type": "string"
+       },
+       "code": {
+        "type": "string"
+       },
+       "created_at": {
+        "type": "string",
+        "format": "date-time"
+       },
+       "cycles_remaining": {
+        "type": [
+         "integer",
+         "null"
+        ],
+        "format": "int32"
+       },
+       "discount_id": {
+        "type": "string"
+       },
+       "expires_at": {
+        "type": [
+         "string",
+         "null"
+        ],
+        "format": "date-time"
+       },
+       "metadata": {
+        "$ref": "#/components/schemas/Metadata"
+       },
+       "name": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "position": {
+        "type": "integer",
+        "format": "int32"
+       },
+       "preserve_on_plan_change": {
+        "type": "boolean"
+       },
+       "restricted_to": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       },
+       "subscription_cycles": {
+        "type": [
+         "integer",
+         "null"
+        ],
+        "format": "int32"
+       },
+       "times_used": {
+        "type": "integer",
+        "format": "int32"
+       },
+       "type": {
+        "$ref": "#/components/schemas/DiscountType"
+       },
+       "usage_limit": {
+        "type": [
+         "integer",
+         "null"
+        ],
+        "format": "int32"
+       }
+      }
+     },
+     "DisputeResponse": {
+      "type": "object",
+      "required": [
+       "dispute_id",
+       "payment_id",
+       "business_id",
+       "amount",
+       "currency",
+       "dispute_status",
+       "dispute_stage",
+       "created_at"
+      ],
+      "properties": {
+       "amount": {
+        "type": "string"
+       },
+       "business_id": {
+        "type": "string"
+       },
+       "created_at": {
+        "type": "string",
+        "format": "date-time"
+       },
+       "currency": {
+        "type": "string"
+       },
+       "dispute_id": {
+        "type": "string"
+       },
+       "dispute_stage": {
+        "$ref": "#/components/schemas/DisputeStage"
+       },
+       "dispute_status": {
+        "$ref": "#/components/schemas/DisputeStatus"
+       },
+       "is_resolved_by_rdr": {
+        "type": [
+         "boolean",
+         "null"
+        ]
+       },
+       "payment_id": {
+        "type": "string"
+       },
+       "remarks": {
+        "type": [
+         "string",
+         "null"
+        ]
+       }
+      }
+     },
+     "Metadata": {
+      "type": "object",
+      "title": "Metadata",
+      "additionalProperties": {
+       "oneOf": [
+        {
+         "type": "string",
+         "title": "String"
+        },
+        {
+         "type": "integer",
+         "title": "Integer",
+         "format": "int64"
+        },
+        {
+         "type": "number",
+         "title": "Number",
+         "format": "double"
+        },
+        {
+         "type": "boolean",
+         "title": "Boolean"
+        }
+       ],
+       "title": "Metadata Value"
+      }
+     },
+     "PaymentProvider": {
+      "type": "string",
+      "enum": [
+       "stripe",
+       "adyen",
+       "dodo"
+      ]
+     },
+     "OneTimeProductCartItemResponse": {
+      "type": "object",
+      "title": "One-Time Product Cart Item Response",
+      "required": [
+       "product_id",
+       "quantity"
+      ],
+      "properties": {
+       "product_id": {
+        "type": "string"
+       },
+       "quantity": {
+        "type": "integer",
+        "format": "int32",
+        "minimum": 0
+       }
+      }
+     },
+     "PaymentRefundStatus": {
+      "type": "string",
+      "enum": [
+       "partial",
+       "full"
+      ]
+     },
+     "RefundListItem": {
+      "type": "object",
+      "required": [
+       "refund_id",
+       "payment_id",
+       "business_id",
+       "status",
+       "created_at",
+       "is_partial"
+      ],
+      "properties": {
+       "amount": {
+        "type": [
+         "integer",
+         "null"
+        ],
+        "format": "int32"
+       },
+       "business_id": {
+        "type": "string"
+       },
+       "created_at": {
+        "type": "string",
+        "format": "date-time"
+       },
+       "currency": {
+        "oneOf": [
+         {
+          "type": "null"
+         },
+         {
+          "$ref": "#/components/schemas/Currency"
+         }
+        ]
+       },
+       "is_partial": {
+        "type": "boolean"
+       },
+       "network_reference": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "network_reference_type": {
+        "oneOf": [
+         {
+          "type": "null"
+         },
+         {
+          "$ref": "#/components/schemas/RefundNetworkReferenceType"
+         }
+        ]
+       },
+       "network_reference_updated_at": {
+        "type": [
+         "string",
+         "null"
+        ],
+        "format": "date-time"
+       },
+       "payment_id": {
+        "type": "string"
+       },
+       "reason": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "refund_id": {
+        "type": "string"
+       },
+       "status": {
+        "$ref": "#/components/schemas/RefundStatus"
+       }
+      }
+     },
+     "SubscriptionServicePeriod": {
+      "type": "object",
+      "required": [
+       "subscription_id",
+       "starts_at",
+       "ends_at",
+       "proration_factor"
+      ],
+      "properties": {
+       "ends_at": {
+        "type": "string",
+        "format": "date-time"
+       },
+       "proration_factor": {
+        "type": "string"
+       },
+       "starts_at": {
+        "type": "string",
+        "format": "date-time"
+       },
+       "subscription_id": {
+        "type": "string"
+       }
+      }
+     },
+     "IntentStatus": {
+      "type": "string",
+      "enum": [
+       "succeeded",
+       "failed",
+       "cancelled",
+       "processing",
+       "requires_customer_action",
+       "requires_merchant_action",
+       "requires_payment_method",
+       "requires_confirmation",
+       "requires_capture",
+       "partially_captured",
+       "partially_captured_and_capturable"
+      ]
+     },
+     "ThreeDsFlow": {
+      "type": "string",
+      "enum": [
+       "challenge",
+       "frictionless"
+      ]
+     },
+     "ThreeDsStatus": {
+      "type": "string",
+      "enum": [
+       "authenticated",
+       "attempt_acknowledged",
+       "exempted",
+       "failed",
+       "not_supported",
+       "processing_error"
+      ]
+     },
+     "DiscountType": {
+      "type": "string",
+      "enum": [
+       "flat",
+       "percentage"
+      ]
+     },
+     "DisputeStage": {
+      "type": "string",
+      "enum": [
+       "pre_dispute",
+       "dispute",
+       "pre_arbitration"
+      ]
+     },
+     "DisputeStatus": {
+      "type": "string",
+      "enum": [
+       "dispute_opened",
+       "dispute_expired",
+       "dispute_accepted",
+       "dispute_cancelled",
+       "dispute_challenged",
+       "dispute_won",
+       "dispute_lost"
+      ]
+     },
+     "RefundNetworkReferenceType": {
+      "type": "string",
+      "enum": [
+       "acquirer_reference_number",
+       "system_trace_audit_number",
+       "retrieval_reference_number",
+       "other"
+      ]
+     },
+     "RefundStatus": {
+      "type": "string",
+      "enum": [
+       "succeeded",
+       "failed",
+       "pending",
+       "review"
+      ]
+     }
+    }
+   }
+  },
+  {
+   "file": "payments/get-payments",
+   "openapi": "3.1.0",
+   "info": {
+    "title": "public",
+    "version": "1.120.26",
+    "license": {
+     "name": "Apache 2.0",
+     "url": "https://www.apache.org/licenses/LICENSE-2.0"
+    }
+   },
+   "servers": [
+    {
+     "url": "https://test.dodopayments.com/"
+    },
+    {
+     "url": "https://live.dodopayments.com/"
+    }
+   ],
+   "security": [],
+   "paths": {
+    "/payments": {
+     "get": {
+      "operationId": "list_payments_handler",
+      "parameters": [
+       {
+        "name": "created_at_gte",
+        "in": "query",
+        "required": false,
+        "schema": {
+         "type": "string",
+         "format": "date-time"
+        },
+        "style": "form"
+       },
+       {
+        "name": "created_at_lte",
+        "in": "query",
+        "required": false,
+        "schema": {
+         "type": "string",
+         "format": "date-time"
+        },
+        "style": "form"
+       },
+       {
+        "name": "page_size",
+        "in": "query",
+        "required": false,
+        "schema": {
+         "type": "integer",
+         "format": "int32",
+         "minimum": 0
+        },
+        "style": "form"
+       },
+       {
+        "name": "page_number",
+        "in": "query",
+        "required": false,
+        "schema": {
+         "type": "integer",
+         "format": "int32",
+         "minimum": 0
+        },
+        "style": "form"
+       },
+       {
+        "name": "customer_id",
+        "in": "query",
+        "required": false,
+        "schema": {
+         "type": "string"
+        },
+        "style": "form"
+       },
+       {
+        "name": "subscription_id",
+        "in": "query",
+        "required": false,
+        "schema": {
+         "type": "string"
+        },
+        "style": "form"
+       },
+       {
+        "name": "status",
+        "in": "query",
+        "required": false,
+        "schema": {
+         "type": "string",
+         "enum": [
+          "succeeded",
+          "failed",
+          "cancelled",
+          "processing",
+          "requires_customer_action",
+          "requires_merchant_action",
+          "requires_payment_method",
+          "requires_confirmation",
+          "requires_capture",
+          "partially_captured",
+          "partially_captured_and_capturable"
+         ]
+        },
+        "style": "form"
+       },
+       {
+        "name": "brand_id",
+        "in": "query",
+        "required": false,
+        "schema": {
+         "type": "string"
+        },
+        "style": "form"
+       },
+       {
+        "name": "product_id",
+        "in": "query",
+        "required": false,
+        "schema": {
+         "type": "string"
+        },
+        "style": "form"
+       },
+       {
+        "name": "currency",
+        "in": "query",
+        "required": false,
+        "schema": {
+         "type": "string",
+         "enum": [
+          "AED",
+          "ALL",
+          "AMD",
+          "ANG",
+          "AOA",
+          "ARS",
+          "AUD",
+          "AWG",
+          "AZN",
+          "BAM",
+          "BBD",
+          "BDT",
+          "BGN",
+          "BHD",
+          "BIF",
+          "BMD",
+          "BND",
+          "BOB",
+          "BRL",
+          "BSD",
+          "BWP",
+          "BYN",
+          "BZD",
+          "CAD",
+          "CHF",
+          "CLP",
+          "CNY",
+          "COP",
+          "CRC",
+          "CUP",
+          "CVE",
+          "CZK",
+          "DJF",
+          "DKK",
+          "DOP",
+          "DZD",
+          "EGP",
+          "ETB",
+          "EUR",
+          "FJD",
+          "FKP",
+          "GBP",
+          "GEL",
+          "GHS",
+          "GIP",
+          "GMD",
+          "GNF",
+          "GTQ",
+          "GYD",
+          "HKD",
+          "HNL",
+          "HRK",
+          "HTG",
+          "HUF",
+          "IDR",
+          "ILS",
+          "INR",
+          "IQD",
+          "JMD",
+          "JOD",
+          "JPY",
+          "KES",
+          "KGS",
+          "KHR",
+          "KMF",
+          "KRW",
+          "KWD",
+          "KYD",
+          "KZT",
+          "LAK",
+          "LBP",
+          "LKR",
+          "LRD",
+          "LSL",
+          "LYD",
+          "MAD",
+          "MDL",
+          "MGA",
+          "MKD",
+          "MMK",
+          "MNT",
+          "MOP",
+          "MRU",
+          "MUR",
+          "MVR",
+          "MWK",
+          "MXN",
+          "MYR",
+          "MZN",
+          "NAD",
+          "NGN",
+          "NIO",
+          "NOK",
+          "NPR",
+          "NZD",
+          "OMR",
+          "PAB",
+          "PEN",
+          "PGK",
+          "PHP",
+          "PKR",
+          "PLN",
+          "PYG",
+          "QAR",
+          "RON",
+          "RSD",
+          "RUB",
+          "RWF",
+          "SAR",
+          "SBD",
+          "SCR",
+          "SEK",
+          "SGD",
+          "SHP",
+          "SLE",
+          "SLL",
+          "SOS",
+          "SRD",
+          "SSP",
+          "STN",
+          "SVC",
+          "SZL",
+          "THB",
+          "TND",
+          "TOP",
+          "TRY",
+          "TTD",
+          "TWD",
+          "TZS",
+          "UAH",
+          "UGX",
+          "USD",
+          "UYU",
+          "UZS",
+          "VES",
+          "VND",
+          "VUV",
+          "WST",
+          "XAF",
+          "XCD",
+          "XOF",
+          "XPF",
+          "YER",
+          "ZAR",
+          "ZMW"
+         ]
+        },
+        "style": "form"
+       }
+      ],
+      "responses": {
+       "200": {
+        "content": {
+         "application/json": {
+          "schema": {
+           "$ref": "#/components/schemas/GetPaymentsListResponse"
+          }
+         }
+        }
+       },
+       "500": {}
+      },
+      "security": [
+       {
+        "API_KEY": []
+       }
+      ]
+     }
+    }
+   },
+   "components": {
+    "securitySchemes": {
+     "API_KEY": {
+      "type": "http",
+      "scheme": "bearer"
+     }
+    },
+    "schemas": {
+     "GetPaymentsListResponse": {
+      "type": "object",
+      "required": [
+       "items"
+      ],
+      "properties": {
+       "items": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/GetPaymentsListResponseItem"
+        }
+       }
+      }
+     },
+     "GetPaymentsListResponseItem": {
+      "type": "object",
+      "required": [
+       "payment_id",
+       "total_amount",
+       "currency",
+       "customer",
+       "created_at",
+       "is_multi_subscription",
+       "subscription_ids",
+       "includes_usage",
+       "service_periods",
+       "brand_id",
+       "digital_products_delivered",
+       "has_license_key",
+       "metadata",
+       "payment_provider",
+       "retry_attempt"
+      ],
+      "properties": {
+       "brand_id": {
+        "type": "string"
+       },
+       "card_exp_month": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "card_exp_year": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "card_last_four": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "card_network": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "card_type": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "charge_type": {
+        "oneOf": [
+         {
+          "type": "null"
+         },
+         {
+          "$ref": "#/components/schemas/ChargeType"
+         }
+        ]
+       },
+       "checkout_session_id": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "created_at": {
+        "type": "string",
+        "format": "date-time"
+       },
+       "currency": {
+        "$ref": "#/components/schemas/Currency"
+       },
+       "customer": {
+        "$ref": "#/components/schemas/CustomerLimitedDetailsResponse"
+       },
+       "digital_products_delivered": {
+        "type": "boolean"
+       },
+       "dispute_status": {
+        "oneOf": [
+         {
+          "type": "null"
+         },
+         {
+          "$ref": "#/components/schemas/DisputeStatus"
+         }
+        ]
+       },
+       "has_license_key": {
+        "type": "boolean"
+       },
+       "includes_usage": {
+        "type": "boolean"
+       },
+       "invoice_id": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "invoice_url": {
+        "type": [
+         "string",
+         "null"
+        ],
+        "deprecated": true
+       },
+       "is_multi_subscription": {
+        "type": "boolean"
+       },
+       "metadata": {
+        "$ref": "#/components/schemas/Metadata"
+       },
+       "payment_id": {
+        "type": "string"
+       },
+       "payment_method": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "payment_method_type": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "payment_provider": {
+        "$ref": "#/components/schemas/PaymentProvider"
+       },
+       "refund_status": {
+        "oneOf": [
+         {
+          "type": "null"
+         },
+         {
+          "$ref": "#/components/schemas/PaymentRefundStatus"
+         }
+        ]
+       },
+       "retry_attempt": {
+        "type": "integer",
+        "format": "int32"
+       },
+       "service_periods": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/SubscriptionServicePeriod"
+        }
+       },
+       "status": {
+        "oneOf": [
+         {
+          "type": "null"
+         },
+         {
+          "$ref": "#/components/schemas/IntentStatus"
+         }
+        ]
+       },
+       "subscription_id": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "subscription_ids": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       },
+       "three_ds_flow": {
+        "oneOf": [
+         {
+          "type": "null"
+         },
+         {
+          "$ref": "#/components/schemas/ThreeDsFlow"
+         }
+        ]
+       },
+       "three_ds_status": {
+        "oneOf": [
+         {
+          "type": "null"
+         },
+         {
+          "$ref": "#/components/schemas/ThreeDsStatus"
+         }
+        ]
+       },
+       "three_ds_version": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "total_amount": {
+        "type": "integer",
+        "format": "int32"
+       }
+      }
+     },
+     "ChargeType": {
+      "type": "string",
+      "enum": [
+       "new",
+       "renewal",
+       "plan_change",
+       "on_demand"
+      ]
+     },
+     "Currency": {
+      "type": "string",
+      "enum": [
+       "AED",
+       "ALL",
+       "AMD",
+       "ANG",
+       "AOA",
+       "ARS",
+       "AUD",
+       "AWG",
+       "AZN",
+       "BAM",
+       "BBD",
+       "BDT",
+       "BGN",
+       "BHD",
+       "BIF",
+       "BMD",
+       "BND",
+       "BOB",
+       "BRL",
+       "BSD",
+       "BWP",
+       "BYN",
+       "BZD",
+       "CAD",
+       "CHF",
+       "CLP",
+       "CNY",
+       "COP",
+       "CRC",
+       "CUP",
+       "CVE",
+       "CZK",
+       "DJF",
+       "DKK",
+       "DOP",
+       "DZD",
+       "EGP",
+       "ETB",
+       "EUR",
+       "FJD",
+       "FKP",
+       "GBP",
+       "GEL",
+       "GHS",
+       "GIP",
+       "GMD",
+       "GNF",
+       "GTQ",
+       "GYD",
+       "HKD",
+       "HNL",
+       "HRK",
+       "HTG",
+       "HUF",
+       "IDR",
+       "ILS",
+       "INR",
+       "IQD",
+       "JMD",
+       "JOD",
+       "JPY",
+       "KES",
+       "KGS",
+       "KHR",
+       "KMF",
+       "KRW",
+       "KWD",
+       "KYD",
+       "KZT",
+       "LAK",
+       "LBP",
+       "LKR",
+       "LRD",
+       "LSL",
+       "LYD",
+       "MAD",
+       "MDL",
+       "MGA",
+       "MKD",
+       "MMK",
+       "MNT",
+       "MOP",
+       "MRU",
+       "MUR",
+       "MVR",
+       "MWK",
+       "MXN",
+       "MYR",
+       "MZN",
+       "NAD",
+       "NGN",
+       "NIO",
+       "NOK",
+       "NPR",
+       "NZD",
+       "OMR",
+       "PAB",
+       "PEN",
+       "PGK",
+       "PHP",
+       "PKR",
+       "PLN",
+       "PYG",
+       "QAR",
+       "RON",
+       "RSD",
+       "RUB",
+       "RWF",
+       "SAR",
+       "SBD",
+       "SCR",
+       "SEK",
+       "SGD",
+       "SHP",
+       "SLE",
+       "SLL",
+       "SOS",
+       "SRD",
+       "SSP",
+       "STN",
+       "SVC",
+       "SZL",
+       "THB",
+       "TND",
+       "TOP",
+       "TRY",
+       "TTD",
+       "TWD",
+       "TZS",
+       "UAH",
+       "UGX",
+       "USD",
+       "UYU",
+       "UZS",
+       "VES",
+       "VND",
+       "VUV",
+       "WST",
+       "XAF",
+       "XCD",
+       "XOF",
+       "XPF",
+       "YER",
+       "ZAR",
+       "ZMW"
+      ]
+     },
+     "CustomerLimitedDetailsResponse": {
+      "type": "object",
+      "required": [
+       "customer_id",
+       "name",
+       "email"
+      ],
+      "properties": {
+       "customer_id": {
+        "type": "string"
+       },
+       "email": {
+        "type": "string"
+       },
+       "metadata": {
+        "$ref": "#/components/schemas/Metadata"
+       },
+       "name": {
+        "type": "string"
+       },
+       "phone_number": {
+        "type": [
+         "string",
+         "null"
+        ]
+       }
+      }
+     },
+     "DisputeStatus": {
+      "type": "string",
+      "enum": [
+       "dispute_opened",
+       "dispute_expired",
+       "dispute_accepted",
+       "dispute_cancelled",
+       "dispute_challenged",
+       "dispute_won",
+       "dispute_lost"
+      ]
+     },
+     "Metadata": {
+      "type": "object",
+      "title": "Metadata",
+      "additionalProperties": {
+       "oneOf": [
+        {
+         "type": "string",
+         "title": "String"
+        },
+        {
+         "type": "integer",
+         "title": "Integer",
+         "format": "int64"
+        },
+        {
+         "type": "number",
+         "title": "Number",
+         "format": "double"
+        },
+        {
+         "type": "boolean",
+         "title": "Boolean"
+        }
+       ],
+       "title": "Metadata Value"
+      }
+     },
+     "PaymentProvider": {
+      "type": "string",
+      "enum": [
+       "stripe",
+       "adyen",
+       "dodo"
+      ]
+     },
+     "PaymentRefundStatus": {
+      "type": "string",
+      "enum": [
+       "partial",
+       "full"
+      ]
+     },
+     "SubscriptionServicePeriod": {
+      "type": "object",
+      "required": [
+       "subscription_id",
+       "starts_at",
+       "ends_at",
+       "proration_factor"
+      ],
+      "properties": {
+       "ends_at": {
+        "type": "string",
+        "format": "date-time"
+       },
+       "proration_factor": {
+        "type": "string"
+       },
+       "starts_at": {
+        "type": "string",
+        "format": "date-time"
+       },
+       "subscription_id": {
+        "type": "string"
+       }
+      }
+     },
+     "IntentStatus": {
+      "type": "string",
+      "enum": [
+       "succeeded",
+       "failed",
+       "cancelled",
+       "processing",
+       "requires_customer_action",
+       "requires_merchant_action",
+       "requires_payment_method",
+       "requires_confirmation",
+       "requires_capture",
+       "partially_captured",
+       "partially_captured_and_capturable"
+      ]
+     },
+     "ThreeDsFlow": {
+      "type": "string",
+      "enum": [
+       "challenge",
+       "frictionless"
+      ]
+     },
+     "ThreeDsStatus": {
+      "type": "string",
+      "enum": [
+       "authenticated",
+       "attempt_acknowledged",
+       "exempted",
+       "failed",
+       "not_supported",
+       "processing_error"
+      ]
+     }
+    }
+   }
+  },
+  {
+   "file": "payments/retrieve-retry-state",
+   "openapi": "3.1.0",
+   "info": {
+    "title": "public",
+    "version": "1.120.26",
+    "license": {
+     "name": "Apache 2.0",
+     "url": "https://www.apache.org/licenses/LICENSE-2.0"
+    }
+   },
+   "servers": [
+    {
+     "url": "https://test.dodopayments.com/"
+    },
+    {
+     "url": "https://live.dodopayments.com/"
+    }
+   ],
+   "security": [],
+   "paths": {
+    "/payments/{payment_id}/retry": {
+     "get": {
+      "operationId": "get_manual_retry_state_handler",
+      "parameters": [
+       {
+        "name": "payment_id",
+        "in": "path",
+        "required": true,
+        "schema": {
+         "type": "string"
+        }
+       }
+      ],
+      "responses": {
+       "200": {
+        "content": {
+         "application/json": {
+          "schema": {
+           "$ref": "#/components/schemas/ManualRetryStateResponse"
+          }
+         }
+        }
+       },
+       "404": {}
+      },
+      "security": [
+       {
+        "API_KEY": []
+       },
+       {
+        "ACCESS_TOKEN": []
+       }
+      ]
+     }
+    }
+   },
+   "components": {
+    "securitySchemes": {
+     "API_KEY": {
+      "type": "http",
+      "scheme": "bearer"
+     }
+    },
+    "schemas": {
+     "ManualRetryStateResponse": {
+      "type": "object",
+      "required": [
+       "can_retry",
+       "sends_used",
+       "sends_allowed"
+      ],
+      "properties": {
+       "automatic_retry_number": {
+        "type": [
+         "integer",
+         "null"
+        ],
+        "format": "int32"
+       },
+       "automatic_retry_total": {
+        "type": [
+         "integer",
+         "null"
+        ],
+        "format": "int32"
+       },
+       "can_retry": {
+        "type": "boolean"
+       },
+       "next_automatic_retry_at": {
+        "type": [
+         "string",
+         "null"
+        ],
+        "format": "date-time"
+       },
+       "reason": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "retry_available_at": {
+        "type": [
+         "string",
+         "null"
+        ],
+        "format": "date-time"
+       },
+       "sends_allowed": {
+        "type": "integer",
+        "format": "int64"
+       },
+       "sends_used": {
+        "type": "integer",
+        "format": "int64"
+       }
+      }
+     }
+    }
+   }
+  },
+  {
+   "file": "subscriptions/get-subscriptions",
+   "openapi": "3.1.0",
+   "info": {
+    "title": "public",
+    "version": "1.120.26",
+    "license": {
+     "name": "Apache 2.0",
+     "url": "https://www.apache.org/licenses/LICENSE-2.0"
+    }
+   },
+   "servers": [
+    {
+     "url": "https://test.dodopayments.com/"
+    },
+    {
+     "url": "https://live.dodopayments.com/"
+    }
+   ],
+   "security": [],
+   "paths": {
+    "/subscriptions/{subscription_id}": {
+     "get": {
+      "operationId": "get_subscription_handler",
+      "parameters": [
+       {
+        "name": "subscription_id",
+        "in": "path",
+        "required": true,
+        "schema": {
+         "type": "string"
+        }
+       },
+       {
+        "name": "locale",
+        "in": "query",
+        "required": false,
+        "schema": {
+         "type": "string"
+        },
+        "style": "form"
+       }
+      ],
+      "responses": {
+       "200": {
+        "content": {
+         "application/json": {
+          "schema": {
+           "$ref": "#/components/schemas/SubscriptionResponse"
+          }
+         }
+        }
+       },
+       "500": {}
+      },
+      "security": [
+       {
+        "API_KEY": []
+       }
+      ]
+     }
+    }
+   },
+   "components": {
+    "securitySchemes": {
+     "API_KEY": {
+      "type": "http",
+      "scheme": "bearer"
+     }
+    },
+    "schemas": {
+     "SubscriptionResponse": {
+      "type": "object",
+      "required": [
+       "subscription_id",
+       "recurring_pre_tax_amount",
+       "tax_inclusive",
+       "currency",
+       "status",
+       "created_at",
+       "product_id",
+       "quantity",
+       "trial_period_days",
+       "subscription_period_interval",
+       "payment_frequency_interval",
+       "subscription_period_count",
+       "payment_frequency_count",
+       "next_billing_date",
+       "previous_billing_date",
+       "customer",
+       "metadata",
+       "cancel_at_next_billing_date",
+       "billing",
+       "on_demand",
+       "addons",
+       "meters",
+       "has_payment_method",
+       "credit_entitlement_cart",
+       "meter_credit_entitlement_cart",
+       "brand_id"
+      ],
+      "properties": {
+       "addons": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/AddonCartResponseItem"
+        }
+       },
+       "billing": {
+        "$ref": "#/components/schemas/BillingAddress"
+       },
+       "brand_id": {
+        "type": "string"
+       },
+       "cancel_at_next_billing_date": {
+        "type": "boolean"
+       },
+       "cancellation_comment": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "cancellation_feedback": {
+        "oneOf": [
+         {
+          "type": "null"
+         },
+         {
+          "$ref": "#/components/schemas/CancellationFeedback"
+         }
+        ]
+       },
+       "cancelled_at": {
+        "type": [
+         "string",
+         "null"
+        ],
+        "format": "date-time"
+       },
+       "cancelled_by": {
+        "oneOf": [
+         {
+          "type": "null"
+         },
+         {
+          "$ref": "#/components/schemas/SubscriptionCancelledBy"
+         }
+        ]
+       },
+       "created_at": {
+        "type": "string",
+        "format": "date-time"
+       },
+       "credit_entitlement_cart": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/CreditEntitlementCartResponse"
+        }
+       },
+       "currency": {
+        "$ref": "#/components/schemas/Currency"
+       },
+       "custom_field_responses": {
+        "type": [
+         "array",
+         "null"
+        ],
+        "items": {
+         "$ref": "#/components/schemas/CustomFieldResponse"
+        }
+       },
+       "customer": {
+        "$ref": "#/components/schemas/CustomerLimitedDetailsResponse"
+       },
+       "customer_business_name": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "discount_cycles_remaining": {
+        "type": [
+         "integer",
+         "null"
+        ],
+        "format": "int32"
+       },
+       "discount_id": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "discounts": {
+        "type": [
+         "array",
+         "null"
+        ],
+        "items": {
+         "$ref": "#/components/schemas/DiscountDetailResponse"
+        }
+       },
+       "expires_at": {
+        "type": [
+         "string",
+         "null"
+        ],
+        "format": "date-time"
+       },
+       "has_payment_method": {
+        "type": "boolean"
+       },
+       "metadata": {
+        "$ref": "#/components/schemas/Metadata"
+       },
+       "meter_credit_entitlement_cart": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/MeterCreditEntitlementCartResponse"
+        }
+       },
+       "meters": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/MeterCartResponseItem"
+        }
+       },
+       "next_billing_date": {
+        "type": "string",
+        "format": "date-time"
+       },
+       "on_demand": {
+        "type": "boolean"
+       },
+       "paused_at": {
+        "type": [
+         "string",
+         "null"
+        ],
+        "format": "date-time"
+       },
+       "payment_frequency_count": {
+        "type": "integer",
+        "format": "int32"
+       },
+       "payment_frequency_interval": {
+        "$ref": "#/components/schemas/TimeInterval"
+       },
+       "payment_method_id": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "previous_billing_date": {
+        "type": "string",
+        "format": "date-time"
+       },
+       "product_id": {
+        "type": "string"
+       },
+       "quantity": {
+        "type": "integer",
+        "format": "int32"
+       },
+       "recurring_pre_tax_amount": {
+        "type": "integer",
+        "format": "int32"
+       },
+       "scheduled_change": {
+        "oneOf": [
+         {
+          "type": "null"
+         },
+         {
+          "$ref": "#/components/schemas/ScheduledPlanChangeResponse"
+         }
+        ]
+       },
+       "status": {
+        "$ref": "#/components/schemas/SubscriptionStatus"
+       },
+       "subscription_id": {
+        "type": "string"
+       },
+       "subscription_period_count": {
+        "type": "integer",
+        "format": "int32"
+       },
+       "subscription_period_interval": {
+        "$ref": "#/components/schemas/TimeInterval"
+       },
+       "tax_id": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "tax_inclusive": {
+        "type": "boolean"
+       },
+       "trial_amount": {
+        "type": [
+         "integer",
+         "null"
+        ],
+        "format": "int32"
+       },
+       "trial_period_days": {
+        "type": "integer",
+        "format": "int32"
+       }
+      }
+     },
+     "AddonCartResponseItem": {
+      "type": "object",
+      "title": "Addon Cart Response Item",
+      "required": [
+       "addon_id",
+       "quantity"
+      ],
+      "properties": {
+       "addon_id": {
+        "type": "string"
+       },
+       "quantity": {
+        "type": "integer",
+        "format": "int32"
+       }
+      }
+     },
+     "BillingAddress": {
+      "type": "object",
+      "required": [
+       "country"
+      ],
+      "properties": {
+       "city": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "country": {
+        "$ref": "#/components/schemas/CountryCodeAlpha2"
+       },
+       "state": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "street": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "zipcode": {
+        "type": [
+         "string",
+         "null"
+        ]
+       }
+      }
+     },
+     "CancellationFeedback": {
+      "type": "string",
+      "enum": [
+       "too_expensive",
+       "missing_features",
+       "switched_service",
+       "unused",
+       "customer_service",
+       "low_quality",
+       "too_complex",
+       "other"
+      ]
+     },
+     "SubscriptionCancelledBy": {
+      "type": "object",
+      "required": [
+       "actor_type"
+      ],
+      "properties": {
+       "actor_type": {
+        "$ref": "#/components/schemas/SubscriptionCancelActorType"
+       },
+       "email": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "name": {
+        "type": [
+         "string",
+         "null"
+        ]
+       }
+      }
+     },
+     "CreditEntitlementCartResponse": {
+      "type": "object",
+      "required": [
+       "credit_entitlement_id",
+       "credit_entitlement_name",
+       "unit",
+       "product_id",
+       "credits_amount",
+       "rollover_enabled",
+       "overage_enabled",
+       "overage_behavior",
+       "remaining_balance",
+       "overage_balance"
+      ],
+      "properties": {
+       "credit_entitlement_id": {
+        "type": "string"
+       },
+       "credit_entitlement_name": {
+        "type": "string"
+       },
+       "credits_amount": {
+        "type": "string"
+       },
+       "expires_after_days": {
+        "type": [
+         "integer",
+         "null"
+        ],
+        "format": "int32"
+       },
+       "low_balance_threshold_percent": {
+        "type": [
+         "integer",
+         "null"
+        ],
+        "format": "int32"
+       },
+       "max_rollover_count": {
+        "type": [
+         "integer",
+         "null"
+        ],
+        "format": "int32"
+       },
+       "overage_balance": {
+        "type": "string"
+       },
+       "overage_behavior": {
+        "$ref": "#/components/schemas/CbbOverageBehavior"
+       },
+       "overage_enabled": {
+        "type": "boolean"
+       },
+       "overage_limit": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "product_id": {
+        "type": "string"
+       },
+       "remaining_balance": {
+        "type": "string"
+       },
+       "rollover_enabled": {
+        "type": "boolean"
+       },
+       "rollover_percentage": {
+        "type": [
+         "integer",
+         "null"
+        ],
+        "format": "int32"
+       },
+       "rollover_timeframe_count": {
+        "type": [
+         "integer",
+         "null"
+        ],
+        "format": "int32"
+       },
+       "rollover_timeframe_interval": {
+        "oneOf": [
+         {
+          "type": "null"
+         },
+         {
+          "$ref": "#/components/schemas/TimeInterval"
+         }
+        ]
+       },
+       "unit": {
+        "type": "string"
+       }
+      }
+     },
+     "Currency": {
+      "type": "string",
+      "enum": [
+       "AED",
+       "ALL",
+       "AMD",
+       "ANG",
+       "AOA",
+       "ARS",
+       "AUD",
+       "AWG",
+       "AZN",
+       "BAM",
+       "BBD",
+       "BDT",
+       "BGN",
+       "BHD",
+       "BIF",
+       "BMD",
+       "BND",
+       "BOB",
+       "BRL",
+       "BSD",
+       "BWP",
+       "BYN",
+       "BZD",
+       "CAD",
+       "CHF",
+       "CLP",
+       "CNY",
+       "COP",
+       "CRC",
+       "CUP",
+       "CVE",
+       "CZK",
+       "DJF",
+       "DKK",
+       "DOP",
+       "DZD",
+       "EGP",
+       "ETB",
+       "EUR",
+       "FJD",
+       "FKP",
+       "GBP",
+       "GEL",
+       "GHS",
+       "GIP",
+       "GMD",
+       "GNF",
+       "GTQ",
+       "GYD",
+       "HKD",
+       "HNL",
+       "HRK",
+       "HTG",
+       "HUF",
+       "IDR",
+       "ILS",
+       "INR",
+       "IQD",
+       "JMD",
+       "JOD",
+       "JPY",
+       "KES",
+       "KGS",
+       "KHR",
+       "KMF",
+       "KRW",
+       "KWD",
+       "KYD",
+       "KZT",
+       "LAK",
+       "LBP",
+       "LKR",
+       "LRD",
+       "LSL",
+       "LYD",
+       "MAD",
+       "MDL",
+       "MGA",
+       "MKD",
+       "MMK",
+       "MNT",
+       "MOP",
+       "MRU",
+       "MUR",
+       "MVR",
+       "MWK",
+       "MXN",
+       "MYR",
+       "MZN",
+       "NAD",
+       "NGN",
+       "NIO",
+       "NOK",
+       "NPR",
+       "NZD",
+       "OMR",
+       "PAB",
+       "PEN",
+       "PGK",
+       "PHP",
+       "PKR",
+       "PLN",
+       "PYG",
+       "QAR",
+       "RON",
+       "RSD",
+       "RUB",
+       "RWF",
+       "SAR",
+       "SBD",
+       "SCR",
+       "SEK",
+       "SGD",
+       "SHP",
+       "SLE",
+       "SLL",
+       "SOS",
+       "SRD",
+       "SSP",
+       "STN",
+       "SVC",
+       "SZL",
+       "THB",
+       "TND",
+       "TOP",
+       "TRY",
+       "TTD",
+       "TWD",
+       "TZS",
+       "UAH",
+       "UGX",
+       "USD",
+       "UYU",
+       "UZS",
+       "VES",
+       "VND",
+       "VUV",
+       "WST",
+       "XAF",
+       "XCD",
+       "XOF",
+       "XPF",
+       "YER",
+       "ZAR",
+       "ZMW"
+      ]
+     },
+     "CustomFieldResponse": {
+      "type": "object",
+      "required": [
+       "key",
+       "value"
+      ],
+      "properties": {
+       "key": {
+        "type": "string"
+       },
+       "value": {
+        "type": "string"
+       }
+      }
+     },
+     "CustomerLimitedDetailsResponse": {
+      "type": "object",
+      "required": [
+       "customer_id",
+       "name",
+       "email"
+      ],
+      "properties": {
+       "customer_id": {
+        "type": "string"
+       },
+       "email": {
+        "type": "string"
+       },
+       "metadata": {
+        "$ref": "#/components/schemas/Metadata"
+       },
+       "name": {
+        "type": "string"
+       },
+       "phone_number": {
+        "type": [
+         "string",
+         "null"
+        ]
+       }
+      }
+     },
+     "DiscountDetailResponse": {
+      "type": "object",
+      "required": [
+       "position",
+       "discount_id",
+       "business_id",
+       "type",
+       "code",
+       "amount",
+       "times_used",
+       "restricted_to",
+       "created_at",
+       "preserve_on_plan_change",
+       "metadata"
+      ],
+      "properties": {
+       "amount": {
+        "type": "integer",
+        "format": "int32"
+       },
+       "business_id": {
+        "type": "string"
+       },
+       "code": {
+        "type": "string"
+       },
+       "created_at": {
+        "type": "string",
+        "format": "date-time"
+       },
+       "cycles_remaining": {
+        "type": [
+         "integer",
+         "null"
+        ],
+        "format": "int32"
+       },
+       "discount_id": {
+        "type": "string"
+       },
+       "expires_at": {
+        "type": [
+         "string",
+         "null"
+        ],
+        "format": "date-time"
+       },
+       "metadata": {
+        "$ref": "#/components/schemas/Metadata"
+       },
+       "name": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "position": {
+        "type": "integer",
+        "format": "int32"
+       },
+       "preserve_on_plan_change": {
+        "type": "boolean"
+       },
+       "restricted_to": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       },
+       "subscription_cycles": {
+        "type": [
+         "integer",
+         "null"
+        ],
+        "format": "int32"
+       },
+       "times_used": {
+        "type": "integer",
+        "format": "int32"
+       },
+       "type": {
+        "$ref": "#/components/schemas/DiscountType"
+       },
+       "usage_limit": {
+        "type": [
+         "integer",
+         "null"
+        ],
+        "format": "int32"
+       }
+      }
+     },
+     "Metadata": {
+      "type": "object",
+      "title": "Metadata",
+      "additionalProperties": {
+       "oneOf": [
+        {
+         "type": "string",
+         "title": "String"
+        },
+        {
+         "type": "integer",
+         "title": "Integer",
+         "format": "int64"
+        },
+        {
+         "type": "number",
+         "title": "Number",
+         "format": "double"
+        },
+        {
+         "type": "boolean",
+         "title": "Boolean"
+        }
+       ],
+       "title": "Metadata Value"
+      }
+     },
+     "MeterCreditEntitlementCartResponse": {
+      "type": "object",
+      "required": [
+       "meter_id",
+       "meter_name",
+       "credit_entitlement_id",
+       "product_id",
+       "meter_units_per_credit"
+      ],
+      "properties": {
+       "credit_entitlement_id": {
+        "type": "string"
+       },
+       "meter_id": {
+        "type": "string"
+       },
+       "meter_name": {
+        "type": "string"
+       },
+       "meter_units_per_credit": {
+        "type": "string"
+       },
+       "product_id": {
+        "type": "string"
+       }
+      }
+     },
+     "MeterCartResponseItem": {
+      "type": "object",
+      "required": [
+       "meter_id",
+       "free_threshold",
+       "currency",
+       "name",
+       "measurement_unit"
+      ],
+      "properties": {
+       "currency": {
+        "$ref": "#/components/schemas/Currency"
+       },
+       "description": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "free_threshold": {
+        "type": "integer",
+        "format": "int64"
+       },
+       "measurement_unit": {
+        "type": "string"
+       },
+       "meter_id": {
+        "type": "string"
+       },
+       "name": {
+        "type": "string"
+       },
+       "price_per_unit": {
+        "type": [
+         "string",
+         "null"
+        ]
+       }
+      }
+     },
+     "TimeInterval": {
+      "type": "string",
+      "enum": [
+       "Day",
+       "Week",
+       "Month",
+       "Year"
+      ]
+     },
+     "ScheduledPlanChangeResponse": {
+      "type": "object",
+      "required": [
+       "id",
+       "product_id",
+       "quantity",
+       "effective_at",
+       "created_at",
+       "addons"
+      ],
+      "properties": {
+       "addons": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/ScheduledAddonResponse"
+        }
+       },
+       "created_at": {
+        "type": "string",
+        "format": "date-time"
+       },
+       "effective_at": {
+        "type": "string",
+        "format": "date-time"
+       },
+       "id": {
+        "type": "string"
+       },
+       "product_description": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "product_id": {
+        "type": "string"
+       },
+       "product_name": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "quantity": {
+        "type": "integer",
+        "format": "int32"
+       }
+      }
+     },
+     "SubscriptionStatus": {
+      "type": "string",
+      "enum": [
+       "pending",
+       "active",
+       "on_hold",
+       "paused",
+       "cancelled",
+       "failed",
+       "expired",
+       "past_due"
+      ]
+     },
+     "CountryCodeAlpha2": {
+      "type": "string",
+      "enum": [
+       "AF",
+       "AX",
+       "AL",
+       "DZ",
+       "AS",
+       "AD",
+       "AO",
+       "AI",
+       "AQ",
+       "AG",
+       "AR",
+       "AM",
+       "AW",
+       "AU",
+       "AT",
+       "AZ",
+       "BS",
+       "BH",
+       "BD",
+       "BB",
+       "BY",
+       "BE",
+       "BZ",
+       "BJ",
+       "BM",
+       "BT",
+       "BO",
+       "BQ",
+       "BA",
+       "BW",
+       "BV",
+       "BR",
+       "IO",
+       "BN",
+       "BG",
+       "BF",
+       "BI",
+       "KH",
+       "CM",
+       "CA",
+       "CV",
+       "KY",
+       "CF",
+       "TD",
+       "CL",
+       "CN",
+       "CX",
+       "CC",
+       "CO",
+       "KM",
+       "CG",
+       "CD",
+       "CK",
+       "CR",
+       "CI",
+       "HR",
+       "CU",
+       "CW",
+       "CY",
+       "CZ",
+       "DK",
+       "DJ",
+       "DM",
+       "DO",
+       "EC",
+       "EG",
+       "SV",
+       "GQ",
+       "ER",
+       "EE",
+       "ET",
+       "FK",
+       "FO",
+       "FJ",
+       "FI",
+       "FR",
+       "GF",
+       "PF",
+       "TF",
+       "GA",
+       "GM",
+       "GE",
+       "DE",
+       "GH",
+       "GI",
+       "GR",
+       "GL",
+       "GD",
+       "GP",
+       "GU",
+       "GT",
+       "GG",
+       "GN",
+       "GW",
+       "GY",
+       "HT",
+       "HM",
+       "VA",
+       "HN",
+       "HK",
+       "HU",
+       "IS",
+       "IN",
+       "ID",
+       "IR",
+       "IQ",
+       "IE",
+       "IM",
+       "IL",
+       "IT",
+       "JM",
+       "JP",
+       "JE",
+       "JO",
+       "KZ",
+       "KE",
+       "KI",
+       "KP",
+       "KR",
+       "KW",
+       "KG",
+       "LA",
+       "LV",
+       "LB",
+       "LS",
+       "LR",
+       "LY",
+       "LI",
+       "LT",
+       "LU",
+       "MO",
+       "MK",
+       "MG",
+       "MW",
+       "MY",
+       "MV",
+       "ML",
+       "MT",
+       "MH",
+       "MQ",
+       "MR",
+       "MU",
+       "YT",
+       "MX",
+       "FM",
+       "MD",
+       "MC",
+       "MN",
+       "ME",
+       "MS",
+       "MA",
+       "MZ",
+       "MM",
+       "NA",
+       "NR",
+       "NP",
+       "NL",
+       "NC",
+       "NZ",
+       "NI",
+       "NE",
+       "NG",
+       "NU",
+       "NF",
+       "MP",
+       "NO",
+       "OM",
+       "PK",
+       "PW",
+       "PS",
+       "PA",
+       "PG",
+       "PY",
+       "PE",
+       "PH",
+       "PN",
+       "PL",
+       "PT",
+       "PR",
+       "QA",
+       "RE",
+       "RO",
+       "RU",
+       "RW",
+       "BL",
+       "SH",
+       "KN",
+       "LC",
+       "MF",
+       "PM",
+       "VC",
+       "WS",
+       "SM",
+       "ST",
+       "SA",
+       "SN",
+       "RS",
+       "SC",
+       "SL",
+       "SG",
+       "SX",
+       "SK",
+       "SI",
+       "SB",
+       "SO",
+       "ZA",
+       "GS",
+       "SS",
+       "ES",
+       "LK",
+       "SD",
+       "SR",
+       "SJ",
+       "SZ",
+       "SE",
+       "CH",
+       "SY",
+       "TW",
+       "TJ",
+       "TZ",
+       "TH",
+       "TL",
+       "TG",
+       "TK",
+       "TO",
+       "TT",
+       "TN",
+       "TR",
+       "TM",
+       "TC",
+       "TV",
+       "UG",
+       "UA",
+       "AE",
+       "GB",
+       "UM",
+       "US",
+       "UY",
+       "UZ",
+       "VU",
+       "VE",
+       "VN",
+       "VG",
+       "VI",
+       "WF",
+       "EH",
+       "YE",
+       "ZM",
+       "ZW"
+      ]
+     },
+     "SubscriptionCancelActorType": {
+      "type": "string",
+      "enum": [
+       "customer",
+       "merchant_user",
+       "api_key",
+       "dodo_team"
+      ]
+     },
+     "CbbOverageBehavior": {
+      "type": "string",
+      "enum": [
+       "forgive_at_reset",
+       "invoice_at_billing",
+       "carry_deficit",
+       "carry_deficit_auto_repay"
+      ]
+     },
+     "DiscountType": {
+      "type": "string",
+      "enum": [
+       "flat",
+       "percentage"
+      ]
+     },
+     "ScheduledAddonResponse": {
+      "type": "object",
+      "required": [
+       "addon_id",
+       "name",
+       "quantity"
+      ],
+      "properties": {
+       "addon_id": {
+        "type": "string"
+       },
+       "name": {
+        "type": "string"
+       },
+       "quantity": {
+        "type": "integer",
+        "format": "int32"
+       }
+      }
+     }
+    }
+   }
+  },
+  {
+   "file": "subscriptions/get-subscriptions-1",
+   "openapi": "3.1.0",
+   "info": {
+    "title": "public",
+    "version": "1.120.26",
+    "license": {
+     "name": "Apache 2.0",
+     "url": "https://www.apache.org/licenses/LICENSE-2.0"
+    }
+   },
+   "servers": [
+    {
+     "url": "https://test.dodopayments.com/"
+    },
+    {
+     "url": "https://live.dodopayments.com/"
+    }
+   ],
+   "security": [],
+   "paths": {
+    "/subscriptions": {
+     "get": {
+      "operationId": "list_subscriptions_handler",
+      "parameters": [
+       {
+        "name": "created_at_gte",
+        "in": "query",
+        "required": false,
+        "schema": {
+         "type": "string",
+         "format": "date-time"
+        },
+        "style": "form"
+       },
+       {
+        "name": "created_at_lte",
+        "in": "query",
+        "required": false,
+        "schema": {
+         "type": "string",
+         "format": "date-time"
+        },
+        "style": "form"
+       },
+       {
+        "name": "page_size",
+        "in": "query",
+        "required": false,
+        "schema": {
+         "type": "integer",
+         "format": "int32",
+         "minimum": 0
+        },
+        "style": "form"
+       },
+       {
+        "name": "page_number",
+        "in": "query",
+        "required": false,
+        "schema": {
+         "type": "integer",
+         "format": "int32",
+         "minimum": 0
+        },
+        "style": "form"
+       },
+       {
+        "name": "customer_id",
+        "in": "query",
+        "required": false,
+        "schema": {
+         "type": "string"
+        },
+        "style": "form"
+       },
+       {
+        "name": "status",
+        "in": "query",
+        "required": false,
+        "schema": {
+         "type": "string",
+         "enum": [
+          "pending",
+          "active",
+          "on_hold",
+          "paused",
+          "cancelled",
+          "failed",
+          "expired",
+          "past_due"
+         ]
+        },
+        "style": "form"
+       },
+       {
+        "name": "brand_id",
+        "in": "query",
+        "required": false,
+        "schema": {
+         "type": "string"
+        },
+        "style": "form"
+       },
+       {
+        "name": "product_id",
+        "in": "query",
+        "required": false,
+        "schema": {
+         "type": "string"
+        },
+        "style": "form"
+       },
+       {
+        "name": "cancel_at_next_billing_date",
+        "in": "query",
+        "required": false,
+        "schema": {
+         "type": "boolean"
+        },
+        "style": "form"
+       },
+       {
+        "name": "locale",
+        "in": "query",
+        "required": false,
+        "schema": {
+         "type": "string"
+        },
+        "style": "form"
+       }
+      ],
+      "responses": {
+       "200": {
+        "content": {
+         "application/json": {
+          "schema": {
+           "$ref": "#/components/schemas/GetSubscriptionsListResponse"
+          }
+         }
+        }
+       },
+       "500": {}
+      },
+      "security": [
+       {
+        "API_KEY": []
+       }
+      ]
+     }
+    }
+   },
+   "components": {
+    "securitySchemes": {
+     "API_KEY": {
+      "type": "http",
+      "scheme": "bearer"
+     }
+    },
+    "schemas": {
+     "GetSubscriptionsListResponse": {
+      "type": "object",
+      "required": [
+       "items"
+      ],
+      "properties": {
+       "items": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/SubscriptionListResponseItem"
+        }
+       }
+      }
+     },
+     "SubscriptionListResponseItem": {
+      "type": "object",
+      "required": [
+       "subscription_id",
+       "recurring_pre_tax_amount",
+       "tax_inclusive",
+       "currency",
+       "status",
+       "created_at",
+       "product_id",
+       "quantity",
+       "trial_period_days",
+       "subscription_period_interval",
+       "payment_frequency_interval",
+       "subscription_period_count",
+       "payment_frequency_count",
+       "next_billing_date",
+       "previous_billing_date",
+       "customer",
+       "metadata",
+       "discounts",
+       "cancel_at_next_billing_date",
+       "billing",
+       "on_demand",
+       "has_payment_method"
+      ],
+      "properties": {
+       "billing": {
+        "$ref": "#/components/schemas/BillingAddress"
+       },
+       "cancel_at_next_billing_date": {
+        "type": "boolean"
+       },
+       "cancelled_at": {
+        "type": [
+         "string",
+         "null"
+        ],
+        "format": "date-time"
+       },
+       "cancelled_by": {
+        "oneOf": [
+         {
+          "type": "null"
+         },
+         {
+          "$ref": "#/components/schemas/SubscriptionCancelledBy"
+         }
+        ]
+       },
+       "created_at": {
+        "type": "string",
+        "format": "date-time"
+       },
+       "currency": {
+        "$ref": "#/components/schemas/Currency"
+       },
+       "customer": {
+        "$ref": "#/components/schemas/CustomerLimitedDetailsResponse"
+       },
+       "customer_business_name": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "discount_cycles_remaining": {
+        "type": [
+         "integer",
+         "null"
+        ],
+        "format": "int32"
+       },
+       "discount_id": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "discounts": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/DiscountListItem"
+        }
+       },
+       "has_payment_method": {
+        "type": "boolean"
+       },
+       "metadata": {
+        "$ref": "#/components/schemas/Metadata"
+       },
+       "next_billing_date": {
+        "type": "string",
+        "format": "date-time"
+       },
+       "on_demand": {
+        "type": "boolean"
+       },
+       "paused_at": {
+        "type": [
+         "string",
+         "null"
+        ],
+        "format": "date-time"
+       },
+       "payment_frequency_count": {
+        "type": "integer",
+        "format": "int32"
+       },
+       "payment_frequency_interval": {
+        "$ref": "#/components/schemas/TimeInterval"
+       },
+       "payment_method_id": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "previous_billing_date": {
+        "type": "string",
+        "format": "date-time"
+       },
+       "product_id": {
+        "type": "string"
+       },
+       "product_name": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "quantity": {
+        "type": "integer",
+        "format": "int32"
+       },
+       "recurring_pre_tax_amount": {
+        "type": "integer",
+        "format": "int32"
+       },
+       "scheduled_change": {
+        "oneOf": [
+         {
+          "type": "null"
+         },
+         {
+          "$ref": "#/components/schemas/ScheduledPlanChangeResponse"
+         }
+        ]
+       },
+       "status": {
+        "$ref": "#/components/schemas/SubscriptionStatus"
+       },
+       "subscription_id": {
+        "type": "string"
+       },
+       "subscription_period_count": {
+        "type": "integer",
+        "format": "int32"
+       },
+       "subscription_period_interval": {
+        "$ref": "#/components/schemas/TimeInterval"
+       },
+       "tax_id": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "tax_inclusive": {
+        "type": "boolean"
+       },
+       "trial_amount": {
+        "type": [
+         "integer",
+         "null"
+        ],
+        "format": "int32"
+       },
+       "trial_period_days": {
+        "type": "integer",
+        "format": "int32"
+       }
+      }
+     },
+     "BillingAddress": {
+      "type": "object",
+      "required": [
+       "country"
+      ],
+      "properties": {
+       "city": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "country": {
+        "$ref": "#/components/schemas/CountryCodeAlpha2"
+       },
+       "state": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "street": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "zipcode": {
+        "type": [
+         "string",
+         "null"
+        ]
+       }
+      }
+     },
+     "SubscriptionCancelledBy": {
+      "type": "object",
+      "required": [
+       "actor_type"
+      ],
+      "properties": {
+       "actor_type": {
+        "$ref": "#/components/schemas/SubscriptionCancelActorType"
+       },
+       "email": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "name": {
+        "type": [
+         "string",
+         "null"
+        ]
+       }
+      }
+     },
+     "Currency": {
+      "type": "string",
+      "enum": [
+       "AED",
+       "ALL",
+       "AMD",
+       "ANG",
+       "AOA",
+       "ARS",
+       "AUD",
+       "AWG",
+       "AZN",
+       "BAM",
+       "BBD",
+       "BDT",
+       "BGN",
+       "BHD",
+       "BIF",
+       "BMD",
+       "BND",
+       "BOB",
+       "BRL",
+       "BSD",
+       "BWP",
+       "BYN",
+       "BZD",
+       "CAD",
+       "CHF",
+       "CLP",
+       "CNY",
+       "COP",
+       "CRC",
+       "CUP",
+       "CVE",
+       "CZK",
+       "DJF",
+       "DKK",
+       "DOP",
+       "DZD",
+       "EGP",
+       "ETB",
+       "EUR",
+       "FJD",
+       "FKP",
+       "GBP",
+       "GEL",
+       "GHS",
+       "GIP",
+       "GMD",
+       "GNF",
+       "GTQ",
+       "GYD",
+       "HKD",
+       "HNL",
+       "HRK",
+       "HTG",
+       "HUF",
+       "IDR",
+       "ILS",
+       "INR",
+       "IQD",
+       "JMD",
+       "JOD",
+       "JPY",
+       "KES",
+       "KGS",
+       "KHR",
+       "KMF",
+       "KRW",
+       "KWD",
+       "KYD",
+       "KZT",
+       "LAK",
+       "LBP",
+       "LKR",
+       "LRD",
+       "LSL",
+       "LYD",
+       "MAD",
+       "MDL",
+       "MGA",
+       "MKD",
+       "MMK",
+       "MNT",
+       "MOP",
+       "MRU",
+       "MUR",
+       "MVR",
+       "MWK",
+       "MXN",
+       "MYR",
+       "MZN",
+       "NAD",
+       "NGN",
+       "NIO",
+       "NOK",
+       "NPR",
+       "NZD",
+       "OMR",
+       "PAB",
+       "PEN",
+       "PGK",
+       "PHP",
+       "PKR",
+       "PLN",
+       "PYG",
+       "QAR",
+       "RON",
+       "RSD",
+       "RUB",
+       "RWF",
+       "SAR",
+       "SBD",
+       "SCR",
+       "SEK",
+       "SGD",
+       "SHP",
+       "SLE",
+       "SLL",
+       "SOS",
+       "SRD",
+       "SSP",
+       "STN",
+       "SVC",
+       "SZL",
+       "THB",
+       "TND",
+       "TOP",
+       "TRY",
+       "TTD",
+       "TWD",
+       "TZS",
+       "UAH",
+       "UGX",
+       "USD",
+       "UYU",
+       "UZS",
+       "VES",
+       "VND",
+       "VUV",
+       "WST",
+       "XAF",
+       "XCD",
+       "XOF",
+       "XPF",
+       "YER",
+       "ZAR",
+       "ZMW"
+      ]
+     },
+     "CustomerLimitedDetailsResponse": {
+      "type": "object",
+      "required": [
+       "customer_id",
+       "name",
+       "email"
+      ],
+      "properties": {
+       "customer_id": {
+        "type": "string"
+       },
+       "email": {
+        "type": "string"
+       },
+       "metadata": {
+        "$ref": "#/components/schemas/Metadata"
+       },
+       "name": {
+        "type": "string"
+       },
+       "phone_number": {
+        "type": [
+         "string",
+         "null"
+        ]
+       }
+      }
+     },
+     "DiscountListItem": {
+      "type": "object",
+      "required": [
+       "discount_id"
+      ],
+      "properties": {
+       "discount_cycles_remaining": {
+        "type": [
+         "integer",
+         "null"
+        ],
+        "format": "int32"
+       },
+       "discount_id": {
+        "type": "string"
+       }
+      }
+     },
+     "Metadata": {
+      "type": "object",
+      "title": "Metadata",
+      "additionalProperties": {
+       "oneOf": [
+        {
+         "type": "string",
+         "title": "String"
+        },
+        {
+         "type": "integer",
+         "title": "Integer",
+         "format": "int64"
+        },
+        {
+         "type": "number",
+         "title": "Number",
+         "format": "double"
+        },
+        {
+         "type": "boolean",
+         "title": "Boolean"
+        }
+       ],
+       "title": "Metadata Value"
+      }
+     },
+     "TimeInterval": {
+      "type": "string",
+      "enum": [
+       "Day",
+       "Week",
+       "Month",
+       "Year"
+      ]
+     },
+     "ScheduledPlanChangeResponse": {
+      "type": "object",
+      "required": [
+       "id",
+       "product_id",
+       "quantity",
+       "effective_at",
+       "created_at",
+       "addons"
+      ],
+      "properties": {
+       "addons": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/ScheduledAddonResponse"
+        }
+       },
+       "created_at": {
+        "type": "string",
+        "format": "date-time"
+       },
+       "effective_at": {
+        "type": "string",
+        "format": "date-time"
+       },
+       "id": {
+        "type": "string"
+       },
+       "product_description": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "product_id": {
+        "type": "string"
+       },
+       "product_name": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "quantity": {
+        "type": "integer",
+        "format": "int32"
+       }
+      }
+     },
+     "SubscriptionStatus": {
+      "type": "string",
+      "enum": [
+       "pending",
+       "active",
+       "on_hold",
+       "paused",
+       "cancelled",
+       "failed",
+       "expired",
+       "past_due"
+      ]
+     },
+     "CountryCodeAlpha2": {
+      "type": "string",
+      "enum": [
+       "AF",
+       "AX",
+       "AL",
+       "DZ",
+       "AS",
+       "AD",
+       "AO",
+       "AI",
+       "AQ",
+       "AG",
+       "AR",
+       "AM",
+       "AW",
+       "AU",
+       "AT",
+       "AZ",
+       "BS",
+       "BH",
+       "BD",
+       "BB",
+       "BY",
+       "BE",
+       "BZ",
+       "BJ",
+       "BM",
+       "BT",
+       "BO",
+       "BQ",
+       "BA",
+       "BW",
+       "BV",
+       "BR",
+       "IO",
+       "BN",
+       "BG",
+       "BF",
+       "BI",
+       "KH",
+       "CM",
+       "CA",
+       "CV",
+       "KY",
+       "CF",
+       "TD",
+       "CL",
+       "CN",
+       "CX",
+       "CC",
+       "CO",
+       "KM",
+       "CG",
+       "CD",
+       "CK",
+       "CR",
+       "CI",
+       "HR",
+       "CU",
+       "CW",
+       "CY",
+       "CZ",
+       "DK",
+       "DJ",
+       "DM",
+       "DO",
+       "EC",
+       "EG",
+       "SV",
+       "GQ",
+       "ER",
+       "EE",
+       "ET",
+       "FK",
+       "FO",
+       "FJ",
+       "FI",
+       "FR",
+       "GF",
+       "PF",
+       "TF",
+       "GA",
+       "GM",
+       "GE",
+       "DE",
+       "GH",
+       "GI",
+       "GR",
+       "GL",
+       "GD",
+       "GP",
+       "GU",
+       "GT",
+       "GG",
+       "GN",
+       "GW",
+       "GY",
+       "HT",
+       "HM",
+       "VA",
+       "HN",
+       "HK",
+       "HU",
+       "IS",
+       "IN",
+       "ID",
+       "IR",
+       "IQ",
+       "IE",
+       "IM",
+       "IL",
+       "IT",
+       "JM",
+       "JP",
+       "JE",
+       "JO",
+       "KZ",
+       "KE",
+       "KI",
+       "KP",
+       "KR",
+       "KW",
+       "KG",
+       "LA",
+       "LV",
+       "LB",
+       "LS",
+       "LR",
+       "LY",
+       "LI",
+       "LT",
+       "LU",
+       "MO",
+       "MK",
+       "MG",
+       "MW",
+       "MY",
+       "MV",
+       "ML",
+       "MT",
+       "MH",
+       "MQ",
+       "MR",
+       "MU",
+       "YT",
+       "MX",
+       "FM",
+       "MD",
+       "MC",
+       "MN",
+       "ME",
+       "MS",
+       "MA",
+       "MZ",
+       "MM",
+       "NA",
+       "NR",
+       "NP",
+       "NL",
+       "NC",
+       "NZ",
+       "NI",
+       "NE",
+       "NG",
+       "NU",
+       "NF",
+       "MP",
+       "NO",
+       "OM",
+       "PK",
+       "PW",
+       "PS",
+       "PA",
+       "PG",
+       "PY",
+       "PE",
+       "PH",
+       "PN",
+       "PL",
+       "PT",
+       "PR",
+       "QA",
+       "RE",
+       "RO",
+       "RU",
+       "RW",
+       "BL",
+       "SH",
+       "KN",
+       "LC",
+       "MF",
+       "PM",
+       "VC",
+       "WS",
+       "SM",
+       "ST",
+       "SA",
+       "SN",
+       "RS",
+       "SC",
+       "SL",
+       "SG",
+       "SX",
+       "SK",
+       "SI",
+       "SB",
+       "SO",
+       "ZA",
+       "GS",
+       "SS",
+       "ES",
+       "LK",
+       "SD",
+       "SR",
+       "SJ",
+       "SZ",
+       "SE",
+       "CH",
+       "SY",
+       "TW",
+       "TJ",
+       "TZ",
+       "TH",
+       "TL",
+       "TG",
+       "TK",
+       "TO",
+       "TT",
+       "TN",
+       "TR",
+       "TM",
+       "TC",
+       "TV",
+       "UG",
+       "UA",
+       "AE",
+       "GB",
+       "UM",
+       "US",
+       "UY",
+       "UZ",
+       "VU",
+       "VE",
+       "VN",
+       "VG",
+       "VI",
+       "WF",
+       "EH",
+       "YE",
+       "ZM",
+       "ZW"
+      ]
+     },
+     "SubscriptionCancelActorType": {
+      "type": "string",
+      "enum": [
+       "customer",
+       "merchant_user",
+       "api_key",
+       "dodo_team"
+      ]
+     },
+     "ScheduledAddonResponse": {
+      "type": "object",
+      "required": [
+       "addon_id",
+       "name",
+       "quantity"
+      ],
+      "properties": {
+       "addon_id": {
+        "type": "string"
+       },
+       "name": {
+        "type": "string"
+       },
+       "quantity": {
+        "type": "integer",
+        "format": "int32"
+       }
+      }
+     }
+    }
+   }
+  },
+  {
+   "file": "refunds/get-refunds",
+   "openapi": "3.1.0",
+   "info": {
+    "title": "public",
+    "version": "1.120.26",
+    "license": {
+     "name": "Apache 2.0",
+     "url": "https://www.apache.org/licenses/LICENSE-2.0"
+    }
+   },
+   "servers": [
+    {
+     "url": "https://test.dodopayments.com/"
+    },
+    {
+     "url": "https://live.dodopayments.com/"
+    }
+   ],
+   "security": [],
+   "paths": {
+    "/refunds": {
+     "get": {
+      "operationId": "list_refunds",
+      "parameters": [
+       {
+        "name": "created_at_gte",
+        "in": "query",
+        "required": false,
+        "schema": {
+         "type": "string",
+         "format": "date-time"
+        },
+        "style": "form"
+       },
+       {
+        "name": "created_at_lte",
+        "in": "query",
+        "required": false,
+        "schema": {
+         "type": "string",
+         "format": "date-time"
+        },
+        "style": "form"
+       },
+       {
+        "name": "page_size",
+        "in": "query",
+        "required": false,
+        "schema": {
+         "type": "integer",
+         "format": "int32",
+         "minimum": 0
+        },
+        "style": "form"
+       },
+       {
+        "name": "page_number",
+        "in": "query",
+        "required": false,
+        "schema": {
+         "type": "integer",
+         "format": "int32",
+         "minimum": 0
+        },
+        "style": "form"
+       },
+       {
+        "name": "status",
+        "in": "query",
+        "required": false,
+        "schema": {
+         "type": "string",
+         "enum": [
+          "succeeded",
+          "failed",
+          "pending",
+          "review"
+         ]
+        },
+        "style": "form"
+       },
+       {
+        "name": "subscription_id",
+        "in": "query",
+        "required": false,
+        "schema": {
+         "type": "string"
+        },
+        "style": "form"
+       },
+       {
+        "name": "customer_id",
+        "in": "query",
+        "required": false,
+        "schema": {
+         "type": "string"
+        },
+        "style": "form"
+       }
+      ],
+      "responses": {
+       "200": {
+        "content": {
+         "application/json": {
+          "schema": {
+           "$ref": "#/components/schemas/GetRefundsListResponse"
+          }
+         }
+        }
+       },
+       "500": {}
+      },
+      "security": [
+       {
+        "API_KEY": []
+       }
+      ]
+     }
+    }
+   },
+   "components": {
+    "securitySchemes": {
+     "API_KEY": {
+      "type": "http",
+      "scheme": "bearer"
+     }
+    },
+    "schemas": {
+     "GetRefundsListResponse": {
+      "type": "object",
+      "required": [
+       "items"
+      ],
+      "properties": {
+       "items": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/RefundListItem"
+        }
+       }
+      }
+     },
+     "RefundListItem": {
+      "type": "object",
+      "required": [
+       "refund_id",
+       "payment_id",
+       "business_id",
+       "status",
+       "created_at",
+       "is_partial"
+      ],
+      "properties": {
+       "amount": {
+        "type": [
+         "integer",
+         "null"
+        ],
+        "format": "int32"
+       },
+       "business_id": {
+        "type": "string"
+       },
+       "created_at": {
+        "type": "string",
+        "format": "date-time"
+       },
+       "currency": {
+        "oneOf": [
+         {
+          "type": "null"
+         },
+         {
+          "$ref": "#/components/schemas/Currency"
+         }
+        ]
+       },
+       "is_partial": {
+        "type": "boolean"
+       },
+       "network_reference": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "network_reference_type": {
+        "oneOf": [
+         {
+          "type": "null"
+         },
+         {
+          "$ref": "#/components/schemas/RefundNetworkReferenceType"
+         }
+        ]
+       },
+       "network_reference_updated_at": {
+        "type": [
+         "string",
+         "null"
+        ],
+        "format": "date-time"
+       },
+       "payment_id": {
+        "type": "string"
+       },
+       "reason": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "refund_id": {
+        "type": "string"
+       },
+       "status": {
+        "$ref": "#/components/schemas/RefundStatus"
+       }
+      }
+     },
+     "Currency": {
+      "type": "string",
+      "enum": [
+       "AED",
+       "ALL",
+       "AMD",
+       "ANG",
+       "AOA",
+       "ARS",
+       "AUD",
+       "AWG",
+       "AZN",
+       "BAM",
+       "BBD",
+       "BDT",
+       "BGN",
+       "BHD",
+       "BIF",
+       "BMD",
+       "BND",
+       "BOB",
+       "BRL",
+       "BSD",
+       "BWP",
+       "BYN",
+       "BZD",
+       "CAD",
+       "CHF",
+       "CLP",
+       "CNY",
+       "COP",
+       "CRC",
+       "CUP",
+       "CVE",
+       "CZK",
+       "DJF",
+       "DKK",
+       "DOP",
+       "DZD",
+       "EGP",
+       "ETB",
+       "EUR",
+       "FJD",
+       "FKP",
+       "GBP",
+       "GEL",
+       "GHS",
+       "GIP",
+       "GMD",
+       "GNF",
+       "GTQ",
+       "GYD",
+       "HKD",
+       "HNL",
+       "HRK",
+       "HTG",
+       "HUF",
+       "IDR",
+       "ILS",
+       "INR",
+       "IQD",
+       "JMD",
+       "JOD",
+       "JPY",
+       "KES",
+       "KGS",
+       "KHR",
+       "KMF",
+       "KRW",
+       "KWD",
+       "KYD",
+       "KZT",
+       "LAK",
+       "LBP",
+       "LKR",
+       "LRD",
+       "LSL",
+       "LYD",
+       "MAD",
+       "MDL",
+       "MGA",
+       "MKD",
+       "MMK",
+       "MNT",
+       "MOP",
+       "MRU",
+       "MUR",
+       "MVR",
+       "MWK",
+       "MXN",
+       "MYR",
+       "MZN",
+       "NAD",
+       "NGN",
+       "NIO",
+       "NOK",
+       "NPR",
+       "NZD",
+       "OMR",
+       "PAB",
+       "PEN",
+       "PGK",
+       "PHP",
+       "PKR",
+       "PLN",
+       "PYG",
+       "QAR",
+       "RON",
+       "RSD",
+       "RUB",
+       "RWF",
+       "SAR",
+       "SBD",
+       "SCR",
+       "SEK",
+       "SGD",
+       "SHP",
+       "SLE",
+       "SLL",
+       "SOS",
+       "SRD",
+       "SSP",
+       "STN",
+       "SVC",
+       "SZL",
+       "THB",
+       "TND",
+       "TOP",
+       "TRY",
+       "TTD",
+       "TWD",
+       "TZS",
+       "UAH",
+       "UGX",
+       "USD",
+       "UYU",
+       "UZS",
+       "VES",
+       "VND",
+       "VUV",
+       "WST",
+       "XAF",
+       "XCD",
+       "XOF",
+       "XPF",
+       "YER",
+       "ZAR",
+       "ZMW"
+      ]
+     },
+     "RefundNetworkReferenceType": {
+      "type": "string",
+      "enum": [
+       "acquirer_reference_number",
+       "system_trace_audit_number",
+       "retrieval_reference_number",
+       "other"
+      ]
+     },
+     "RefundStatus": {
+      "type": "string",
+      "enum": [
+       "succeeded",
+       "failed",
+       "pending",
+       "review"
+      ]
+     }
+    }
+   }
+  },
+  {
+   "file": "refunds/get-refunds-1",
+   "openapi": "3.1.0",
+   "info": {
+    "title": "public",
+    "version": "1.120.26",
+    "license": {
+     "name": "Apache 2.0",
+     "url": "https://www.apache.org/licenses/LICENSE-2.0"
+    }
+   },
+   "servers": [
+    {
+     "url": "https://test.dodopayments.com/"
+    },
+    {
+     "url": "https://live.dodopayments.com/"
+    }
+   ],
+   "security": [],
+   "paths": {
+    "/refunds/{refund_id}": {
+     "get": {
+      "operationId": "get_refund_handler",
+      "parameters": [
+       {
+        "name": "refund_id",
+        "in": "path",
+        "required": true,
+        "schema": {
+         "type": "string"
+        }
+       }
+      ],
+      "responses": {
+       "200": {
+        "content": {
+         "application/json": {
+          "schema": {
+           "$ref": "#/components/schemas/RefundResponse"
+          }
+         }
+        }
+       },
+       "500": {}
+      },
+      "security": [
+       {
+        "API_KEY": []
+       }
+      ]
+     }
+    }
+   },
+   "components": {
+    "securitySchemes": {
+     "API_KEY": {
+      "type": "http",
+      "scheme": "bearer"
+     }
+    },
+    "schemas": {
+     "RefundResponse": {
+      "type": "object",
+      "required": [
+       "refund_id",
+       "payment_id",
+       "business_id",
+       "status",
+       "created_at",
+       "is_partial",
+       "metadata",
+       "customer",
+       "brand_id"
+      ],
+      "properties": {
+       "amount": {
+        "type": [
+         "integer",
+         "null"
+        ],
+        "format": "int32"
+       },
+       "brand_id": {
+        "type": "string"
+       },
+       "business_id": {
+        "type": "string"
+       },
+       "created_at": {
+        "type": "string",
+        "format": "date-time"
+       },
+       "currency": {
+        "oneOf": [
+         {
+          "type": "null"
+         },
+         {
+          "$ref": "#/components/schemas/Currency"
+         }
+        ]
+       },
+       "customer": {
+        "$ref": "#/components/schemas/CustomerLimitedDetailsResponse"
+       },
+       "is_partial": {
+        "type": "boolean"
+       },
+       "metadata": {
+        "$ref": "#/components/schemas/Metadata"
+       },
+       "network_reference": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "network_reference_type": {
+        "oneOf": [
+         {
+          "type": "null"
+         },
+         {
+          "$ref": "#/components/schemas/RefundNetworkReferenceType"
+         }
+        ]
+       },
+       "network_reference_updated_at": {
+        "type": [
+         "string",
+         "null"
+        ],
+        "format": "date-time"
+       },
+       "payment_id": {
+        "type": "string"
+       },
+       "reason": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "refund_id": {
+        "type": "string"
+       },
+       "status": {
+        "$ref": "#/components/schemas/RefundStatus"
+       }
+      }
+     },
+     "Currency": {
+      "type": "string",
+      "enum": [
+       "AED",
+       "ALL",
+       "AMD",
+       "ANG",
+       "AOA",
+       "ARS",
+       "AUD",
+       "AWG",
+       "AZN",
+       "BAM",
+       "BBD",
+       "BDT",
+       "BGN",
+       "BHD",
+       "BIF",
+       "BMD",
+       "BND",
+       "BOB",
+       "BRL",
+       "BSD",
+       "BWP",
+       "BYN",
+       "BZD",
+       "CAD",
+       "CHF",
+       "CLP",
+       "CNY",
+       "COP",
+       "CRC",
+       "CUP",
+       "CVE",
+       "CZK",
+       "DJF",
+       "DKK",
+       "DOP",
+       "DZD",
+       "EGP",
+       "ETB",
+       "EUR",
+       "FJD",
+       "FKP",
+       "GBP",
+       "GEL",
+       "GHS",
+       "GIP",
+       "GMD",
+       "GNF",
+       "GTQ",
+       "GYD",
+       "HKD",
+       "HNL",
+       "HRK",
+       "HTG",
+       "HUF",
+       "IDR",
+       "ILS",
+       "INR",
+       "IQD",
+       "JMD",
+       "JOD",
+       "JPY",
+       "KES",
+       "KGS",
+       "KHR",
+       "KMF",
+       "KRW",
+       "KWD",
+       "KYD",
+       "KZT",
+       "LAK",
+       "LBP",
+       "LKR",
+       "LRD",
+       "LSL",
+       "LYD",
+       "MAD",
+       "MDL",
+       "MGA",
+       "MKD",
+       "MMK",
+       "MNT",
+       "MOP",
+       "MRU",
+       "MUR",
+       "MVR",
+       "MWK",
+       "MXN",
+       "MYR",
+       "MZN",
+       "NAD",
+       "NGN",
+       "NIO",
+       "NOK",
+       "NPR",
+       "NZD",
+       "OMR",
+       "PAB",
+       "PEN",
+       "PGK",
+       "PHP",
+       "PKR",
+       "PLN",
+       "PYG",
+       "QAR",
+       "RON",
+       "RSD",
+       "RUB",
+       "RWF",
+       "SAR",
+       "SBD",
+       "SCR",
+       "SEK",
+       "SGD",
+       "SHP",
+       "SLE",
+       "SLL",
+       "SOS",
+       "SRD",
+       "SSP",
+       "STN",
+       "SVC",
+       "SZL",
+       "THB",
+       "TND",
+       "TOP",
+       "TRY",
+       "TTD",
+       "TWD",
+       "TZS",
+       "UAH",
+       "UGX",
+       "USD",
+       "UYU",
+       "UZS",
+       "VES",
+       "VND",
+       "VUV",
+       "WST",
+       "XAF",
+       "XCD",
+       "XOF",
+       "XPF",
+       "YER",
+       "ZAR",
+       "ZMW"
+      ]
+     },
+     "CustomerLimitedDetailsResponse": {
+      "type": "object",
+      "required": [
+       "customer_id",
+       "name",
+       "email"
+      ],
+      "properties": {
+       "customer_id": {
+        "type": "string"
+       },
+       "email": {
+        "type": "string"
+       },
+       "metadata": {
+        "$ref": "#/components/schemas/Metadata"
+       },
+       "name": {
+        "type": "string"
+       },
+       "phone_number": {
+        "type": [
+         "string",
+         "null"
+        ]
+       }
+      }
+     },
+     "Metadata": {
+      "type": "object",
+      "title": "Metadata",
+      "additionalProperties": {
+       "oneOf": [
+        {
+         "type": "string",
+         "title": "String"
+        },
+        {
+         "type": "integer",
+         "title": "Integer",
+         "format": "int64"
+        },
+        {
+         "type": "number",
+         "title": "Number",
+         "format": "double"
+        },
+        {
+         "type": "boolean",
+         "title": "Boolean"
+        }
+       ],
+       "title": "Metadata Value"
+      }
+     },
+     "RefundNetworkReferenceType": {
+      "type": "string",
+      "enum": [
+       "acquirer_reference_number",
+       "system_trace_audit_number",
+       "retrieval_reference_number",
+       "other"
+      ]
+     },
+     "RefundStatus": {
+      "type": "string",
+      "enum": [
+       "succeeded",
+       "failed",
+       "pending",
+       "review"
+      ]
+     }
+    }
+   }
+  },
+  {
+   "file": "customers/get-customers-1",
+   "openapi": "3.1.0",
+   "info": {
+    "title": "public",
+    "version": "1.120.26",
+    "license": {
+     "name": "Apache 2.0",
+     "url": "https://www.apache.org/licenses/LICENSE-2.0"
+    }
+   },
+   "servers": [
+    {
+     "url": "https://test.dodopayments.com/"
+    },
+    {
+     "url": "https://live.dodopayments.com/"
+    }
+   ],
+   "security": [],
+   "paths": {
+    "/customers/{customer_id}": {
+     "get": {
+      "operationId": "get_customer_handler",
+      "parameters": [
+       {
+        "name": "customer_id",
+        "in": "path",
+        "required": true,
+        "schema": {
+         "type": "string"
+        }
+       }
+      ],
+      "responses": {
+       "200": {
+        "content": {
+         "application/json": {
+          "schema": {
+           "$ref": "#/components/schemas/CustomerResponse"
+          }
+         }
+        }
+       },
+       "500": {}
+      },
+      "security": [
+       {
+        "API_KEY": []
+       }
+      ]
+     }
+    }
+   },
+   "components": {
+    "securitySchemes": {
+     "API_KEY": {
+      "type": "http",
+      "scheme": "bearer"
+     }
+    },
+    "schemas": {
+     "CustomerResponse": {
+      "type": "object",
+      "required": [
+       "customer_id",
+       "business_id",
+       "name",
+       "email",
+       "created_at"
+      ],
+      "properties": {
+       "blocked_at": {
+        "type": [
+         "string",
+         "null"
+        ],
+        "format": "date-time"
+       },
+       "blocklist_entry_id": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "business_id": {
+        "type": "string"
+       },
+       "created_at": {
+        "type": "string",
+        "format": "date-time"
+       },
+       "customer_id": {
+        "type": "string"
+       },
+       "email": {
+        "type": "string"
+       },
+       "metadata": {
+        "$ref": "#/components/schemas/Metadata"
+       },
+       "name": {
+        "type": "string"
+       },
+       "phone_number": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "preferred_locale": {
+        "oneOf": [
+         {
+          "type": "null"
+         },
+         {
+          "$ref": "#/components/schemas/Locale"
+         }
+        ]
+       }
+      }
+     },
+     "Metadata": {
+      "type": "object",
+      "title": "Metadata",
+      "additionalProperties": {
+       "oneOf": [
+        {
+         "type": "string",
+         "title": "String"
+        },
+        {
+         "type": "integer",
+         "title": "Integer",
+         "format": "int64"
+        },
+        {
+         "type": "number",
+         "title": "Number",
+         "format": "double"
+        },
+        {
+         "type": "boolean",
+         "title": "Boolean"
+        }
+       ],
+       "title": "Metadata Value"
+      }
+     },
+     "Locale": {
+      "type": "string",
+      "enum": [
+       "ar",
+       "ca",
+       "zh",
+       "nl",
+       "en",
+       "fr",
+       "de",
+       "he",
+       "id",
+       "it",
+       "ja",
+       "ka",
+       "ko",
+       "ms",
+       "pl",
+       "pt",
+       "ro",
+       "ru",
+       "es",
+       "sv",
+       "th",
+       "tr"
+      ]
+     }
+    }
+   }
+  }
+ ]
+}

@@ -1,0 +1,20 @@
+[
+ {"name":"invoice-A","method":"GET","path":"/v2/invoicing/invoices/INV2-AAAA-BBBB-CCCC-DDDD","status":200,"body":{
+  "id":"INV2-AAAA-BBBB-CCCC-DDDD","status":"PARTIALLY_REFUNDED",
+  "detail":{"invoice_number":"AP-1001","invoice_date":"2026-10-01","currency_code":"USD","metadata":{"create_time":"2026-10-01T08:00:00Z","recipient_view_url":"https://www.sandbox.paypal.com/invoice/p/#INV2AAAABBBBCCCCDDDD"}},
+  "primary_recipients":[{"billing_info":{"email_address":"alex.payer@example.test"}}],
+  "amount":{"currency_code":"USD","value":"75.00"},
+  "payments":{"paid_amount":{"currency_code":"USD","value":"75.00"},"transactions":[{"payment_id":"5PM11111AA111111A","type":"PAYPAL","method":"PAYPAL","payment_date":"2026-10-02","amount":{"currency_code":"USD","value":"75.00"}}]},
+  "refunds":{"refund_amount":{"currency_code":"USD","value":"25.00"},"transactions":[{"refund_id":"2RF11111AA111111A","type":"PAYPAL","method":"PAYPAL","refund_date":"2026-10-06","amount":{"currency_code":"USD","value":"25.00"}}]}}},
+ {"name":"invoice-B","method":"GET","path":"/v2/invoicing/invoices/INV2-EEEE-FFFF-GGGG-HHHH","status":200,"body":{
+  "id":"INV2-EEEE-FFFF-GGGG-HHHH","status":"SENT",
+  "detail":{"invoice_number":"AP-1002","invoice_date":"2026-10-04","currency_code":"USD","metadata":{"create_time":"2026-10-04T08:00:00Z","recipient_view_url":"https://www.sandbox.paypal.com/invoice/p/#INV2EEEEFFFFGGGGHHHH"}},
+  "primary_recipients":[{"billing_info":{"email_address":"blair.payer@example.test"}}],
+  "amount":{"currency_code":"USD","value":"30.00"}}},
+ {"name":"invoice-list-page-1","method":"GET","path":"/v2/invoicing/invoices","query":{"page":"1","page_size":"100"},"status":200,"body":{
+  "total_items":2,"total_pages":1,"items":[
+   {"id":"INV2-AAAA-BBBB-CCCC-DDDD","status":"PARTIALLY_REFUNDED","detail":{"invoice_number":"AP-1001","invoice_date":"2026-10-01","currency_code":"USD","metadata":{"create_time":"2026-10-01T08:00:00Z","recipient_view_url":"https://www.sandbox.paypal.com/invoice/p/#INV2AAAABBBBCCCCDDDD"}},"primary_recipients":[{"billing_info":{"email_address":"alex.payer@example.test"}}],"amount":{"currency_code":"USD","value":"75.00"}},
+   {"id":"INV2-EEEE-FFFF-GGGG-HHHH","status":"SENT","detail":{"invoice_number":"AP-1002","invoice_date":"2026-10-04","currency_code":"USD","metadata":{"create_time":"2026-10-04T08:00:00Z"}},"primary_recipients":[{"billing_info":{"email_address":"blair.payer@example.test"}}],"amount":{"currency_code":"USD","value":"30.00"}}]}},
+ {"name":"invoice-list-connect-check","method":"GET","path":"/v2/invoicing/invoices","query":{"page":"1","page_size":"1"},"status":200,"body":{
+  "total_items":2,"total_pages":2,"items":[{"id":"INV2-AAAA-BBBB-CCCC-DDDD","status":"PARTIALLY_REFUNDED","detail":{"invoice_number":"AP-1001","currency_code":"USD"},"amount":{"currency_code":"USD","value":"75.00"}}]}}
+]

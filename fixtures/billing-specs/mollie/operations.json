@@ -1,0 +1,9 @@
+[
+ {"id":"payments.get","method":"GET","path":"/v2/payments/{paymentId}","query":[]},
+ {"id":"payments.list","method":"GET","path":"/v2/payments","query":["limit"]},
+ {"id":"payments.refunds","method":"GET","path":"/v2/payments/{paymentId}/refunds","query":["limit"]},
+ {"id":"customers.get","method":"GET","path":"/v2/customers/{customerId}","query":[]},
+ {"id":"customers.payments","method":"GET","path":"/v2/customers/{customerId}/payments","query":["limit"]},
+ {"id":"customers.subscriptions","method":"GET","path":"/v2/customers/{customerId}/subscriptions","query":["limit"]},
+ {"id":"customers.subscription","method":"GET","path":"/v2/customers/{customerId}/subscriptions/{subscriptionId}","query":[]}
+]

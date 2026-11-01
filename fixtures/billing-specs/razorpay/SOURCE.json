@@ -1,0 +1,63 @@
+{
+ "provider": "razorpay",
+ "sourceUrl": "https://razorpay.com/docs/api/payments/fetch-with-id/",
+ "repo": null,
+ "commit": null,
+ "commitDate": null,
+ "file": [
+  "https://razorpay.com/docs/api/payments/fetch-with-id/",
+  "https://razorpay.com/docs/api/payments/fetch-all-payments/",
+  "https://razorpay.com/docs/api/orders/fetch-with-id/",
+  "https://razorpay.com/docs/api/orders/fetch-payments/",
+  "https://razorpay.com/docs/api/refunds/fetch-multiple-refund-payment/",
+  "https://razorpay.com/docs/api/payments/invoices/fetch-with-id/",
+  "https://razorpay.com/docs/api/payments/subscriptions/fetch-subscription-id/",
+  "https://razorpay.com/docs/api/customers/fetch-with-id/"
+ ],
+ "upstream": {
+  "https://razorpay.com/docs/api/payments/fetch-with-id/": {
+   "url": "https://razorpay.com/docs/api/payments/fetch-with-id/",
+   "sha256": "177cb65eaa892008bb162e48a53056103a68695c9b6d638b33abdb691785152c",
+   "bytes": 1013906
+  },
+  "https://razorpay.com/docs/api/payments/fetch-all-payments/": {
+   "url": "https://razorpay.com/docs/api/payments/fetch-all-payments/",
+   "sha256": "114beb938703a025551be8a1f036a5f4afb2bb0eae220833fb4da65f29a8e25d",
+   "bytes": 774802
+  },
+  "https://razorpay.com/docs/api/orders/fetch-with-id/": {
+   "url": "https://razorpay.com/docs/api/orders/fetch-with-id/",
+   "sha256": "68bc5f2d3e0950fdb6c7f3cf56dc1baf82226f908da23c7b5a9a7e49e71a7736",
+   "bytes": 500038
+  },
+  "https://razorpay.com/docs/api/orders/fetch-payments/": {
+   "url": "https://razorpay.com/docs/api/orders/fetch-payments/",
+   "sha256": "6fe393f111c9dd7d628fdef7ea7ab2eee8c0f5da85efddd55d1fe7a316aa9f62",
+   "bytes": 625654
+  },
+  "https://razorpay.com/docs/api/refunds/fetch-multiple-refund-payment/": {
+   "url": "https://razorpay.com/docs/api/refunds/fetch-multiple-refund-payment/",
+   "sha256": "142a3aaa4458fd6f44ad255ac093a9058d2aa32511a24444129fec6f146b61e2",
+   "bytes": 590994
+  },
+  "https://razorpay.com/docs/api/payments/invoices/fetch-with-id/": {
+   "url": "https://razorpay.com/docs/api/payments/invoices/fetch-with-id/",
+   "sha256": "796cd3f4c449a727746e41827db7323c119b7b5894e3726fde0246e91cbd75bf",
+   "bytes": 751718
+  },
+  "https://razorpay.com/docs/api/payments/subscriptions/fetch-subscription-id/": {
+   "url": "https://razorpay.com/docs/api/payments/subscriptions/fetch-subscription-id/",
+   "sha256": "f7fb877aaaa56ac47f62a5b4f94c25c995b81618f0581d35813e9c9c214c40eb",
+   "bytes": 567776
+  },
+  "https://razorpay.com/docs/api/customers/fetch-with-id/": {
+   "url": "https://razorpay.com/docs/api/customers/fetch-with-id/",
+   "sha256": "311afaff1c3a32d00000ede7d1a69bb1571683915e2026594b5aff2c70df3ddd",
+   "bytes": 470689
+  }
+ },
+ "license": "docs (no spec license)",
+ "retrievedAt": "2026-11-01T13:56:18.701Z",
+ "confidence": "docs-derived",
+ "notes": "No official OpenAPI found. contract.json is hand-written from these docs pages."
+}

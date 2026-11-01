@@ -70,8 +70,9 @@
 .ap-dash-grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 
 /* Notifications slide-over */
-.ap-dash-overlay{position:fixed;inset:0;background:rgba(4,26,82,.35);backdrop-filter:blur(3px);z-index:40;animation:ap-dash-fade .25s ease both}
-.ap-dash-notifs{position:fixed;top:0;right:0;bottom:0;width:min(400px,94vw);background:#fff;z-index:41;display:flex;flex-direction:column;box-shadow:-18px 0 50px rgba(4,26,82,.25);animation:ap-dash-slide .38s cubic-bezier(.22,1,.36,1) both}
+/* Above the demo banner (z-index 60, DemoBanner.tsx), which otherwise covers the drawer's title and close button. */
+.ap-dash-overlay{position:fixed;inset:0;background:rgba(4,26,82,.35);backdrop-filter:blur(3px);z-index:61;animation:ap-dash-fade .25s ease both}
+.ap-dash-notifs{position:fixed;top:0;right:0;bottom:0;width:min(400px,94vw);background:#fff;z-index:62;display:flex;flex-direction:column;box-shadow:-18px 0 50px rgba(4,26,82,.25);animation:ap-dash-slide .38s cubic-bezier(.22,1,.36,1) both}
 .ap-dash-notifs-head{display:flex;align-items:center;justify-content:space-between;padding:18px 18px 12px}
 .ap-dash-notifs-head h2{margin:0;font-size:16px;font-weight:650}
 .ap-dash-notifs-head>div{display:flex;align-items:center;gap:10px}
@@ -215,3 +216,9 @@
 .ap-dash-top,.ap-dash-mobilenav{position:static}
 .ap-dash-side{position:static;height:auto;min-height:100%}
 }
+
+/* Revenue dashboard (/dashboard): on phones the grid's paging bar wraps onto two centred rows instead of running
+   past the grid's right edge. */
+@media(max-width:560px){.ap-revenue .ag-paging-panel{justify-content:center;height:auto;min-height:var(--ag-header-height,48px);padding:8px 6px}.ap-revenue .ag-paging-panel-content{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;flex-shrink:1;min-width:0;max-width:100%;gap:6px 12px}.ap-revenue :is(.ag-paging-page-size,.ag-paging-row-summary-panel,.ag-paging-page-summary-panel){margin:0}}
+/* Touch screens give the paging arrows a 44px-tall target (globals.css); centre the icon in it and widen the target. */
+@media(pointer:coarse){.ap-revenue .ag-paging-button{display:inline-flex;align-items:center;justify-content:center;min-width:40px}}

@@ -1,0 +1,21 @@
+{
+ "provider": "paddle",
+ "sourceUrl": "https://github.com/PaddleHQ/paddle-openapi",
+ "repo": "PaddleHQ/paddle-openapi",
+ "commit": "c8207382fa0fa660620a02a23a6a2806ae8894fb",
+ "commitDate": "2026-10-26T11:04:14Z",
+ "file": [
+  "v1/openapi.yaml"
+ ],
+ "upstream": {
+  "v1/openapi.yaml": {
+   "url": "https://raw.githubusercontent.com/PaddleHQ/paddle-openapi/c8207382fa0fa660620a02a23a6a2806ae8894fb/v1/openapi.yaml",
+   "sha256": "bbc0c72039c8235659bf536271952cde67be512f32a31e95873fccd49b9793ef",
+   "bytes": 7937575
+  }
+ },
+ "license": "Apache-2.0",
+ "retrievedAt": "2026-11-01T14:01:12.772Z",
+ "confidence": "official-spec",
+ "notes": "Sandbox API keys contain _sdbx (developer.paddle.com/sdks/sandbox)."
+}

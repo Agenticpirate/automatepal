@@ -70,7 +70,8 @@
 @keyframes vp-menuIn{from{opacity:0;transform:translate(-50%,-10px) scale(.97)}to{opacity:1;transform:translate(-50%,0) scale(1)}}
 .vp-sheet a{position:relative;color:var(--vp-nav-text);font-weight:500;font-size:15px;text-decoration:none;padding:12px 10px;border-radius:12px;opacity:0;animation:vp-linkIn .3s ease forwards}
 .vp-sheet a:hover{background:#EEF2FC}
-.vp-sheet a.vp-active::after{content:'';position:absolute;left:50%;bottom:6px;width:3px;height:3px;border-radius:50%;background:#041A52;transform:translateX(-50%);box-shadow:-5px 0 0 #041A52,5px 0 0 #041A52}
+/* In the stacked menu the current page is a tinted row; the pill nav's three dots floated mid-row here. */
+.vp-sheet a.vp-active{background:#EEF2FC;color:#041A52;font-weight:600}
 .vp-sheet .vp-sheet-signin{margin-top:8px;text-align:center;background:var(--vp-navy);color:#fff;border-radius:999px}
 @keyframes vp-linkIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 

@@ -1,0 +1,5208 @@
+{
+ "provider": "square",
+ "documents": [
+  {
+   "file": "api.json",
+   "openapi": "3.0.0",
+   "info": {
+    "title": "Square",
+    "version": "2.0",
+    "license": {
+     "name": "Apache 2.0",
+     "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+   },
+   "servers": [
+    {
+     "url": "https://connect.squareup.com",
+     "variables": {}
+    }
+   ],
+   "paths": {
+    "/v2/payments/{payment_id}": {
+     "get": {
+      "operationId": "GetPayment",
+      "security": [
+       {
+        "oauth2": [
+         "PAYMENTS_READ"
+        ]
+       }
+      ],
+      "parameters": [
+       {
+        "name": "payment_id",
+        "schema": {
+         "type": "string"
+        },
+        "in": "path",
+        "required": true
+       }
+      ],
+      "responses": {
+       "200": {
+        "content": {
+         "application/json": {
+          "schema": {
+           "$ref": "#/components/schemas/GetPaymentResponse"
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    "/v2/payments": {
+     "get": {
+      "operationId": "ListPayments",
+      "security": [
+       {
+        "oauth2": [
+         "PAYMENTS_READ"
+        ]
+       }
+      ],
+      "parameters": [
+       {
+        "name": "begin_time",
+        "schema": {
+         "type": "string"
+        },
+        "in": "query",
+        "required": false
+       },
+       {
+        "name": "end_time",
+        "schema": {
+         "type": "string"
+        },
+        "in": "query",
+        "required": false
+       },
+       {
+        "name": "sort_order",
+        "schema": {
+         "type": "string"
+        },
+        "in": "query",
+        "required": false
+       },
+       {
+        "name": "cursor",
+        "schema": {
+         "type": "string"
+        },
+        "in": "query",
+        "required": false
+       },
+       {
+        "name": "location_id",
+        "schema": {
+         "type": "string"
+        },
+        "in": "query",
+        "required": false
+       },
+       {
+        "name": "total",
+        "schema": {
+         "type": "integer",
+         "format": "int64"
+        },
+        "in": "query",
+        "required": false
+       },
+       {
+        "name": "last_4",
+        "schema": {
+         "type": "string"
+        },
+        "in": "query",
+        "required": false
+       },
+       {
+        "name": "card_brand",
+        "schema": {
+         "type": "string"
+        },
+        "in": "query",
+        "required": false
+       },
+       {
+        "name": "limit",
+        "schema": {
+         "type": "integer"
+        },
+        "in": "query",
+        "required": false
+       },
+       {
+        "name": "is_offline_payment",
+        "schema": {
+         "type": "boolean",
+         "default": false
+        },
+        "in": "query",
+        "required": false
+       },
+       {
+        "name": "offline_begin_time",
+        "schema": {
+         "type": "string"
+        },
+        "in": "query",
+        "required": false
+       },
+       {
+        "name": "offline_end_time",
+        "schema": {
+         "type": "string"
+        },
+        "in": "query",
+        "required": false
+       },
+       {
+        "name": "updated_at_begin_time",
+        "schema": {
+         "type": "string"
+        },
+        "in": "query",
+        "required": false
+       },
+       {
+        "name": "updated_at_end_time",
+        "schema": {
+         "type": "string"
+        },
+        "in": "query",
+        "required": false
+       },
+       {
+        "name": "sort_field",
+        "schema": {
+         "$ref": "#/components/schemas/ListPaymentsRequestSortField"
+        },
+        "in": "query",
+        "required": false
+       }
+      ],
+      "responses": {
+       "200": {
+        "content": {
+         "application/json": {
+          "schema": {
+           "$ref": "#/components/schemas/ListPaymentsResponse"
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    "/v2/orders/{order_id}": {
+     "get": {
+      "operationId": "RetrieveOrder",
+      "security": [
+       {
+        "oauth2": [
+         "ORDERS_READ"
+        ]
+       }
+      ],
+      "parameters": [
+       {
+        "name": "order_id",
+        "schema": {
+         "type": "string"
+        },
+        "in": "path",
+        "required": true
+       }
+      ],
+      "responses": {
+       "200": {
+        "content": {
+         "application/json": {
+          "schema": {
+           "$ref": "#/components/schemas/RetrieveOrderResponse"
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    "/v2/invoices/{invoice_id}": {
+     "get": {
+      "operationId": "GetInvoice",
+      "security": [
+       {
+        "oauth2": [
+         "INVOICES_READ"
+        ]
+       }
+      ],
+      "parameters": [
+       {
+        "name": "invoice_id",
+        "schema": {
+         "type": "string"
+        },
+        "in": "path",
+        "required": true
+       }
+      ],
+      "responses": {
+       "200": {
+        "content": {
+         "application/json": {
+          "schema": {
+           "$ref": "#/components/schemas/GetInvoiceResponse"
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    "/v2/refunds/{refund_id}": {
+     "get": {
+      "operationId": "GetPaymentRefund",
+      "security": [
+       {
+        "oauth2": [
+         "PAYMENTS_READ"
+        ]
+       }
+      ],
+      "parameters": [
+       {
+        "name": "refund_id",
+        "schema": {
+         "type": "string"
+        },
+        "in": "path",
+        "required": true
+       }
+      ],
+      "responses": {
+       "200": {
+        "content": {
+         "application/json": {
+          "schema": {
+           "$ref": "#/components/schemas/GetPaymentRefundResponse"
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    "/v2/subscriptions/{subscription_id}": {
+     "get": {
+      "operationId": "RetrieveSubscription",
+      "security": [
+       {
+        "oauth2": [
+         "SUBSCRIPTIONS_READ"
+        ]
+       }
+      ],
+      "parameters": [
+       {
+        "name": "subscription_id",
+        "schema": {
+         "type": "string"
+        },
+        "in": "path",
+        "required": true
+       },
+       {
+        "name": "include",
+        "schema": {
+         "type": "string"
+        },
+        "in": "query",
+        "required": false
+       }
+      ],
+      "responses": {
+       "200": {
+        "content": {
+         "application/json": {
+          "schema": {
+           "$ref": "#/components/schemas/RetrieveSubscriptionResponse"
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    "/v2/customers/{customer_id}": {
+     "get": {
+      "operationId": "RetrieveCustomer",
+      "security": [
+       {
+        "oauth2": [
+         "CUSTOMERS_READ"
+        ]
+       }
+      ],
+      "parameters": [
+       {
+        "name": "customer_id",
+        "schema": {
+         "type": "string"
+        },
+        "in": "path",
+        "required": true
+       }
+      ],
+      "responses": {
+       "200": {
+        "content": {
+         "application/json": {
+          "schema": {
+           "$ref": "#/components/schemas/RetrieveCustomerResponse"
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   },
+   "components": {
+    "securitySchemes": {
+     "oauth2": {
+      "type": "oauth2",
+      "flows": {
+       "authorizationCode": {
+        "authorizationUrl": "https://connect.squareup.com/oauth2/authorize",
+        "tokenUrl": "https://connect.squareup.com/oauth2/token",
+        "scopes": {
+         "ADDON_CONFIGURATIONS_READ": "__HTTP Method__: `GET`\n\nGrants write access for third-party Add-ons to read configurations of their Add-ons, for example, when calling `RetrieveConfiguration` endpoint.",
+         "ADDON_CONFIGURATIONS_WRITE": "__HTTP Method__: `POST`, `PUT`, `DELETE`\n\nGrants write access for third-party Add-ons to store configurations of their Add-ons, for example, when calling `CreateConfiguration` endpoint.",
+         "APPOINTMENTS_ALL_READ": "__HTTP Method__: `GET`, `POST`\n\nGrants read access to all of a seller's booking information, calendar, and business details.\nThis permission must be accompanied by the `APPOINTMENTS_READ` permission.",
+         "APPOINTMENTS_ALL_WRITE": "__HTTP Method__: `POST`, `PUT`, `DELETE`\n\nGrants write access to all booking details, including double-booking a seller.\nThis permission must be accompanied by the `APPOINTMENTS_WRITE` permission.",
+         "APPOINTMENTS_BUSINESS_SETTINGS_READ": "__HTTP Method__: `GET`\n\nGrants read access to booking business settings. For example, to call the\nListTeamMemberBookingProfiles endpoint.",
+         "APPOINTMENTS_READ": "__HTTP Method__: `GET`, `POST`\n\nGrants read access to booking information. For example, to call the\nRetrieveBooking endpoint.",
+         "APPOINTMENTS_WRITE": "__HTTP Method__: `POST`, `PUT`, `DELETE`\n\nGrants write access to booking information. For example, to call the CreateBooking endpoint.",
+         "BANK_ACCOUNTS_READ": "__HTTP Method__: `GET`\n\nGrants read access to bank account information associated with the targeted\nSquare account. For example, to call the Connect v1 ListBankAccounts endpoint.",
+         "CASH_DRAWER_READ": "__HTTP Method__: `GET`\n\nGrants read access to cash drawer shift information. For example, to call the\nListCashDrawerShifts endpoint.",
+         "CHANNELS_CREATE": "__HTTP Method__: `POST`\n\nGrants write access to create channels, for example, when calling the\n`CreateChannel` endpoint.",
+         "CHANNELS_READ": "__HTTP Method__: `GET`\n\nGrants read access to view channels, for example, when calling the\n`RetrieveChannel` endpoint.",
+         "CHANNELS_UPDATE": "__HTTP Method__: `PUT`\n\nGrants write access to update channels, for example, when calling the\n`UpdateChannel` endpoint.",
+         "CUSTOMERS_READ": "__HTTP Method__: `GET`\n\nGrants read access to customer information. For example, to call the\nListCustomers endpoint.",
+         "CUSTOMERS_WRITE": "__HTTP Method__: `POST`, `PUT`, `DELETE`\n\nGrants write access to customer information. For example, to create and update\ncustomer profiles.",
+         "DEVICES_READ": "__HTTP Method__: `GET`\n\nGrants read access to device information. For example, to\ncall the `GetDevice` and `ListDevices` endpoints.",
+         "DEVICE_CREDENTIAL_MANAGEMENT": "__HTTP Method__: `POST`, `GET`\n\nGrants read/write access to device credentials information. For example, to\ncall the CreateDeviceCode endpoint.",
+         "DISCOUNT_CODES_READ": "__HTTP Method__: `GET`\n\nGrants read access to Discount Codes API. For example, to call the `RetrieveDiscountCode` and `RetrieveRedemption` endpoints.",
+         "DISCOUNT_CODES_WRITE": "__HTTP Method__: `POST`\n\nGrants write access to Discount Codes API.",
+         "DISPUTES_READ": "__HTTP Method__: `GET`\n\nGrants read access to dispute information. For example, to call the RetrieveDispute\nendpoint.",
+         "DISPUTES_WRITE": "__HTTP Method__: `POST`, `PUT`, `DELETE`\n\nGrants write access to dispute information. For example, to call the SubmitEvidence\nendpoint.",
+         "EMPLOYEES_READ": "__HTTP Method__: `GET`\n\nGrants read access to employee profile information. For example, to call the\nConnect v1 Employees API.",
+         "EMPLOYEES_WRITE": "__HTTP Method__: `POST`, `PUT`, `DELETE`\n\nGrants write access to employee profile information. For example, to create\nand modify employee profiles.",
+         "GIFTCARDS_READ": "__HTTP Method__: `GET`, `POST`\n\nGrants read access to gift card information. For example, to call the RetrieveGiftCard\nendpoint.",
+         "GIFTCARDS_WRITE": "__HTTP Method__: `POST`, `PUT`, `DELETE`\n\nGrants write access to gift card information. For example, to call the CreateGiftCard\nendpoint.",
+         "INVENTORY_READ": "__HTTP Method__: `GET`\n\nGrants read access to inventory information. For example, to call the\nRetrieveInventoryCount endpoint.",
+         "INVENTORY_WRITE": "__HTTP Method__:  `POST`, `PUT`, `DELETE`\n\nGrants write access to inventory information. For example, to call the\nBatchChangeInventory endpoint.",
+         "INVOICES_READ": "__HTTP Method__: `GET`, `POST`\n\nGrants read access to invoice information. For example, to call the ListInvoices endpoint.",
+         "INVOICES_WRITE": "__HTTP Method__: `POST`, `PUT`, `DELETE`\n\nGrants write access to invoice information. For example, to call the CreateInvoice endpoint.",
+         "ITEMS_READ": "__HTTP Method__: `GET`\n\nGrants read access to product catalog information. For example, to obtain objects in a product catalog.",
+         "ITEMS_WRITE": "__HTTP Method__: `POST`, `PUT`, `DELETE`\n\nGrants write access to product catalog information. For example, to modify or\nadd to a product catalog.",
+         "LOYALTY_READ": "__HTTP Method__: `GET`\n\nGrants read access to loyalty information. For example, to call the\nListLoyaltyPrograms endpoint.",
+         "LOYALTY_WRITE": "__HTTP Method__: `POST`, `PUT`, `DELETE`\n\nGrants write access to loyalty information. For example, to call the\nCreateLoyaltyAccount endpoint.",
+         "MERCHANT_PROFILE_READ": "__HTTP Method__: `GET`\n\nGrants read access to business and location information. For example, to\nobtain a location ID for subsequent activity.",
+         "MERCHANT_PROFILE_WRITE": "__HTTP Method__: `POST`, `PUT`\n\nGrants write access to business and location information. For example, to create a new location or\nupdate the business hours at an existing location.",
+         "ONLINE_STORE_SITE_READ": "__HTTP Method__: `GET`, `POST`\n\nRead access to ECOM online store site details.",
+         "ONLINE_STORE_SNIPPETS_READ": "__HTTP Method__: `GET`, `POST`\n\nRead access to ECOM online store snippets on published websites.",
+         "ONLINE_STORE_SNIPPETS_WRITE": "__HTTP Method__: `POST`, `PUT`, `DELETE`\n\nWrite access to ECOM online store snippets on published websites.",
+         "ORDERS_READ": "__HTTP Method__: `GET`\n\nGrants read access to order information. For example, to call the\nBatchRetrieveOrders endpoint.",
+         "ORDERS_WRITE": "__HTTP Method__: `POST`, `PUT`, `DELETE`\n\nGrants write access to order information. For example, to call the\nCreateCheckout endpoint.",
+         "PAYMENTS_READ": "__HTTP Method__: `GET`\n\nGrants read access to transaction and refund information. For example, to call\nthe RetrieveTransaction endpoint.",
+         "PAYMENTS_WRITE": "__HTTP Method__: `POST`, `PUT`, `DELETE`\n\nGrants write access to transaction and refunds information. For example, to\nprocess payments with the Payments or Checkout API.",
+         "PAYMENTS_WRITE_ADDITIONAL_RECIPIENTS": "__HTTP Method__: `POST`, `PUT`, `DELETE`\n\nAllow third party applications to deduct a portion of each transaction amount.\n__Required__ to use multiparty transaction functionality with the Payments\nAPI.",
+         "PAYMENTS_WRITE_IN_PERSON": "__HTTP Method__: `POST`, `PUT`, `DELETE`\n\nGrants write access to payments and refunds information. For example, to\nprocess in-person payments.",
+         "PAYMENTS_WRITE_SHARED_ONFILE": "__HTTP Method__: `POST`, `PUT`, `DELETE`\n\nAllows the developer to process payments on behalf of a seller using a shared on file payment method.",
+         "PAYOUTS_READ": "__HTTP Method__: `GET`\n\nGrants read access to payouts and payout entries information. For example,\nto call the Connect v2 `ListPayouts` endpoint.",
+         "PAYOUTS_WRITE": "__HTTP Method__: `POST`\n\nGrants access to schedule a payout.",
+         "PERMISSION_SETS_READ": "__HTTP Method__: `GET`\n\nGrants read access to Permission Sets. For example, to\ncall the `ListPermissionSets` and `RetrievePermissionSet` endpoints.",
+         "PERMISSION_SETS_WRITE": "__HTTP Method__: `PUT`\n\nGrants write access to Permission Sets.",
+         "RESERVATIONS_READ": "__HTTP Method__: `GET`\n\nGrants read access to reservation information, for example, when calling the\n`RetrieveReservation` endpoint.",
+         "RESERVATIONS_WRITE": "__HTTP Method__:  `POST`, `PUT`, `DELETE`\n\nGrants write access to reservation information, for example, when calling the\n`CreateReservation` endpoint.",
+         "RESTAURANT_CHECKS_READ": "__HTTP Method__: `GET`\n\nGrants read access to check information, for example, when calling the\n`RetrieveCheck` endpoint.",
+         "SETTLEMENTS_READ": "__HTTP Method__: `GET`\n\nGrants read access to settlement (deposit) information. For example, to call\nthe Connect v1 ListSettlements endpoint.",
+         "SUBSCRIPTIONS_READ": "__HTTP Method__: `GET`, `POST`\n\nGrants read access to subscription information. For example, to call the RetrieveSubscription\nendpoint.",
+         "SUBSCRIPTIONS_WRITE": "__HTTP Method__: `POST`, `PUT`, `DELETE`\n\nGrants write access to subscription information. For example, to call the CreateSubscription\nendpoint.",
+         "TIMECARDS_READ": "__HTTP Method__: `GET`\n\nGrants read access to employee timecard information. For example, to call the\nConnect v2 SearchShifts endpoint.",
+         "TIMECARDS_SETTINGS_READ": "__HTTP Method__: `GET`\n\nGrants read access to employee timecard settings information. For example, to\ncall the GetBreakType endpoint.",
+         "TIMECARDS_SETTINGS_WRITE": "__HTTP Method__: `POST`, `PUT`, `DELETE`\n\nGrants write access to employee timecard settings information. For example, to\ncall the UpdateBreakType endpoint.",
+         "TIMECARDS_WRITE": "__HTTP Method__: `POST`, `PUT`, `DELETE`\n\nGrants write access to employee shift information. For example, to create\nand modify employee shifts.",
+         "VENDOR_READ": "__HTTP Method__: `GET`, `POST`\n\nGrants read access to vendor information, for example, when calling the\n`RetrieveVendor` endpoint.",
+         "VENDOR_WRITE": "__HTTP Method__:  `POST`, `PUT`, `DELETE`\n\nGrants write access to vendor information, for example, when calling the\n`BulkUpdateVendors` endpoint."
+        }
+       }
+      }
+     },
+     "oauth2ClientSecret": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "Authorization"
+     }
+    },
+    "schemas": {
+     "GetPaymentResponse": {
+      "type": "object",
+      "properties": {
+       "errors": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/Error"
+        }
+       },
+       "payment": {
+        "$ref": "#/components/schemas/Payment"
+       }
+      }
+     },
+     "ListPaymentsRequestSortField": {
+      "type": "string",
+      "enum": [
+       "CREATED_AT",
+       "OFFLINE_CREATED_AT",
+       "UPDATED_AT"
+      ]
+     },
+     "ListPaymentsResponse": {
+      "type": "object",
+      "properties": {
+       "errors": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/Error"
+        }
+       },
+       "payments": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/Payment"
+        }
+       },
+       "cursor": {
+        "type": "string"
+       }
+      }
+     },
+     "RetrieveOrderResponse": {
+      "type": "object",
+      "properties": {
+       "order": {
+        "$ref": "#/components/schemas/Order"
+       },
+       "errors": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/Error"
+        }
+       }
+      }
+     },
+     "GetInvoiceResponse": {
+      "type": "object",
+      "properties": {
+       "invoice": {
+        "$ref": "#/components/schemas/Invoice"
+       },
+       "errors": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/Error"
+        }
+       }
+      }
+     },
+     "GetPaymentRefundResponse": {
+      "type": "object",
+      "properties": {
+       "errors": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/Error"
+        }
+       },
+       "refund": {
+        "$ref": "#/components/schemas/PaymentRefund"
+       }
+      }
+     },
+     "RetrieveSubscriptionResponse": {
+      "type": "object",
+      "properties": {
+       "errors": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/Error"
+        }
+       },
+       "subscription": {
+        "$ref": "#/components/schemas/Subscription"
+       }
+      }
+     },
+     "RetrieveCustomerResponse": {
+      "type": "object",
+      "properties": {
+       "errors": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/Error"
+        }
+       },
+       "customer": {
+        "$ref": "#/components/schemas/Customer"
+       }
+      }
+     },
+     "Error": {
+      "type": "object",
+      "required": [
+       "category",
+       "code"
+      ],
+      "properties": {
+       "category": {
+        "$ref": "#/components/schemas/ErrorCategory"
+       },
+       "code": {
+        "$ref": "#/components/schemas/ErrorCode"
+       },
+       "detail": {
+        "type": "string"
+       },
+       "field": {
+        "type": "string"
+       }
+      }
+     },
+     "Payment": {
+      "type": "object",
+      "properties": {
+       "id": {
+        "type": "string",
+        "maxLength": 192,
+        "readOnly": true
+       },
+       "created_at": {
+        "type": "string",
+        "maxLength": 32,
+        "readOnly": true
+       },
+       "updated_at": {
+        "type": "string",
+        "maxLength": 32,
+        "readOnly": true
+       },
+       "amount_money": {
+        "$ref": "#/components/schemas/Money",
+        "nullable": true
+       },
+       "tip_money": {
+        "$ref": "#/components/schemas/Money",
+        "nullable": true
+       },
+       "total_money": {
+        "$ref": "#/components/schemas/Money",
+        "readOnly": true
+       },
+       "app_fee_money": {
+        "$ref": "#/components/schemas/Money",
+        "nullable": true
+       },
+       "app_fee_allocations": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/AppFeeAllocation"
+        },
+        "nullable": true
+       },
+       "approved_money": {
+        "$ref": "#/components/schemas/Money",
+        "nullable": true
+       },
+       "processing_fee": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/ProcessingFee"
+        },
+        "readOnly": true
+       },
+       "refunded_money": {
+        "$ref": "#/components/schemas/Money",
+        "readOnly": true
+       },
+       "status": {
+        "type": "string",
+        "maxLength": 50,
+        "readOnly": true
+       },
+       "delay_duration": {
+        "type": "string",
+        "readOnly": true
+       },
+       "delay_action": {
+        "type": "string",
+        "nullable": true
+       },
+       "delayed_until": {
+        "type": "string",
+        "readOnly": true
+       },
+       "source_type": {
+        "type": "string",
+        "maxLength": 50,
+        "readOnly": true
+       },
+       "card_details": {
+        "$ref": "#/components/schemas/CardPaymentDetails",
+        "nullable": true
+       },
+       "cash_details": {
+        "$ref": "#/components/schemas/CashPaymentDetails",
+        "nullable": true
+       },
+       "bank_account_details": {
+        "$ref": "#/components/schemas/BankAccountPaymentDetails",
+        "readOnly": true
+       },
+       "electronic_money_details": {
+        "$ref": "#/components/schemas/ElectronicMoneyDetails",
+        "nullable": true
+       },
+       "external_details": {
+        "$ref": "#/components/schemas/ExternalPaymentDetails",
+        "readOnly": true
+       },
+       "wallet_details": {
+        "$ref": "#/components/schemas/DigitalWalletDetails",
+        "readOnly": true
+       },
+       "buy_now_pay_later_details": {
+        "$ref": "#/components/schemas/BuyNowPayLaterDetails",
+        "readOnly": true
+       },
+       "square_account_details": {
+        "$ref": "#/components/schemas/SquareAccountDetails",
+        "readOnly": true
+       },
+       "location_id": {
+        "type": "string",
+        "maxLength": 50,
+        "readOnly": true
+       },
+       "order_id": {
+        "type": "string",
+        "maxLength": 192,
+        "readOnly": true
+       },
+       "reference_id": {
+        "type": "string",
+        "maxLength": 40,
+        "readOnly": true
+       },
+       "customer_id": {
+        "type": "string",
+        "maxLength": 191,
+        "readOnly": true
+       },
+       "employee_id": {
+        "type": "string",
+        "maxLength": 192,
+        "readOnly": true
+       },
+       "team_member_id": {
+        "type": "string",
+        "maxLength": 192,
+        "nullable": true
+       },
+       "refund_ids": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        },
+        "readOnly": true
+       },
+       "risk_evaluation": {
+        "$ref": "#/components/schemas/RiskEvaluation",
+        "readOnly": true
+       },
+       "terminal_checkout_id": {
+        "type": "string",
+        "readOnly": true
+       },
+       "buyer_email_address": {
+        "type": "string",
+        "maxLength": 255,
+        "readOnly": true
+       },
+       "billing_address": {
+        "$ref": "#/components/schemas/Address",
+        "readOnly": true
+       },
+       "shipping_address": {
+        "$ref": "#/components/schemas/Address",
+        "readOnly": true
+       },
+       "note": {
+        "type": "string",
+        "maxLength": 500,
+        "readOnly": true
+       },
+       "statement_description_identifier": {
+        "type": "string",
+        "readOnly": true
+       },
+       "capabilities": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        },
+        "readOnly": true
+       },
+       "receipt_number": {
+        "type": "string",
+        "maxLength": 4,
+        "readOnly": true
+       },
+       "receipt_url": {
+        "type": "string",
+        "maxLength": 255,
+        "readOnly": true
+       },
+       "device_details": {
+        "$ref": "#/components/schemas/DeviceDetails",
+        "readOnly": true
+       },
+       "application_details": {
+        "$ref": "#/components/schemas/ApplicationDetails",
+        "readOnly": true
+       },
+       "buyer_currency_exchange": {
+        "$ref": "#/components/schemas/CurrencyExchange",
+        "readOnly": true
+       },
+       "is_offline_payment": {
+        "type": "boolean",
+        "readOnly": true
+       },
+       "offline_payment_details": {
+        "$ref": "#/components/schemas/OfflinePaymentDetails",
+        "readOnly": true
+       },
+       "version_token": {
+        "type": "string",
+        "nullable": true
+       }
+      }
+     },
+     "Order": {
+      "type": "object",
+      "required": [
+       "location_id"
+      ],
+      "properties": {
+       "id": {
+        "type": "string",
+        "readOnly": true
+       },
+       "location_id": {
+        "type": "string",
+        "minLength": 1
+       },
+       "reference_id": {
+        "type": "string",
+        "maxLength": 40,
+        "nullable": true
+       },
+       "source": {
+        "$ref": "#/components/schemas/OrderSource",
+        "nullable": true
+       },
+       "customer_id": {
+        "type": "string",
+        "maxLength": 191,
+        "nullable": true
+       },
+       "line_items": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/OrderLineItem"
+        },
+        "nullable": true
+       },
+       "taxes": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/OrderLineItemTax"
+        },
+        "nullable": true
+       },
+       "discounts": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/OrderLineItemDiscount"
+        },
+        "nullable": true
+       },
+       "service_charges": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/OrderServiceCharge"
+        },
+        "nullable": true
+       },
+       "fulfillments": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/Fulfillment"
+        },
+        "nullable": true
+       },
+       "returns": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/OrderReturn"
+        },
+        "readOnly": true
+       },
+       "return_amounts": {
+        "$ref": "#/components/schemas/OrderMoneyAmounts",
+        "readOnly": true
+       },
+       "net_amounts": {
+        "$ref": "#/components/schemas/OrderMoneyAmounts",
+        "readOnly": true
+       },
+       "rounding_adjustment": {
+        "$ref": "#/components/schemas/OrderRoundingAdjustment",
+        "readOnly": true
+       },
+       "tenders": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/Tender"
+        },
+        "readOnly": true
+       },
+       "refunds": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/Refund"
+        },
+        "readOnly": true
+       },
+       "metadata": {
+        "type": "object",
+        "additionalProperties": {
+         "type": "string"
+        },
+        "nullable": true
+       },
+       "created_at": {
+        "type": "string",
+        "readOnly": true
+       },
+       "updated_at": {
+        "type": "string",
+        "readOnly": true
+       },
+       "closed_at": {
+        "type": "string",
+        "readOnly": true
+       },
+       "state": {
+        "$ref": "#/components/schemas/OrderState",
+        "nullable": true
+       },
+       "version": {
+        "type": "integer"
+       },
+       "total_money": {
+        "$ref": "#/components/schemas/Money",
+        "readOnly": true
+       },
+       "total_tax_money": {
+        "$ref": "#/components/schemas/Money",
+        "readOnly": true
+       },
+       "total_discount_money": {
+        "$ref": "#/components/schemas/Money",
+        "readOnly": true
+       },
+       "total_tip_money": {
+        "$ref": "#/components/schemas/Money",
+        "readOnly": true
+       },
+       "total_service_charge_money": {
+        "$ref": "#/components/schemas/Money",
+        "readOnly": true
+       },
+       "ticket_name": {
+        "type": "string",
+        "maxLength": 255,
+        "nullable": true
+       },
+       "pricing_options": {
+        "$ref": "#/components/schemas/OrderPricingOptions",
+        "nullable": true
+       },
+       "rewards": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/OrderReward"
+        },
+        "readOnly": true
+       },
+       "net_amount_due_money": {
+        "$ref": "#/components/schemas/Money",
+        "readOnly": true
+       }
+      }
+     },
+     "Invoice": {
+      "type": "object",
+      "properties": {
+       "id": {
+        "type": "string",
+        "readOnly": true
+       },
+       "version": {
+        "type": "integer"
+       },
+       "location_id": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 255,
+        "nullable": true
+       },
+       "order_id": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 255,
+        "nullable": true
+       },
+       "primary_recipient": {
+        "$ref": "#/components/schemas/InvoiceRecipient",
+        "nullable": true
+       },
+       "payment_requests": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/InvoicePaymentRequest"
+        },
+        "nullable": true
+       },
+       "delivery_method": {
+        "$ref": "#/components/schemas/InvoiceDeliveryMethod",
+        "nullable": true
+       },
+       "invoice_number": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 191,
+        "nullable": true
+       },
+       "title": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 255,
+        "nullable": true
+       },
+       "description": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 65536,
+        "nullable": true
+       },
+       "scheduled_at": {
+        "type": "string",
+        "nullable": true
+       },
+       "public_url": {
+        "type": "string",
+        "readOnly": true
+       },
+       "next_payment_amount_money": {
+        "$ref": "#/components/schemas/Money",
+        "readOnly": true
+       },
+       "status": {
+        "$ref": "#/components/schemas/InvoiceStatus",
+        "readOnly": true
+       },
+       "timezone": {
+        "type": "string",
+        "readOnly": true
+       },
+       "created_at": {
+        "type": "string",
+        "readOnly": true
+       },
+       "updated_at": {
+        "type": "string",
+        "readOnly": true
+       },
+       "accepted_payment_methods": {
+        "$ref": "#/components/schemas/InvoiceAcceptedPaymentMethods",
+        "nullable": true
+       },
+       "custom_fields": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/InvoiceCustomField"
+        },
+        "nullable": true
+       },
+       "subscription_id": {
+        "type": "string",
+        "readOnly": true
+       },
+       "sale_or_service_date": {
+        "type": "string",
+        "nullable": true
+       },
+       "payment_conditions": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 2000,
+        "nullable": true
+       },
+       "store_payment_method_enabled": {
+        "type": "boolean",
+        "nullable": true
+       },
+       "attachments": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/InvoiceAttachment"
+        },
+        "readOnly": true
+       },
+       "creator_team_member_id": {
+        "type": "string",
+        "readOnly": true
+       }
+      }
+     },
+     "PaymentRefund": {
+      "type": "object",
+      "required": [
+       "id",
+       "amount_money"
+      ],
+      "properties": {
+       "id": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 255
+       },
+       "status": {
+        "type": "string",
+        "maxLength": 50,
+        "nullable": true
+       },
+       "location_id": {
+        "type": "string",
+        "maxLength": 50,
+        "nullable": true
+       },
+       "unlinked": {
+        "type": "boolean",
+        "readOnly": true
+       },
+       "destination_type": {
+        "type": "string",
+        "maxLength": 50,
+        "nullable": true
+       },
+       "destination_details": {
+        "$ref": "#/components/schemas/DestinationDetails",
+        "readOnly": true
+       },
+       "amount_money": {
+        "$ref": "#/components/schemas/Money"
+       },
+       "app_fee_money": {
+        "$ref": "#/components/schemas/Money",
+        "nullable": true
+       },
+       "app_fee_allocations": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/AppFeeAllocation"
+        },
+        "readOnly": true
+       },
+       "processing_fee": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/ProcessingFee"
+        },
+        "nullable": true
+       },
+       "payment_id": {
+        "type": "string",
+        "maxLength": 192,
+        "nullable": true
+       },
+       "order_id": {
+        "type": "string",
+        "maxLength": 192,
+        "nullable": true
+       },
+       "reason": {
+        "type": "string",
+        "maxLength": 192,
+        "nullable": true
+       },
+       "created_at": {
+        "type": "string",
+        "maxLength": 32,
+        "readOnly": true
+       },
+       "updated_at": {
+        "type": "string",
+        "maxLength": 32,
+        "readOnly": true
+       },
+       "team_member_id": {
+        "type": "string",
+        "maxLength": 192,
+        "readOnly": true
+       },
+       "terminal_refund_id": {
+        "type": "string",
+        "readOnly": true
+       }
+      }
+     },
+     "Subscription": {
+      "type": "object",
+      "properties": {
+       "id": {
+        "type": "string",
+        "maxLength": 255,
+        "readOnly": true
+       },
+       "location_id": {
+        "type": "string",
+        "readOnly": true
+       },
+       "plan_variation_id": {
+        "type": "string",
+        "readOnly": true
+       },
+       "customer_id": {
+        "type": "string",
+        "readOnly": true
+       },
+       "start_date": {
+        "type": "string",
+        "readOnly": true
+       },
+       "canceled_date": {
+        "type": "string",
+        "nullable": true
+       },
+       "charged_through_date": {
+        "type": "string",
+        "readOnly": true
+       },
+       "status": {
+        "$ref": "#/components/schemas/SubscriptionStatus",
+        "readOnly": true
+       },
+       "tax_percentage": {
+        "type": "string",
+        "nullable": true
+       },
+       "invoice_ids": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        },
+        "readOnly": true
+       },
+       "price_override_money": {
+        "$ref": "#/components/schemas/Money",
+        "nullable": true
+       },
+       "version": {
+        "type": "integer",
+        "format": "int64"
+       },
+       "created_at": {
+        "type": "string",
+        "readOnly": true
+       },
+       "card_id": {
+        "type": "string",
+        "nullable": true
+       },
+       "timezone": {
+        "type": "string",
+        "readOnly": true
+       },
+       "source": {
+        "$ref": "#/components/schemas/SubscriptionSource",
+        "nullable": true
+       },
+       "actions": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/SubscriptionAction"
+        },
+        "nullable": true
+       },
+       "monthly_billing_anchor_date": {
+        "type": "integer",
+        "readOnly": true
+       },
+       "phases": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/Phase"
+        },
+        "readOnly": true
+       },
+       "completed_date": {
+        "type": "string",
+        "nullable": true
+       }
+      }
+     },
+     "Customer": {
+      "type": "object",
+      "properties": {
+       "id": {
+        "type": "string"
+       },
+       "created_at": {
+        "type": "string",
+        "readOnly": true
+       },
+       "updated_at": {
+        "type": "string",
+        "readOnly": true
+       },
+       "given_name": {
+        "type": "string",
+        "nullable": true
+       },
+       "family_name": {
+        "type": "string",
+        "nullable": true
+       },
+       "nickname": {
+        "type": "string",
+        "nullable": true
+       },
+       "company_name": {
+        "type": "string",
+        "nullable": true
+       },
+       "email_address": {
+        "type": "string",
+        "nullable": true
+       },
+       "address": {
+        "$ref": "#/components/schemas/Address",
+        "nullable": true
+       },
+       "phone_number": {
+        "type": "string",
+        "nullable": true
+       },
+       "birthday": {
+        "type": "string",
+        "nullable": true
+       },
+       "reference_id": {
+        "type": "string",
+        "nullable": true
+       },
+       "note": {
+        "type": "string",
+        "nullable": true
+       },
+       "preferences": {
+        "$ref": "#/components/schemas/CustomerPreferences",
+        "nullable": true
+       },
+       "creation_source": {
+        "$ref": "#/components/schemas/CustomerCreationSource",
+        "nullable": true
+       },
+       "group_ids": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        },
+        "nullable": true
+       },
+       "segment_ids": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        },
+        "nullable": true
+       },
+       "version": {
+        "type": "integer",
+        "format": "int64"
+       },
+       "tax_ids": {
+        "$ref": "#/components/schemas/CustomerTaxIds",
+        "nullable": true
+       }
+      }
+     },
+     "ErrorCategory": {
+      "type": "string",
+      "enum": [
+       "API_ERROR",
+       "AUTHENTICATION_ERROR",
+       "INVALID_REQUEST_ERROR",
+       "RATE_LIMIT_ERROR",
+       "PAYMENT_METHOD_ERROR",
+       "REFUND_ERROR",
+       "MERCHANT_SUBSCRIPTION_ERROR",
+       "EXTERNAL_VENDOR_ERROR"
+      ]
+     },
+     "ErrorCode": {
+      "type": "string",
+      "enum": [
+       "INTERNAL_SERVER_ERROR",
+       "UNAUTHORIZED",
+       "ACCESS_TOKEN_EXPIRED",
+       "ACCESS_TOKEN_REVOKED",
+       "CLIENT_DISABLED",
+       "FORBIDDEN",
+       "INSUFFICIENT_SCOPES",
+       "APPLICATION_DISABLED",
+       "V1_APPLICATION",
+       "V1_ACCESS_TOKEN",
+       "CARD_PROCESSING_NOT_ENABLED",
+       "MERCHANT_SUBSCRIPTION_NOT_FOUND",
+       "BAD_REQUEST",
+       "MISSING_REQUIRED_PARAMETER",
+       "INCORRECT_TYPE",
+       "INVALID_TIME",
+       "INVALID_TIME_RANGE",
+       "INVALID_VALUE",
+       "INVALID_CURSOR",
+       "UNKNOWN_QUERY_PARAMETER",
+       "CONFLICTING_PARAMETERS",
+       "EXPECTED_JSON_BODY",
+       "INVALID_SORT_ORDER",
+       "VALUE_REGEX_MISMATCH",
+       "VALUE_TOO_SHORT",
+       "VALUE_TOO_LONG",
+       "VALUE_TOO_LOW",
+       "VALUE_TOO_HIGH",
+       "VALUE_EMPTY",
+       "ARRAY_LENGTH_TOO_LONG",
+       "ARRAY_LENGTH_TOO_SHORT",
+       "ARRAY_EMPTY",
+       "EXPECTED_BOOLEAN",
+       "EXPECTED_INTEGER",
+       "EXPECTED_FLOAT",
+       "EXPECTED_STRING",
+       "EXPECTED_OBJECT",
+       "EXPECTED_ARRAY",
+       "EXPECTED_MAP",
+       "EXPECTED_BASE64_ENCODED_BYTE_ARRAY",
+       "INVALID_ARRAY_VALUE",
+       "INVALID_ENUM_VALUE",
+       "INVALID_CONTENT_TYPE",
+       "INVALID_FORM_VALUE",
+       "CUSTOMER_NOT_FOUND",
+       "ONE_INSTRUMENT_EXPECTED",
+       "NO_FIELDS_SET",
+       "TOO_MANY_MAP_ENTRIES",
+       "MAP_KEY_LENGTH_TOO_SHORT",
+       "MAP_KEY_LENGTH_TOO_LONG",
+       "CUSTOMER_MISSING_NAME",
+       "CUSTOMER_MISSING_EMAIL",
+       "INVALID_PAUSE_LENGTH",
+       "INVALID_DATE",
+       "UNSUPPORTED_COUNTRY",
+       "UNSUPPORTED_CURRENCY",
+       "APPLE_TTP_PIN_TOKEN",
+       "CARD_EXPIRED",
+       "INVALID_EXPIRATION",
+       "INVALID_EXPIRATION_YEAR",
+       "INVALID_EXPIRATION_DATE",
+       "UNSUPPORTED_CARD_BRAND",
+       "UNSUPPORTED_ENTRY_METHOD",
+       "INVALID_ENCRYPTED_CARD",
+       "INVALID_CARD",
+       "PAYMENT_AMOUNT_MISMATCH",
+       "GENERIC_DECLINE",
+       "CVV_FAILURE",
+       "ADDRESS_VERIFICATION_FAILURE",
+       "INVALID_ACCOUNT",
+       "CURRENCY_MISMATCH",
+       "INSUFFICIENT_FUNDS",
+       "INSUFFICIENT_PERMISSIONS",
+       "CARDHOLDER_INSUFFICIENT_PERMISSIONS",
+       "INVALID_LOCATION",
+       "TRANSACTION_LIMIT",
+       "VOICE_FAILURE",
+       "PAN_FAILURE",
+       "EXPIRATION_FAILURE",
+       "CARD_NOT_SUPPORTED",
+       "READER_DECLINED",
+       "INVALID_PIN",
+       "MISSING_PIN",
+       "MISSING_ACCOUNT_TYPE",
+       "INVALID_POSTAL_CODE",
+       "INVALID_FEES",
+       "MANUALLY_ENTERED_PAYMENT_NOT_SUPPORTED",
+       "PAYMENT_LIMIT_EXCEEDED",
+       "GIFT_CARD_AVAILABLE_AMOUNT",
+       "ACCOUNT_UNUSABLE",
+       "BUYER_REFUSED_PAYMENT",
+       "DELAYED_TRANSACTION_EXPIRED",
+       "DELAYED_TRANSACTION_CANCELED",
+       "DELAYED_TRANSACTION_CAPTURED",
+       "DELAYED_TRANSACTION_FAILED",
+       "CARD_TOKEN_EXPIRED",
+       "CARD_TOKEN_USED",
+       "AMOUNT_TOO_HIGH",
+       "AMOUNT_TOO_LOW",
+       "UNSUPPORTED_INSTRUMENT_TYPE",
+       "REFUND_AMOUNT_INVALID",
+       "REFUND_ALREADY_PENDING",
+       "PAYMENT_NOT_REFUNDABLE",
+       "PAYMENT_NOT_REFUNDABLE_DUE_TO_DISPUTE",
+       "REFUND_ERROR_PAYMENT_NEEDS_COMPLETION",
+       "REFUND_DECLINED",
+       "INSUFFICIENT_PERMISSIONS_FOR_REFUND",
+       "INVALID_CARD_DATA",
+       "SOURCE_USED",
+       "SOURCE_EXPIRED",
+       "UNSUPPORTED_LOYALTY_REWARD_TIER",
+       "LOCATION_MISMATCH",
+       "ORDER_UNPAID_NOT_RETURNABLE",
+       "PARTIAL_PAYMENT_DELAY_CAPTURE_NOT_SUPPORTED",
+       "IDEMPOTENCY_KEY_REUSED",
+       "UNEXPECTED_VALUE",
+       "SANDBOX_NOT_SUPPORTED",
+       "INVALID_EMAIL_ADDRESS",
+       "INVALID_PHONE_NUMBER",
+       "CHECKOUT_EXPIRED",
+       "BAD_CERTIFICATE",
+       "INVALID_SQUARE_VERSION_FORMAT",
+       "API_VERSION_INCOMPATIBLE",
+       "CARD_PRESENCE_REQUIRED",
+       "UNSUPPORTED_SOURCE_TYPE",
+       "CARD_MISMATCH",
+       "PLAID_ERROR",
+       "PLAID_ERROR_ITEM_LOGIN_REQUIRED",
+       "PLAID_ERROR_RATE_LIMIT",
+       "PLAID_ERROR_INVALID_ACCESS_TOKEN",
+       "PLAID_ERROR_INVALID_ACCOUNT_ID",
+       "PLAID_ERROR_NO_ACCOUNTS",
+       "PLAID_ERROR_ITEM_NOT_FOUND",
+       "PLAID_ERROR_INSUFFICIENT_CREDENTIALS",
+       "PLAID_ERROR_ITEM_NOT_SUPPORTED",
+       "PLAID_ERROR_PRODUCT_NOT_READY",
+       "PAYMENT_SOURCE_NOT_ENABLED_FOR_TARGET",
+       "CARD_DECLINED",
+       "VERIFY_CVV_FAILURE",
+       "VERIFY_AVS_FAILURE",
+       "CARD_DECLINED_CALL_ISSUER",
+       "CARD_DECLINED_VERIFICATION_REQUIRED",
+       "BAD_EXPIRATION",
+       "CHIP_INSERTION_REQUIRED",
+       "ALLOWABLE_PIN_TRIES_EXCEEDED",
+       "RESERVATION_DECLINED",
+       "UNKNOWN_BODY_PARAMETER",
+       "CART_INELIGIBLE_FOR_EBT",
+       "NOT_FOUND",
+       "APPLE_PAYMENT_PROCESSING_CERTIFICATE_HASH_NOT_FOUND",
+       "METHOD_NOT_ALLOWED",
+       "NOT_ACCEPTABLE",
+       "REQUEST_TIMEOUT",
+       "CONFLICT",
+       "GONE",
+       "REQUEST_ENTITY_TOO_LARGE",
+       "UNSUPPORTED_MEDIA_TYPE",
+       "UNPROCESSABLE_ENTITY",
+       "RATE_LIMITED",
+       "NOT_IMPLEMENTED",
+       "BAD_GATEWAY",
+       "SERVICE_UNAVAILABLE",
+       "TEMPORARY_ERROR",
+       "GATEWAY_TIMEOUT"
+      ]
+     },
+     "Money": {
+      "type": "object",
+      "properties": {
+       "amount": {
+        "type": "integer",
+        "format": "int64",
+        "nullable": true
+       },
+       "currency": {
+        "$ref": "#/components/schemas/Currency",
+        "nullable": true
+       }
+      }
+     },
+     "ProcessingFee": {
+      "type": "object",
+      "properties": {
+       "effective_at": {
+        "type": "string",
+        "nullable": true
+       },
+       "type": {
+        "type": "string",
+        "nullable": true
+       },
+       "amount_money": {
+        "$ref": "#/components/schemas/Money",
+        "nullable": true
+       }
+      }
+     },
+     "CardPaymentDetails": {
+      "type": "object",
+      "properties": {
+       "status": {
+        "type": "string",
+        "maxLength": 50,
+        "readOnly": true
+       },
+       "card": {
+        "$ref": "#/components/schemas/Card",
+        "readOnly": true
+       },
+       "entry_method": {
+        "type": "string",
+        "maxLength": 50,
+        "readOnly": true
+       },
+       "cvv_status": {
+        "type": "string",
+        "maxLength": 50,
+        "readOnly": true
+       },
+       "avs_status": {
+        "type": "string",
+        "maxLength": 50,
+        "readOnly": true
+       },
+       "auth_result_code": {
+        "type": "string",
+        "maxLength": 10,
+        "readOnly": true
+       },
+       "application_identifier": {
+        "type": "string",
+        "maxLength": 32,
+        "readOnly": true
+       },
+       "application_name": {
+        "type": "string",
+        "maxLength": 16,
+        "readOnly": true
+       },
+       "application_cryptogram": {
+        "type": "string",
+        "maxLength": 16,
+        "readOnly": true
+       },
+       "verification_method": {
+        "type": "string",
+        "maxLength": 50,
+        "readOnly": true
+       },
+       "verification_results": {
+        "type": "string",
+        "maxLength": 50,
+        "readOnly": true
+       },
+       "statement_description": {
+        "type": "string",
+        "maxLength": 50,
+        "readOnly": true
+       },
+       "device_details": {
+        "$ref": "#/components/schemas/DeviceDetails",
+        "nullable": true
+       },
+       "card_payment_timeline": {
+        "$ref": "#/components/schemas/CardPaymentTimeline",
+        "readOnly": true
+       },
+       "refund_requires_card_presence": {
+        "type": "boolean",
+        "readOnly": true
+       },
+       "errors": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/Error"
+        },
+        "readOnly": true
+       },
+       "applied_card_surcharge_details": {
+        "$ref": "#/components/schemas/CardSurchargeDetails",
+        "readOnly": true
+       },
+       "wallet_type": {
+        "type": "string",
+        "maxLength": 50,
+        "readOnly": true
+       }
+      }
+     },
+     "CashPaymentDetails": {
+      "type": "object",
+      "required": [
+       "buyer_supplied_money"
+      ],
+      "properties": {
+       "buyer_supplied_money": {
+        "$ref": "#/components/schemas/Money"
+       },
+       "change_back_money": {
+        "$ref": "#/components/schemas/Money",
+        "readOnly": true
+       }
+      }
+     },
+     "BankAccountPaymentDetails": {
+      "type": "object",
+      "properties": {
+       "bank_name": {
+        "type": "string",
+        "maxLength": 100,
+        "nullable": true
+       },
+       "transfer_type": {
+        "type": "string",
+        "maxLength": 50,
+        "nullable": true
+       },
+       "account_ownership_type": {
+        "type": "string",
+        "maxLength": 50,
+        "nullable": true
+       },
+       "fingerprint": {
+        "type": "string",
+        "maxLength": 255,
+        "nullable": true
+       },
+       "country": {
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 2,
+        "nullable": true
+       },
+       "statement_description": {
+        "type": "string",
+        "maxLength": 1000,
+        "nullable": true
+       },
+       "ach_details": {
+        "$ref": "#/components/schemas/ACHDetails",
+        "nullable": true
+       },
+       "errors": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/Error"
+        },
+        "nullable": true
+       }
+      }
+     },
+     "ElectronicMoneyDetails": {
+      "type": "object",
+      "properties": {
+       "felica_details": {
+        "$ref": "#/components/schemas/FelicaDetails",
+        "nullable": true
+       }
+      }
+     },
+     "ExternalPaymentDetails": {
+      "type": "object",
+      "required": [
+       "type",
+       "source"
+      ],
+      "properties": {
+       "type": {
+        "type": "string",
+        "maxLength": 50
+       },
+       "source": {
+        "type": "string",
+        "maxLength": 255
+       },
+       "source_id": {
+        "type": "string",
+        "maxLength": 255,
+        "nullable": true
+       },
+       "source_fee_money": {
+        "$ref": "#/components/schemas/Money",
+        "nullable": true
+       }
+      }
+     },
+     "DigitalWalletDetails": {
+      "type": "object",
+      "properties": {
+       "status": {
+        "type": "string",
+        "maxLength": 50,
+        "nullable": true
+       },
+       "brand": {
+        "type": "string",
+        "maxLength": 50,
+        "nullable": true
+       },
+       "cash_app_details": {
+        "$ref": "#/components/schemas/CashAppDetails",
+        "nullable": true
+       },
+       "lightning_details": {
+        "$ref": "#/components/schemas/LightningDetails",
+        "nullable": true
+       },
+       "errors": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/Error"
+        },
+        "readOnly": true
+       }
+      }
+     },
+     "BuyNowPayLaterDetails": {
+      "type": "object",
+      "properties": {
+       "brand": {
+        "type": "string",
+        "maxLength": 50,
+        "nullable": true
+       },
+       "afterpay_details": {
+        "$ref": "#/components/schemas/AfterpayDetails",
+        "nullable": true
+       },
+       "clearpay_details": {
+        "$ref": "#/components/schemas/ClearpayDetails",
+        "nullable": true
+       },
+       "errors": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/Error"
+        },
+        "readOnly": true
+       }
+      }
+     },
+     "SquareAccountDetails": {
+      "type": "object",
+      "properties": {
+       "payment_source_token": {
+        "type": "string",
+        "maxLength": 255,
+        "nullable": true
+       },
+       "errors": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/Error"
+        },
+        "nullable": true
+       }
+      }
+     },
+     "RiskEvaluation": {
+      "type": "object",
+      "required": [
+       "status"
+      ],
+      "properties": {
+       "created_at": {
+        "type": "string",
+        "readOnly": true
+       },
+       "risk_level": {
+        "$ref": "#/components/schemas/RiskEvaluationRiskLevel",
+        "nullable": true
+       }
+      }
+     },
+     "Address": {
+      "type": "object",
+      "properties": {
+       "address_line_1": {
+        "type": "string",
+        "nullable": true
+       },
+       "address_line_2": {
+        "type": "string",
+        "nullable": true
+       },
+       "address_line_3": {
+        "type": "string",
+        "nullable": true
+       },
+       "locality": {
+        "type": "string",
+        "nullable": true
+       },
+       "sublocality": {
+        "type": "string",
+        "nullable": true
+       },
+       "sublocality_2": {
+        "type": "string",
+        "nullable": true
+       },
+       "sublocality_3": {
+        "type": "string",
+        "nullable": true
+       },
+       "administrative_district_level_1": {
+        "type": "string",
+        "nullable": true
+       },
+       "administrative_district_level_2": {
+        "type": "string",
+        "nullable": true
+       },
+       "administrative_district_level_3": {
+        "type": "string",
+        "nullable": true
+       },
+       "postal_code": {
+        "type": "string",
+        "nullable": true
+       },
+       "country": {
+        "$ref": "#/components/schemas/Country",
+        "nullable": true
+       },
+       "first_name": {
+        "type": "string",
+        "nullable": true
+       },
+       "last_name": {
+        "type": "string",
+        "nullable": true
+       }
+      }
+     },
+     "DeviceDetails": {
+      "type": "object",
+      "properties": {
+       "device_id": {
+        "type": "string",
+        "maxLength": 255,
+        "nullable": true
+       },
+       "device_installation_id": {
+        "type": "string",
+        "maxLength": 255,
+        "nullable": true
+       },
+       "device_name": {
+        "type": "string",
+        "maxLength": 255,
+        "nullable": true
+       }
+      }
+     },
+     "ApplicationDetails": {
+      "type": "object",
+      "properties": {
+       "square_product": {
+        "$ref": "#/components/schemas/ApplicationDetailsExternalSquareProduct",
+        "nullable": true
+       },
+       "application_id": {
+        "type": "string",
+        "nullable": true
+       }
+      }
+     },
+     "OfflinePaymentDetails": {
+      "type": "object",
+      "properties": {
+       "client_created_at": {
+        "type": "string",
+        "maxLength": 32,
+        "readOnly": true
+       }
+      }
+     },
+     "OrderSource": {
+      "type": "object",
+      "properties": {
+       "name": {
+        "type": "string",
+        "nullable": true
+       }
+      }
+     },
+     "OrderLineItem": {
+      "type": "object",
+      "required": [
+       "quantity"
+      ],
+      "properties": {
+       "uid": {
+        "type": "string",
+        "maxLength": 60,
+        "nullable": true
+       },
+       "name": {
+        "type": "string",
+        "maxLength": 512,
+        "nullable": true
+       },
+       "quantity": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 12
+       },
+       "quantity_unit": {
+        "$ref": "#/components/schemas/OrderQuantityUnit",
+        "nullable": true
+       },
+       "note": {
+        "type": "string",
+        "maxLength": 2000,
+        "nullable": true
+       },
+       "catalog_object_id": {
+        "type": "string",
+        "maxLength": 192,
+        "nullable": true
+       },
+       "catalog_version": {
+        "type": "integer",
+        "format": "int64",
+        "nullable": true
+       },
+       "variation_name": {
+        "type": "string",
+        "maxLength": 400,
+        "nullable": true
+       },
+       "item_type": {
+        "$ref": "#/components/schemas/OrderLineItemItemType",
+        "nullable": true
+       },
+       "metadata": {
+        "type": "object",
+        "additionalProperties": {
+         "type": "string"
+        },
+        "nullable": true
+       },
+       "modifiers": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/OrderLineItemModifier"
+        },
+        "nullable": true
+       },
+       "applied_taxes": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/OrderLineItemAppliedTax"
+        },
+        "nullable": true
+       },
+       "applied_discounts": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/OrderLineItemAppliedDiscount"
+        },
+        "nullable": true
+       },
+       "applied_service_charges": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/OrderLineItemAppliedServiceCharge"
+        },
+        "nullable": true
+       },
+       "base_price_money": {
+        "$ref": "#/components/schemas/Money",
+        "nullable": true
+       },
+       "variation_total_price_money": {
+        "$ref": "#/components/schemas/Money",
+        "readOnly": true
+       },
+       "gross_sales_money": {
+        "$ref": "#/components/schemas/Money",
+        "readOnly": true
+       },
+       "total_tax_money": {
+        "$ref": "#/components/schemas/Money",
+        "readOnly": true
+       },
+       "total_discount_money": {
+        "$ref": "#/components/schemas/Money",
+        "readOnly": true
+       },
+       "total_money": {
+        "$ref": "#/components/schemas/Money",
+        "readOnly": true
+       },
+       "pricing_blocklists": {
+        "$ref": "#/components/schemas/OrderLineItemPricingBlocklists",
+        "nullable": true
+       },
+       "total_service_charge_money": {
+        "$ref": "#/components/schemas/Money",
+        "readOnly": true
+       }
+      }
+     },
+     "OrderLineItemTax": {
+      "type": "object",
+      "properties": {
+       "uid": {
+        "type": "string",
+        "maxLength": 60,
+        "nullable": true
+       },
+       "catalog_object_id": {
+        "type": "string",
+        "maxLength": 192,
+        "nullable": true
+       },
+       "catalog_version": {
+        "type": "integer",
+        "format": "int64",
+        "nullable": true
+       },
+       "name": {
+        "type": "string",
+        "maxLength": 255,
+        "nullable": true
+       },
+       "type": {
+        "$ref": "#/components/schemas/OrderLineItemTaxType",
+        "nullable": true
+       },
+       "percentage": {
+        "type": "string",
+        "maxLength": 10,
+        "nullable": true
+       },
+       "metadata": {
+        "type": "object",
+        "additionalProperties": {
+         "type": "string"
+        },
+        "nullable": true
+       },
+       "applied_money": {
+        "$ref": "#/components/schemas/Money",
+        "nullable": true
+       },
+       "scope": {
+        "$ref": "#/components/schemas/OrderLineItemTaxScope",
+        "nullable": true
+       },
+       "auto_applied": {
+        "type": "boolean",
+        "readOnly": true
+       }
+      }
+     },
+     "OrderLineItemDiscount": {
+      "type": "object",
+      "properties": {
+       "uid": {
+        "type": "string",
+        "maxLength": 60,
+        "nullable": true
+       },
+       "catalog_object_id": {
+        "type": "string",
+        "maxLength": 192,
+        "nullable": true
+       },
+       "catalog_version": {
+        "type": "integer",
+        "format": "int64",
+        "nullable": true
+       },
+       "name": {
+        "type": "string",
+        "maxLength": 255,
+        "nullable": true
+       },
+       "type": {
+        "$ref": "#/components/schemas/OrderLineItemDiscountType",
+        "nullable": true
+       },
+       "percentage": {
+        "type": "string",
+        "maxLength": 10,
+        "nullable": true
+       },
+       "amount_money": {
+        "$ref": "#/components/schemas/Money",
+        "nullable": true
+       },
+       "applied_money": {
+        "$ref": "#/components/schemas/Money",
+        "nullable": true
+       },
+       "metadata": {
+        "type": "object",
+        "additionalProperties": {
+         "type": "string"
+        },
+        "nullable": true
+       },
+       "scope": {
+        "$ref": "#/components/schemas/OrderLineItemDiscountScope",
+        "nullable": true
+       },
+       "reward_ids": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        },
+        "readOnly": true
+       },
+       "pricing_rule_id": {
+        "type": "string",
+        "readOnly": true
+       }
+      }
+     },
+     "OrderServiceCharge": {
+      "type": "object",
+      "properties": {
+       "uid": {
+        "type": "string",
+        "maxLength": 60,
+        "nullable": true
+       },
+       "name": {
+        "type": "string",
+        "maxLength": 512,
+        "nullable": true
+       },
+       "catalog_object_id": {
+        "type": "string",
+        "maxLength": 192,
+        "nullable": true
+       },
+       "catalog_version": {
+        "type": "integer",
+        "format": "int64",
+        "nullable": true
+       },
+       "percentage": {
+        "type": "string",
+        "maxLength": 10,
+        "nullable": true
+       },
+       "amount_money": {
+        "$ref": "#/components/schemas/Money",
+        "nullable": true
+       },
+       "applied_money": {
+        "$ref": "#/components/schemas/Money",
+        "readOnly": true
+       },
+       "total_money": {
+        "$ref": "#/components/schemas/Money",
+        "readOnly": true
+       },
+       "total_tax_money": {
+        "$ref": "#/components/schemas/Money",
+        "readOnly": true
+       },
+       "calculation_phase": {
+        "$ref": "#/components/schemas/OrderServiceChargeCalculationPhase",
+        "nullable": true
+       },
+       "taxable": {
+        "type": "boolean",
+        "nullable": true
+       },
+       "applied_taxes": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/OrderLineItemAppliedTax"
+        },
+        "nullable": true
+       },
+       "metadata": {
+        "type": "object",
+        "additionalProperties": {
+         "type": "string"
+        },
+        "nullable": true
+       },
+       "type": {
+        "$ref": "#/components/schemas/OrderServiceChargeType",
+        "readOnly": true
+       },
+       "treatment_type": {
+        "$ref": "#/components/schemas/OrderServiceChargeTreatmentType",
+        "nullable": true
+       },
+       "scope": {
+        "$ref": "#/components/schemas/OrderServiceChargeScope",
+        "nullable": true
+       }
+      }
+     },
+     "Fulfillment": {
+      "type": "object",
+      "properties": {
+       "uid": {
+        "type": "string",
+        "maxLength": 60,
+        "nullable": true
+       },
+       "type": {
+        "$ref": "#/components/schemas/FulfillmentType",
+        "nullable": true
+       },
+       "state": {
+        "$ref": "#/components/schemas/FulfillmentState",
+        "nullable": true
+       },
+       "line_item_application": {
+        "$ref": "#/components/schemas/FulfillmentFulfillmentLineItemApplication",
+        "readOnly": true
+       },
+       "entries": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/FulfillmentFulfillmentEntry"
+        },
+        "readOnly": true
+       },
+       "metadata": {
+        "type": "object",
+        "additionalProperties": {
+         "type": "string"
+        },
+        "nullable": true
+       },
+       "pickup_details": {
+        "$ref": "#/components/schemas/FulfillmentPickupDetails",
+        "nullable": true
+       },
+       "shipment_details": {
+        "$ref": "#/components/schemas/FulfillmentShipmentDetails",
+        "nullable": true
+       },
+       "delivery_details": {
+        "$ref": "#/components/schemas/FulfillmentDeliveryDetails",
+        "nullable": true
+       },
+       "in_store_details": {
+        "$ref": "#/components/schemas/FulfillmentInStoreDetails",
+        "nullable": true
+       }
+      }
+     },
+     "OrderReturn": {
+      "type": "object",
+      "properties": {
+       "uid": {
+        "type": "string",
+        "maxLength": 60,
+        "nullable": true
+       },
+       "source_order_id": {
+        "type": "string",
+        "nullable": true
+       },
+       "return_line_items": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/OrderReturnLineItem"
+        },
+        "nullable": true
+       },
+       "return_service_charges": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/OrderReturnServiceCharge"
+        },
+        "nullable": true
+       },
+       "return_taxes": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/OrderReturnTax"
+        },
+        "nullable": true
+       },
+       "return_discounts": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/OrderReturnDiscount"
+        },
+        "nullable": true
+       },
+       "return_tips": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/OrderReturnTip"
+        },
+        "nullable": true
+       },
+       "rounding_adjustment": {
+        "$ref": "#/components/schemas/OrderRoundingAdjustment",
+        "nullable": true
+       },
+       "return_amounts": {
+        "$ref": "#/components/schemas/OrderMoneyAmounts",
+        "nullable": true
+       }
+      }
+     },
+     "OrderMoneyAmounts": {
+      "type": "object",
+      "properties": {
+       "total_money": {
+        "$ref": "#/components/schemas/Money",
+        "nullable": true
+       },
+       "tax_money": {
+        "$ref": "#/components/schemas/Money",
+        "nullable": true
+       },
+       "discount_money": {
+        "$ref": "#/components/schemas/Money",
+        "nullable": true
+       },
+       "tip_money": {
+        "$ref": "#/components/schemas/Money",
+        "nullable": true
+       },
+       "service_charge_money": {
+        "$ref": "#/components/schemas/Money",
+        "nullable": true
+       }
+      }
+     },
+     "OrderRoundingAdjustment": {
+      "type": "object",
+      "properties": {
+       "uid": {
+        "type": "string",
+        "maxLength": 60,
+        "nullable": true
+       },
+       "name": {
+        "type": "string",
+        "nullable": true
+       },
+       "amount_money": {
+        "$ref": "#/components/schemas/Money",
+        "nullable": true
+       }
+      }
+     },
+     "Tender": {
+      "type": "object",
+      "required": [
+       "type"
+      ],
+      "properties": {
+       "id": {
+        "type": "string",
+        "maxLength": 192
+       },
+       "location_id": {
+        "type": "string",
+        "maxLength": 50,
+        "nullable": true
+       },
+       "transaction_id": {
+        "type": "string",
+        "maxLength": 192,
+        "nullable": true
+       },
+       "created_at": {
+        "type": "string",
+        "maxLength": 32,
+        "readOnly": true
+       },
+       "note": {
+        "type": "string",
+        "maxLength": 500,
+        "nullable": true
+       },
+       "amount_money": {
+        "$ref": "#/components/schemas/Money",
+        "nullable": true
+       },
+       "tip_money": {
+        "$ref": "#/components/schemas/Money",
+        "nullable": true
+       },
+       "processing_fee_money": {
+        "$ref": "#/components/schemas/Money",
+        "nullable": true
+       },
+       "customer_id": {
+        "type": "string",
+        "maxLength": 191,
+        "nullable": true
+       },
+       "type": {
+        "$ref": "#/components/schemas/TenderType"
+       },
+       "card_details": {
+        "$ref": "#/components/schemas/TenderCardDetails",
+        "nullable": true
+       },
+       "cash_details": {
+        "$ref": "#/components/schemas/TenderCashDetails",
+        "nullable": true
+       },
+       "bank_account_details": {
+        "$ref": "#/components/schemas/TenderBankAccountDetails",
+        "nullable": true
+       },
+       "buy_now_pay_later_details": {
+        "$ref": "#/components/schemas/TenderBuyNowPayLaterDetails",
+        "nullable": true
+       },
+       "square_account_details": {
+        "$ref": "#/components/schemas/TenderSquareAccountDetails",
+        "nullable": true
+       },
+       "additional_recipients": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/AdditionalRecipient"
+        },
+        "nullable": true
+       },
+       "payment_id": {
+        "type": "string",
+        "maxLength": 192,
+        "nullable": true
+       }
+      }
+     },
+     "Refund": {
+      "type": "object",
+      "required": [
+       "id",
+       "location_id",
+       "reason",
+       "amount_money",
+       "status"
+      ],
+      "properties": {
+       "id": {
+        "type": "string",
+        "maxLength": 255
+       },
+       "location_id": {
+        "type": "string",
+        "maxLength": 50
+       },
+       "transaction_id": {
+        "type": "string",
+        "maxLength": 192,
+        "nullable": true
+       },
+       "tender_id": {
+        "type": "string",
+        "maxLength": 192,
+        "nullable": true
+       },
+       "created_at": {
+        "type": "string",
+        "maxLength": 32,
+        "readOnly": true
+       },
+       "reason": {
+        "type": "string",
+        "maxLength": 192
+       },
+       "amount_money": {
+        "$ref": "#/components/schemas/Money"
+       },
+       "status": {
+        "$ref": "#/components/schemas/RefundStatus"
+       },
+       "processing_fee_money": {
+        "$ref": "#/components/schemas/Money",
+        "nullable": true
+       },
+       "additional_recipients": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/AdditionalRecipient"
+        },
+        "nullable": true
+       }
+      }
+     },
+     "OrderState": {
+      "type": "string",
+      "enum": [
+       "OPEN",
+       "COMPLETED",
+       "CANCELED",
+       "DRAFT"
+      ]
+     },
+     "OrderPricingOptions": {
+      "type": "object",
+      "properties": {
+       "auto_apply_discounts": {
+        "type": "boolean",
+        "nullable": true
+       },
+       "auto_apply_taxes": {
+        "type": "boolean",
+        "nullable": true
+       }
+      }
+     },
+     "OrderReward": {
+      "type": "object",
+      "required": [
+       "id",
+       "reward_tier_id"
+      ],
+      "properties": {
+       "id": {
+        "type": "string",
+        "minLength": 1
+       },
+       "reward_tier_id": {
+        "type": "string",
+        "minLength": 1
+       }
+      }
+     },
+     "InvoiceRecipient": {
+      "type": "object",
+      "properties": {
+       "customer_id": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 255,
+        "nullable": true
+       },
+       "given_name": {
+        "type": "string",
+        "readOnly": true
+       },
+       "family_name": {
+        "type": "string",
+        "readOnly": true
+       },
+       "email_address": {
+        "type": "string",
+        "readOnly": true
+       },
+       "address": {
+        "$ref": "#/components/schemas/Address",
+        "readOnly": true
+       },
+       "phone_number": {
+        "type": "string",
+        "readOnly": true
+       },
+       "company_name": {
+        "type": "string",
+        "readOnly": true
+       },
+       "tax_ids": {
+        "$ref": "#/components/schemas/InvoiceRecipientTaxIds",
+        "readOnly": true
+       }
+      }
+     },
+     "InvoicePaymentRequest": {
+      "type": "object",
+      "properties": {
+       "uid": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 255,
+        "nullable": true
+       },
+       "request_method": {
+        "$ref": "#/components/schemas/InvoiceRequestMethod",
+        "nullable": true
+       },
+       "request_type": {
+        "$ref": "#/components/schemas/InvoiceRequestType",
+        "nullable": true
+       },
+       "due_date": {
+        "type": "string",
+        "nullable": true
+       },
+       "fixed_amount_requested_money": {
+        "$ref": "#/components/schemas/Money",
+        "nullable": true
+       },
+       "percentage_requested": {
+        "type": "string",
+        "nullable": true
+       },
+       "tipping_enabled": {
+        "type": "boolean",
+        "nullable": true
+       },
+       "automatic_payment_source": {
+        "$ref": "#/components/schemas/InvoiceAutomaticPaymentSource",
+        "nullable": true
+       },
+       "card_id": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 255,
+        "nullable": true
+       },
+       "reminders": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/InvoicePaymentReminder"
+        },
+        "nullable": true
+       },
+       "computed_amount_money": {
+        "$ref": "#/components/schemas/Money",
+        "readOnly": true
+       },
+       "total_completed_amount_money": {
+        "$ref": "#/components/schemas/Money",
+        "readOnly": true
+       },
+       "rounding_adjustment_included_money": {
+        "$ref": "#/components/schemas/Money",
+        "readOnly": true
+       }
+      }
+     },
+     "InvoiceDeliveryMethod": {
+      "type": "string",
+      "enum": [
+       "EMAIL",
+       "SHARE_MANUALLY",
+       "SMS"
+      ]
+     },
+     "InvoiceStatus": {
+      "type": "string",
+      "enum": [
+       "DRAFT",
+       "UNPAID",
+       "SCHEDULED",
+       "PARTIALLY_PAID",
+       "PAID",
+       "PARTIALLY_REFUNDED",
+       "REFUNDED",
+       "CANCELED",
+       "FAILED",
+       "PAYMENT_PENDING"
+      ]
+     },
+     "InvoiceAcceptedPaymentMethods": {
+      "type": "object",
+      "properties": {
+       "card": {
+        "type": "boolean",
+        "nullable": true
+       },
+       "square_gift_card": {
+        "type": "boolean",
+        "nullable": true
+       },
+       "bank_account": {
+        "type": "boolean",
+        "nullable": true
+       },
+       "buy_now_pay_later": {
+        "type": "boolean",
+        "nullable": true
+       },
+       "cash_app_pay": {
+        "type": "boolean",
+        "nullable": true
+       }
+      }
+     },
+     "InvoiceCustomField": {
+      "type": "object",
+      "properties": {
+       "label": {
+        "type": "string",
+        "maxLength": 30,
+        "nullable": true
+       },
+       "value": {
+        "type": "string",
+        "maxLength": 2000,
+        "nullable": true
+       },
+       "placement": {
+        "$ref": "#/components/schemas/InvoiceCustomFieldPlacement",
+        "nullable": true
+       }
+      }
+     },
+     "InvoiceAttachment": {
+      "type": "object",
+      "properties": {
+       "id": {
+        "type": "string",
+        "readOnly": true
+       },
+       "filename": {
+        "type": "string",
+        "readOnly": true
+       },
+       "description": {
+        "type": "string",
+        "readOnly": true
+       },
+       "filesize": {
+        "type": "integer",
+        "readOnly": true
+       },
+       "hash": {
+        "type": "string",
+        "readOnly": true
+       },
+       "mime_type": {
+        "type": "string",
+        "readOnly": true
+       },
+       "uploaded_at": {
+        "type": "string",
+        "readOnly": true
+       }
+      }
+     },
+     "DestinationDetails": {
+      "type": "object",
+      "properties": {
+       "card_details": {
+        "$ref": "#/components/schemas/DestinationDetailsCardRefundDetails",
+        "nullable": true
+       },
+       "cash_details": {
+        "$ref": "#/components/schemas/DestinationDetailsCashRefundDetails",
+        "nullable": true
+       },
+       "external_details": {
+        "$ref": "#/components/schemas/DestinationDetailsExternalRefundDetails",
+        "nullable": true
+       }
+      }
+     },
+     "SubscriptionStatus": {
+      "type": "string",
+      "enum": [
+       "PENDING",
+       "ACTIVE",
+       "CANCELED",
+       "DEACTIVATED",
+       "PAUSED",
+       "COMPLETED"
+      ]
+     },
+     "SubscriptionSource": {
+      "type": "object",
+      "properties": {
+       "name": {
+        "type": "string",
+        "maxLength": 255,
+        "nullable": true
+       }
+      }
+     },
+     "SubscriptionAction": {
+      "type": "object",
+      "properties": {
+       "id": {
+        "type": "string"
+       },
+       "type": {
+        "$ref": "#/components/schemas/SubscriptionActionType",
+        "nullable": true
+       },
+       "effective_date": {
+        "type": "string",
+        "nullable": true
+       },
+       "monthly_billing_anchor_date": {
+        "type": "integer",
+        "nullable": true
+       },
+       "phases": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/Phase"
+        },
+        "nullable": true
+       },
+       "new_plan_variation_id": {
+        "type": "string",
+        "nullable": true
+       }
+      }
+     },
+     "Phase": {
+      "type": "object",
+      "properties": {
+       "uid": {
+        "type": "string",
+        "nullable": true
+       },
+       "ordinal": {
+        "type": "integer",
+        "format": "int64",
+        "nullable": true
+       },
+       "order_template_id": {
+        "type": "string",
+        "nullable": true
+       },
+       "plan_phase_uid": {
+        "type": "string",
+        "nullable": true
+       }
+      }
+     },
+     "CustomerPreferences": {
+      "type": "object",
+      "properties": {
+       "email_unsubscribed": {
+        "type": "boolean",
+        "nullable": true
+       }
+      }
+     },
+     "CustomerCreationSource": {
+      "type": "string",
+      "enum": [
+       "OTHER",
+       "APPOINTMENTS",
+       "COUPON",
+       "DELETION_RECOVERY",
+       "DIRECTORY",
+       "EGIFTING",
+       "EMAIL_COLLECTION",
+       "FEEDBACK",
+       "IMPORT",
+       "INVOICES",
+       "LOYALTY",
+       "MARKETING",
+       "MERGE",
+       "ONLINE_STORE",
+       "INSTANT_PROFILE",
+       "TERMINAL",
+       "THIRD_PARTY",
+       "THIRD_PARTY_IMPORT",
+       "UNMERGE_RECOVERY"
+      ]
+     },
+     "CustomerTaxIds": {
+      "type": "object",
+      "properties": {
+       "eu_vat": {
+        "type": "string",
+        "maxLength": 20,
+        "nullable": true
+       }
+      }
+     },
+     "Currency": {
+      "type": "string",
+      "enum": [
+       "UNKNOWN_CURRENCY",
+       "AED",
+       "AFN",
+       "ALL",
+       "AMD",
+       "ANG",
+       "AOA",
+       "ARS",
+       "AUD",
+       "AWG",
+       "AZN",
+       "BAM",
+       "BBD",
+       "BDT",
+       "BGN",
+       "BHD",
+       "BIF",
+       "BMD",
+       "BND",
+       "BOB",
+       "BOV",
+       "BRL",
+       "BSD",
+       "BTN",
+       "BWP",
+       "BYR",
+       "BZD",
+       "CAD",
+       "CDF",
+       "CHE",
+       "CHF",
+       "CHW",
+       "CLF",
+       "CLP",
+       "CNY",
+       "COP",
+       "COU",
+       "CRC",
+       "CUC",
+       "CUP",
+       "CVE",
+       "CZK",
+       "DJF",
+       "DKK",
+       "DOP",
+       "DZD",
+       "EGP",
+       "ERN",
+       "ETB",
+       "EUR",
+       "FJD",
+       "FKP",
+       "GBP",
+       "GEL",
+       "GHS",
+       "GIP",
+       "GMD",
+       "GNF",
+       "GTQ",
+       "GYD",
+       "HKD",
+       "HNL",
+       "HRK",
+       "HTG",
+       "HUF",
+       "IDR",
+       "ILS",
+       "INR",
+       "IQD",
+       "IRR",
+       "ISK",
+       "JMD",
+       "JOD",
+       "JPY",
+       "KES",
+       "KGS",
+       "KHR",
+       "KMF",
+       "KPW",
+       "KRW",
+       "KWD",
+       "KYD",
+       "KZT",
+       "LAK",
+       "LBP",
+       "LKR",
+       "LRD",
+       "LSL",
+       "LTL",
+       "LVL",
+       "LYD",
+       "MAD",
+       "MDL",
+       "MGA",
+       "MKD",
+       "MMK",
+       "MNT",
+       "MOP",
+       "MRO",
+       "MUR",
+       "MVR",
+       "MWK",
+       "MXN",
+       "MXV",
+       "MYR",
+       "MZN",
+       "NAD",
+       "NGN",
+       "NIO",
+       "NOK",
+       "NPR",
+       "NZD",
+       "OMR",
+       "PAB",
+       "PEN",
+       "PGK",
+       "PHP",
+       "PKR",
+       "PLN",
+       "PYG",
+       "QAR",
+       "RON",
+       "RSD",
+       "RUB",
+       "RWF",
+       "SAR",
+       "SBD",
+       "SCR",
+       "SDG",
+       "SEK",
+       "SGD",
+       "SHP",
+       "SLL",
+       "SLE",
+       "SOS",
+       "SRD",
+       "SSP",
+       "STD",
+       "SVC",
+       "SYP",
+       "SZL",
+       "THB",
+       "TJS",
+       "TMT",
+       "TND",
+       "TOP",
+       "TRY",
+       "TTD",
+       "TWD",
+       "TZS",
+       "UAH",
+       "UGX",
+       "USD",
+       "USN",
+       "USS",
+       "UYI",
+       "UYU",
+       "UZS",
+       "VEF",
+       "VND",
+       "VUV",
+       "WST",
+       "XAF",
+       "XAG",
+       "XAU",
+       "XBA",
+       "XBB",
+       "XBC",
+       "XBD",
+       "XCD",
+       "XDR",
+       "XOF",
+       "XPD",
+       "XPF",
+       "XPT",
+       "XTS",
+       "XXX",
+       "YER",
+       "ZAR",
+       "ZMK",
+       "ZMW",
+       "BTC",
+       "XUS"
+      ]
+     },
+     "Card": {
+      "type": "object",
+      "properties": {
+       "id": {
+        "type": "string",
+        "maxLength": 64,
+        "readOnly": true
+       },
+       "card_brand": {
+        "$ref": "#/components/schemas/CardBrand",
+        "readOnly": true
+       },
+       "last_4": {
+        "type": "string",
+        "maxLength": 4,
+        "readOnly": true
+       },
+       "exp_month": {
+        "type": "integer",
+        "format": "int64",
+        "nullable": true
+       },
+       "exp_year": {
+        "type": "integer",
+        "format": "int64",
+        "nullable": true
+       },
+       "cardholder_name": {
+        "type": "string",
+        "maxLength": 96,
+        "nullable": true
+       },
+       "billing_address": {
+        "$ref": "#/components/schemas/Address",
+        "nullable": true
+       },
+       "fingerprint": {
+        "type": "string",
+        "maxLength": 255,
+        "readOnly": true
+       },
+       "customer_id": {
+        "type": "string",
+        "nullable": true
+       },
+       "merchant_id": {
+        "type": "string",
+        "readOnly": true
+       },
+       "reference_id": {
+        "type": "string",
+        "maxLength": 128,
+        "nullable": true
+       },
+       "enabled": {
+        "type": "boolean",
+        "readOnly": true
+       },
+       "card_type": {
+        "$ref": "#/components/schemas/CardType",
+        "readOnly": true
+       },
+       "prepaid_type": {
+        "$ref": "#/components/schemas/CardPrepaidType",
+        "readOnly": true
+       },
+       "bin": {
+        "type": "string",
+        "maxLength": 6,
+        "readOnly": true
+       },
+       "created_at": {
+        "type": "string",
+        "readOnly": true
+       },
+       "disabled_at": {
+        "type": "string",
+        "readOnly": true
+       },
+       "version": {
+        "type": "integer",
+        "format": "int64"
+       },
+       "card_co_brand": {
+        "$ref": "#/components/schemas/CardCoBrand",
+        "readOnly": true
+       },
+       "issuer_alert": {
+        "$ref": "#/components/schemas/CardIssuerAlert",
+        "readOnly": true
+       },
+       "issuer_alert_at": {
+        "type": "string",
+        "readOnly": true
+       },
+       "hsa_fsa": {
+        "type": "boolean",
+        "readOnly": true
+       }
+      }
+     },
+     "CardPaymentTimeline": {
+      "type": "object",
+      "properties": {
+       "authorized_at": {
+        "type": "string",
+        "nullable": true
+       },
+       "captured_at": {
+        "type": "string",
+        "nullable": true
+       },
+       "voided_at": {
+        "type": "string",
+        "nullable": true
+       }
+      }
+     },
+     "CardSurchargeDetails": {
+      "type": "object",
+      "properties": {
+       "card_surcharge_money": {
+        "$ref": "#/components/schemas/Money",
+        "nullable": true
+       }
+      }
+     },
+     "ACHDetails": {
+      "type": "object",
+      "properties": {
+       "routing_number": {
+        "type": "string",
+        "maxLength": 50,
+        "nullable": true
+       },
+       "account_number_suffix": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 4,
+        "nullable": true
+       },
+       "account_type": {
+        "type": "string",
+        "maxLength": 50,
+        "nullable": true
+       }
+      }
+     },
+     "FelicaDetails": {
+      "type": "object",
+      "properties": {
+       "terminal_id": {
+        "type": "string",
+        "maxLength": 255,
+        "nullable": true
+       },
+       "felica_masked_card_number": {
+        "type": "string",
+        "nullable": true
+       },
+       "felica_brand": {
+        "$ref": "#/components/schemas/FelicaDetailsFelicaBrand",
+        "nullable": true
+       }
+      }
+     },
+     "CashAppDetails": {
+      "type": "object",
+      "properties": {
+       "buyer_full_name": {
+        "type": "string",
+        "maxLength": 255,
+        "nullable": true
+       },
+       "buyer_country_code": {
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 2,
+        "nullable": true
+       },
+       "buyer_cashtag": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 21,
+        "readOnly": true
+       }
+      }
+     },
+     "LightningDetails": {
+      "type": "object",
+      "properties": {
+       "payment_url": {
+        "type": "string",
+        "nullable": true
+       }
+      }
+     },
+     "AfterpayDetails": {
+      "type": "object",
+      "properties": {
+       "email_address": {
+        "type": "string",
+        "maxLength": 255,
+        "nullable": true
+       }
+      }
+     },
+     "ClearpayDetails": {
+      "type": "object",
+      "properties": {
+       "email_address": {
+        "type": "string",
+        "maxLength": 255,
+        "nullable": true
+       }
+      }
+     },
+     "RiskEvaluationRiskLevel": {
+      "type": "string",
+      "enum": [
+       "PENDING",
+       "NORMAL",
+       "MODERATE",
+       "HIGH"
+      ]
+     },
+     "Country": {
+      "type": "string",
+      "enum": [
+       "ZZ",
+       "AD",
+       "AE",
+       "AF",
+       "AG",
+       "AI",
+       "AL",
+       "AM",
+       "AO",
+       "AQ",
+       "AR",
+       "AS",
+       "AT",
+       "AU",
+       "AW",
+       "AX",
+       "AZ",
+       "BA",
+       "BB",
+       "BD",
+       "BE",
+       "BF",
+       "BG",
+       "BH",
+       "BI",
+       "BJ",
+       "BL",
+       "BM",
+       "BN",
+       "BO",
+       "BQ",
+       "BR",
+       "BS",
+       "BT",
+       "BV",
+       "BW",
+       "BY",
+       "BZ",
+       "CA",
+       "CC",
+       "CD",
+       "CF",
+       "CG",
+       "CH",
+       "CI",
+       "CK",
+       "CL",
+       "CM",
+       "CN",
+       "CO",
+       "CR",
+       "CU",
+       "CV",
+       "CW",
+       "CX",
+       "CY",
+       "CZ",
+       "DE",
+       "DJ",
+       "DK",
+       "DM",
+       "DO",
+       "DZ",
+       "EC",
+       "EE",
+       "EG",
+       "EH",
+       "ER",
+       "ES",
+       "ET",
+       "FI",
+       "FJ",
+       "FK",
+       "FM",
+       "FO",
+       "FR",
+       "GA",
+       "GB",
+       "GD",
+       "GE",
+       "GF",
+       "GG",
+       "GH",
+       "GI",
+       "GL",
+       "GM",
+       "GN",
+       "GP",
+       "GQ",
+       "GR",
+       "GS",
+       "GT",
+       "GU",
+       "GW",
+       "GY",
+       "HK",
+       "HM",
+       "HN",
+       "HR",
+       "HT",
+       "HU",
+       "ID",
+       "IE",
+       "IL",
+       "IM",
+       "IN",
+       "IO",
+       "IQ",
+       "IR",
+       "IS",
+       "IT",
+       "JE",
+       "JM",
+       "JO",
+       "JP",
+       "KE",
+       "KG",
+       "KH",
+       "KI",
+       "KM",
+       "KN",
+       "KP",
+       "KR",
+       "KW",
+       "KY",
+       "KZ",
+       "LA",
+       "LB",
+       "LC",
+       "LI",
+       "LK",
+       "LR",
+       "LS",
+       "LT",
+       "LU",
+       "LV",
+       "LY",
+       "MA",
+       "MC",
+       "MD",
+       "ME",
+       "MF",
+       "MG",
+       "MH",
+       "MK",
+       "ML",
+       "MM",
+       "MN",
+       "MO",
+       "MP",
+       "MQ",
+       "MR",
+       "MS",
+       "MT",
+       "MU",
+       "MV",
+       "MW",
+       "MX",
+       "MY",
+       "MZ",
+       "NA",
+       "NC",
+       "NE",
+       "NF",
+       "NG",
+       "NI",
+       "NL",
+       "NO",
+       "NP",
+       "NR",
+       "NU",
+       "NZ",
+       "OM",
+       "PA",
+       "PE",
+       "PF",
+       "PG",
+       "PH",
+       "PK",
+       "PL",
+       "PM",
+       "PN",
+       "PR",
+       "PS",
+       "PT",
+       "PW",
+       "PY",
+       "QA",
+       "RE",
+       "RO",
+       "RS",
+       "RU",
+       "RW",
+       "SA",
+       "SB",
+       "SC",
+       "SD",
+       "SE",
+       "SG",
+       "SH",
+       "SI",
+       "SJ",
+       "SK",
+       "SL",
+       "SM",
+       "SN",
+       "SO",
+       "SR",
+       "SS",
+       "ST",
+       "SV",
+       "SX",
+       "SY",
+       "SZ",
+       "TC",
+       "TD",
+       "TF",
+       "TG",
+       "TH",
+       "TJ",
+       "TK",
+       "TL",
+       "TM",
+       "TN",
+       "TO",
+       "TR",
+       "TT",
+       "TV",
+       "TW",
+       "TZ",
+       "UA",
+       "UG",
+       "UM",
+       "US",
+       "UY",
+       "UZ",
+       "VA",
+       "VC",
+       "VE",
+       "VG",
+       "VI",
+       "VN",
+       "VU",
+       "WF",
+       "WS",
+       "YE",
+       "YT",
+       "ZA",
+       "ZM",
+       "ZW"
+      ]
+     },
+     "ApplicationDetailsExternalSquareProduct": {
+      "type": "string",
+      "enum": [
+       "APPOINTMENTS",
+       "ECOMMERCE_API",
+       "INVOICES",
+       "ONLINE_STORE",
+       "OTHER",
+       "RESTAURANTS",
+       "RETAIL",
+       "SQUARE_POS",
+       "TERMINAL_API",
+       "VIRTUAL_TERMINAL"
+      ]
+     },
+     "OrderQuantityUnit": {
+      "type": "object",
+      "properties": {
+       "measurement_unit": {
+        "$ref": "#/components/schemas/MeasurementUnit",
+        "nullable": true
+       },
+       "precision": {
+        "type": "integer",
+        "nullable": true
+       },
+       "catalog_object_id": {
+        "type": "string",
+        "nullable": true
+       },
+       "catalog_version": {
+        "type": "integer",
+        "format": "int64",
+        "nullable": true
+       }
+      }
+     },
+     "OrderLineItemItemType": {
+      "type": "string",
+      "enum": [
+       "ITEM",
+       "CUSTOM_AMOUNT",
+       "GIFT_CARD"
+      ]
+     },
+     "OrderLineItemModifier": {
+      "type": "object",
+      "properties": {
+       "uid": {
+        "type": "string",
+        "maxLength": 60,
+        "nullable": true
+       },
+       "catalog_object_id": {
+        "type": "string",
+        "maxLength": 192,
+        "nullable": true
+       },
+       "catalog_version": {
+        "type": "integer",
+        "format": "int64",
+        "nullable": true
+       },
+       "name": {
+        "type": "string",
+        "maxLength": 255,
+        "nullable": true
+       },
+       "quantity": {
+        "type": "string",
+        "nullable": true
+       },
+       "base_price_money": {
+        "$ref": "#/components/schemas/Money",
+        "nullable": true
+       },
+       "total_price_money": {
+        "$ref": "#/components/schemas/Money",
+        "readOnly": true
+       },
+       "metadata": {
+        "type": "object",
+        "additionalProperties": {
+         "type": "string"
+        },
+        "nullable": true
+       },
+       "parent_modifier_uid": {
+        "type": "string",
+        "maxLength": 60,
+        "nullable": true
+       }
+      }
+     },
+     "OrderLineItemAppliedTax": {
+      "type": "object",
+      "required": [
+       "tax_uid"
+      ],
+      "properties": {
+       "uid": {
+        "type": "string",
+        "maxLength": 60,
+        "nullable": true
+       },
+       "tax_uid": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 60
+       },
+       "applied_money": {
+        "$ref": "#/components/schemas/Money",
+        "readOnly": true
+       },
+       "auto_applied": {
+        "type": "boolean",
+        "readOnly": true
+       }
+      }
+     },
+     "OrderLineItemAppliedDiscount": {
+      "type": "object",
+      "required": [
+       "discount_uid"
+      ],
+      "properties": {
+       "uid": {
+        "type": "string",
+        "maxLength": 60,
+        "nullable": true
+       },
+       "discount_uid": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 60
+       },
+       "applied_money": {
+        "$ref": "#/components/schemas/Money",
+        "readOnly": true
+       }
+      }
+     },
+     "OrderLineItemAppliedServiceCharge": {
+      "type": "object",
+      "required": [
+       "service_charge_uid"
+      ],
+      "properties": {
+       "uid": {
+        "type": "string",
+        "maxLength": 60,
+        "nullable": true
+       },
+       "service_charge_uid": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 60
+       },
+       "applied_money": {
+        "$ref": "#/components/schemas/Money",
+        "readOnly": true
+       }
+      }
+     },
+     "OrderLineItemPricingBlocklists": {
+      "type": "object",
+      "properties": {
+       "blocked_discounts": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/OrderLineItemPricingBlocklistsBlockedDiscount"
+        },
+        "nullable": true
+       },
+       "blocked_taxes": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/OrderLineItemPricingBlocklistsBlockedTax"
+        },
+        "nullable": true
+       },
+       "blocked_service_charges": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/OrderLineItemPricingBlocklistsBlockedServiceCharge"
+        },
+        "nullable": true
+       }
+      }
+     },
+     "OrderLineItemTaxType": {
+      "type": "string",
+      "enum": [
+       "UNKNOWN_TAX",
+       "ADDITIVE",
+       "INCLUSIVE"
+      ]
+     },
+     "OrderLineItemTaxScope": {
+      "type": "string",
+      "enum": [
+       "OTHER_TAX_SCOPE",
+       "LINE_ITEM",
+       "ORDER"
+      ]
+     },
+     "OrderLineItemDiscountType": {
+      "type": "string",
+      "enum": [
+       "UNKNOWN_DISCOUNT",
+       "FIXED_PERCENTAGE",
+       "FIXED_AMOUNT",
+       "VARIABLE_PERCENTAGE",
+       "VARIABLE_AMOUNT"
+      ]
+     },
+     "OrderLineItemDiscountScope": {
+      "type": "string",
+      "enum": [
+       "OTHER_DISCOUNT_SCOPE",
+       "LINE_ITEM",
+       "ORDER"
+      ]
+     },
+     "OrderServiceChargeCalculationPhase": {
+      "type": "string",
+      "enum": [
+       "SUBTOTAL_PHASE",
+       "TOTAL_PHASE",
+       "APPORTIONED_PERCENTAGE_PHASE",
+       "APPORTIONED_AMOUNT_PHASE"
+      ]
+     },
+     "OrderServiceChargeType": {
+      "type": "string",
+      "enum": [
+       "AUTO_GRATUITY",
+       "CUSTOM"
+      ]
+     },
+     "OrderServiceChargeTreatmentType": {
+      "type": "string",
+      "enum": [
+       "LINE_ITEM_TREATMENT",
+       "APPORTIONED_TREATMENT"
+      ]
+     },
+     "OrderServiceChargeScope": {
+      "type": "string",
+      "enum": [
+       "OTHER_SERVICE_CHARGE_SCOPE",
+       "LINE_ITEM",
+       "ORDER"
+      ]
+     },
+     "FulfillmentType": {
+      "type": "string",
+      "enum": [
+       "PICKUP",
+       "SHIPMENT",
+       "DELIVERY",
+       "IN_STORE"
+      ]
+     },
+     "FulfillmentState": {
+      "type": "string",
+      "enum": [
+       "PROPOSED",
+       "RESERVED",
+       "PREPARED",
+       "COMPLETED",
+       "CANCELED",
+       "FAILED"
+      ]
+     },
+     "FulfillmentFulfillmentLineItemApplication": {
+      "type": "string",
+      "enum": [
+       "ALL",
+       "ENTRY_LIST"
+      ]
+     },
+     "FulfillmentFulfillmentEntry": {
+      "type": "object",
+      "required": [
+       "line_item_uid",
+       "quantity"
+      ],
+      "properties": {
+       "uid": {
+        "type": "string",
+        "maxLength": 60,
+        "nullable": true
+       },
+       "line_item_uid": {
+        "type": "string",
+        "minLength": 1
+       },
+       "quantity": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 12
+       },
+       "metadata": {
+        "type": "object",
+        "additionalProperties": {
+         "type": "string"
+        },
+        "nullable": true
+       }
+      }
+     },
+     "FulfillmentPickupDetails": {
+      "type": "object",
+      "properties": {
+       "recipient": {
+        "$ref": "#/components/schemas/FulfillmentRecipient",
+        "nullable": true
+       },
+       "expires_at": {
+        "type": "string",
+        "nullable": true
+       },
+       "auto_complete_duration": {
+        "type": "string",
+        "nullable": true
+       },
+       "schedule_type": {
+        "$ref": "#/components/schemas/FulfillmentPickupDetailsScheduleType",
+        "nullable": true
+       },
+       "pickup_at": {
+        "type": "string",
+        "nullable": true
+       },
+       "pickup_window_duration": {
+        "type": "string",
+        "nullable": true
+       },
+       "prep_time_duration": {
+        "type": "string",
+        "nullable": true
+       },
+       "note": {
+        "type": "string",
+        "maxLength": 500,
+        "nullable": true
+       },
+       "placed_at": {
+        "type": "string",
+        "readOnly": true
+       },
+       "accepted_at": {
+        "type": "string",
+        "readOnly": true
+       },
+       "rejected_at": {
+        "type": "string",
+        "readOnly": true
+       },
+       "ready_at": {
+        "type": "string",
+        "readOnly": true
+       },
+       "expired_at": {
+        "type": "string",
+        "readOnly": true
+       },
+       "picked_up_at": {
+        "type": "string",
+        "readOnly": true
+       },
+       "canceled_at": {
+        "type": "string",
+        "readOnly": true
+       },
+       "cancel_reason": {
+        "type": "string",
+        "maxLength": 100,
+        "nullable": true
+       },
+       "is_curbside_pickup": {
+        "type": "boolean",
+        "nullable": true
+       },
+       "curbside_pickup_details": {
+        "$ref": "#/components/schemas/FulfillmentPickupDetailsCurbsidePickupDetails",
+        "nullable": true
+       }
+      }
+     },
+     "FulfillmentShipmentDetails": {
+      "type": "object",
+      "properties": {
+       "recipient": {
+        "$ref": "#/components/schemas/FulfillmentRecipient",
+        "nullable": true
+       },
+       "carrier": {
+        "type": "string",
+        "maxLength": 50,
+        "nullable": true
+       },
+       "shipping_note": {
+        "type": "string",
+        "maxLength": 500,
+        "nullable": true
+       },
+       "shipping_type": {
+        "type": "string",
+        "maxLength": 255,
+        "nullable": true
+       },
+       "tracking_number": {
+        "type": "string",
+        "maxLength": 100,
+        "nullable": true
+       },
+       "tracking_url": {
+        "type": "string",
+        "maxLength": 2000,
+        "nullable": true
+       },
+       "placed_at": {
+        "type": "string",
+        "readOnly": true
+       },
+       "in_progress_at": {
+        "type": "string",
+        "readOnly": true
+       },
+       "packaged_at": {
+        "type": "string",
+        "readOnly": true
+       },
+       "expected_shipped_at": {
+        "type": "string",
+        "nullable": true
+       },
+       "shipped_at": {
+        "type": "string",
+        "readOnly": true
+       },
+       "canceled_at": {
+        "type": "string",
+        "nullable": true
+       },
+       "cancel_reason": {
+        "type": "string",
+        "maxLength": 100,
+        "nullable": true
+       },
+       "failed_at": {
+        "type": "string",
+        "readOnly": true
+       },
+       "failure_reason": {
+        "type": "string",
+        "maxLength": 100,
+        "nullable": true
+       }
+      }
+     },
+     "FulfillmentDeliveryDetails": {
+      "type": "object",
+      "properties": {
+       "recipient": {
+        "$ref": "#/components/schemas/FulfillmentRecipient",
+        "nullable": true
+       },
+       "schedule_type": {
+        "$ref": "#/components/schemas/FulfillmentDeliveryDetailsOrderFulfillmentDeliveryDetailsScheduleType",
+        "nullable": true
+       },
+       "placed_at": {
+        "type": "string",
+        "readOnly": true
+       },
+       "deliver_at": {
+        "type": "string",
+        "nullable": true
+       },
+       "prep_time_duration": {
+        "type": "string",
+        "nullable": true
+       },
+       "delivery_window_duration": {
+        "type": "string",
+        "nullable": true
+       },
+       "note": {
+        "type": "string",
+        "maxLength": 550,
+        "nullable": true
+       },
+       "completed_at": {
+        "type": "string",
+        "nullable": true
+       },
+       "in_progress_at": {
+        "type": "string",
+        "readOnly": true
+       },
+       "rejected_at": {
+        "type": "string",
+        "readOnly": true
+       },
+       "ready_at": {
+        "type": "string",
+        "readOnly": true
+       },
+       "delivered_at": {
+        "type": "string",
+        "readOnly": true
+       },
+       "canceled_at": {
+        "type": "string",
+        "readOnly": true
+       },
+       "cancel_reason": {
+        "type": "string",
+        "maxLength": 100,
+        "nullable": true
+       },
+       "courier_pickup_at": {
+        "type": "string",
+        "nullable": true
+       },
+       "courier_pickup_window_duration": {
+        "type": "string",
+        "nullable": true
+       },
+       "is_no_contact_delivery": {
+        "type": "boolean",
+        "nullable": true
+       },
+       "dropoff_notes": {
+        "type": "string",
+        "maxLength": 550,
+        "nullable": true
+       },
+       "courier_provider_name": {
+        "type": "string",
+        "maxLength": 255,
+        "nullable": true
+       },
+       "courier_support_phone_number": {
+        "type": "string",
+        "maxLength": 17,
+        "nullable": true
+       },
+       "square_delivery_id": {
+        "type": "string",
+        "maxLength": 50,
+        "nullable": true
+       },
+       "external_delivery_id": {
+        "type": "string",
+        "maxLength": 50,
+        "nullable": true
+       },
+       "managed_delivery": {
+        "type": "boolean",
+        "nullable": true
+       }
+      }
+     },
+     "FulfillmentInStoreDetails": {
+      "type": "object",
+      "properties": {
+       "note": {
+        "type": "string",
+        "maxLength": 550,
+        "nullable": true
+       },
+       "recipient": {
+        "$ref": "#/components/schemas/FulfillmentRecipient",
+        "nullable": true
+       },
+       "placed_at": {
+        "type": "string",
+        "nullable": true
+       },
+       "completed_at": {
+        "type": "string",
+        "readOnly": true
+       },
+       "in_progress_at": {
+        "type": "string",
+        "readOnly": true
+       },
+       "prepared_at": {
+        "type": "string",
+        "readOnly": true
+       },
+       "canceled_at": {
+        "type": "string",
+        "readOnly": true
+       }
+      }
+     },
+     "OrderReturnLineItem": {
+      "type": "object",
+      "required": [
+       "quantity"
+      ],
+      "properties": {
+       "uid": {
+        "type": "string",
+        "maxLength": 60,
+        "nullable": true
+       },
+       "source_line_item_uid": {
+        "type": "string",
+        "maxLength": 60,
+        "nullable": true
+       },
+       "name": {
+        "type": "string",
+        "maxLength": 512,
+        "nullable": true
+       },
+       "quantity": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 12
+       },
+       "quantity_unit": {
+        "$ref": "#/components/schemas/OrderQuantityUnit",
+        "nullable": true
+       },
+       "note": {
+        "type": "string",
+        "maxLength": 2000,
+        "nullable": true
+       },
+       "catalog_object_id": {
+        "type": "string",
+        "maxLength": 192,
+        "nullable": true
+       },
+       "catalog_version": {
+        "type": "integer",
+        "format": "int64",
+        "nullable": true
+       },
+       "variation_name": {
+        "type": "string",
+        "maxLength": 400,
+        "nullable": true
+       },
+       "item_type": {
+        "$ref": "#/components/schemas/OrderLineItemItemType",
+        "nullable": true
+       },
+       "return_modifiers": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/OrderReturnLineItemModifier"
+        },
+        "nullable": true
+       },
+       "applied_taxes": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/OrderLineItemAppliedTax"
+        },
+        "nullable": true
+       },
+       "applied_discounts": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/OrderLineItemAppliedDiscount"
+        },
+        "nullable": true
+       },
+       "base_price_money": {
+        "$ref": "#/components/schemas/Money",
+        "nullable": true
+       },
+       "variation_total_price_money": {
+        "$ref": "#/components/schemas/Money",
+        "readOnly": true
+       },
+       "gross_return_money": {
+        "$ref": "#/components/schemas/Money",
+        "readOnly": true
+       },
+       "total_tax_money": {
+        "$ref": "#/components/schemas/Money",
+        "readOnly": true
+       },
+       "total_discount_money": {
+        "$ref": "#/components/schemas/Money",
+        "readOnly": true
+       },
+       "total_money": {
+        "$ref": "#/components/schemas/Money",
+        "readOnly": true
+       },
+       "applied_service_charges": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/OrderLineItemAppliedServiceCharge"
+        },
+        "nullable": true
+       },
+       "total_service_charge_money": {
+        "$ref": "#/components/schemas/Money",
+        "readOnly": true
+       }
+      }
+     },
+     "OrderReturnServiceCharge": {
+      "type": "object",
+      "properties": {
+       "uid": {
+        "type": "string",
+        "maxLength": 60,
+        "nullable": true
+       },
+       "source_service_charge_uid": {
+        "type": "string",
+        "maxLength": 60,
+        "nullable": true
+       },
+       "name": {
+        "type": "string",
+        "maxLength": 255,
+        "nullable": true
+       },
+       "catalog_object_id": {
+        "type": "string",
+        "maxLength": 192,
+        "nullable": true
+       },
+       "catalog_version": {
+        "type": "integer",
+        "format": "int64",
+        "nullable": true
+       },
+       "percentage": {
+        "type": "string",
+        "maxLength": 10,
+        "nullable": true
+       },
+       "amount_money": {
+        "$ref": "#/components/schemas/Money",
+        "nullable": true
+       },
+       "applied_money": {
+        "$ref": "#/components/schemas/Money",
+        "readOnly": true
+       },
+       "total_money": {
+        "$ref": "#/components/schemas/Money",
+        "readOnly": true
+       },
+       "total_tax_money": {
+        "$ref": "#/components/schemas/Money",
+        "readOnly": true
+       },
+       "calculation_phase": {
+        "$ref": "#/components/schemas/OrderServiceChargeCalculationPhase",
+        "readOnly": true
+       },
+       "taxable": {
+        "type": "boolean",
+        "nullable": true
+       },
+       "applied_taxes": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/OrderLineItemAppliedTax"
+        },
+        "nullable": true
+       },
+       "treatment_type": {
+        "$ref": "#/components/schemas/OrderServiceChargeTreatmentType",
+        "nullable": true
+       },
+       "scope": {
+        "$ref": "#/components/schemas/OrderServiceChargeScope",
+        "nullable": true
+       },
+       "type": {
+        "$ref": "#/components/schemas/OrderServiceChargeType",
+        "readOnly": true
+       }
+      }
+     },
+     "OrderReturnTax": {
+      "type": "object",
+      "properties": {
+       "uid": {
+        "type": "string",
+        "maxLength": 60,
+        "nullable": true
+       },
+       "source_tax_uid": {
+        "type": "string",
+        "maxLength": 60,
+        "nullable": true
+       },
+       "catalog_object_id": {
+        "type": "string",
+        "maxLength": 192,
+        "nullable": true
+       },
+       "catalog_version": {
+        "type": "integer",
+        "format": "int64",
+        "nullable": true
+       },
+       "name": {
+        "type": "string",
+        "maxLength": 255,
+        "nullable": true
+       },
+       "type": {
+        "$ref": "#/components/schemas/OrderLineItemTaxType",
+        "nullable": true
+       },
+       "percentage": {
+        "type": "string",
+        "maxLength": 10,
+        "nullable": true
+       },
+       "applied_money": {
+        "$ref": "#/components/schemas/Money",
+        "readOnly": true
+       },
+       "scope": {
+        "$ref": "#/components/schemas/OrderLineItemTaxScope",
+        "nullable": true
+       }
+      }
+     },
+     "OrderReturnDiscount": {
+      "type": "object",
+      "properties": {
+       "uid": {
+        "type": "string",
+        "maxLength": 60,
+        "nullable": true
+       },
+       "source_discount_uid": {
+        "type": "string",
+        "maxLength": 60,
+        "nullable": true
+       },
+       "catalog_object_id": {
+        "type": "string",
+        "maxLength": 192,
+        "nullable": true
+       },
+       "catalog_version": {
+        "type": "integer",
+        "format": "int64",
+        "nullable": true
+       },
+       "name": {
+        "type": "string",
+        "maxLength": 255,
+        "nullable": true
+       },
+       "type": {
+        "$ref": "#/components/schemas/OrderLineItemDiscountType",
+        "nullable": true
+       },
+       "percentage": {
+        "type": "string",
+        "maxLength": 10,
+        "nullable": true
+       },
+       "amount_money": {
+        "$ref": "#/components/schemas/Money",
+        "nullable": true
+       },
+       "applied_money": {
+        "$ref": "#/components/schemas/Money",
+        "readOnly": true
+       },
+       "scope": {
+        "$ref": "#/components/schemas/OrderLineItemDiscountScope",
+        "nullable": true
+       }
+      }
+     },
+     "OrderReturnTip": {
+      "type": "object",
+      "properties": {
+       "uid": {
+        "type": "string",
+        "maxLength": 60,
+        "nullable": true
+       },
+       "applied_money": {
+        "$ref": "#/components/schemas/Money",
+        "readOnly": true
+       },
+       "source_tender_uid": {
+        "type": "string",
+        "maxLength": 192,
+        "nullable": true
+       },
+       "source_tender_id": {
+        "type": "string",
+        "maxLength": 192,
+        "nullable": true
+       }
+      }
+     },
+     "TenderType": {
+      "type": "string",
+      "enum": [
+       "CARD",
+       "CASH",
+       "THIRD_PARTY_CARD",
+       "SQUARE_GIFT_CARD",
+       "NO_SALE",
+       "BANK_ACCOUNT",
+       "WALLET",
+       "BUY_NOW_PAY_LATER",
+       "SQUARE_ACCOUNT",
+       "OTHER"
+      ]
+     },
+     "TenderCardDetails": {
+      "type": "object",
+      "properties": {
+       "status": {
+        "$ref": "#/components/schemas/TenderCardDetailsStatus",
+        "nullable": true
+       },
+       "card": {
+        "$ref": "#/components/schemas/Card",
+        "nullable": true
+       },
+       "entry_method": {
+        "$ref": "#/components/schemas/TenderCardDetailsEntryMethod",
+        "nullable": true
+       }
+      }
+     },
+     "TenderCashDetails": {
+      "type": "object",
+      "properties": {
+       "buyer_tendered_money": {
+        "$ref": "#/components/schemas/Money",
+        "nullable": true
+       },
+       "change_back_money": {
+        "$ref": "#/components/schemas/Money",
+        "nullable": true
+       }
+      }
+     },
+     "TenderBankAccountDetails": {
+      "type": "object",
+      "properties": {
+       "status": {
+        "$ref": "#/components/schemas/TenderBankAccountDetailsStatus",
+        "nullable": true
+       }
+      }
+     },
+     "TenderBuyNowPayLaterDetails": {
+      "type": "object",
+      "properties": {
+       "buy_now_pay_later_brand": {
+        "$ref": "#/components/schemas/TenderBuyNowPayLaterDetailsBrand",
+        "readOnly": true
+       },
+       "status": {
+        "$ref": "#/components/schemas/TenderBuyNowPayLaterDetailsStatus",
+        "nullable": true
+       }
+      }
+     },
+     "TenderSquareAccountDetails": {
+      "type": "object",
+      "properties": {
+       "status": {
+        "$ref": "#/components/schemas/TenderSquareAccountDetailsStatus",
+        "nullable": true
+       }
+      }
+     },
+     "AdditionalRecipient": {
+      "type": "object",
+      "required": [
+       "location_id",
+       "amount_money"
+      ],
+      "properties": {
+       "location_id": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 50
+       },
+       "description": {
+        "type": "string",
+        "maxLength": 100,
+        "nullable": true
+       },
+       "amount_money": {
+        "$ref": "#/components/schemas/Money"
+       },
+       "receivable_id": {
+        "type": "string",
+        "maxLength": 192,
+        "nullable": true
+       }
+      }
+     },
+     "RefundStatus": {
+      "type": "string",
+      "enum": [
+       "PENDING",
+       "APPROVED",
+       "REJECTED",
+       "FAILED"
+      ]
+     },
+     "InvoiceRecipientTaxIds": {
+      "type": "object",
+      "properties": {
+       "eu_vat": {
+        "type": "string",
+        "readOnly": true
+       }
+      }
+     },
+     "InvoiceRequestMethod": {
+      "type": "string",
+      "enum": [
+       "EMAIL",
+       "CHARGE_CARD_ON_FILE",
+       "SHARE_MANUALLY",
+       "CHARGE_BANK_ON_FILE",
+       "SMS",
+       "SMS_CHARGE_CARD_ON_FILE",
+       "SMS_CHARGE_BANK_ON_FILE"
+      ]
+     },
+     "InvoiceRequestType": {
+      "type": "string",
+      "enum": [
+       "BALANCE",
+       "DEPOSIT",
+       "INSTALLMENT"
+      ]
+     },
+     "InvoiceAutomaticPaymentSource": {
+      "type": "string",
+      "enum": [
+       "NONE",
+       "CARD_ON_FILE",
+       "BANK_ON_FILE"
+      ]
+     },
+     "InvoicePaymentReminder": {
+      "type": "object",
+      "properties": {
+       "uid": {
+        "type": "string",
+        "readOnly": true
+       },
+       "relative_scheduled_days": {
+        "type": "integer",
+        "minimum": -32767,
+        "maximum": 32767,
+        "nullable": true
+       },
+       "message": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 1000,
+        "nullable": true
+       },
+       "status": {
+        "$ref": "#/components/schemas/InvoicePaymentReminderStatus",
+        "readOnly": true
+       },
+       "sent_at": {
+        "type": "string",
+        "readOnly": true
+       }
+      }
+     },
+     "InvoiceCustomFieldPlacement": {
+      "type": "string",
+      "enum": [
+       "ABOVE_LINE_ITEMS",
+       "BELOW_LINE_ITEMS"
+      ]
+     },
+     "DestinationDetailsCardRefundDetails": {
+      "type": "object",
+      "properties": {
+       "card": {
+        "$ref": "#/components/schemas/Card",
+        "nullable": true
+       },
+       "entry_method": {
+        "type": "string",
+        "maxLength": 50,
+        "nullable": true
+       },
+       "auth_result_code": {
+        "type": "string",
+        "maxLength": 10,
+        "nullable": true
+       }
+      }
+     },
+     "DestinationDetailsCashRefundDetails": {
+      "type": "object",
+      "required": [
+       "seller_supplied_money"
+      ],
+      "properties": {
+       "seller_supplied_money": {
+        "$ref": "#/components/schemas/Money"
+       },
+       "change_back_money": {
+        "$ref": "#/components/schemas/Money",
+        "readOnly": true
+       }
+      }
+     },
+     "DestinationDetailsExternalRefundDetails": {
+      "type": "object",
+      "required": [
+       "type",
+       "source"
+      ],
+      "properties": {
+       "type": {
+        "type": "string",
+        "maxLength": 50
+       },
+       "source": {
+        "type": "string",
+        "maxLength": 255
+       },
+       "source_id": {
+        "type": "string",
+        "maxLength": 255,
+        "nullable": true
+       }
+      }
+     },
+     "SubscriptionActionType": {
+      "type": "string",
+      "enum": [
+       "CANCEL",
+       "PAUSE",
+       "RESUME",
+       "SWAP_PLAN",
+       "CHANGE_BILLING_ANCHOR_DATE",
+       "COMPLETE"
+      ]
+     },
+     "CardBrand": {
+      "type": "string",
+      "enum": [
+       "OTHER_BRAND",
+       "VISA",
+       "MASTERCARD",
+       "AMERICAN_EXPRESS",
+       "DISCOVER",
+       "DISCOVER_DINERS",
+       "JCB",
+       "CHINA_UNIONPAY",
+       "SQUARE_GIFT_CARD",
+       "SQUARE_CAPITAL_CARD",
+       "INTERAC",
+       "EFTPOS",
+       "FELICA",
+       "EBT",
+       "QUICPAY",
+       "ID",
+       "TRANSPORTATION_IC",
+       "CARNET"
+      ]
+     },
+     "CardType": {
+      "type": "string",
+      "enum": [
+       "UNKNOWN_CARD_TYPE",
+       "CREDIT",
+       "DEBIT"
+      ]
+     },
+     "CardPrepaidType": {
+      "type": "string",
+      "enum": [
+       "UNKNOWN_PREPAID_TYPE",
+       "NOT_PREPAID",
+       "PREPAID"
+      ]
+     },
+     "CardCoBrand": {
+      "type": "string",
+      "enum": [
+       "UNKNOWN",
+       "AFTERPAY",
+       "CLEARPAY"
+      ]
+     },
+     "CardIssuerAlert": {
+      "type": "string",
+      "enum": [
+       "ISSUER_ALERT_CARD_CLOSED"
+      ]
+     },
+     "FelicaDetailsFelicaBrand": {
+      "type": "string",
+      "enum": [
+       "UNKNOWN",
+       "FELICA_ID",
+       "FELICA_TRANSPORTATION",
+       "FELICA_QP"
+      ]
+     },
+     "MeasurementUnit": {
+      "type": "object",
+      "properties": {
+       "custom_unit": {
+        "$ref": "#/components/schemas/MeasurementUnitCustom",
+        "nullable": true
+       },
+       "area_unit": {
+        "$ref": "#/components/schemas/MeasurementUnitArea",
+        "nullable": true
+       },
+       "length_unit": {
+        "$ref": "#/components/schemas/MeasurementUnitLength",
+        "nullable": true
+       },
+       "volume_unit": {
+        "$ref": "#/components/schemas/MeasurementUnitVolume",
+        "nullable": true
+       },
+       "weight_unit": {
+        "$ref": "#/components/schemas/MeasurementUnitWeight",
+        "nullable": true
+       },
+       "generic_unit": {
+        "$ref": "#/components/schemas/MeasurementUnitGeneric",
+        "nullable": true
+       },
+       "time_unit": {
+        "$ref": "#/components/schemas/MeasurementUnitTime",
+        "nullable": true
+       },
+       "type": {
+        "$ref": "#/components/schemas/MeasurementUnitUnitType",
+        "nullable": true
+       }
+      }
+     },
+     "OrderLineItemPricingBlocklistsBlockedDiscount": {
+      "type": "object",
+      "properties": {
+       "uid": {
+        "type": "string",
+        "maxLength": 60,
+        "nullable": true
+       },
+       "discount_uid": {
+        "type": "string",
+        "maxLength": 60,
+        "nullable": true
+       },
+       "discount_catalog_object_id": {
+        "type": "string",
+        "maxLength": 192,
+        "nullable": true
+       }
+      }
+     },
+     "OrderLineItemPricingBlocklistsBlockedTax": {
+      "type": "object",
+      "properties": {
+       "uid": {
+        "type": "string",
+        "maxLength": 60,
+        "nullable": true
+       },
+       "tax_uid": {
+        "type": "string",
+        "maxLength": 60,
+        "nullable": true
+       },
+       "tax_catalog_object_id": {
+        "type": "string",
+        "maxLength": 192,
+        "nullable": true
+       }
+      }
+     },
+     "OrderLineItemPricingBlocklistsBlockedServiceCharge": {
+      "type": "object",
+      "properties": {
+       "uid": {
+        "type": "string",
+        "maxLength": 60,
+        "nullable": true
+       },
+       "service_charge_uid": {
+        "type": "string",
+        "maxLength": 60,
+        "nullable": true
+       },
+       "service_charge_catalog_object_id": {
+        "type": "string",
+        "maxLength": 192,
+        "nullable": true
+       }
+      }
+     },
+     "FulfillmentRecipient": {
+      "type": "object",
+      "properties": {
+       "customer_id": {
+        "type": "string",
+        "maxLength": 191,
+        "nullable": true
+       },
+       "display_name": {
+        "type": "string",
+        "maxLength": 255,
+        "nullable": true
+       },
+       "email_address": {
+        "type": "string",
+        "maxLength": 255,
+        "nullable": true
+       },
+       "phone_number": {
+        "type": "string",
+        "maxLength": 18,
+        "nullable": true
+       },
+       "address": {
+        "$ref": "#/components/schemas/Address",
+        "nullable": true
+       }
+      }
+     },
+     "FulfillmentPickupDetailsScheduleType": {
+      "type": "string",
+      "enum": [
+       "SCHEDULED",
+       "ASAP"
+      ]
+     },
+     "FulfillmentPickupDetailsCurbsidePickupDetails": {
+      "type": "object",
+      "properties": {
+       "curbside_details": {
+        "type": "string",
+        "maxLength": 250,
+        "nullable": true
+       },
+       "buyer_arrived_at": {
+        "type": "string",
+        "nullable": true
+       }
+      }
+     },
+     "FulfillmentDeliveryDetailsOrderFulfillmentDeliveryDetailsScheduleType": {
+      "type": "string",
+      "enum": [
+       "SCHEDULED",
+       "ASAP"
+      ]
+     },
+     "OrderReturnLineItemModifier": {
+      "type": "object",
+      "properties": {
+       "uid": {
+        "type": "string",
+        "maxLength": 60,
+        "nullable": true
+       },
+       "source_modifier_uid": {
+        "type": "string",
+        "maxLength": 60,
+        "nullable": true
+       },
+       "catalog_object_id": {
+        "type": "string",
+        "maxLength": 192,
+        "nullable": true
+       },
+       "catalog_version": {
+        "type": "integer",
+        "format": "int64",
+        "nullable": true
+       },
+       "name": {
+        "type": "string",
+        "maxLength": 255,
+        "nullable": true
+       },
+       "base_price_money": {
+        "$ref": "#/components/schemas/Money",
+        "nullable": true
+       },
+       "total_price_money": {
+        "$ref": "#/components/schemas/Money",
+        "readOnly": true
+       },
+       "quantity": {
+        "type": "string",
+        "nullable": true
+       }
+      }
+     },
+     "TenderCardDetailsStatus": {
+      "type": "string",
+      "enum": [
+       "AUTHORIZED",
+       "CAPTURED",
+       "VOIDED",
+       "FAILED"
+      ]
+     },
+     "TenderCardDetailsEntryMethod": {
+      "type": "string",
+      "enum": [
+       "SWIPED",
+       "KEYED",
+       "EMV",
+       "ON_FILE",
+       "CONTACTLESS"
+      ]
+     },
+     "TenderBankAccountDetailsStatus": {
+      "type": "string",
+      "enum": [
+       "PENDING",
+       "COMPLETED",
+       "FAILED"
+      ]
+     },
+     "TenderBuyNowPayLaterDetailsBrand": {
+      "type": "string",
+      "enum": [
+       "OTHER_BRAND",
+       "AFTERPAY"
+      ]
+     },
+     "TenderBuyNowPayLaterDetailsStatus": {
+      "type": "string",
+      "enum": [
+       "AUTHORIZED",
+       "CAPTURED",
+       "VOIDED",
+       "FAILED"
+      ]
+     },
+     "TenderSquareAccountDetailsStatus": {
+      "type": "string",
+      "enum": [
+       "AUTHORIZED",
+       "CAPTURED",
+       "VOIDED",
+       "FAILED"
+      ]
+     },
+     "InvoicePaymentReminderStatus": {
+      "type": "string",
+      "enum": [
+       "PENDING",
+       "NOT_APPLICABLE",
+       "SENT"
+      ]
+     },
+     "MeasurementUnitCustom": {
+      "type": "object",
+      "required": [
+       "name",
+       "abbreviation"
+      ],
+      "properties": {
+       "name": {
+        "type": "string"
+       },
+       "abbreviation": {
+        "type": "string"
+       }
+      }
+     },
+     "MeasurementUnitArea": {
+      "type": "string",
+      "enum": [
+       "IMPERIAL_ACRE",
+       "IMPERIAL_SQUARE_INCH",
+       "IMPERIAL_SQUARE_FOOT",
+       "IMPERIAL_SQUARE_YARD",
+       "IMPERIAL_SQUARE_MILE",
+       "METRIC_SQUARE_CENTIMETER",
+       "METRIC_SQUARE_METER",
+       "METRIC_SQUARE_KILOMETER"
+      ]
+     },
+     "MeasurementUnitLength": {
+      "type": "string",
+      "enum": [
+       "IMPERIAL_INCH",
+       "IMPERIAL_FOOT",
+       "IMPERIAL_YARD",
+       "IMPERIAL_MILE",
+       "METRIC_MILLIMETER",
+       "METRIC_CENTIMETER",
+       "METRIC_METER",
+       "METRIC_KILOMETER"
+      ]
+     },
+     "MeasurementUnitVolume": {
+      "type": "string",
+      "enum": [
+       "GENERIC_FLUID_OUNCE",
+       "GENERIC_SHOT",
+       "GENERIC_CUP",
+       "GENERIC_PINT",
+       "GENERIC_QUART",
+       "GENERIC_GALLON",
+       "IMPERIAL_CUBIC_INCH",
+       "IMPERIAL_CUBIC_FOOT",
+       "IMPERIAL_CUBIC_YARD",
+       "METRIC_MILLILITER",
+       "METRIC_LITER"
+      ]
+     },
+     "MeasurementUnitWeight": {
+      "type": "string",
+      "enum": [
+       "IMPERIAL_WEIGHT_OUNCE",
+       "IMPERIAL_POUND",
+       "IMPERIAL_STONE",
+       "METRIC_MILLIGRAM",
+       "METRIC_GRAM",
+       "METRIC_KILOGRAM"
+      ]
+     },
+     "MeasurementUnitGeneric": {
+      "type": "string",
+      "enum": [
+       "UNIT"
+      ]
+     },
+     "MeasurementUnitTime": {
+      "type": "string",
+      "enum": [
+       "GENERIC_MILLISECOND",
+       "GENERIC_SECOND",
+       "GENERIC_MINUTE",
+       "GENERIC_HOUR",
+       "GENERIC_DAY"
+      ]
+     },
+     "MeasurementUnitUnitType": {
+      "type": "string",
+      "enum": [
+       "TYPE_CUSTOM",
+       "TYPE_AREA",
+       "TYPE_LENGTH",
+       "TYPE_VOLUME",
+       "TYPE_WEIGHT",
+       "TYPE_GENERIC"
+      ]
+     }
+    }
+   }
+  }
+ ]
+}

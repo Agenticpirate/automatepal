@@ -1,0 +1,39 @@
+{
+ "provider": "paypal",
+ "sourceUrl": "https://github.com/paypal/paypal-rest-api-specifications",
+ "repo": "paypal/paypal-rest-api-specifications",
+ "commit": "90e8041ffe02d80c452d2b476bedd59a8d219bdc",
+ "commitDate": "2026-04-07T22:49:49Z",
+ "file": [
+  "openapi/checkout_orders_v2.json",
+  "openapi/payments_payment_v2.json",
+  "openapi/invoicing_v2.json",
+  "openapi/billing_subscriptions_v1.json"
+ ],
+ "upstream": {
+  "openapi/checkout_orders_v2.json": {
+   "url": "https://raw.githubusercontent.com/paypal/paypal-rest-api-specifications/90e8041ffe02d80c452d2b476bedd59a8d219bdc/openapi/checkout_orders_v2.json",
+   "sha256": "14db0b9e0d7440e38595b823724599edc7ab8b7a2b41ac442463e81b7d477fd6",
+   "bytes": 971284
+  },
+  "openapi/payments_payment_v2.json": {
+   "url": "https://raw.githubusercontent.com/paypal/paypal-rest-api-specifications/90e8041ffe02d80c452d2b476bedd59a8d219bdc/openapi/payments_payment_v2.json",
+   "sha256": "ecd8bc60e133bd4bc54de10daae3011a451e3a69e971ddf19c09213aa0f15c21",
+   "bytes": 504391
+  },
+  "openapi/invoicing_v2.json": {
+   "url": "https://raw.githubusercontent.com/paypal/paypal-rest-api-specifications/90e8041ffe02d80c452d2b476bedd59a8d219bdc/openapi/invoicing_v2.json",
+   "sha256": "b38ec179b0a904eed50825cd0b456e788569dc3fdb6efd08e131751f7cc19f52",
+   "bytes": 276617
+  },
+  "openapi/billing_subscriptions_v1.json": {
+   "url": "https://raw.githubusercontent.com/paypal/paypal-rest-api-specifications/90e8041ffe02d80c452d2b476bedd59a8d219bdc/openapi/billing_subscriptions_v1.json",
+   "sha256": "ef9d5dd5d81fba9d951c2dba2d76cf958ab1cd9d0a2dc6b8415df7fac5829a8b",
+   "bytes": 307610
+  }
+ },
+ "license": "Apache-2.0",
+ "retrievedAt": "2026-11-01T13:45:24.804Z",
+ "confidence": "official-spec",
+ "notes": "POST /v1/oauth2/token (client-credentials auth exchange) is documented at developer.paypal.com/api/rest/authentication/ and is not an operation in these spec files; it is allowlisted as the named auth exchange only."
+}

@@ -1,0 +1,9 @@
+[
+ {"id":"payments.get","method":"GET","path":"/v2/payments/{payment_id}","query":[]},
+ {"id":"payments.list","method":"GET","path":"/v2/payments","query":["begin_time","end_time","limit"]},
+ {"id":"orders.get","method":"GET","path":"/v2/orders/{order_id}","query":[]},
+ {"id":"invoices.get","method":"GET","path":"/v2/invoices/{invoice_id}","query":[]},
+ {"id":"refunds.get","method":"GET","path":"/v2/refunds/{refund_id}","query":[]},
+ {"id":"subscriptions.get","method":"GET","path":"/v2/subscriptions/{subscription_id}","query":[]},
+ {"id":"customers.get","method":"GET","path":"/v2/customers/{customer_id}","query":[]}
+]

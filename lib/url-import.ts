@@ -1,4 +1,8 @@
-// Public-URL import helpers. Pure functions, unit-tested without network.
+// Public-URL import helpers. Server-only (node:http/https/dns); the pure checks are unit-tested without network.
+import {request as httpRequest} from 'node:http';
+import {request as httpsRequest} from 'node:https';
+import {lookup as dnsLookup} from 'node:dns/promises';
+import {isIP} from 'node:net';
 import {privateHost,privateIpV4,privateIpV6} from './install-check';
 
 export function robotsAllowed(robots:string,path:string):boolean{
@@ -41,4 +45,66 @@ export function resolvedAddrsProblem(addrs:{address:string;family:number}[]):str
  if(!addrs.length)return 'That address did not resolve.';
  for(const a of addrs){if(a.family===6?privateIpV6(a.address):privateIpV4(a.address))return 'That address resolves to a private network and cannot be imported.';}
  return null;
+}
+
+/* Fetch with SSRF protection on every hop (same idea as lib/webhook.ts). Each URL, including every redirect
+   target, is validated, resolved once, refused if any answer is private, and then connected to that exact
+   address: the socket never does its own DNS lookup, so a second answer (DNS rebinding) cannot change where
+   it goes. Redirects are followed by hand, at most `maxRedirects`, and re-checked like the first URL. */
+export type Addr={address:string;family:number};
+export type SafeGetOptions={
+ resolve?:(host:string)=>Promise<Addr[]>;
+ /* Tests only: replaces the private-address check so a local server can stand in for a public one. */
+ addrProblem?:(addrs:Addr[],host:string)=>string|null;
+ urlProblem?:(raw:string)=>string|null;
+ maxBytes?:number;maxRedirects?:number;deadline?:number;headers?:Record<string,string>;
+};
+export type SafeGetResult={status:number;contentType:string;body:string;bytes:number;truncated:boolean;finalUrl:string};
+export class ImportFetchError extends Error{constructor(message:string,public status:number){super(message);}}
+
+function defaultResolve(host:string):Promise<Addr[]>{return dnsLookup(host,{all:true,verbatim:true});}
+function pinnedRequest(u:URL,addr:Addr,o:Required<Pick<SafeGetOptions,'maxBytes'|'deadline'>>&{headers:Record<string,string>}):Promise<{status:number;location:string|null;contentType:string;body:Buffer;bytes:number;truncated:boolean}>{
+ return new Promise((resolveP,rejectP)=>{
+  const send=u.protocol==='https:'?httpsRequest:httpRequest;
+  const left=o.deadline-Date.now();
+  if(left<=0){rejectP(new ImportFetchError('The page could not be fetched within 10 seconds.',502));return;}
+  // Node may ask for one address or a list depending on the connection path; answer both with the checked address.
+  const lookup=(_h:string,opts:{all?:boolean},cb:(...a:unknown[])=>void)=>opts&&opts.all?cb(null,[{address:addr.address,family:addr.family}]):cb(null,addr.address,addr.family);
+  const req=send(u,{method:'GET',family:addr.family,lookup:lookup as never,...(isIP(u.hostname.replace(/^\[|\]$/g,''))?{}:{servername:u.hostname}),headers:o.headers,timeout:left},res=>{
+   const status=res.statusCode??0;
+   if(status>=300&&status<400){res.resume();resolveP({status,location:res.headers.location??null,contentType:'',body:Buffer.alloc(0),bytes:0,truncated:false});return;}
+   const chunks:Buffer[]=[];let bytes=0,truncated=false;
+   res.on('data',(c:Buffer)=>{if(truncated)return;bytes+=c.length;if(bytes>o.maxBytes){chunks.push(c.subarray(0,c.length-(bytes-o.maxBytes)));truncated=true;res.destroy();finish();return;}chunks.push(c);});
+   const finish=()=>resolveP({status,location:null,contentType:String(res.headers['content-type']??''),body:Buffer.concat(chunks),bytes:Math.min(bytes,o.maxBytes),truncated});
+   res.on('end',finish);res.on('error',e=>{if(!truncated)rejectP(e);});
+  });
+  const hard=setTimeout(()=>req.destroy(new ImportFetchError('The page could not be fetched within 10 seconds.',502)),left);
+  req.on('close',()=>clearTimeout(hard));
+  req.on('timeout',()=>req.destroy(new ImportFetchError('The page could not be fetched within 10 seconds.',502)));
+  req.on('error',e=>rejectP(e instanceof ImportFetchError?e:new ImportFetchError('The page could not be fetched within 10 seconds.',502)));
+  req.end();
+ });
+}
+export async function safeGet(raw:string,opts:SafeGetOptions={}):Promise<SafeGetResult>{
+ const resolve=opts.resolve??defaultResolve,addrProblem=opts.addrProblem??resolvedAddrsProblem,urlProblem=opts.urlProblem??importUrlProblem;
+ const maxRedirects=opts.maxRedirects??3,maxBytes=opts.maxBytes??262144,deadline=opts.deadline??Date.now()+10000,headers=opts.headers??{};
+ let current=raw;
+ for(let hop=0;hop<=maxRedirects;hop++){
+  const problem=urlProblem(current);
+  if(problem)throw new ImportFetchError(hop?'The page redirected to an address that cannot be imported: '+problem:problem,400);
+  const u=new URL(current);
+  let addrs:Addr[];
+  try{addrs=await resolve(u.hostname.replace(/^\[|\]$/g,''));}catch{throw new ImportFetchError('That address did not resolve.',400);}
+  const host=u.hostname.replace(/^\[|\]$/g,'');
+  const ap=addrProblem(addrs,host);
+  if(ap)throw new ImportFetchError(hop?'The page redirected to a private network address, so it was not followed.':ap,400);
+  const r=await pinnedRequest(u,addrs[0],{maxBytes,deadline,headers});
+  if(r.status>=300&&r.status<400){
+   if(!r.location)throw new ImportFetchError('The site answered '+r.status+' without a redirect address.',502);
+   current=new URL(r.location,u).toString();
+   continue;
+  }
+  return {status:r.status,contentType:r.contentType,body:new TextDecoder('utf-8',{fatal:false}).decode(r.body),bytes:r.bytes,truncated:r.truncated,finalUrl:u.toString()};
+ }
+ throw new ImportFetchError('The page redirected too many times.',502);
 }

@@ -1,5 +1,6 @@
 'use client';
 import DeskShell from '../components/DeskShell';
+import {formatMoney} from '../../lib/billing/core/money';
 import DashShell,{type DashNotif} from '../components/DashShell';
 import ServiceFields,{QaDraft} from './service-fields';
 import {useEffect,useState} from 'react';
@@ -7,11 +8,16 @@ import Link from 'next/link';
 import {authHeaders} from '../../lib/browser-auth';
 import {ticketLabel,ageLabel,ticketCsv,transitions,type Ticket} from '../../lib/tickets';
 import {I,type IconName,VIEWS,type ViewKey,needsYou,isOpenTicket,aiPaused,statusMeta,PRIORITY_COLOR,cap,words,shortAgo,whenLabel,fmtDur,weekSummary} from './inbox-ui';
+import {Avatar,Participants,MascotCluster,handler,rowPreview,readPins,writePins} from './conversation-ui';
+import {MESSAGE_MAX,POLL_MS} from '../../lib/support-messages';
 import './inbox.css';
 
 type Event={id:string;created_at:string;kind:string;body:string};
-type Timeline={events:Event[];requests:{id:string;created_at:string;kind:string;message:string;status:string;contact_email?:string|null}[];questions:{id:string;created_at:string;question:string;supported:boolean;feedback:number|null}[];coverage:string};
-type Item={id:string;created_at:string;label:string;body:string;team:boolean;chip?:string};
+type Timeline={events:Event[];requests:{id:string;created_at:string;kind:string;message:string;status:string;contact_email?:string|null}[];questions:{id:string;created_at:string;question:string;supported:boolean;feedback:number|null}[];payments?:Payment[];messages?:{id:string;created_at:string;author:'owner'|'visitor';body:string}[];coverage:string};
+type Payment={requestId:string;provider:string;mode:string;kind:string|null;ref:string|null;status:string|null;amountMinor:number|null;currency:string|null};
+const PROVIDER_LABEL:Record<string,string>={paypal:'PayPal',stripe:'Stripe',dodo:'Dodo Payments',razorpay:'Razorpay',paddle:'Paddle',square:'Square',adyen:'Adyen',mollie:'Mollie',chargebee:'Chargebee',lemonsqueezy:'Lemon Squeezy'};
+const paymentLine=(p:Payment)=>'\nAttached payment: '+[PROVIDER_LABEL[p.provider]??p.provider,p.mode==='live'?'LIVE':'Test mode',[p.kind,p.ref].filter(Boolean).join(' '),p.status,formatMoney(p.amountMinor,p.currency)].filter(Boolean).join(' · ')+' · No refund executed';
+type Item={id:string;created_at:string;label:string;body:string;team:boolean;chip?:string;who?:'owner'|'visitor'};
 type Action={label:string;icon?:IconName;primary?:boolean;run?:()=>void;href?:string};
 type CheckState='done'|'todo'|'wait'|'run';
 
@@ -44,6 +50,8 @@ export default function Tickets(){
  const[search,setSearch]=useState(''),[view,setView]=useState<ViewKey>('all'),[status,setStatus]=useState('all'),[priority,setPriority]=useState('all'),[category,setCategory]=useState('all'),[sort,setSort]=useState('updated'),[filtersOpen,setFiltersOpen]=useState(false);
  const[selected,setSelected]=useState<string[]>([]),[bulk,setBulk]=useState('open');
  const[active,setActive]=useState<string|null>(null),[timeline,setTimeline]=useState<Timeline|null>(null),[note,setNote]=useState(''),[tags,setTags]=useState(''),[editTags,setEditTags]=useState(false),[showAll,setShowAll]=useState(false);
+ /* Composer mode (internal note or widget reply), the reply draft, browser-local pins and the header menu. */
+ const[mode,setMode]=useState<'note'|'reply'>('note'),[reply,setReply]=useState(''),[pins,setPins]=useState<string[]>([]),[menuOpen,setMenuOpen]=useState(false),[searchOpen,setSearchOpen]=useState(false);
  /* n changes on every message so a repeated toast re-mounts and replays its entrance. */
  const say=(text:string,ok:boolean)=>setToast(prev=>({text,ok,n:(prev?.n??0)+1}));
 
@@ -51,20 +59,27 @@ export default function Tickets(){
 
  async function load(){const r=await fetch('/api/tickets',{headers:await authHeaders()}),d=await r.json();if(!r.ok)throw Error(d.error);setRows(d.tickets);setAsOf(clock());setLoaded(true);setLoadError('');setLoadNote(d.truncated?'Latest 200 only. Filters cover loaded rows.':'Latest up to 200 tickets loaded.');return d.tickets as Ticket[];}
  async function readTimeline(id:string){try{const r=await fetch('/api/tickets?id='+id,{headers:await authHeaders()}),d=await r.json();if(!r.ok)throw Error(d.error);setTimeline(d);}catch{say('Could not load ticket timeline.',false);}}
- function open(t:Ticket){setActive(t.id);setTimeline(null);setNote('');setTags(t.tags.join(', '));setEditTags(false);setShowAll(false);try{history.replaceState(null,'','?ticket='+t.id);}catch{}void readTimeline(t.id);}
+ function open(t:Ticket){setActive(t.id);setTimeline(null);setNote('');setReply('');setMenuOpen(false);setMode(t.inbox_state==='taken_over'?'reply':'note');setTags(t.tags.join(', '));setEditTags(false);setShowAll(false);try{history.replaceState(null,'','?ticket='+t.id);}catch{}void readTimeline(t.id);}
  function close(){setActive(null);setTimeline(null);try{history.replaceState(null,'',location.pathname);}catch{}}
 
- useEffect(()=>{authHeaders().then(headers=>fetch('/api/tickets',{headers})).then(r=>r.json()).then(d=>{if(d.error)throw Error(d.error);setRows(d.tickets);setAsOf(clock());setLoaded(true);setLoadNote(d.truncated?'Latest 200 only. Filters cover loaded rows.':'Latest up to 200 tickets loaded.');
+ useEffect(()=>{authHeaders().then(headers=>fetch('/api/tickets',{headers})).then(r=>r.json()).then(d=>{if(d.error)throw Error(d.error);setRows(d.tickets);setAsOf(clock());setLoaded(true);setLoadNote(d.truncated?'Latest 200 only. Filters cover loaded rows.':'Latest up to 200 tickets loaded.');setPins(readPins());
   const requested=new URLSearchParams(location.search).get('ticket');const initial=d.tickets.find((t:Ticket)=>t.id===requested);
-  if(initial){setActive(initial.id);setTags(initial.tags.join(', '));authHeaders().then(headers=>fetch('/api/tickets?id='+initial.id,{headers})).then(r=>r.json()).then(x=>{if(x.error)throw Error(x.error);setTimeline(x);}).catch(()=>say('Could not load ticket timeline.',false));}
+  if(initial){setActive(initial.id);setTags(initial.tags.join(', '));setMode(initial.inbox_state==='taken_over'?'reply':'note');authHeaders().then(headers=>fetch('/api/tickets?id='+initial.id,{headers})).then(r=>r.json()).then(x=>{if(x.error)throw Error(x.error);setTimeline(x);}).catch(()=>say('Could not load ticket timeline.',false));}
  }).catch(()=>{setLoaded(true);setLoadError('Please sign in or retry when the service recovers.');});},[]);
 
+ /* While a taken-over conversation is open and the tab is visible, re-read its timeline so visitor
+    replies from the widget appear without a manual refresh. */
+ const liveId=rows.find(t=>t.id===active)?.inbox_state==='taken_over'?active:null;
+ useEffect(()=>{if(!liveId)return;const tick=()=>{if(document.visibilityState==='visible'&&!busy)void authHeaders().then(headers=>fetch('/api/tickets?id='+liveId,{headers})).then(r=>r.ok?r.json():null).then(d=>{if(d&&!d.error)setTimeline(cur=>cur&&active===liveId?d:cur);}).catch(()=>{});};const id=window.setInterval(tick,POLL_MS);return()=>window.clearInterval(id);},[liveId,busy,active]);
+ /* Close the header menu on any press outside it. */
+ useEffect(()=>{if(!menuOpen)return;const away=(e:PointerEvent)=>{if(!(e.target as Element|null)?.closest?.('.ap-ib-more'))setMenuOpen(false);};document.addEventListener('pointerdown',away);return()=>document.removeEventListener('pointerdown',away);},[menuOpen]);
+ function togglePin(id:string){const next=pins.includes(id)?pins.filter(x=>x!==id):[id,...pins];setPins(next);writePins(next);setMenuOpen(false);say(pins.includes(id)?'Conversation unpinned on this browser.':'Conversation pinned on this browser.',true);}
  async function act(body:unknown,after?:()=>void){setBusy(true);let ok=false;try{const r=await fetch('/api/tickets',{method:'POST',headers:{'Content-Type':'application/json',...await authHeaders()},body:JSON.stringify(body)}),d=await r.json().catch(()=>({}));ok=r.ok;say(d.note??d.error??(ok?'Saved.':'Update rejected.'),ok);const fresh=await load();if(ok){setSelected([]);after?.();if(active){const t=fresh.find(x=>x.id===active);if(t)setTags(t.tags.join(', '));await readTimeline(active);}}}catch{say('Outcome unconfirmed. Refresh before retrying.',false);}finally{setBusy(false);}return ok;}
  function refresh(){setBusy(true);load().then(()=>say('Tickets refreshed.',true)).catch(()=>say('Refresh failed.',false)).finally(()=>setBusy(false));}
 
  const viewDef=VIEWS.find(v=>v.key===view)!;
  const needle=search.toLowerCase();
- const visible=rows.filter(t=>viewDef.match(t)&&(status==='all'||t.ticket_status===status)&&(priority==='all'||t.priority===priority)&&(category==='all'||t.category===category)&&`${ticketLabel(t.id)} ${t.id} ${t.order_label} ${t.tags.join(' ')}`.toLowerCase().includes(needle)).sort((a,b)=>sort==='oldest'?a.created_at.localeCompare(b.created_at):sort==='priority'?priorities.indexOf(b.priority)-priorities.indexOf(a.priority):b.ticket_updated_at.localeCompare(a.ticket_updated_at));
+ const visible=rows.filter(t=>viewDef.match(t)&&(status==='all'||t.ticket_status===status)&&(priority==='all'||t.priority===priority)&&(category==='all'||t.category===category)&&`${ticketLabel(t.id)} ${t.id} ${t.order_label} ${t.tags.join(' ')}`.toLowerCase().includes(needle)).sort((a,b)=>Number(pins.includes(b.id))-Number(pins.includes(a.id))||(sort==='oldest'?a.created_at.localeCompare(b.created_at):sort==='priority'?priorities.indexOf(b.priority)-priorities.indexOf(a.priority):b.ticket_updated_at.localeCompare(a.ticket_updated_at)));
  const filterCount=[status,priority,category].filter(x=>x!=='all').length;
  const current=rows.find(t=>t.id===active);
  const week=weekSummary(rows,asOf);
@@ -77,8 +92,9 @@ export default function Tickets(){
  /* Conversation: visitor questions and requests plus internal events, oldest first. */
  const items:Item[]=timeline?[
   ...timeline.events.map(e=>({id:e.id,created_at:e.created_at,label:words(e.kind),body:e.body,team:true})),
-  ...timeline.requests.map(e=>({id:e.id,created_at:e.created_at,label:'Visitor request: '+words(e.kind),body:e.message+(e.contact_email?'\nFollow-up email (visitor consented): '+e.contact_email:''),team:false,chip:e.status==='pending_review'?'Pending review':cap(e.status)})),
+  ...timeline.requests.map(e=>({id:e.id,created_at:e.created_at,label:'Visitor request: '+words(e.kind),body:e.message+(e.contact_email?'\nFollow-up email (visitor consented): '+e.contact_email:'')+(timeline.payments??[]).filter(p=>p.requestId===e.id).map(paymentLine).join(''),team:false,chip:e.status==='pending_review'?'Pending review':cap(e.status)})),
   ...timeline.questions.map(e=>({id:e.id,created_at:e.created_at,label:`Visitor question · ${e.supported?'supported':'unanswered'}${e.feedback===-1?' · negative feedback':''}`,body:e.question,team:false,chip:e.supported?'Answered from sources':'No source found'})),
+  ...(timeline.messages??[]).map(m=>({id:m.id,created_at:m.created_at,label:m.author==='owner'?'Reply in widget':'Visitor message',body:m.body,team:false,who:m.author})),
  ].sort((a,b)=>a.created_at.localeCompare(b.created_at)):[];
  const hidden=showAll?0:Math.max(0,items.length-8),shownItems=items.slice(hidden);
 
@@ -113,11 +129,20 @@ export default function Tickets(){
   return <>
    <header className="ap-ib-dhead">
     <button type="button" className="ap-ib-back" onClick={close}><I n="chevronLeft" s={15}/>All tickets</button>
+    <Participants t={t}/>
     <span className="ap-ib-did" title={'Full ticket ID: '+t.id}>{ticketLabel(t.id)}</span>
-    <button type="button" className="ap-ib-icon" aria-label="Copy ticket link" title="Copy ticket link" onClick={()=>{navigator.clipboard?.writeText(location.origin+'/tickets?ticket='+t.id).then(()=>say('Ticket link copied.',true),()=>say('Copy failed. Use the address bar.',false));}}><I n="link" s={14}/></button>
     <div className="ap-ib-dhead-r">
      <button type="button" disabled={busy} className={'ap-ib-btn'+(t.inbox_state==='taken_over'?' pink':'')} onClick={()=>patch({takeover:t.inbox_state!=='taken_over',status:'pending'})}><I n={t.inbox_state==='taken_over'?'bot':'pause'} s={14}/>{t.inbox_state==='taken_over'?'Release AI':'Take over'}</button>
      <button type="button" disabled={busy} className="ap-ib-btn" onClick={()=>patch({assigned:!t.assigned_to_owner})}><I n={t.assigned_to_owner?'userX':'userPlus'} s={14}/>{t.assigned_to_owner?'Unassign':'Assign to owner'}</button>
+     <button type="button" className="ap-ib-icon" aria-label="Copy ticket link" title="Copy ticket link" onClick={()=>{navigator.clipboard?.writeText(location.origin+'/tickets?ticket='+t.id).then(()=>say('Ticket link copied.',true),()=>say('Copy failed. Use the address bar.',false));}}><I n="share" s={14}/></button>
+     <div className="ap-ib-more" onKeyDown={e=>{if(!menuOpen)return;const items=[...e.currentTarget.querySelectorAll<HTMLElement>('[role=menuitem]')],i=items.indexOf(document.activeElement as HTMLElement);if(e.key==='Escape'){e.stopPropagation();setMenuOpen(false);e.currentTarget.querySelector<HTMLButtonElement>('button')?.focus();}else if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();items[(i+(e.key==='ArrowDown'?1:items.length-1))%items.length]?.focus();}}}>
+      <button type="button" className={'ap-ib-icon'+(menuOpen?' on':'')} aria-label="More actions" title="More actions" aria-haspopup="menu" aria-expanded={menuOpen} onClick={()=>{setMenuOpen(!menuOpen);if(!menuOpen)window.setTimeout(()=>document.querySelector<HTMLElement>('.ap-ib-menu [role=menuitem]')?.focus(),0);}}><I n="more" s={15}/></button>
+      {menuOpen&&<div className="ap-ib-menu" role="menu" aria-label="More actions">
+       <button type="button" role="menuitem" onClick={()=>togglePin(t.id)}><I n="pin" s={14}/>{pins.includes(t.id)?'Unpin conversation':'Pin conversation'}</button>
+       <button type="button" role="menuitem" onClick={()=>{setMenuOpen(false);setMode('note');window.setTimeout(focusNote,0);}}><I n="note" s={14}/>Write an internal note</button>
+       <Link role="menuitem" href="/support" onClick={()=>setMenuOpen(false)}><I n="settings" s={14}/>Working hours and widget</Link>
+      </div>}
+     </div>
     </div>
    </header>
 
@@ -183,8 +208,8 @@ export default function Tickets(){
      <header><h3><I n="message" s={14}/>Conversation &amp; activity</h3>{hidden>0&&<button type="button" className="ap-ib-textbtn" onClick={()=>setShowAll(true)}>Show {hidden} earlier</button>}</header>
      <p className="ap-ib-note">{timeline?.coverage??'Loading...'}</p>
      {timeline&&!items.length&&<p className="ap-ib-faint">Nothing recorded on this ticket yet.</p>}
-     <ol className="ap-ib-msgs">{shownItems.map((e,i)=><li key={e.id+'-'+i} className={'ap-ib-msg'+(e.team?' team':'')+(e.chip==='No source found'||e.chip==='Pending review'?' flag':'')}>
-      <span className="ap-ib-msg-av" aria-hidden="true">{e.team?<I n="note" s={13}/>:'V'}</span>
+     <ol className="ap-ib-msgs">{shownItems.map((e,i)=><li key={e.id+'-'+i} className={'ap-ib-msg'+(e.team?' team':'')+(e.who==='owner'?' owner':'')+(e.chip==='No source found'||e.chip==='Pending review'?' flag':'')}>
+      {e.team?<span className="ap-ib-msg-av" aria-hidden="true"><I n="note" s={13}/></span>:<Avatar who={e.who==='owner'?'owner':'visitor'} size={26}/>}
       <div className="ap-ib-msg-b">
        <p className="ap-ib-msg-meta">{e.team?'Internal · ':''}{e.label} · <time dateTime={e.created_at} title={new Date(e.created_at).toISOString()}>{whenLabel(e.created_at,asOf)}</time></p>
        <p className="ap-ib-msg-text">{e.body}</p>
@@ -192,18 +217,30 @@ export default function Tickets(){
       </div>
      </li>)}</ol>
     </section>
-    <p className="ap-ib-foot">Full ticket ID: {t.id}. Resolved/closed also pause AI. Reopening does not extend the demo link. First owner review is not a customer-response or SLA metric. Team assignments and outbound replies are not enabled.</p>
+    <p className="ap-ib-foot">Full ticket ID: {t.id}. Resolved/closed also pause AI. Reopening does not extend the demo link. First owner review is not a customer-response or SLA metric. Widget replies appear in the visitor&apos;s widget only; nothing is emailed.</p>
    </div>
 
-   <form className="ap-ib-compose" onSubmit={e=>{e.preventDefault();if(note.trim())void act({action:'note',id:t.id,body:note},()=>setNote(''));}}>
-    <div className="ap-ib-tabs" role="tablist" aria-label="Message type">
-     <button type="button" role="tab" aria-selected="true">Internal note</button>
-     <button type="button" role="tab" aria-selected="false" disabled title="Outbound replies are not enabled. Nothing is sent to the visitor."><I n="lock" s={11}/>Reply to visitor</button>
+   <form className={'ap-ib-compose'+(mode==='reply'?' is-reply':'')} onSubmit={e=>{e.preventDefault();if(mode==='reply'){if(t.inbox_state==='taken_over'&&reply.trim())void act({action:'reply',id:t.id,body:reply},()=>setReply(''));}else if(note.trim())void act({action:'note',id:t.id,body:note},()=>setNote(''));}}>
+    <div className="ap-ib-compose-top">
+     <div className="ap-ib-tabs" role="tablist" aria-label="Message type">
+      <button type="button" role="tab" aria-selected={mode==='note'} onClick={()=>setMode('note')}><I n="note" s={11}/>Internal note</button>
+      <button type="button" role="tab" aria-selected={mode==='reply'} onClick={()=>setMode('reply')}><I n="message" s={11}/>Reply in widget</button>
+     </div>
+     {paused&&<span className="ap-ib-compose-state"><I n="pause" s={11}/>{t.inbox_state==='taken_over'?'Taken over · AI paused':'AI paused'}</span>}
     </div>
-    <div className="ap-ib-compose-row">
+    {mode==='note'?<div className="ap-ib-compose-row">
      <textarea id="ap-ib-note" aria-label="Internal note" value={note} maxLength={2000} rows={2} onChange={e=>setNote(e.target.value)} onKeyDown={e=>{if(e.key==='Enter'&&(e.metaKey||e.ctrlKey)){e.preventDefault();e.currentTarget.form?.requestSubmit();}}} placeholder="Write an internal note. Fictional details only, no secrets or customer information."/>
      <button type="submit" className="ap-ib-send" aria-label="Save internal note" title="Save internal note (Ctrl/⌘ + Enter)" disabled={busy||!note.trim()}><I n="arrowUp" s={15} sw={2.4}/></button>
-    </div>
+    </div>:t.inbox_state==='taken_over'?<>
+     <div className="ap-ib-compose-row">
+      <textarea id="ap-ib-reply" aria-label="Reply to the visitor in the widget" aria-describedby="ap-ib-reply-hint" value={reply} maxLength={MESSAGE_MAX} rows={2} onChange={e=>setReply(e.target.value)} onKeyDown={e=>{if(e.key==='Enter'&&(e.metaKey||e.ctrlKey)){e.preventDefault();e.currentTarget.form?.requestSubmit();}}} placeholder="Write to the visitor. Fictional details only."/>
+      <button type="submit" className="ap-ib-send pink" aria-label="Send reply in widget" title="Send reply in widget (Ctrl/⌘ + Enter)" disabled={busy||!reply.trim()||expired}><I n="send" s={14} sw={2.2}/></button>
+     </div>
+     <p className="ap-ib-compose-hint" id="ap-ib-reply-hint">{expired?'The demo link has expired, so the visitor can no longer see replies.':"Shown live in the visitor's widget only. Nothing is emailed."}<span aria-live="polite">{reply.length}/{MESSAGE_MAX}</span></p>
+    </>:<div className="ap-ib-compose-lock">
+     <p>Take over to reply in the widget.</p>
+     <button type="button" disabled={busy||t.inbox_state==='closed'} className="ap-ib-btn primary sm" onClick={()=>void act({ids:[t.id],patch:{takeover:true,status:'pending'}},()=>setMode('reply'))}><I n="pause" s={13}/>Take over and reply</button>
+    </div>}
    </form>
   </>;
  }
@@ -216,11 +253,20 @@ export default function Tickets(){
   <div className="ap-ib-left">
    <nav className="ap-ib-rail" aria-label="Ticket views">
     <div className="ap-ib-rail-head"><b>Support inbox</b><span>{loaded&&!loadError?`${rows.length} loaded`:'Fictional workspace'}</span></div>
-    <label className="ap-ib-search"><I n="search" s={14}/><input type="search" aria-label="Search ticket, fixture or tag" placeholder="Search" value={search} onChange={e=>setSearch(e.target.value)} maxLength={160}/></label>
+    <div className="ap-ib-pills">
+     <button type="button" className={'ap-ib-pillbtn'+(searchOpen||search?' on':'')} aria-expanded={searchOpen||!!search} aria-controls="ap-ib-search" onClick={()=>{const next=!(searchOpen||!!search);setSearchOpen(next);if(!next)setSearch('');else window.setTimeout(()=>document.getElementById('ap-ib-search')?.focus(),0);}}><I n="search" s={13}/>Search</button>
+     <button type="button" className={'ap-ib-pillbtn'+(filtersOpen||filterCount?' on':'')} aria-expanded={filtersOpen} aria-controls="ap-ib-filters" onClick={()=>setFiltersOpen(!filtersOpen)}><I n="filter" s={13}/>Filter{filterCount>0&&<span className="ap-ib-pillbtn-n">{filterCount}</span>}</button>
+     <Link href="/setup" className="ap-ib-pillbtn primary" aria-label="New fictional demo chat" title="New fictional demo chat"><I n="plus" s={14} sw={2.4}/></Link>
+    </div>
+    <label className={'ap-ib-search'+(searchOpen||search?' is-open':'')}><I n="search" s={14}/><input id="ap-ib-search" type="search" aria-label="Search ticket, fixture or tag" placeholder="Search" value={search} onChange={e=>setSearch(e.target.value)} maxLength={160}/></label>
     <div className="ap-ib-rail-views">{(['Inbox','Queues'] as const).map(g=><div key={g} className="ap-ib-rail-group">
      <p className="ap-ib-rail-k">{g}</p>
      {VIEWS.filter(v=>v.group===g).map(v=>{const n=rows.filter(v.match).length;return <button key={v.key} type="button" aria-pressed={view===v.key} className={v.key==='attention'&&n>0?'hot':''} onClick={()=>{setView(v.key);setSelected([]);}}><I n={v.icon} s={15}/><span className="ap-ib-rail-l">{v.label}</span>{loaded&&<span className="ap-ib-rail-n">{n}</span>}</button>;})}
     </div>)}</div>
+    <div className="ap-ib-rail-foot">
+     <Link href="/contact"><I n="lifebuoy" s={15}/>Support</Link>
+     <Link href="/support"><I n="settings" s={15}/>Settings</Link>
+    </div>
    </nav>
 
    <section className="ap-ib-list" aria-label="Ticket list">
@@ -231,7 +277,7 @@ export default function Tickets(){
      <button type="button" className="ap-ib-icon" aria-label="Refresh tickets" title="Refresh tickets" disabled={busy} onClick={refresh}><I n="refresh" s={14}/></button>
     </header>
 
-    {filtersOpen&&<div className="ap-ib-filters">
+    {filtersOpen&&<div className="ap-ib-filters" id="ap-ib-filters">
      {([['Status',status,setStatus,statuses],['Priority',priority,setPriority,priorities],['Category',category,setCategory,categories]] as const).map(([label,value,set,choices])=><label key={label} className="ap-ib-field">{label}<select value={value} onChange={e=>set(e.target.value)}><option value="all">All</option>{choices.map(v=><option key={v} value={v}>{cap(v)}</option>)}</select></label>)}
      <div className="ap-ib-filters-a"><button type="button" className="ap-ib-btn sm" onClick={exportCsv}><I n="download" s={13}/>Export filtered CSV</button>{(filterCount>0||view!=='all'||search)&&<button type="button" className="ap-ib-textbtn" onClick={clearFilters}>Clear all</button>}</div>
      <p className="ap-ib-note">{visible.length} shown · loaded rows only, no notes or contacts in CSV</p>
@@ -259,15 +305,18 @@ export default function Tickets(){
        <button type="button" className="ap-ib-icon" aria-label="Clear selection" onClick={()=>setSelected([])}><I n="x" s={14}/></button>
       </>}
      </div>}
-     {visible.length>0&&<ul className={'ap-ib-items'+(selected.length?' has-sel':'')}>{visible.map(t=>{const st=statusMeta(t.ticket_status),on=active===t.id;return <li key={t.id} className={'ap-ib-item'+(on?' on':'')} style={{'--stripe':PRIORITY_COLOR[t.priority]??'#C2D1F2'} as React.CSSProperties}>
+     {visible.length>0&&<ul className={'ap-ib-items'+(selected.length?' has-sel':'')}>{visible.map(t=>{const st=statusMeta(t.ticket_status),on=active===t.id,pinned=pins.includes(t.id);return <li key={t.id} className={'ap-ib-item'+(on?' on':'')+(pinned?' pinned':'')} style={{'--stripe':PRIORITY_COLOR[t.priority]??'#C2D1F2'} as React.CSSProperties}>
       {<input type="checkbox" className="ap-ib-check" aria-label={'Select '+ticketLabel(t.id)} checked={selected.includes(t.id)} onChange={e=>setSelected(e.target.checked?[...selected,t.id].slice(0,50):selected.filter(id=>id!==t.id))}/>}
-      <button type="button" className="ap-ib-item-b" aria-current={on?'true':undefined} aria-label={ticketLabel(t.id)} aria-describedby={'ib-t-'+t.id+' ib-m-'+t.id} onClick={()=>open(t)}>
-       <span className="ap-ib-item-top"><span className="ap-ib-item-id">{ticketLabel(t.id)}</span><span className="ap-ib-item-time">{shortAgo(t.ticket_updated_at,asOf)}</span></span>
-       <span className="ap-ib-item-title" id={'ib-t-'+t.id}>{t.order_label}</span>
-       <span className="ap-ib-item-meta" id={'ib-m-'+t.id}>
-        <span className={'ap-ib-av sm'+(t.assigned_to_owner?'':' none')} aria-hidden="true">{t.assigned_to_owner?'OW':''}</span>
-        <span className="ap-ib-item-who">{t.assigned_to_owner?'Owner':'Unassigned'} · {cap(t.category)}</span>
-        {t.inbox_state==='taken_over'?<span className="ap-ib-pill navy"><I n="pause" s={11}/>AI paused</span>:needsYou(t)?<span className="ap-ib-pill pink">Needs you</span>:<span className="ap-ib-state"><span className="ap-ib-dot" style={{background:st.dot}}/>{words(t.ticket_status)}</span>}
+      <button type="button" className="ap-ib-item-b" aria-current={on?'true':undefined} aria-label={ticketLabel(t.id)} aria-describedby={'ib-t-'+t.id+' ib-p-'+t.id+' ib-m-'+t.id} onClick={()=>open(t)}>
+       <Avatar who={handler(t)} size={32}/>
+       <span className="ap-ib-item-main">
+        <span className="ap-ib-item-top"><span className="ap-ib-item-title" id={'ib-t-'+t.id}>{t.order_label}</span><span className="ap-ib-item-time">{pinned&&<span className="ap-ib-item-pin" title="Pinned on this browser"><I n="pin" s={11}/><span className="ap-ib-sr">Pinned</span></span>}{shortAgo(t.ticket_updated_at,asOf)}</span></span>
+        <span className="ap-ib-item-prev" id={'ib-p-'+t.id}>{rowPreview(t)}</span>
+        <span className="ap-ib-item-meta" id={'ib-m-'+t.id}>
+         <span className="ap-ib-item-id">{ticketLabel(t.id)}</span>
+         <span className="ap-ib-item-who">{t.assigned_to_owner?'Owner':'Unassigned'} · {cap(t.category)}</span>
+         {t.inbox_state==='taken_over'?<span className="ap-ib-pill navy"><I n="pause" s={11}/>AI paused</span>:needsYou(t)?<span className="ap-ib-pill pink">Needs you</span>:<span className="ap-ib-state"><span className="ap-ib-dot" style={{background:st.dot}}/>{words(t.ticket_status)}</span>}
+        </span>
        </span>
       </button>
      </li>;})}</ul>}
@@ -278,9 +327,9 @@ export default function Tickets(){
 
   <section className="ap-ib-detail" aria-label="Ticket details">
    {current?<div key={current.id} className="ap-ib-dwrap">{detail(current)}</div>:<div className="ap-ib-pick">
-    <span className="ap-ib-pick-ic"><I n="inbox" s={22}/></span>
-    <h2>Pick a ticket</h2>
-    <p>Its conversation, checks and next step open here. Notes are internal, never customer replies.</p>
+    <MascotCluster/>
+    <h2>Pick a conversation</h2>
+    <p>The AI assistant, you and the visitor meet here. Take over to reply in the widget; notes stay internal.</p>
     {attentionCount>0&&view!=='attention'&&<button type="button" className="ap-ib-btn" onClick={()=>setView('attention')}><I n="alert" s={14}/>Show the {attentionCount} that need you</button>}
    </div>}
   </section>

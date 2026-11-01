@@ -1,0 +1,11 @@
+[
+ {"id":"oauth.token","method":"POST","path":"/v1/oauth2/token","query":[],"authExchange":true,"body":"grant_type=client_credentials"},
+ {"id":"orders.get","method":"GET","path":"/v2/checkout/orders/{id}","query":[],"file":"openapi/checkout_orders_v2.json"},
+ {"id":"captures.get","method":"GET","path":"/v2/payments/captures/{capture_id}","query":[],"file":"openapi/payments_payment_v2.json"},
+ {"id":"refunds.get","method":"GET","path":"/v2/payments/refunds/{refund_id}","query":[],"file":"openapi/payments_payment_v2.json"},
+ {"id":"invoices.get","method":"GET","path":"/v2/invoicing/invoices/{invoice_id}","query":[],"file":"openapi/invoicing_v2.json"},
+ {"id":"invoices.list","method":"GET","path":"/v2/invoicing/invoices","query":["page","page_size"],"file":"openapi/invoicing_v2.json"},
+ {"id":"plans.list","method":"GET","path":"/v1/billing/plans","query":["page_size","page"],"file":"openapi/billing_subscriptions_v1.json"},
+ {"id":"subscriptions.get","method":"GET","path":"/v1/billing/subscriptions/{id}","query":[],"file":"openapi/billing_subscriptions_v1.json"},
+ {"id":"subscriptions.transactions","method":"GET","path":"/v1/billing/subscriptions/{id}/transactions","query":["start_time","end_time"],"file":"openapi/billing_subscriptions_v1.json"}
+]

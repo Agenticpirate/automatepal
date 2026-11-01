@@ -1,0 +1,2556 @@
+{
+ "provider": "mollie",
+ "generatedFrom": "specs.yaml",
+ "servers": [
+  "https://api.mollie.com"
+ ],
+ "auth": [
+  {
+   "type": "http",
+   "scheme": "bearer"
+  },
+  {
+   "type": "http",
+   "scheme": "bearer"
+  },
+  {
+   "type": "oauth2"
+  },
+  {
+   "type": "http",
+   "scheme": "basic"
+  }
+ ],
+ "operations": {
+  "payments.get": {
+   "method": "GET",
+   "path": "/v2/payments/{paymentId}",
+   "params": [
+    {
+     "name": "paymentId",
+     "in": "path",
+     "required": true,
+     "schema": {
+      "type": "string"
+     }
+    },
+    {
+     "name": "include",
+     "in": "query",
+     "required": false,
+     "schema": {
+      "type": [
+       "string",
+       "null"
+      ]
+     }
+    },
+    {
+     "name": "embed",
+     "in": "query",
+     "required": false,
+     "schema": {
+      "type": [
+       "string",
+       "null"
+      ]
+     }
+    },
+    {
+     "name": "testmode",
+     "in": "query",
+     "required": false,
+     "schema": {
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "idempotency-key",
+     "in": "header",
+     "required": false,
+     "schema": {
+      "type": "string"
+     }
+    }
+   ],
+   "responses": {
+    "200": {
+     "contentType": "application/hal+json",
+     "schema": {
+      "type": "object",
+      "allOf": [
+       {
+        "type": "object",
+        "properties": {
+         "resource": {
+          "type": "string"
+         },
+         "id": {
+          "allOf": [
+           {
+            "type": "string"
+           }
+          ]
+         },
+         "mode": {
+          "type": "string",
+          "enum": [
+           "live",
+           "test"
+          ]
+         },
+         "description": {
+          "type": "string"
+         },
+         "amount": {
+          "type": "object",
+          "required": [
+           "currency",
+           "value"
+          ],
+          "properties": {
+           "currency": {
+            "type": "string"
+           },
+           "value": {
+            "type": "string"
+           }
+          }
+         },
+         "amountRefunded": {
+          "allOf": [
+           {
+            "type": "object",
+            "required": [
+             "currency",
+             "value"
+            ],
+            "properties": {
+             "currency": {},
+             "value": {}
+            }
+           },
+           {}
+          ]
+         },
+         "amountRemaining": {
+          "allOf": [
+           {
+            "type": "object",
+            "required": [
+             "currency",
+             "value"
+            ],
+            "properties": {
+             "currency": {},
+             "value": {}
+            }
+           },
+           {}
+          ]
+         },
+         "amountCaptured": {
+          "allOf": [
+           {
+            "type": "object",
+            "required": [
+             "currency",
+             "value"
+            ],
+            "properties": {
+             "currency": {},
+             "value": {}
+            }
+           },
+           {}
+          ]
+         },
+         "amountChargedBack": {
+          "allOf": [
+           {
+            "type": "object",
+            "required": [
+             "currency",
+             "value"
+            ],
+            "properties": {
+             "currency": {},
+             "value": {}
+            }
+           },
+           {}
+          ]
+         },
+         "redirectUrl": {
+          "type": [
+           "string",
+           "null"
+          ]
+         },
+         "cancelUrl": {
+          "type": [
+           "string",
+           "null"
+          ]
+         },
+         "webhookUrl": {
+          "type": [
+           "string",
+           "null"
+          ]
+         },
+         "lines": {
+          "type": [
+           "array",
+           "null"
+          ],
+          "items": {
+           "allOf": [
+            {},
+            {
+             "type": "object",
+             "properties": {
+              "recurring": {}
+             }
+            }
+           ]
+          }
+         },
+         "billingAddress": {
+          "allOf": [
+           {
+            "type": "object",
+            "properties": {
+             "title": {},
+             "givenName": {},
+             "familyName": {},
+             "organizationName": {},
+             "streetAndNumber": {},
+             "streetAdditional": {},
+             "postalCode": {},
+             "email": {},
+             "phone": {},
+             "city": {},
+             "region": {},
+             "country": {}
+            }
+           },
+           {
+            "type": "object",
+            "properties": {
+             "organizationName": {}
+            }
+           }
+          ]
+         },
+         "shippingAddress": {
+          "type": "object",
+          "properties": {
+           "title": {
+            "type": "string"
+           },
+           "givenName": {
+            "type": "string"
+           },
+           "familyName": {
+            "type": "string"
+           },
+           "organizationName": {
+            "type": "string"
+           },
+           "streetAndNumber": {
+            "type": "string"
+           },
+           "streetAdditional": {
+            "type": "string"
+           },
+           "postalCode": {
+            "type": "string"
+           },
+           "email": {
+            "type": "string"
+           },
+           "phone": {
+            "type": "string"
+           },
+           "city": {
+            "type": "string"
+           },
+           "region": {
+            "type": "string"
+           },
+           "country": {
+            "type": "string"
+           }
+          }
+         },
+         "locale": {
+          "type": [
+           "string",
+           "null"
+          ],
+          "enum": [
+           "ca_ES",
+           "cs_CZ",
+           "da_DK",
+           "de_AT",
+           "de_CH",
+           "de_DE",
+           "de_LU",
+           "el_GR",
+           "en_BE",
+           "en_GB",
+           "en_NL",
+           "en_US",
+           "es_ES",
+           "fi_FI",
+           "fr_BE",
+           "fr_FR",
+           "fr_LU",
+           "hu_HU",
+           "is_IS",
+           "it_IT",
+           "lt_LT",
+           "lv_LV",
+           "nb_NO",
+           "nl_BE",
+           "nl_NL",
+           "pl_PL",
+           "pt_PT",
+           "sk_SK",
+           "sl_SI",
+           "sv_SE",
+           "tr_TR",
+           null
+          ]
+         },
+         "countryCode": {
+          "type": [
+           "string",
+           "null"
+          ]
+         },
+         "method": {},
+         "issuer": {
+          "type": [
+           "string",
+           "null"
+          ]
+         },
+         "restrictPaymentMethodsToCountry": {
+          "type": [
+           "string",
+           "null"
+          ]
+         },
+         "metadata": {
+          "oneOf": [
+           {
+            "type": "string"
+           },
+           {
+            "type": "number"
+           },
+           {
+            "type": "object",
+            "properties": {}
+           },
+           {
+            "type": "array",
+            "items": {}
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "captureMode": {
+          "type": [
+           "string",
+           "null"
+          ],
+          "enum": [
+           "automatic",
+           "manual"
+          ]
+         },
+         "captureDelay": {
+          "type": [
+           "string",
+           "null"
+          ]
+         },
+         "captureBefore": {
+          "type": [
+           "string",
+           "null"
+          ]
+         },
+         "applicationFee": {
+          "type": [
+           "object",
+           "null"
+          ],
+          "required": [
+           "amount",
+           "description"
+          ],
+          "properties": {
+           "amount": {
+            "type": "object",
+            "required": [
+             "currency",
+             "value"
+            ],
+            "properties": {
+             "currency": {},
+             "value": {}
+            }
+           },
+           "description": {
+            "type": "string"
+           }
+          }
+         },
+         "routing": {
+          "type": [
+           "array",
+           "null"
+          ],
+          "items": {
+           "type": "object",
+           "required": [
+            "resource",
+            "id",
+            "mode",
+            "createdAt",
+            "amount",
+            "destination",
+            "_links"
+           ],
+           "properties": {
+            "resource": {},
+            "id": {},
+            "mode": {},
+            "amount": {},
+            "destination": {},
+            "createdAt": {},
+            "releaseDate": {},
+            "_links": {}
+           }
+          }
+         },
+         "sequenceType": {
+          "type": "string",
+          "enum": [
+           "oneoff",
+           "first",
+           "recurring"
+          ]
+         },
+         "subscriptionId": {
+          "type": [
+           "string",
+           "null"
+          ],
+          "allOf": [
+           {
+            "type": "string"
+           }
+          ]
+         },
+         "mandateId": {
+          "type": [
+           "string",
+           "null"
+          ],
+          "allOf": [
+           {
+            "type": "string"
+           }
+          ]
+         },
+         "customerId": {
+          "type": "string"
+         },
+         "profileId": {
+          "type": "string"
+         },
+         "settlementId": {
+          "type": [
+           "string",
+           "null"
+          ],
+          "allOf": [
+           {
+            "type": "string"
+           }
+          ]
+         },
+         "orderId": {
+          "type": [
+           "string",
+           "null"
+          ],
+          "allOf": [
+           {
+            "type": "string"
+           }
+          ]
+         },
+         "status": {
+          "allOf": [
+           {
+            "type": "string",
+            "enum": [
+             "open",
+             "pending",
+             "authorized",
+             "paid",
+             "canceled",
+             "expired",
+             "failed"
+            ]
+           }
+          ]
+         },
+         "statusReason": {
+          "type": [
+           "object",
+           "null"
+          ],
+          "required": [
+           "code",
+           "message"
+          ],
+          "properties": {
+           "code": {
+            "allOf": [
+             {},
+             {}
+            ]
+           },
+           "message": {
+            "type": "string"
+           }
+          }
+         },
+         "isCancelable": {
+          "type": [
+           "boolean",
+           "null"
+          ]
+         },
+         "details": {
+          "type": [
+           "object",
+           "null"
+          ],
+          "properties": {
+           "consumerName": {
+            "type": [
+             "string",
+             "null"
+            ]
+           },
+           "consumerAccount": {
+            "type": [
+             "string",
+             "null"
+            ]
+           },
+           "consumerBic": {
+            "type": [
+             "string",
+             "null"
+            ]
+           },
+           "shippingAddress": {
+            "type": [
+             "object",
+             "null"
+            ],
+            "properties": {}
+           },
+           "cardNumber": {
+            "type": [
+             "string",
+             "null"
+            ]
+           },
+           "bankName": {
+            "type": "string"
+           },
+           "bankAccount": {
+            "type": "string"
+           },
+           "bankBic": {
+            "type": "string"
+           },
+           "transferReference": {
+            "type": [
+             "string",
+             "null"
+            ]
+           },
+           "bizumReference": {
+            "type": [
+             "string",
+             "null"
+            ]
+           },
+           "cardFingerprint": {
+            "type": [
+             "string",
+             "null"
+            ]
+           },
+           "cardHolder": {
+            "type": [
+             "string",
+             "null"
+            ]
+           },
+           "cardAudience": {},
+           "cardLabel": {},
+           "cardCountryCode": {
+            "type": [
+             "string",
+             "null"
+            ]
+           },
+           "cardExpiryDate": {
+            "type": [
+             "string",
+             "null"
+            ]
+           },
+           "cardFunding": {},
+           "cardSecurity": {},
+           "feeRegion": {},
+           "cardMaskedNumber": {
+            "type": [
+             "string",
+             "null"
+            ]
+           },
+           "card3dsEci": {
+            "type": [
+             "string",
+             "null"
+            ]
+           },
+           "cardBin": {
+            "type": [
+             "string",
+             "null"
+            ]
+           },
+           "cardIssuer": {
+            "type": [
+             "string",
+             "null"
+            ]
+           },
+           "failureReason": {},
+           "failureMessage": {
+            "type": [
+             "string",
+             "null"
+            ]
+           },
+           "wallet": {},
+           "multibancoReference": {
+            "type": [
+             "string",
+             "null"
+            ]
+           },
+           "multibancoEntity": {
+            "type": [
+             "string",
+             "null"
+            ]
+           },
+           "paypalReference": {
+            "type": [
+             "string",
+             "null"
+            ]
+           },
+           "paypalPayerId": {
+            "type": [
+             "string",
+             "null"
+            ]
+           },
+           "sellerProtection": {},
+           "paypalFee": {},
+           "customerReference": {
+            "type": "string"
+           },
+           "terminalId": {
+            "type": "string"
+           },
+           "maskedNumber": {
+            "type": [
+             "string",
+             "null"
+            ]
+           },
+           "creditorIdentifier": {
+            "type": [
+             "string",
+             "null"
+            ]
+           },
+           "dueDate": {
+            "type": [
+             "string",
+             "null"
+            ]
+           },
+           "signatureDate": {
+            "type": [
+             "string",
+             "null"
+            ]
+           },
+           "bankReasonCode": {
+            "type": [
+             "string",
+             "null"
+            ]
+           },
+           "bankReason": {
+            "type": [
+             "string",
+             "null"
+            ]
+           },
+           "endToEndIdentifier": {
+            "type": [
+             "string",
+             "null"
+            ]
+           },
+           "mandateReference": {
+            "type": [
+             "string",
+             "null"
+            ]
+           },
+           "batchReference": {
+            "type": [
+             "string",
+             "null"
+            ]
+           },
+           "fileReference": {
+            "type": [
+             "string",
+             "null"
+            ]
+           },
+           "qrCode": {
+            "type": "object",
+            "properties": {
+             "height": {},
+             "width": {},
+             "src": {}
+            }
+           },
+           "voucherNumber": {
+            "type": "string"
+           },
+           "giftcards": {
+            "type": "array",
+            "items": {}
+           },
+           "issuer": {
+            "type": "string"
+           },
+           "vouchers": {
+            "type": "array",
+            "items": {}
+           },
+           "remainderAmount": {},
+           "remainderMethod": {
+            "type": "string"
+           },
+           "remainderDetails": {
+            "type": "object",
+            "properties": {}
+           }
+          }
+         },
+         "createdAt": {
+          "type": "string"
+         },
+         "authorizedAt": {
+          "type": [
+           "string",
+           "null"
+          ]
+         },
+         "paidAt": {
+          "type": [
+           "string",
+           "null"
+          ]
+         },
+         "canceledAt": {
+          "type": [
+           "string",
+           "null"
+          ]
+         },
+         "expiresAt": {
+          "type": [
+           "string",
+           "null"
+          ]
+         },
+         "expiredAt": {
+          "type": [
+           "string",
+           "null"
+          ]
+         },
+         "failedAt": {
+          "type": [
+           "string",
+           "null"
+          ]
+         },
+         "dueDate": {
+          "type": [
+           "string",
+           "null"
+          ]
+         },
+         "storeCredentials": {
+          "type": [
+           "boolean"
+          ]
+         },
+         "testmode": {
+          "type": [
+           "boolean",
+           "null"
+          ]
+         },
+         "_links": {
+          "type": "object",
+          "required": [
+           "self",
+           "dashboard"
+          ],
+          "properties": {
+           "self": {
+            "type": "object",
+            "required": [
+             "href",
+             "type"
+            ],
+            "properties": {
+             "href": {},
+             "type": {}
+            }
+           },
+           "checkout": {
+            "type": "object",
+            "required": [
+             "href",
+             "type"
+            ],
+            "properties": {
+             "href": {},
+             "type": {}
+            }
+           },
+           "mobileAppCheckout": {
+            "type": "object",
+            "required": [
+             "href",
+             "type"
+            ],
+            "properties": {
+             "href": {},
+             "type": {}
+            }
+           },
+           "changePaymentState": {
+            "type": [
+             "object",
+             "null"
+            ],
+            "properties": {
+             "href": {},
+             "type": {}
+            }
+           },
+           "dashboard": {
+            "type": "object",
+            "required": [
+             "href",
+             "type"
+            ],
+            "properties": {
+             "href": {},
+             "type": {}
+            }
+           },
+           "refunds": {
+            "type": "object",
+            "required": [
+             "href",
+             "type"
+            ],
+            "properties": {
+             "href": {},
+             "type": {}
+            }
+           },
+           "chargebacks": {
+            "type": "object",
+            "required": [
+             "href",
+             "type"
+            ],
+            "properties": {
+             "href": {},
+             "type": {}
+            }
+           },
+           "captures": {
+            "type": "object",
+            "required": [
+             "href",
+             "type"
+            ],
+            "properties": {
+             "href": {},
+             "type": {}
+            }
+           },
+           "settlement": {
+            "type": "object",
+            "required": [
+             "href",
+             "type"
+            ],
+            "properties": {
+             "href": {},
+             "type": {}
+            }
+           },
+           "customer": {
+            "type": "object",
+            "required": [
+             "href",
+             "type"
+            ],
+            "properties": {
+             "href": {},
+             "type": {}
+            }
+           },
+           "mandate": {
+            "type": "object",
+            "required": [
+             "href",
+             "type"
+            ],
+            "properties": {
+             "href": {},
+             "type": {}
+            }
+           },
+           "subscription": {
+            "type": "object",
+            "required": [
+             "href",
+             "type"
+            ],
+            "properties": {
+             "href": {},
+             "type": {}
+            }
+           },
+           "order": {
+            "type": "object",
+            "required": [
+             "href",
+             "type"
+            ],
+            "properties": {
+             "href": {},
+             "type": {}
+            }
+           },
+           "terminal": {
+            "type": "object",
+            "required": [
+             "href",
+             "type"
+            ],
+            "properties": {
+             "href": {},
+             "type": {}
+            }
+           },
+           "documentation": {
+            "type": "object",
+            "required": [
+             "href",
+             "type"
+            ],
+            "properties": {
+             "href": {},
+             "type": {}
+            }
+           },
+           "status": {
+            "type": "object",
+            "required": [
+             "href",
+             "type"
+            ],
+            "properties": {
+             "href": {},
+             "type": {}
+            }
+           },
+           "payOnline": {
+            "type": "object",
+            "required": [
+             "href",
+             "type"
+            ],
+            "properties": {
+             "href": {},
+             "type": {}
+            }
+           }
+          }
+         }
+        }
+       },
+       {
+        "type": "object",
+        "properties": {
+         "method": {
+          "type": [
+           "string",
+           "null"
+          ],
+          "enum": [
+           null,
+           "alma",
+           "applepay",
+           "bacs",
+           "bancomatpay",
+           "bancontact",
+           "banktransfer",
+           "belfius",
+           "billie",
+           "billink",
+           "bizum",
+           "blik",
+           "creditcard",
+           "directdebit",
+           "eps",
+           "giftcard",
+           "ideal",
+           "in3",
+           "kbc",
+           "klarna",
+           "mbway",
+           "mobilepay",
+           "multibanco",
+           "mybank",
+           "paybybank",
+           "paypal",
+           "paysafecard",
+           "pointofsale",
+           "przelewy24",
+           "riverty",
+           "satispay",
+           "swish",
+           "trustly",
+           "twint",
+           "vipps",
+           "voucher",
+           "wero",
+           "klarnapaylater",
+           "klarnapaynow",
+           "klarnasliceit",
+           "payconiq"
+          ]
+         }
+        }
+       }
+      ],
+      "required": [
+       "resource",
+       "id",
+       "mode",
+       "createdAt",
+       "amount",
+       "description",
+       "status",
+       "profileId",
+       "sequenceType",
+       "_links"
+      ]
+     }
+    }
+   }
+  },
+  "payments.list": {
+   "method": "GET",
+   "path": "/v2/payments",
+   "params": [
+    {
+     "name": "from",
+     "in": "query",
+     "required": false,
+     "schema": {
+      "type": "string"
+     }
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "schema": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     }
+    },
+    {
+     "name": "sort",
+     "in": "query",
+     "required": false,
+     "schema": {
+      "type": "string",
+      "enum": [
+       "asc",
+       "desc"
+      ]
+     }
+    },
+    {
+     "name": "profileId",
+     "in": "query",
+     "required": false,
+     "schema": {
+      "type": "string"
+     }
+    },
+    {
+     "name": "testmode",
+     "in": "query",
+     "required": false,
+     "schema": {
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "idempotency-key",
+     "in": "header",
+     "required": false,
+     "schema": {
+      "type": "string"
+     }
+    }
+   ],
+   "responses": {
+    "200": {
+     "contentType": "application/hal+json",
+     "schema": {
+      "type": "object",
+      "required": [
+       "count",
+       "_embedded",
+       "_links"
+      ],
+      "properties": {
+       "count": {
+        "type": "integer"
+       },
+       "_embedded": {
+        "type": "object",
+        "properties": {
+         "payments": {
+          "type": "array",
+          "items": {
+           "type": "object",
+           "allOf": [
+            {
+             "type": "object",
+             "properties": {
+              "resource": {},
+              "id": {},
+              "mode": {},
+              "description": {},
+              "amount": {},
+              "amountRefunded": {},
+              "amountRemaining": {},
+              "amountCaptured": {},
+              "amountChargedBack": {},
+              "redirectUrl": {},
+              "cancelUrl": {},
+              "webhookUrl": {},
+              "lines": {},
+              "billingAddress": {},
+              "shippingAddress": {},
+              "locale": {},
+              "countryCode": {},
+              "method": {},
+              "issuer": {},
+              "restrictPaymentMethodsToCountry": {},
+              "metadata": {},
+              "captureMode": {},
+              "captureDelay": {},
+              "captureBefore": {},
+              "applicationFee": {},
+              "routing": {},
+              "sequenceType": {},
+              "subscriptionId": {},
+              "mandateId": {},
+              "customerId": {},
+              "profileId": {},
+              "settlementId": {},
+              "orderId": {},
+              "status": {},
+              "statusReason": {},
+              "isCancelable": {},
+              "details": {},
+              "createdAt": {},
+              "authorizedAt": {},
+              "paidAt": {},
+              "canceledAt": {},
+              "expiresAt": {},
+              "expiredAt": {},
+              "failedAt": {},
+              "dueDate": {},
+              "storeCredentials": {},
+              "testmode": {},
+              "_links": {}
+             }
+            },
+            {
+             "type": "object",
+             "properties": {
+              "method": {}
+             }
+            }
+           ],
+           "required": [
+            "resource",
+            "id",
+            "mode",
+            "createdAt",
+            "amount",
+            "description",
+            "status",
+            "profileId",
+            "sequenceType",
+            "_links"
+           ]
+          }
+         }
+        }
+       },
+       "_links": {
+        "type": "object",
+        "required": [
+         "self",
+         "previous",
+         "next",
+         "documentation"
+        ],
+        "properties": {
+         "self": {
+          "type": "object",
+          "required": [
+           "href",
+           "type"
+          ],
+          "properties": {
+           "href": {
+            "type": "string"
+           },
+           "type": {
+            "type": "string"
+           }
+          }
+         },
+         "previous": {
+          "type": [
+           "object",
+           "null"
+          ],
+          "properties": {
+           "href": {
+            "type": "string"
+           },
+           "type": {
+            "type": "string"
+           }
+          }
+         },
+         "next": {
+          "type": [
+           "object",
+           "null"
+          ],
+          "properties": {
+           "href": {
+            "type": "string"
+           },
+           "type": {
+            "type": "string"
+           }
+          }
+         },
+         "documentation": {
+          "type": "object",
+          "required": [
+           "href",
+           "type"
+          ],
+          "properties": {
+           "href": {
+            "type": "string"
+           },
+           "type": {
+            "type": "string"
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "payments.refunds": {
+   "method": "GET",
+   "path": "/v2/payments/{paymentId}/refunds",
+   "params": [
+    {
+     "name": "paymentId",
+     "in": "path",
+     "required": true,
+     "schema": {
+      "type": "string"
+     }
+    },
+    {
+     "name": "from",
+     "in": "query",
+     "required": false,
+     "schema": {
+      "type": "string"
+     }
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "schema": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     }
+    },
+    {
+     "name": "embed",
+     "in": "query",
+     "required": false,
+     "schema": {
+      "type": [
+       "string",
+       "null"
+      ]
+     }
+    },
+    {
+     "name": "testmode",
+     "in": "query",
+     "required": false,
+     "schema": {
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "idempotency-key",
+     "in": "header",
+     "required": false,
+     "schema": {
+      "type": "string"
+     }
+    }
+   ],
+   "responses": {
+    "200": {
+     "contentType": "application/hal+json",
+     "schema": {
+      "type": "object",
+      "required": [
+       "count",
+       "_embedded",
+       "_links"
+      ],
+      "properties": {
+       "count": {
+        "type": "integer"
+       },
+       "_embedded": {
+        "type": "object",
+        "required": [
+         "refunds"
+        ],
+        "properties": {
+         "refunds": {
+          "type": "array",
+          "items": {
+           "type": "object",
+           "allOf": [
+            {
+             "type": "object",
+             "properties": {
+              "resource": {},
+              "id": {},
+              "mode": {},
+              "description": {},
+              "amount": {},
+              "metadata": {},
+              "paymentId": {},
+              "settlementId": {},
+              "status": {},
+              "createdAt": {},
+              "externalReference": {},
+              "reverseRouting": {},
+              "routingReversals": {},
+              "testmode": {},
+              "_links": {}
+             }
+            }
+           ],
+           "required": [
+            "resource",
+            "id",
+            "mode",
+            "createdAt",
+            "amount",
+            "description",
+            "status",
+            "paymentId",
+            "metadata",
+            "_links"
+           ]
+          }
+         }
+        }
+       },
+       "_links": {
+        "type": "object",
+        "required": [
+         "self",
+         "previous",
+         "next",
+         "documentation"
+        ],
+        "properties": {
+         "self": {
+          "type": "object",
+          "required": [
+           "href",
+           "type"
+          ],
+          "properties": {
+           "href": {
+            "type": "string"
+           },
+           "type": {
+            "type": "string"
+           }
+          }
+         },
+         "previous": {
+          "type": [
+           "object",
+           "null"
+          ],
+          "properties": {
+           "href": {
+            "type": "string"
+           },
+           "type": {
+            "type": "string"
+           }
+          }
+         },
+         "next": {
+          "type": [
+           "object",
+           "null"
+          ],
+          "properties": {
+           "href": {
+            "type": "string"
+           },
+           "type": {
+            "type": "string"
+           }
+          }
+         },
+         "documentation": {
+          "type": "object",
+          "required": [
+           "href",
+           "type"
+          ],
+          "properties": {
+           "href": {
+            "type": "string"
+           },
+           "type": {
+            "type": "string"
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "customers.get": {
+   "method": "GET",
+   "path": "/v2/customers/{customerId}",
+   "params": [
+    {
+     "name": "customerId",
+     "in": "path",
+     "required": true,
+     "schema": {
+      "type": "string"
+     }
+    },
+    {
+     "name": "testmode",
+     "in": "query",
+     "required": false,
+     "schema": {
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "idempotency-key",
+     "in": "header",
+     "required": false,
+     "schema": {
+      "type": "string"
+     }
+    }
+   ],
+   "responses": {
+    "200": {
+     "contentType": "application/hal+json",
+     "schema": {
+      "allOf": [
+       {
+        "type": "object",
+        "properties": {
+         "resource": {
+          "type": "string"
+         },
+         "id": {
+          "allOf": [
+           {
+            "type": "string"
+           }
+          ]
+         },
+         "mode": {
+          "type": "string",
+          "enum": [
+           "live",
+           "test"
+          ]
+         },
+         "name": {
+          "type": [
+           "string",
+           "null"
+          ]
+         },
+         "email": {
+          "type": [
+           "string",
+           "null"
+          ]
+         },
+         "locale": {
+          "type": [
+           "string",
+           "null"
+          ],
+          "enum": [
+           "ca_ES",
+           "cs_CZ",
+           "da_DK",
+           "de_AT",
+           "de_CH",
+           "de_DE",
+           "de_LU",
+           "el_GR",
+           "en_BE",
+           "en_GB",
+           "en_NL",
+           "en_US",
+           "es_ES",
+           "fi_FI",
+           "fr_BE",
+           "fr_FR",
+           "fr_LU",
+           "hu_HU",
+           "is_IS",
+           "it_IT",
+           "lt_LT",
+           "lv_LV",
+           "nb_NO",
+           "nl_BE",
+           "nl_NL",
+           "pl_PL",
+           "pt_PT",
+           "sk_SK",
+           "sl_SI",
+           "sv_SE",
+           "tr_TR",
+           null
+          ]
+         },
+         "metadata": {
+          "oneOf": [
+           {
+            "type": "string"
+           },
+           {
+            "type": "number"
+           },
+           {
+            "type": "object",
+            "properties": {}
+           },
+           {
+            "type": "array",
+            "items": {}
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "createdAt": {
+          "type": "string"
+         },
+         "testmode": {
+          "type": [
+           "boolean",
+           "null"
+          ]
+         },
+         "_links": {
+          "type": "object",
+          "required": [
+           "self",
+           "dashboard",
+           "documentation"
+          ],
+          "properties": {
+           "self": {
+            "type": "object",
+            "required": [
+             "href",
+             "type"
+            ],
+            "properties": {
+             "href": {},
+             "type": {}
+            }
+           },
+           "dashboard": {
+            "type": "object",
+            "required": [
+             "href",
+             "type"
+            ],
+            "properties": {
+             "href": {},
+             "type": {}
+            }
+           },
+           "payments": {
+            "type": [
+             "object",
+             "null"
+            ],
+            "properties": {
+             "href": {},
+             "type": {}
+            }
+           },
+           "mandates": {
+            "type": [
+             "object",
+             "null"
+            ],
+            "properties": {
+             "href": {},
+             "type": {}
+            }
+           },
+           "subscriptions": {
+            "type": [
+             "object",
+             "null"
+            ],
+            "properties": {
+             "href": {},
+             "type": {}
+            }
+           },
+           "documentation": {
+            "type": "object",
+            "required": [
+             "href",
+             "type"
+            ],
+            "properties": {
+             "href": {},
+             "type": {}
+            }
+           }
+          }
+         }
+        }
+       },
+       {
+        "type": "object",
+        "required": [
+         "resource",
+         "id",
+         "mode",
+         "name",
+         "email",
+         "locale",
+         "metadata",
+         "createdAt",
+         "_links"
+        ]
+       }
+      ]
+     }
+    }
+   }
+  },
+  "customers.payments": {
+   "method": "GET",
+   "path": "/v2/customers/{customerId}/payments",
+   "params": [
+    {
+     "name": "customerId",
+     "in": "path",
+     "required": true,
+     "schema": {
+      "type": "string"
+     }
+    },
+    {
+     "name": "from",
+     "in": "query",
+     "required": false,
+     "schema": {
+      "type": "string"
+     }
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "schema": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     }
+    },
+    {
+     "name": "sort",
+     "in": "query",
+     "required": false,
+     "schema": {
+      "type": "string",
+      "enum": [
+       "asc",
+       "desc"
+      ]
+     }
+    },
+    {
+     "name": "profileId",
+     "in": "query",
+     "required": false,
+     "schema": {
+      "type": "string"
+     }
+    },
+    {
+     "name": "testmode",
+     "in": "query",
+     "required": false,
+     "schema": {
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "idempotency-key",
+     "in": "header",
+     "required": false,
+     "schema": {
+      "type": "string"
+     }
+    }
+   ],
+   "responses": {
+    "200": {
+     "contentType": "application/hal+json",
+     "schema": {
+      "type": "object",
+      "required": [
+       "count",
+       "_embedded",
+       "_links"
+      ],
+      "properties": {
+       "count": {
+        "type": "integer"
+       },
+       "_embedded": {
+        "type": "object",
+        "properties": {
+         "payments": {
+          "type": "array",
+          "items": {
+           "type": "object",
+           "allOf": [
+            {
+             "type": "object",
+             "properties": {
+              "resource": {},
+              "id": {},
+              "mode": {},
+              "description": {},
+              "amount": {},
+              "amountRefunded": {},
+              "amountRemaining": {},
+              "amountCaptured": {},
+              "amountChargedBack": {},
+              "redirectUrl": {},
+              "cancelUrl": {},
+              "webhookUrl": {},
+              "lines": {},
+              "billingAddress": {},
+              "shippingAddress": {},
+              "locale": {},
+              "countryCode": {},
+              "method": {},
+              "issuer": {},
+              "restrictPaymentMethodsToCountry": {},
+              "metadata": {},
+              "captureMode": {},
+              "captureDelay": {},
+              "captureBefore": {},
+              "applicationFee": {},
+              "routing": {},
+              "sequenceType": {},
+              "subscriptionId": {},
+              "mandateId": {},
+              "customerId": {},
+              "profileId": {},
+              "settlementId": {},
+              "orderId": {},
+              "status": {},
+              "statusReason": {},
+              "isCancelable": {},
+              "details": {},
+              "createdAt": {},
+              "authorizedAt": {},
+              "paidAt": {},
+              "canceledAt": {},
+              "expiresAt": {},
+              "expiredAt": {},
+              "failedAt": {},
+              "dueDate": {},
+              "storeCredentials": {},
+              "testmode": {},
+              "_links": {}
+             }
+            },
+            {
+             "type": "object",
+             "properties": {
+              "method": {}
+             }
+            }
+           ],
+           "required": [
+            "resource",
+            "id",
+            "mode",
+            "createdAt",
+            "amount",
+            "description",
+            "status",
+            "profileId",
+            "sequenceType",
+            "_links"
+           ]
+          }
+         }
+        }
+       },
+       "_links": {
+        "type": "object",
+        "required": [
+         "self",
+         "previous",
+         "next",
+         "documentation"
+        ],
+        "properties": {
+         "self": {
+          "type": "object",
+          "required": [
+           "href",
+           "type"
+          ],
+          "properties": {
+           "href": {
+            "type": "string"
+           },
+           "type": {
+            "type": "string"
+           }
+          }
+         },
+         "previous": {
+          "type": [
+           "object",
+           "null"
+          ],
+          "properties": {
+           "href": {
+            "type": "string"
+           },
+           "type": {
+            "type": "string"
+           }
+          }
+         },
+         "next": {
+          "type": [
+           "object",
+           "null"
+          ],
+          "properties": {
+           "href": {
+            "type": "string"
+           },
+           "type": {
+            "type": "string"
+           }
+          }
+         },
+         "documentation": {
+          "type": "object",
+          "required": [
+           "href",
+           "type"
+          ],
+          "properties": {
+           "href": {
+            "type": "string"
+           },
+           "type": {
+            "type": "string"
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "customers.subscriptions": {
+   "method": "GET",
+   "path": "/v2/customers/{customerId}/subscriptions",
+   "params": [
+    {
+     "name": "customerId",
+     "in": "path",
+     "required": true,
+     "schema": {
+      "type": "string"
+     }
+    },
+    {
+     "name": "from",
+     "in": "query",
+     "required": false,
+     "schema": {
+      "type": "string"
+     }
+    },
+    {
+     "name": "limit",
+     "in": "query",
+     "required": false,
+     "schema": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     }
+    },
+    {
+     "name": "sort",
+     "in": "query",
+     "required": false,
+     "schema": {
+      "type": "string",
+      "enum": [
+       "asc",
+       "desc"
+      ]
+     }
+    },
+    {
+     "name": "testmode",
+     "in": "query",
+     "required": false,
+     "schema": {
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "idempotency-key",
+     "in": "header",
+     "required": false,
+     "schema": {
+      "type": "string"
+     }
+    }
+   ],
+   "responses": {
+    "200": {
+     "contentType": "application/hal+json",
+     "schema": {
+      "type": "object",
+      "required": [
+       "count",
+       "_embedded",
+       "_links"
+      ],
+      "properties": {
+       "count": {
+        "type": "integer"
+       },
+       "_embedded": {
+        "type": "object",
+        "properties": {
+         "subscriptions": {
+          "type": "array",
+          "items": {
+           "allOf": [
+            {
+             "type": "object",
+             "required": [
+              "resource",
+              "id",
+              "customerId",
+              "mode",
+              "createdAt",
+              "status",
+              "amount",
+              "interval",
+              "startDate",
+              "_links"
+             ],
+             "properties": {
+              "resource": {},
+              "id": {},
+              "mode": {},
+              "status": {},
+              "amount": {},
+              "times": {},
+              "timesRemaining": {},
+              "interval": {},
+              "startDate": {},
+              "nextPaymentDate": {},
+              "description": {},
+              "method": {},
+              "applicationFee": {},
+              "metadata": {},
+              "webhookUrl": {},
+              "customerId": {},
+              "mandateId": {},
+              "createdAt": {},
+              "canceledAt": {},
+              "profileId": {},
+              "testmode": {},
+              "_links": {}
+             }
+            },
+            {
+             "type": "object",
+             "required": [
+              "resource",
+              "id",
+              "mode",
+              "customerId",
+              "createdAt",
+              "status",
+              "amount",
+              "description",
+              "method",
+              "times",
+              "timesRemaining",
+              "interval",
+              "startDate",
+              "webhookUrl",
+              "metadata",
+              "_links"
+             ]
+            }
+           ]
+          }
+         }
+        }
+       },
+       "_links": {
+        "type": "object",
+        "required": [
+         "self",
+         "previous",
+         "next",
+         "documentation"
+        ],
+        "properties": {
+         "self": {
+          "type": "object",
+          "required": [
+           "href",
+           "type"
+          ],
+          "properties": {
+           "href": {
+            "type": "string"
+           },
+           "type": {
+            "type": "string"
+           }
+          }
+         },
+         "previous": {
+          "type": [
+           "object",
+           "null"
+          ],
+          "properties": {
+           "href": {
+            "type": "string"
+           },
+           "type": {
+            "type": "string"
+           }
+          }
+         },
+         "next": {
+          "type": [
+           "object",
+           "null"
+          ],
+          "properties": {
+           "href": {
+            "type": "string"
+           },
+           "type": {
+            "type": "string"
+           }
+          }
+         },
+         "documentation": {
+          "type": "object",
+          "required": [
+           "href",
+           "type"
+          ],
+          "properties": {
+           "href": {
+            "type": "string"
+           },
+           "type": {
+            "type": "string"
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "customers.subscription": {
+   "method": "GET",
+   "path": "/v2/customers/{customerId}/subscriptions/{subscriptionId}",
+   "params": [
+    {
+     "name": "customerId",
+     "in": "path",
+     "required": true,
+     "schema": {
+      "type": "string"
+     }
+    },
+    {
+     "name": "subscriptionId",
+     "in": "path",
+     "required": true,
+     "schema": {
+      "type": "string"
+     }
+    },
+    {
+     "name": "testmode",
+     "in": "query",
+     "required": false,
+     "schema": {
+      "type": "boolean"
+     }
+    },
+    {
+     "name": "idempotency-key",
+     "in": "header",
+     "required": false,
+     "schema": {
+      "type": "string"
+     }
+    }
+   ],
+   "responses": {
+    "200": {
+     "contentType": "application/hal+json",
+     "schema": {
+      "allOf": [
+       {
+        "type": "object",
+        "required": [
+         "resource",
+         "id",
+         "customerId",
+         "mode",
+         "createdAt",
+         "status",
+         "amount",
+         "interval",
+         "startDate",
+         "_links"
+        ],
+        "properties": {
+         "resource": {
+          "type": "string"
+         },
+         "id": {
+          "allOf": [
+           {
+            "type": "string"
+           }
+          ]
+         },
+         "mode": {
+          "type": "string",
+          "enum": [
+           "live",
+           "test"
+          ]
+         },
+         "status": {
+          "allOf": [
+           {
+            "type": "string",
+            "enum": [
+             "pending",
+             "active",
+             "canceled",
+             "suspended",
+             "completed"
+            ]
+           }
+          ]
+         },
+         "amount": {
+          "type": "object",
+          "required": [
+           "currency",
+           "value"
+          ],
+          "properties": {
+           "currency": {
+            "type": "string"
+           },
+           "value": {
+            "type": "string"
+           }
+          }
+         },
+         "times": {
+          "type": [
+           "integer",
+           "null"
+          ]
+         },
+         "timesRemaining": {
+          "type": [
+           "integer",
+           "null"
+          ]
+         },
+         "interval": {
+          "type": "string"
+         },
+         "startDate": {
+          "type": "string"
+         },
+         "nextPaymentDate": {
+          "type": [
+           "string",
+           "null"
+          ]
+         },
+         "description": {
+          "type": "string"
+         },
+         "method": {
+          "type": [
+           "string",
+           "null"
+          ],
+          "enum": [
+           "creditcard",
+           "directdebit",
+           "paypal",
+           null
+          ]
+         },
+         "applicationFee": {
+          "type": "object",
+          "required": [
+           "amount",
+           "description"
+          ],
+          "properties": {
+           "amount": {
+            "type": "object",
+            "required": [
+             "currency",
+             "value"
+            ],
+            "properties": {
+             "currency": {},
+             "value": {}
+            }
+           },
+           "description": {
+            "type": "string"
+           }
+          }
+         },
+         "metadata": {
+          "oneOf": [
+           {
+            "type": "string"
+           },
+           {
+            "type": "number"
+           },
+           {
+            "type": "object",
+            "properties": {}
+           },
+           {
+            "type": "array",
+            "items": {}
+           },
+           {
+            "type": "null"
+           }
+          ]
+         },
+         "webhookUrl": {
+          "type": [
+           "string",
+           "null"
+          ]
+         },
+         "customerId": {
+          "allOf": [
+           {
+            "type": "string"
+           }
+          ]
+         },
+         "mandateId": {
+          "type": "string"
+         },
+         "createdAt": {
+          "type": "string"
+         },
+         "canceledAt": {
+          "type": [
+           "string",
+           "null"
+          ]
+         },
+         "profileId": {
+          "allOf": [
+           {
+            "type": "string"
+           }
+          ]
+         },
+         "testmode": {
+          "type": [
+           "boolean",
+           "null"
+          ]
+         },
+         "_links": {
+          "type": "object",
+          "required": [
+           "self",
+           "profile",
+           "customer",
+           "documentation"
+          ],
+          "properties": {
+           "self": {
+            "type": "object",
+            "required": [
+             "href",
+             "type"
+            ],
+            "properties": {
+             "href": {},
+             "type": {}
+            }
+           },
+           "customer": {
+            "type": "object",
+            "required": [
+             "href",
+             "type"
+            ],
+            "properties": {
+             "href": {},
+             "type": {}
+            }
+           },
+           "mandate": {
+            "type": [
+             "object",
+             "null"
+            ],
+            "properties": {
+             "href": {},
+             "type": {}
+            }
+           },
+           "profile": {
+            "type": "object",
+            "required": [
+             "href",
+             "type"
+            ],
+            "properties": {
+             "href": {},
+             "type": {}
+            }
+           },
+           "payments": {
+            "type": [
+             "object",
+             "null"
+            ],
+            "properties": {
+             "href": {},
+             "type": {}
+            }
+           },
+           "documentation": {
+            "type": "object",
+            "required": [
+             "href",
+             "type"
+            ],
+            "properties": {
+             "href": {},
+             "type": {}
+            }
+           }
+          }
+         }
+        }
+       },
+       {
+        "type": "object",
+        "required": [
+         "resource",
+         "id",
+         "mode",
+         "customerId",
+         "createdAt",
+         "status",
+         "amount",
+         "description",
+         "method",
+         "times",
+         "timesRemaining",
+         "interval",
+         "startDate",
+         "webhookUrl",
+         "metadata",
+         "_links"
+        ]
+       }
+      ]
+     }
+    }
+   }
+  }
+ }
+}

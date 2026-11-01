@@ -1,0 +1,949 @@
+[
+ {
+  "name": "charge-A1",
+  "method": "GET",
+  "path": "/v1/charges/ch_3AAA111aaa",
+  "status": 200,
+  "body": {
+   "amount": 4900,
+   "amount_captured": 4900,
+   "amount_refunded": 1000,
+   "billing_details": {
+    "email": "alex.payer@example.test"
+   },
+   "captured": true,
+   "created": 1790000000,
+   "currency": "usd",
+   "disputed": false,
+   "id": "ch_3AAA111aaa",
+   "livemode": false,
+   "metadata": {},
+   "object": "charge",
+   "paid": true,
+   "refunded": false,
+   "status": "succeeded",
+   "customer": "cus_AAA111",
+   "payment_intent": "pi_3AAA111aaa",
+   "receipt_url": "https://pay.stripe.com/receipts/payment/fictional-A1"
+  }
+ },
+ {
+  "name": "charge-A2-failed",
+  "method": "GET",
+  "path": "/v1/charges/ch_3AAA112aaa",
+  "status": 200,
+  "body": {
+   "amount": 1900,
+   "amount_captured": 0,
+   "amount_refunded": 0,
+   "billing_details": {
+    "email": "alex.payer@example.test"
+   },
+   "captured": false,
+   "created": 1790000000,
+   "currency": "usd",
+   "disputed": false,
+   "id": "ch_3AAA112aaa",
+   "livemode": false,
+   "metadata": {},
+   "object": "charge",
+   "paid": false,
+   "refunded": false,
+   "status": "failed",
+   "customer": "cus_AAA111",
+   "failure_code": "card_declined",
+   "failure_message": "Your card was declined."
+  }
+ },
+ {
+  "name": "charge-B1",
+  "method": "GET",
+  "path": "/v1/charges/ch_3BBB221bbb",
+  "status": 200,
+  "body": {
+   "amount": 2900,
+   "amount_captured": 2900,
+   "amount_refunded": 0,
+   "billing_details": {
+    "email": "blair.payer@example.test"
+   },
+   "captured": true,
+   "created": 1790000000,
+   "currency": "usd",
+   "disputed": false,
+   "id": "ch_3BBB221bbb",
+   "livemode": false,
+   "metadata": {},
+   "object": "charge",
+   "paid": true,
+   "refunded": false,
+   "status": "succeeded",
+   "customer": "cus_BBB222"
+  }
+ },
+ {
+  "name": "charge-A3-no-email",
+  "method": "GET",
+  "path": "/v1/charges/ch_3AAA113aaa",
+  "status": 200,
+  "body": {
+   "amount": 900,
+   "amount_captured": 900,
+   "amount_refunded": 0,
+   "billing_details": {},
+   "captured": true,
+   "created": 1790000000,
+   "currency": "usd",
+   "disputed": false,
+   "id": "ch_3AAA113aaa",
+   "livemode": false,
+   "metadata": {},
+   "object": "charge",
+   "paid": true,
+   "refunded": false,
+   "status": "succeeded",
+   "customer": "cus_AAA111"
+  }
+ },
+ {
+  "name": "charges-connect-check",
+  "method": "GET",
+  "path": "/v1/charges",
+  "query": {
+   "limit": "1"
+  },
+  "status": 200,
+  "body": {
+   "object": "list",
+   "url": "/v1/charges",
+   "has_more": false,
+   "data": [
+    {
+     "amount": 4900,
+     "amount_captured": 4900,
+     "amount_refunded": 1000,
+     "billing_details": {
+      "email": "alex.payer@example.test"
+     },
+     "captured": true,
+     "created": 1790000000,
+     "currency": "usd",
+     "disputed": false,
+     "id": "ch_3AAA111aaa",
+     "livemode": false,
+     "metadata": {},
+     "object": "charge",
+     "paid": true,
+     "refunded": false,
+     "status": "succeeded",
+     "customer": "cus_AAA111",
+     "payment_intent": "pi_3AAA111aaa",
+     "receipt_url": "https://pay.stripe.com/receipts/payment/fictional-A1"
+    }
+   ]
+  }
+ },
+ {
+  "name": "charges-customer-A",
+  "method": "GET",
+  "path": "/v1/charges",
+  "query": {
+   "customer": "cus_AAA111",
+   "limit": "10"
+  },
+  "status": 200,
+  "body": {
+   "object": "list",
+   "url": "/v1/charges",
+   "has_more": false,
+   "data": [
+    {
+     "amount": 4900,
+     "amount_captured": 4900,
+     "amount_refunded": 1000,
+     "billing_details": {
+      "email": "alex.payer@example.test"
+     },
+     "captured": true,
+     "created": 1790000000,
+     "currency": "usd",
+     "disputed": false,
+     "id": "ch_3AAA111aaa",
+     "livemode": false,
+     "metadata": {},
+     "object": "charge",
+     "paid": true,
+     "refunded": false,
+     "status": "succeeded",
+     "customer": "cus_AAA111",
+     "payment_intent": "pi_3AAA111aaa",
+     "receipt_url": "https://pay.stripe.com/receipts/payment/fictional-A1"
+    },
+    {
+     "amount": 1900,
+     "amount_captured": 0,
+     "amount_refunded": 0,
+     "billing_details": {
+      "email": "alex.payer@example.test"
+     },
+     "captured": false,
+     "created": 1790000000,
+     "currency": "usd",
+     "disputed": false,
+     "id": "ch_3AAA112aaa",
+     "livemode": false,
+     "metadata": {},
+     "object": "charge",
+     "paid": false,
+     "refunded": false,
+     "status": "failed",
+     "customer": "cus_AAA111",
+     "failure_code": "card_declined",
+     "failure_message": "Your card was declined."
+    }
+   ]
+  }
+ },
+ {
+  "name": "charges-customer-A-mixed",
+  "method": "GET",
+  "path": "/v1/charges",
+  "query": {
+   "customer": "cus_AAA111",
+   "limit": "10"
+  },
+  "status": 200,
+  "body": {
+   "object": "list",
+   "url": "/v1/charges",
+   "has_more": false,
+   "data": [
+    {
+     "amount": 4900,
+     "amount_captured": 4900,
+     "amount_refunded": 1000,
+     "billing_details": {
+      "email": "alex.payer@example.test"
+     },
+     "captured": true,
+     "created": 1790000000,
+     "currency": "usd",
+     "disputed": false,
+     "id": "ch_3AAA111aaa",
+     "livemode": false,
+     "metadata": {},
+     "object": "charge",
+     "paid": true,
+     "refunded": false,
+     "status": "succeeded",
+     "customer": "cus_AAA111",
+     "payment_intent": "pi_3AAA111aaa",
+     "receipt_url": "https://pay.stripe.com/receipts/payment/fictional-A1"
+    },
+    {
+     "amount": 1900,
+     "amount_captured": 0,
+     "amount_refunded": 0,
+     "billing_details": {
+      "email": "alex.payer@example.test"
+     },
+     "captured": false,
+     "created": 1790000000,
+     "currency": "usd",
+     "disputed": false,
+     "id": "ch_3AAA112aaa",
+     "livemode": false,
+     "metadata": {},
+     "object": "charge",
+     "paid": false,
+     "refunded": false,
+     "status": "failed",
+     "customer": "cus_AAA111",
+     "failure_code": "card_declined",
+     "failure_message": "Your card was declined."
+    },
+    {
+     "amount": 2900,
+     "amount_captured": 2900,
+     "amount_refunded": 0,
+     "billing_details": {
+      "email": "blair.payer@example.test"
+     },
+     "captured": true,
+     "created": 1790000000,
+     "currency": "usd",
+     "disputed": false,
+     "id": "ch_3BBB221bbb",
+     "livemode": false,
+     "metadata": {},
+     "object": "charge",
+     "paid": true,
+     "refunded": false,
+     "status": "succeeded",
+     "customer": "cus_BBB222"
+    }
+   ]
+  },
+  "modes": [
+   "mixed_customers"
+  ]
+ },
+ {
+  "name": "charges-customer-B",
+  "method": "GET",
+  "path": "/v1/charges",
+  "query": {
+   "customer": "cus_BBB222",
+   "limit": "10"
+  },
+  "status": 200,
+  "body": {
+   "object": "list",
+   "url": "/v1/charges",
+   "has_more": false,
+   "data": [
+    {
+     "amount": 2900,
+     "amount_captured": 2900,
+     "amount_refunded": 0,
+     "billing_details": {
+      "email": "blair.payer@example.test"
+     },
+     "captured": true,
+     "created": 1790000000,
+     "currency": "usd",
+     "disputed": false,
+     "id": "ch_3BBB221bbb",
+     "livemode": false,
+     "metadata": {},
+     "object": "charge",
+     "paid": true,
+     "refunded": false,
+     "status": "succeeded",
+     "customer": "cus_BBB222"
+    }
+   ]
+  }
+ },
+ {
+  "name": "payment-intent-A",
+  "method": "GET",
+  "path": "/v1/payment_intents/pi_3AAA111aaa",
+  "status": 200,
+  "body": {
+   "created": 1790000000,
+   "id": "pi_3AAA111aaa",
+   "livemode": false,
+   "object": "payment_intent",
+   "status": "succeeded",
+   "amount": 4900,
+   "currency": "usd",
+   "customer": "cus_AAA111",
+   "receipt_email": "alex.payer@example.test",
+   "latest_charge": "ch_3AAA111aaa"
+  }
+ },
+ {
+  "name": "invoice-A1",
+  "method": "GET",
+  "path": "/v1/invoices/in_1AAA111aaa",
+  "status": 200,
+  "body": {
+   "amount_due": 4900,
+   "amount_overpaid": 0,
+   "amount_paid": 4900,
+   "amount_paid_off_stripe": 0,
+   "amount_remaining": 0,
+   "amount_shipping": 0,
+   "attempt_count": 1,
+   "attempted": true,
+   "auto_advance": false,
+   "automatic_tax": {
+    "enabled": false
+   },
+   "collection_method": "charge_automatically",
+   "created": 1790000000,
+   "currency": "usd",
+   "customer": "cus_AAA111",
+   "default_tax_rates": [],
+   "discounts": [],
+   "id": "in_1AAA111aaa",
+   "issuer": {
+    "type": "account"
+   },
+   "lines": {
+    "data": [],
+    "has_more": false,
+    "object": "list",
+    "url": "x"
+   },
+   "livemode": false,
+   "object": "invoice",
+   "payment_settings": {},
+   "period_end": 0,
+   "period_start": 0,
+   "post_payment_credit_notes_amount": 0,
+   "pre_payment_credit_notes_amount": 0,
+   "starting_balance": 0,
+   "status_transitions": {},
+   "subtotal": 4900,
+   "total": 4900,
+   "number": "APINV-0001",
+   "status": "paid",
+   "customer_email": "alex.payer@example.test",
+   "hosted_invoice_url": "https://invoice.stripe.com/i/acct_fictional/test_A1"
+  }
+ },
+ {
+  "name": "invoice-A2-open",
+  "method": "GET",
+  "path": "/v1/invoices/in_1AAA112aaa",
+  "status": 200,
+  "body": {
+   "amount_due": 1900,
+   "amount_overpaid": 0,
+   "amount_paid": 0,
+   "amount_paid_off_stripe": 0,
+   "amount_remaining": 1900,
+   "amount_shipping": 0,
+   "attempt_count": 2,
+   "attempted": true,
+   "auto_advance": false,
+   "automatic_tax": {
+    "enabled": false
+   },
+   "collection_method": "charge_automatically",
+   "created": 1790000000,
+   "currency": "usd",
+   "customer": "cus_AAA111",
+   "default_tax_rates": [],
+   "discounts": [],
+   "id": "in_1AAA112aaa",
+   "issuer": {
+    "type": "account"
+   },
+   "lines": {
+    "data": [],
+    "has_more": false,
+    "object": "list",
+    "url": "x"
+   },
+   "livemode": false,
+   "object": "invoice",
+   "payment_settings": {},
+   "period_end": 0,
+   "period_start": 0,
+   "post_payment_credit_notes_amount": 0,
+   "pre_payment_credit_notes_amount": 0,
+   "starting_balance": 0,
+   "status_transitions": {},
+   "subtotal": 1900,
+   "total": 1900,
+   "number": "APINV-0002",
+   "status": "open",
+   "customer_email": "alex.payer@example.test",
+   "hosted_invoice_url": "https://invoice.stripe.com/i/acct_fictional/test_A2",
+   "next_payment_attempt": 1793836800
+  }
+ },
+ {
+  "name": "invoice-B1",
+  "method": "GET",
+  "path": "/v1/invoices/in_1BBB221bbb",
+  "status": 200,
+  "body": {
+   "amount_due": 0,
+   "amount_overpaid": 0,
+   "amount_paid": 2900,
+   "amount_paid_off_stripe": 0,
+   "amount_remaining": 0,
+   "amount_shipping": 0,
+   "attempt_count": 0,
+   "attempted": false,
+   "auto_advance": false,
+   "automatic_tax": {
+    "enabled": false
+   },
+   "collection_method": "charge_automatically",
+   "created": 1790000000,
+   "currency": "usd",
+   "customer": "cus_BBB222",
+   "default_tax_rates": [],
+   "discounts": [],
+   "id": "in_1BBB221bbb",
+   "issuer": {
+    "type": "account"
+   },
+   "lines": {
+    "data": [],
+    "has_more": false,
+    "object": "list",
+    "url": "x"
+   },
+   "livemode": false,
+   "object": "invoice",
+   "payment_settings": {},
+   "period_end": 0,
+   "period_start": 0,
+   "post_payment_credit_notes_amount": 0,
+   "pre_payment_credit_notes_amount": 0,
+   "starting_balance": 0,
+   "status_transitions": {},
+   "subtotal": 2900,
+   "total": 2900,
+   "number": "APINV-0003",
+   "status": "paid",
+   "customer_email": "blair.payer@example.test",
+   "hosted_invoice_url": "https://invoice.stripe.com/i/acct_fictional/test_B1"
+  }
+ },
+ {
+  "name": "invoices-customer-A",
+  "method": "GET",
+  "path": "/v1/invoices",
+  "query": {
+   "customer": "cus_AAA111",
+   "limit": "10"
+  },
+  "status": 200,
+  "body": {
+   "object": "list",
+   "url": "/v1/invoices",
+   "has_more": false,
+   "data": [
+    {
+     "amount_due": 4900,
+     "amount_overpaid": 0,
+     "amount_paid": 4900,
+     "amount_paid_off_stripe": 0,
+     "amount_remaining": 0,
+     "amount_shipping": 0,
+     "attempt_count": 1,
+     "attempted": true,
+     "auto_advance": false,
+     "automatic_tax": {
+      "enabled": false
+     },
+     "collection_method": "charge_automatically",
+     "created": 1790000000,
+     "currency": "usd",
+     "customer": "cus_AAA111",
+     "default_tax_rates": [],
+     "discounts": [],
+     "id": "in_1AAA111aaa",
+     "issuer": {
+      "type": "account"
+     },
+     "lines": {
+      "data": [],
+      "has_more": false,
+      "object": "list",
+      "url": "x"
+     },
+     "livemode": false,
+     "object": "invoice",
+     "payment_settings": {},
+     "period_end": 0,
+     "period_start": 0,
+     "post_payment_credit_notes_amount": 0,
+     "pre_payment_credit_notes_amount": 0,
+     "starting_balance": 0,
+     "status_transitions": {},
+     "subtotal": 4900,
+     "total": 4900,
+     "number": "APINV-0001",
+     "status": "paid",
+     "customer_email": "alex.payer@example.test",
+     "hosted_invoice_url": "https://invoice.stripe.com/i/acct_fictional/test_A1"
+    },
+    {
+     "amount_due": 1900,
+     "amount_overpaid": 0,
+     "amount_paid": 0,
+     "amount_paid_off_stripe": 0,
+     "amount_remaining": 1900,
+     "amount_shipping": 0,
+     "attempt_count": 2,
+     "attempted": true,
+     "auto_advance": false,
+     "automatic_tax": {
+      "enabled": false
+     },
+     "collection_method": "charge_automatically",
+     "created": 1790000000,
+     "currency": "usd",
+     "customer": "cus_AAA111",
+     "default_tax_rates": [],
+     "discounts": [],
+     "id": "in_1AAA112aaa",
+     "issuer": {
+      "type": "account"
+     },
+     "lines": {
+      "data": [],
+      "has_more": false,
+      "object": "list",
+      "url": "x"
+     },
+     "livemode": false,
+     "object": "invoice",
+     "payment_settings": {},
+     "period_end": 0,
+     "period_start": 0,
+     "post_payment_credit_notes_amount": 0,
+     "pre_payment_credit_notes_amount": 0,
+     "starting_balance": 0,
+     "status_transitions": {},
+     "subtotal": 1900,
+     "total": 1900,
+     "number": "APINV-0002",
+     "status": "open",
+     "customer_email": "alex.payer@example.test",
+     "hosted_invoice_url": "https://invoice.stripe.com/i/acct_fictional/test_A2",
+     "next_payment_attempt": 1793836800
+    }
+   ]
+  }
+ },
+ {
+  "name": "invoices-customer-A-open",
+  "method": "GET",
+  "path": "/v1/invoices",
+  "query": {
+   "customer": "cus_AAA111",
+   "status": "open",
+   "limit": "10"
+  },
+  "status": 200,
+  "body": {
+   "object": "list",
+   "url": "/v1/invoices",
+   "has_more": false,
+   "data": [
+    {
+     "amount_due": 1900,
+     "amount_overpaid": 0,
+     "amount_paid": 0,
+     "amount_paid_off_stripe": 0,
+     "amount_remaining": 1900,
+     "amount_shipping": 0,
+     "attempt_count": 2,
+     "attempted": true,
+     "auto_advance": false,
+     "automatic_tax": {
+      "enabled": false
+     },
+     "collection_method": "charge_automatically",
+     "created": 1790000000,
+     "currency": "usd",
+     "customer": "cus_AAA111",
+     "default_tax_rates": [],
+     "discounts": [],
+     "id": "in_1AAA112aaa",
+     "issuer": {
+      "type": "account"
+     },
+     "lines": {
+      "data": [],
+      "has_more": false,
+      "object": "list",
+      "url": "x"
+     },
+     "livemode": false,
+     "object": "invoice",
+     "payment_settings": {},
+     "period_end": 0,
+     "period_start": 0,
+     "post_payment_credit_notes_amount": 0,
+     "pre_payment_credit_notes_amount": 0,
+     "starting_balance": 0,
+     "status_transitions": {},
+     "subtotal": 1900,
+     "total": 1900,
+     "number": "APINV-0002",
+     "status": "open",
+     "customer_email": "alex.payer@example.test",
+     "hosted_invoice_url": "https://invoice.stripe.com/i/acct_fictional/test_A2",
+     "next_payment_attempt": 1793836800
+    }
+   ]
+  }
+ },
+ {
+  "name": "invoices-search-0001",
+  "method": "GET",
+  "path": "/v1/invoices/search",
+  "query": {
+   "query": "number:\"APINV-0001\""
+  },
+  "status": 200,
+  "body": {
+   "object": "search_result",
+   "url": "/v1/invoices/search",
+   "has_more": false,
+   "data": [
+    {
+     "amount_due": 4900,
+     "amount_overpaid": 0,
+     "amount_paid": 4900,
+     "amount_paid_off_stripe": 0,
+     "amount_remaining": 0,
+     "amount_shipping": 0,
+     "attempt_count": 1,
+     "attempted": true,
+     "auto_advance": false,
+     "automatic_tax": {
+      "enabled": false
+     },
+     "collection_method": "charge_automatically",
+     "created": 1790000000,
+     "currency": "usd",
+     "customer": "cus_AAA111",
+     "default_tax_rates": [],
+     "discounts": [],
+     "id": "in_1AAA111aaa",
+     "issuer": {
+      "type": "account"
+     },
+     "lines": {
+      "data": [],
+      "has_more": false,
+      "object": "list",
+      "url": "x"
+     },
+     "livemode": false,
+     "object": "invoice",
+     "payment_settings": {},
+     "period_end": 0,
+     "period_start": 0,
+     "post_payment_credit_notes_amount": 0,
+     "pre_payment_credit_notes_amount": 0,
+     "starting_balance": 0,
+     "status_transitions": {},
+     "subtotal": 4900,
+     "total": 4900,
+     "number": "APINV-0001",
+     "status": "paid",
+     "customer_email": "alex.payer@example.test",
+     "hosted_invoice_url": "https://invoice.stripe.com/i/acct_fictional/test_A1"
+    }
+   ],
+   "next_page": null
+  }
+ },
+ {
+  "name": "invoices-search-0003",
+  "method": "GET",
+  "path": "/v1/invoices/search",
+  "query": {
+   "query": "number:\"APINV-0003\""
+  },
+  "status": 200,
+  "body": {
+   "object": "search_result",
+   "url": "/v1/invoices/search",
+   "has_more": false,
+   "data": [
+    {
+     "amount_due": 0,
+     "amount_overpaid": 0,
+     "amount_paid": 2900,
+     "amount_paid_off_stripe": 0,
+     "amount_remaining": 0,
+     "amount_shipping": 0,
+     "attempt_count": 0,
+     "attempted": false,
+     "auto_advance": false,
+     "automatic_tax": {
+      "enabled": false
+     },
+     "collection_method": "charge_automatically",
+     "created": 1790000000,
+     "currency": "usd",
+     "customer": "cus_BBB222",
+     "default_tax_rates": [],
+     "discounts": [],
+     "id": "in_1BBB221bbb",
+     "issuer": {
+      "type": "account"
+     },
+     "lines": {
+      "data": [],
+      "has_more": false,
+      "object": "list",
+      "url": "x"
+     },
+     "livemode": false,
+     "object": "invoice",
+     "payment_settings": {},
+     "period_end": 0,
+     "period_start": 0,
+     "post_payment_credit_notes_amount": 0,
+     "pre_payment_credit_notes_amount": 0,
+     "starting_balance": 0,
+     "status_transitions": {},
+     "subtotal": 2900,
+     "total": 2900,
+     "number": "APINV-0003",
+     "status": "paid",
+     "customer_email": "blair.payer@example.test",
+     "hosted_invoice_url": "https://invoice.stripe.com/i/acct_fictional/test_B1"
+    }
+   ],
+   "next_page": null
+  }
+ },
+ {
+  "name": "invoices-search-empty",
+  "method": "GET",
+  "path": "/v1/invoices/search",
+  "status": 200,
+  "body": {
+   "object": "search_result",
+   "url": "/v1/invoices/search",
+   "has_more": false,
+   "data": [],
+   "next_page": null
+  }
+ },
+ {
+  "name": "subscriptions-customer-A",
+  "method": "GET",
+  "path": "/v1/subscriptions",
+  "query": {
+   "customer": "cus_AAA111",
+   "status": "active",
+   "limit": "10"
+  },
+  "status": 200,
+  "body": {
+   "object": "list",
+   "url": "/v1/subscriptions",
+   "has_more": false,
+   "data": [
+    {
+     "automatic_tax": {
+      "enabled": false
+     },
+     "billing_cycle_anchor": 1790000000,
+     "billing_mode": {
+      "type": "classic"
+     },
+     "billing_schedules": [],
+     "cancel_at_period_end": false,
+     "collection_method": "charge_automatically",
+     "created": 1790000000,
+     "currency": "usd",
+     "customer": "cus_AAA111",
+     "discounts": [],
+     "id": "sub_1AAA111aaa",
+     "invoice_settings": {
+      "issuer": {
+       "type": "account"
+      }
+     },
+     "items": {
+      "data": [
+       {
+        "created": 1790000000,
+        "current_period_end": 1793923200,
+        "current_period_start": 1791331200,
+        "discounts": [],
+        "id": "si_AAA111",
+        "metadata": {},
+        "object": "subscription_item",
+        "price": {
+         "active": true,
+         "billing_scheme": "per_unit",
+         "created": 1790000000,
+         "currency": "usd",
+         "id": "price_AAA",
+         "livemode": false,
+         "metadata": {},
+         "object": "price",
+         "product": "x",
+         "type": "recurring",
+         "unit_amount": 1900
+        },
+        "subscription": "sub_1AAA111aaa"
+       }
+      ],
+      "has_more": false,
+      "object": "list",
+      "url": "/v1/subscription_items?subscription=sub_1AAA111aaa"
+     },
+     "livemode": false,
+     "metadata": {},
+     "object": "subscription",
+     "start_date": 1790000000,
+     "status": "active"
+    }
+   ]
+  }
+ },
+ {
+  "name": "refunds-charge-A1",
+  "method": "GET",
+  "path": "/v1/refunds",
+  "query": {
+   "charge": "ch_3AAA111aaa",
+   "limit": "10"
+  },
+  "status": 200,
+  "body": {
+   "object": "list",
+   "url": "/v1/refunds",
+   "has_more": false,
+   "data": [
+    {
+     "amount": 1000,
+     "created": 1790086400,
+     "currency": "usd",
+     "id": "re_3AAA111aaa",
+     "object": "refund",
+     "status": "succeeded",
+     "charge": "ch_3AAA111aaa"
+    }
+   ]
+  }
+ },
+ {
+  "name": "refunds-empty",
+  "method": "GET",
+  "path": "/v1/refunds",
+  "status": 200,
+  "body": {
+   "object": "list",
+   "url": "/v1/refunds",
+   "has_more": false,
+   "data": []
+  }
+ },
+ {
+  "name": "customer-A",
+  "method": "GET",
+  "path": "/v1/customers/cus_AAA111",
+  "status": 200,
+  "body": {
+   "created": 1790000000,
+   "id": "cus_AAA111",
+   "livemode": false,
+   "object": "customer",
+   "email": "alex.payer@example.test"
+  }
+ },
+ {
+  "name": "not-found",
+  "notFound": true,
+  "method": "GET",
+  "path": "/__not_found__",
+  "status": 404,
+  "body": {
+   "error": {
+    "type": "invalid_request_error",
+    "code": "resource_missing",
+    "message": "No such object."
+   }
+  }
+ }
+]

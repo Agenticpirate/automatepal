@@ -1,0 +1,21 @@
+{
+ "provider": "square",
+ "sourceUrl": "https://github.com/square/connect-api-specification",
+ "repo": "square/connect-api-specification",
+ "commit": "0689c901bdfe1ff73f47aa28b17ccd6e0c40bf2d",
+ "commitDate": "2026-09-15T21:22:51Z",
+ "file": [
+  "api.json"
+ ],
+ "upstream": {
+  "api.json": {
+   "url": "https://raw.githubusercontent.com/square/connect-api-specification/0689c901bdfe1ff73f47aa28b17ccd6e0c40bf2d/api.json",
+   "sha256": "8f65460732e19d7445f7a34d8a9df09163db45273df5176a1cc794890ef591fb",
+   "bytes": 3273134
+  }
+ },
+ "license": "Apache-2.0",
+ "retrievedAt": "2026-11-01T14:04:37.232Z",
+ "confidence": "official-spec",
+ "notes": "Square search endpoints are POST and are excluded. info.version is 2.0, so Square-Version is pinned to 2026-09-16, the default in the oauth2 securityScheme x-additional-headers of this commit. The spec declares only connect.squareup.com; the sandbox host connect.squareupsandbox.com comes from developer.squareup.com docs. api.json: missing unresolved #/components/schemas/AppFeeAllocation, unresolved #/components/schemas/CurrencyExchange"
+}

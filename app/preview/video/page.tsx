@@ -111,7 +111,7 @@ export default function VideoPreviewPage() {
           </Link>
           <nav className="vp-nav" aria-label="Primary">
             {NAV.map((n) => (
-              <Link key={n.label} href={n.href} className={n.active ? 'vp-active' : undefined}>
+              <Link key={n.label} href={n.href} className={n.active ? 'vp-active' : undefined} aria-current={n.active ? 'page' : undefined}>
                 <Icon name={n.icon} size={14} />{n.label}
               </Link>
             ))}
@@ -127,7 +127,7 @@ export default function VideoPreviewPage() {
             <div className="vp-overlay" onClick={() => setOpen(false)} />
             <nav className="vp-sheet" aria-label="Mobile">
               {NAV.map((n, i) => (
-                <Link key={n.label} href={n.href} className={n.active ? 'vp-active' : undefined}
+                <Link key={n.label} href={n.href} className={n.active ? 'vp-active' : undefined} aria-current={n.active ? 'page' : undefined}
                   style={{ animationDelay: `${0.05 + i * 0.05}s` }} onClick={() => setOpen(false)}>
                   <Icon name={n.icon} size={15} />{n.label}
                 </Link>

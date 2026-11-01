@@ -1,0 +1,1085 @@
+[
+ {
+  "name": "txn-A1",
+  "method": "GET",
+  "path": "/transactions/txn_01aaaaaaaaaaaaaaaaaaaaaaa1",
+  "status": 200,
+  "body": {
+   "data": {
+    "id": "txn_01aaaaaaaaaaaaaaaaaaaaaaa1",
+    "status": "completed",
+    "customer_id": "ctm_01aaaaaaaaaaaaaaaaaaaaaaaa",
+    "address_id": "add_01aaaaaaaaaaaaaaaaaaaaaaaa",
+    "business_id": null,
+    "custom_data": null,
+    "currency_code": "USD",
+    "origin": "web",
+    "subscription_id": "sub_01aaaaaaaaaaaaaaaaaaaaaaa1",
+    "invoice_id": "inv_01aaaaaaaaaaaaaaaaaaaaaaa1",
+    "invoice_number": "325-10001",
+    "collection_mode": "automatic",
+    "discount_id": null,
+    "billing_details": null,
+    "billing_period": null,
+    "items": [],
+    "details": {
+     "tax_rates_used": [],
+     "totals": {
+      "subtotal": "4900",
+      "discount": "0",
+      "tax": "0",
+      "total": "4900",
+      "credit": "0",
+      "credit_to_balance": "0",
+      "balance": "0",
+      "grand_total": "4900",
+      "grand_total_tax": "0",
+      "fee": null,
+      "earnings": null,
+      "currency_code": "USD"
+     },
+     "adjusted_totals": {
+      "subtotal": "x",
+      "tax": "x",
+      "total": "x",
+      "grand_total": "x",
+      "grand_total_tax": "x",
+      "fee": null,
+      "retained_fee": "x",
+      "earnings": null,
+      "currency_code": "USD"
+     },
+     "payout_totals": null,
+     "adjusted_payout_totals": null,
+     "line_items": []
+    },
+    "payments": [],
+    "checkout": null,
+    "created_at": "2026-10-02T10:00:00Z",
+    "updated_at": "2026-10-02T10:00:00Z",
+    "billed_at": "2026-10-02T10:00:00Z",
+    "revised_at": null
+   },
+   "meta": {
+    "request_id": "fictional-request-0001"
+   }
+  }
+ },
+ {
+  "name": "txn-B1",
+  "method": "GET",
+  "path": "/transactions/txn_01bbbbbbbbbbbbbbbbbbbbbbb1",
+  "status": 200,
+  "body": {
+   "data": {
+    "id": "txn_01bbbbbbbbbbbbbbbbbbbbbbb1",
+    "status": "completed",
+    "customer_id": "ctm_01bbbbbbbbbbbbbbbbbbbbbbbb",
+    "address_id": "add_01aaaaaaaaaaaaaaaaaaaaaaaa",
+    "business_id": null,
+    "custom_data": null,
+    "currency_code": "USD",
+    "origin": "web",
+    "subscription_id": null,
+    "invoice_id": "inv_01bbbbbbbbbbbbbbbbbbbbbbb1",
+    "invoice_number": "325-10003",
+    "collection_mode": "automatic",
+    "discount_id": null,
+    "billing_details": null,
+    "billing_period": null,
+    "items": [],
+    "details": {
+     "tax_rates_used": [],
+     "totals": {
+      "subtotal": "2900",
+      "discount": "0",
+      "tax": "0",
+      "total": "2900",
+      "credit": "0",
+      "credit_to_balance": "0",
+      "balance": "0",
+      "grand_total": "2900",
+      "grand_total_tax": "0",
+      "fee": null,
+      "earnings": null,
+      "currency_code": "USD"
+     },
+     "adjusted_totals": {
+      "subtotal": "x",
+      "tax": "x",
+      "total": "x",
+      "grand_total": "x",
+      "grand_total_tax": "x",
+      "fee": null,
+      "retained_fee": "x",
+      "earnings": null,
+      "currency_code": "USD"
+     },
+     "payout_totals": null,
+     "adjusted_payout_totals": null,
+     "line_items": []
+    },
+    "payments": [],
+    "checkout": null,
+    "created_at": "2026-10-02T10:00:00Z",
+    "updated_at": "2026-10-02T10:00:00Z",
+    "billed_at": "2026-10-02T10:00:00Z",
+    "revised_at": null
+   },
+   "meta": {
+    "request_id": "fictional-request-0001"
+   }
+  }
+ },
+ {
+  "name": "txns-connect-check",
+  "method": "GET",
+  "path": "/transactions",
+  "query": {
+   "per_page": "1"
+  },
+  "status": 200,
+  "body": {
+   "data": [
+    {
+     "id": "txn_01aaaaaaaaaaaaaaaaaaaaaaa1",
+     "status": "completed",
+     "customer_id": "ctm_01aaaaaaaaaaaaaaaaaaaaaaaa",
+     "address_id": "add_01aaaaaaaaaaaaaaaaaaaaaaaa",
+     "business_id": null,
+     "custom_data": null,
+     "currency_code": "USD",
+     "origin": "web",
+     "subscription_id": "sub_01aaaaaaaaaaaaaaaaaaaaaaa1",
+     "invoice_id": "inv_01aaaaaaaaaaaaaaaaaaaaaaa1",
+     "invoice_number": "325-10001",
+     "collection_mode": "automatic",
+     "discount_id": null,
+     "billing_details": null,
+     "billing_period": null,
+     "items": [],
+     "details": {
+      "tax_rates_used": [],
+      "totals": {
+       "subtotal": "4900",
+       "discount": "0",
+       "tax": "0",
+       "total": "4900",
+       "credit": "0",
+       "credit_to_balance": "0",
+       "balance": "0",
+       "grand_total": "4900",
+       "grand_total_tax": "0",
+       "fee": null,
+       "earnings": null,
+       "currency_code": "USD"
+      },
+      "adjusted_totals": {
+       "subtotal": "x",
+       "tax": "x",
+       "total": "x",
+       "grand_total": "x",
+       "grand_total_tax": "x",
+       "fee": null,
+       "retained_fee": "x",
+       "earnings": null,
+       "currency_code": "USD"
+      },
+      "payout_totals": null,
+      "adjusted_payout_totals": null,
+      "line_items": []
+     },
+     "payments": [],
+     "checkout": null,
+     "created_at": "2026-10-02T10:00:00Z",
+     "updated_at": "2026-10-02T10:00:00Z",
+     "billed_at": "2026-10-02T10:00:00Z",
+     "revised_at": null
+    }
+   ],
+   "meta": {
+    "request_id": "fictional-request-0002",
+    "pagination": {
+     "per_page": 10,
+     "next": "https://sandbox-api.paddle.com/transactions?after=x",
+     "has_more": false,
+     "estimated_total": 2
+    }
+   }
+  }
+ },
+ {
+  "name": "txns-customer-A",
+  "method": "GET",
+  "path": "/transactions",
+  "query": {
+   "customer_id": "ctm_01aaaaaaaaaaaaaaaaaaaaaaaa",
+   "per_page": "10"
+  },
+  "status": 200,
+  "body": {
+   "data": [
+    {
+     "id": "txn_01aaaaaaaaaaaaaaaaaaaaaaa1",
+     "status": "completed",
+     "customer_id": "ctm_01aaaaaaaaaaaaaaaaaaaaaaaa",
+     "address_id": "add_01aaaaaaaaaaaaaaaaaaaaaaaa",
+     "business_id": null,
+     "custom_data": null,
+     "currency_code": "USD",
+     "origin": "web",
+     "subscription_id": "sub_01aaaaaaaaaaaaaaaaaaaaaaa1",
+     "invoice_id": "inv_01aaaaaaaaaaaaaaaaaaaaaaa1",
+     "invoice_number": "325-10001",
+     "collection_mode": "automatic",
+     "discount_id": null,
+     "billing_details": null,
+     "billing_period": null,
+     "items": [],
+     "details": {
+      "tax_rates_used": [],
+      "totals": {
+       "subtotal": "4900",
+       "discount": "0",
+       "tax": "0",
+       "total": "4900",
+       "credit": "0",
+       "credit_to_balance": "0",
+       "balance": "0",
+       "grand_total": "4900",
+       "grand_total_tax": "0",
+       "fee": null,
+       "earnings": null,
+       "currency_code": "USD"
+      },
+      "adjusted_totals": {
+       "subtotal": "x",
+       "tax": "x",
+       "total": "x",
+       "grand_total": "x",
+       "grand_total_tax": "x",
+       "fee": null,
+       "retained_fee": "x",
+       "earnings": null,
+       "currency_code": "USD"
+      },
+      "payout_totals": null,
+      "adjusted_payout_totals": null,
+      "line_items": []
+     },
+     "payments": [],
+     "checkout": null,
+     "created_at": "2026-10-02T10:00:00Z",
+     "updated_at": "2026-10-02T10:00:00Z",
+     "billed_at": "2026-10-02T10:00:00Z",
+     "revised_at": null
+    },
+    {
+     "id": "txn_01aaaaaaaaaaaaaaaaaaaaaaa2",
+     "status": "past_due",
+     "customer_id": "ctm_01aaaaaaaaaaaaaaaaaaaaaaaa",
+     "address_id": "add_01aaaaaaaaaaaaaaaaaaaaaaaa",
+     "business_id": null,
+     "custom_data": null,
+     "currency_code": "USD",
+     "origin": "web",
+     "subscription_id": "sub_01aaaaaaaaaaaaaaaaaaaaaaa1",
+     "invoice_id": "inv_01aaaaaaaaaaaaaaaaaaaaaaa2",
+     "invoice_number": "325-10002",
+     "collection_mode": "automatic",
+     "discount_id": null,
+     "billing_details": null,
+     "billing_period": null,
+     "items": [],
+     "details": {
+      "tax_rates_used": [],
+      "totals": {
+       "subtotal": "1900",
+       "discount": "0",
+       "tax": "0",
+       "total": "1900",
+       "credit": "0",
+       "credit_to_balance": "0",
+       "balance": "1900",
+       "grand_total": "1900",
+       "grand_total_tax": "0",
+       "fee": null,
+       "earnings": null,
+       "currency_code": "USD"
+      },
+      "adjusted_totals": {
+       "subtotal": "x",
+       "tax": "x",
+       "total": "x",
+       "grand_total": "x",
+       "grand_total_tax": "x",
+       "fee": null,
+       "retained_fee": "x",
+       "earnings": null,
+       "currency_code": "USD"
+      },
+      "payout_totals": null,
+      "adjusted_payout_totals": null,
+      "line_items": []
+     },
+     "payments": [],
+     "checkout": null,
+     "created_at": "2026-10-02T10:00:00Z",
+     "updated_at": "2026-10-02T10:00:00Z",
+     "billed_at": "2026-10-20T10:00:00Z",
+     "revised_at": null
+    }
+   ],
+   "meta": {
+    "request_id": "fictional-request-0002",
+    "pagination": {
+     "per_page": 10,
+     "next": "https://sandbox-api.paddle.com/transactions?after=x",
+     "has_more": false,
+     "estimated_total": 2
+    }
+   }
+  }
+ },
+ {
+  "name": "txns-customer-A-mixed",
+  "method": "GET",
+  "path": "/transactions",
+  "query": {
+   "customer_id": "ctm_01aaaaaaaaaaaaaaaaaaaaaaaa",
+   "per_page": "10"
+  },
+  "status": 200,
+  "body": {
+   "data": [
+    {
+     "id": "txn_01aaaaaaaaaaaaaaaaaaaaaaa1",
+     "status": "completed",
+     "customer_id": "ctm_01aaaaaaaaaaaaaaaaaaaaaaaa",
+     "address_id": "add_01aaaaaaaaaaaaaaaaaaaaaaaa",
+     "business_id": null,
+     "custom_data": null,
+     "currency_code": "USD",
+     "origin": "web",
+     "subscription_id": "sub_01aaaaaaaaaaaaaaaaaaaaaaa1",
+     "invoice_id": "inv_01aaaaaaaaaaaaaaaaaaaaaaa1",
+     "invoice_number": "325-10001",
+     "collection_mode": "automatic",
+     "discount_id": null,
+     "billing_details": null,
+     "billing_period": null,
+     "items": [],
+     "details": {
+      "tax_rates_used": [],
+      "totals": {
+       "subtotal": "4900",
+       "discount": "0",
+       "tax": "0",
+       "total": "4900",
+       "credit": "0",
+       "credit_to_balance": "0",
+       "balance": "0",
+       "grand_total": "4900",
+       "grand_total_tax": "0",
+       "fee": null,
+       "earnings": null,
+       "currency_code": "USD"
+      },
+      "adjusted_totals": {
+       "subtotal": "x",
+       "tax": "x",
+       "total": "x",
+       "grand_total": "x",
+       "grand_total_tax": "x",
+       "fee": null,
+       "retained_fee": "x",
+       "earnings": null,
+       "currency_code": "USD"
+      },
+      "payout_totals": null,
+      "adjusted_payout_totals": null,
+      "line_items": []
+     },
+     "payments": [],
+     "checkout": null,
+     "created_at": "2026-10-02T10:00:00Z",
+     "updated_at": "2026-10-02T10:00:00Z",
+     "billed_at": "2026-10-02T10:00:00Z",
+     "revised_at": null
+    },
+    {
+     "id": "txn_01aaaaaaaaaaaaaaaaaaaaaaa2",
+     "status": "past_due",
+     "customer_id": "ctm_01aaaaaaaaaaaaaaaaaaaaaaaa",
+     "address_id": "add_01aaaaaaaaaaaaaaaaaaaaaaaa",
+     "business_id": null,
+     "custom_data": null,
+     "currency_code": "USD",
+     "origin": "web",
+     "subscription_id": "sub_01aaaaaaaaaaaaaaaaaaaaaaa1",
+     "invoice_id": "inv_01aaaaaaaaaaaaaaaaaaaaaaa2",
+     "invoice_number": "325-10002",
+     "collection_mode": "automatic",
+     "discount_id": null,
+     "billing_details": null,
+     "billing_period": null,
+     "items": [],
+     "details": {
+      "tax_rates_used": [],
+      "totals": {
+       "subtotal": "1900",
+       "discount": "0",
+       "tax": "0",
+       "total": "1900",
+       "credit": "0",
+       "credit_to_balance": "0",
+       "balance": "1900",
+       "grand_total": "1900",
+       "grand_total_tax": "0",
+       "fee": null,
+       "earnings": null,
+       "currency_code": "USD"
+      },
+      "adjusted_totals": {
+       "subtotal": "x",
+       "tax": "x",
+       "total": "x",
+       "grand_total": "x",
+       "grand_total_tax": "x",
+       "fee": null,
+       "retained_fee": "x",
+       "earnings": null,
+       "currency_code": "USD"
+      },
+      "payout_totals": null,
+      "adjusted_payout_totals": null,
+      "line_items": []
+     },
+     "payments": [],
+     "checkout": null,
+     "created_at": "2026-10-02T10:00:00Z",
+     "updated_at": "2026-10-02T10:00:00Z",
+     "billed_at": "2026-10-20T10:00:00Z",
+     "revised_at": null
+    },
+    {
+     "id": "txn_01bbbbbbbbbbbbbbbbbbbbbbb1",
+     "status": "completed",
+     "customer_id": "ctm_01bbbbbbbbbbbbbbbbbbbbbbbb",
+     "address_id": "add_01aaaaaaaaaaaaaaaaaaaaaaaa",
+     "business_id": null,
+     "custom_data": null,
+     "currency_code": "USD",
+     "origin": "web",
+     "subscription_id": null,
+     "invoice_id": "inv_01bbbbbbbbbbbbbbbbbbbbbbb1",
+     "invoice_number": "325-10003",
+     "collection_mode": "automatic",
+     "discount_id": null,
+     "billing_details": null,
+     "billing_period": null,
+     "items": [],
+     "details": {
+      "tax_rates_used": [],
+      "totals": {
+       "subtotal": "2900",
+       "discount": "0",
+       "tax": "0",
+       "total": "2900",
+       "credit": "0",
+       "credit_to_balance": "0",
+       "balance": "0",
+       "grand_total": "2900",
+       "grand_total_tax": "0",
+       "fee": null,
+       "earnings": null,
+       "currency_code": "USD"
+      },
+      "adjusted_totals": {
+       "subtotal": "x",
+       "tax": "x",
+       "total": "x",
+       "grand_total": "x",
+       "grand_total_tax": "x",
+       "fee": null,
+       "retained_fee": "x",
+       "earnings": null,
+       "currency_code": "USD"
+      },
+      "payout_totals": null,
+      "adjusted_payout_totals": null,
+      "line_items": []
+     },
+     "payments": [],
+     "checkout": null,
+     "created_at": "2026-10-02T10:00:00Z",
+     "updated_at": "2026-10-02T10:00:00Z",
+     "billed_at": "2026-10-02T10:00:00Z",
+     "revised_at": null
+    }
+   ],
+   "meta": {
+    "request_id": "fictional-request-0002",
+    "pagination": {
+     "per_page": 10,
+     "next": "https://sandbox-api.paddle.com/transactions?after=x",
+     "has_more": false,
+     "estimated_total": 2
+    }
+   }
+  },
+  "modes": [
+   "mixed_customers"
+  ]
+ },
+ {
+  "name": "txns-customer-A-past-due",
+  "method": "GET",
+  "path": "/transactions",
+  "query": {
+   "customer_id": "ctm_01aaaaaaaaaaaaaaaaaaaaaaaa",
+   "status": "past_due",
+   "per_page": "10"
+  },
+  "status": 200,
+  "body": {
+   "data": [
+    {
+     "id": "txn_01aaaaaaaaaaaaaaaaaaaaaaa2",
+     "status": "past_due",
+     "customer_id": "ctm_01aaaaaaaaaaaaaaaaaaaaaaaa",
+     "address_id": "add_01aaaaaaaaaaaaaaaaaaaaaaaa",
+     "business_id": null,
+     "custom_data": null,
+     "currency_code": "USD",
+     "origin": "web",
+     "subscription_id": "sub_01aaaaaaaaaaaaaaaaaaaaaaa1",
+     "invoice_id": "inv_01aaaaaaaaaaaaaaaaaaaaaaa2",
+     "invoice_number": "325-10002",
+     "collection_mode": "automatic",
+     "discount_id": null,
+     "billing_details": null,
+     "billing_period": null,
+     "items": [],
+     "details": {
+      "tax_rates_used": [],
+      "totals": {
+       "subtotal": "1900",
+       "discount": "0",
+       "tax": "0",
+       "total": "1900",
+       "credit": "0",
+       "credit_to_balance": "0",
+       "balance": "1900",
+       "grand_total": "1900",
+       "grand_total_tax": "0",
+       "fee": null,
+       "earnings": null,
+       "currency_code": "USD"
+      },
+      "adjusted_totals": {
+       "subtotal": "x",
+       "tax": "x",
+       "total": "x",
+       "grand_total": "x",
+       "grand_total_tax": "x",
+       "fee": null,
+       "retained_fee": "x",
+       "earnings": null,
+       "currency_code": "USD"
+      },
+      "payout_totals": null,
+      "adjusted_payout_totals": null,
+      "line_items": []
+     },
+     "payments": [],
+     "checkout": null,
+     "created_at": "2026-10-02T10:00:00Z",
+     "updated_at": "2026-10-02T10:00:00Z",
+     "billed_at": "2026-10-20T10:00:00Z",
+     "revised_at": null
+    }
+   ],
+   "meta": {
+    "request_id": "fictional-request-0002",
+    "pagination": {
+     "per_page": 10,
+     "next": "https://sandbox-api.paddle.com/transactions?after=x",
+     "has_more": false,
+     "estimated_total": 2
+    }
+   }
+  }
+ },
+ {
+  "name": "txns-invoice-number-10001",
+  "method": "GET",
+  "path": "/transactions",
+  "query": {
+   "invoice_number": "325-10001",
+   "per_page": "10"
+  },
+  "status": 200,
+  "body": {
+   "data": [
+    {
+     "id": "txn_01aaaaaaaaaaaaaaaaaaaaaaa1",
+     "status": "completed",
+     "customer_id": "ctm_01aaaaaaaaaaaaaaaaaaaaaaaa",
+     "address_id": "add_01aaaaaaaaaaaaaaaaaaaaaaaa",
+     "business_id": null,
+     "custom_data": null,
+     "currency_code": "USD",
+     "origin": "web",
+     "subscription_id": "sub_01aaaaaaaaaaaaaaaaaaaaaaa1",
+     "invoice_id": "inv_01aaaaaaaaaaaaaaaaaaaaaaa1",
+     "invoice_number": "325-10001",
+     "collection_mode": "automatic",
+     "discount_id": null,
+     "billing_details": null,
+     "billing_period": null,
+     "items": [],
+     "details": {
+      "tax_rates_used": [],
+      "totals": {
+       "subtotal": "4900",
+       "discount": "0",
+       "tax": "0",
+       "total": "4900",
+       "credit": "0",
+       "credit_to_balance": "0",
+       "balance": "0",
+       "grand_total": "4900",
+       "grand_total_tax": "0",
+       "fee": null,
+       "earnings": null,
+       "currency_code": "USD"
+      },
+      "adjusted_totals": {
+       "subtotal": "x",
+       "tax": "x",
+       "total": "x",
+       "grand_total": "x",
+       "grand_total_tax": "x",
+       "fee": null,
+       "retained_fee": "x",
+       "earnings": null,
+       "currency_code": "USD"
+      },
+      "payout_totals": null,
+      "adjusted_payout_totals": null,
+      "line_items": []
+     },
+     "payments": [],
+     "checkout": null,
+     "created_at": "2026-10-02T10:00:00Z",
+     "updated_at": "2026-10-02T10:00:00Z",
+     "billed_at": "2026-10-02T10:00:00Z",
+     "revised_at": null
+    }
+   ],
+   "meta": {
+    "request_id": "fictional-request-0002",
+    "pagination": {
+     "per_page": 10,
+     "next": "https://sandbox-api.paddle.com/transactions?after=x",
+     "has_more": false,
+     "estimated_total": 2
+    }
+   }
+  }
+ },
+ {
+  "name": "txns-invoice-number-10003",
+  "method": "GET",
+  "path": "/transactions",
+  "query": {
+   "invoice_number": "325-10003",
+   "per_page": "10"
+  },
+  "status": 200,
+  "body": {
+   "data": [
+    {
+     "id": "txn_01bbbbbbbbbbbbbbbbbbbbbbb1",
+     "status": "completed",
+     "customer_id": "ctm_01bbbbbbbbbbbbbbbbbbbbbbbb",
+     "address_id": "add_01aaaaaaaaaaaaaaaaaaaaaaaa",
+     "business_id": null,
+     "custom_data": null,
+     "currency_code": "USD",
+     "origin": "web",
+     "subscription_id": null,
+     "invoice_id": "inv_01bbbbbbbbbbbbbbbbbbbbbbb1",
+     "invoice_number": "325-10003",
+     "collection_mode": "automatic",
+     "discount_id": null,
+     "billing_details": null,
+     "billing_period": null,
+     "items": [],
+     "details": {
+      "tax_rates_used": [],
+      "totals": {
+       "subtotal": "2900",
+       "discount": "0",
+       "tax": "0",
+       "total": "2900",
+       "credit": "0",
+       "credit_to_balance": "0",
+       "balance": "0",
+       "grand_total": "2900",
+       "grand_total_tax": "0",
+       "fee": null,
+       "earnings": null,
+       "currency_code": "USD"
+      },
+      "adjusted_totals": {
+       "subtotal": "x",
+       "tax": "x",
+       "total": "x",
+       "grand_total": "x",
+       "grand_total_tax": "x",
+       "fee": null,
+       "retained_fee": "x",
+       "earnings": null,
+       "currency_code": "USD"
+      },
+      "payout_totals": null,
+      "adjusted_payout_totals": null,
+      "line_items": []
+     },
+     "payments": [],
+     "checkout": null,
+     "created_at": "2026-10-02T10:00:00Z",
+     "updated_at": "2026-10-02T10:00:00Z",
+     "billed_at": "2026-10-02T10:00:00Z",
+     "revised_at": null
+    }
+   ],
+   "meta": {
+    "request_id": "fictional-request-0002",
+    "pagination": {
+     "per_page": 10,
+     "next": "https://sandbox-api.paddle.com/transactions?after=x",
+     "has_more": false,
+     "estimated_total": 2
+    }
+   }
+  }
+ },
+ {
+  "name": "txn-A1-invoice",
+  "method": "GET",
+  "path": "/transactions/txn_01aaaaaaaaaaaaaaaaaaaaaaa1/invoice",
+  "status": 200,
+  "body": {
+   "data": {
+    "url": "https://paddle-sandbox-invoice-service-pdfs.s3.amazonaws.com/invoices/fictional/invoice_325-10001.pdf"
+   },
+   "meta": {
+    "request_id": "fictional-request-0001"
+   }
+  }
+ },
+ {
+  "name": "txn-A2-invoice",
+  "method": "GET",
+  "path": "/transactions/txn_01aaaaaaaaaaaaaaaaaaaaaaa2/invoice",
+  "status": 200,
+  "body": {
+   "data": {
+    "url": "https://paddle-sandbox-invoice-service-pdfs.s3.amazonaws.com/invoices/fictional/invoice_325-10002.pdf"
+   },
+   "meta": {
+    "request_id": "fictional-request-0001"
+   }
+  }
+ },
+ {
+  "name": "sub-A",
+  "method": "GET",
+  "path": "/subscriptions/sub_01aaaaaaaaaaaaaaaaaaaaaaa1",
+  "status": 200,
+  "body": {
+   "data": {
+    "id": "sub_01aaaaaaaaaaaaaaaaaaaaaaa1",
+    "status": "past_due",
+    "customer_id": "ctm_01aaaaaaaaaaaaaaaaaaaaaaaa",
+    "address_id": "add_01aaaaaaaaaaaaaaaaaaaaaaaa",
+    "business_id": null,
+    "currency_code": "USD",
+    "created_at": "2026-06-01T00:00:00Z",
+    "updated_at": "2026-10-20T10:00:00Z",
+    "started_at": "2026-06-01T00:00:00Z",
+    "first_billed_at": "2026-06-01T00:00:00Z",
+    "next_billed_at": "2026-11-20T10:00:00Z",
+    "paused_at": null,
+    "canceled_at": null,
+    "discount": null,
+    "collection_mode": "automatic",
+    "billing_details": null,
+    "current_billing_period": null,
+    "billing_cycle": {
+     "interval": "day",
+     "frequency": 1
+    },
+    "scheduled_change": null,
+    "management_urls": {
+     "update_payment_method": null,
+     "cancel": "x",
+     "view_subscription": "x"
+    },
+    "items": [],
+    "custom_data": null,
+    "import_meta": null,
+    "consent_requirements": []
+   },
+   "meta": {
+    "request_id": "fictional-request-0001"
+   }
+  }
+ },
+ {
+  "name": "subs-customer-A",
+  "method": "GET",
+  "path": "/subscriptions",
+  "query": {
+   "customer_id": "ctm_01aaaaaaaaaaaaaaaaaaaaaaaa",
+   "per_page": "10"
+  },
+  "status": 200,
+  "body": {
+   "data": [
+    {
+     "id": "sub_01aaaaaaaaaaaaaaaaaaaaaaa1",
+     "status": "past_due",
+     "customer_id": "ctm_01aaaaaaaaaaaaaaaaaaaaaaaa",
+     "address_id": "add_01aaaaaaaaaaaaaaaaaaaaaaaa",
+     "business_id": null,
+     "currency_code": "USD",
+     "created_at": "2026-06-01T00:00:00Z",
+     "updated_at": "2026-10-20T10:00:00Z",
+     "started_at": "2026-06-01T00:00:00Z",
+     "first_billed_at": "2026-06-01T00:00:00Z",
+     "next_billed_at": "2026-11-20T10:00:00Z",
+     "paused_at": null,
+     "canceled_at": null,
+     "discount": null,
+     "collection_mode": "automatic",
+     "billing_details": null,
+     "current_billing_period": null,
+     "billing_cycle": {
+      "interval": "day",
+      "frequency": 1
+     },
+     "scheduled_change": null,
+     "management_urls": {
+      "update_payment_method": null,
+      "cancel": "x",
+      "view_subscription": "x"
+     },
+     "items": [],
+     "custom_data": null,
+     "import_meta": null,
+     "consent_requirements": []
+    }
+   ],
+   "meta": {
+    "request_id": "fictional-request-0002",
+    "pagination": {
+     "per_page": 10,
+     "next": "https://sandbox-api.paddle.com/transactions?after=x",
+     "has_more": false,
+     "estimated_total": 2
+    }
+   }
+  }
+ },
+ {
+  "name": "customer-A",
+  "method": "GET",
+  "path": "/customers/ctm_01aaaaaaaaaaaaaaaaaaaaaaaa",
+  "status": 200,
+  "body": {
+   "data": {
+    "id": "ctm_01aaaaaaaaaaaaaaaaaaaaaaaa",
+    "name": "Fictional",
+    "email": "alex.payer@example.test",
+    "marketing_consent": false,
+    "status": "active",
+    "custom_data": null,
+    "locale": "en",
+    "created_at": "2026-06-01T00:00:00Z",
+    "updated_at": "2026-06-01T00:00:00Z",
+    "import_meta": null
+   },
+   "meta": {
+    "request_id": "fictional-request-0001"
+   }
+  }
+ },
+ {
+  "name": "customer-B",
+  "method": "GET",
+  "path": "/customers/ctm_01bbbbbbbbbbbbbbbbbbbbbbbb",
+  "status": 200,
+  "body": {
+   "data": {
+    "id": "ctm_01bbbbbbbbbbbbbbbbbbbbbbbb",
+    "name": "Fictional",
+    "email": "blair.payer@example.test",
+    "marketing_consent": false,
+    "status": "active",
+    "custom_data": null,
+    "locale": "en",
+    "created_at": "2026-06-01T00:00:00Z",
+    "updated_at": "2026-06-01T00:00:00Z",
+    "import_meta": null
+   },
+   "meta": {
+    "request_id": "fictional-request-0001"
+   }
+  }
+ },
+ {
+  "name": "adjustments-customer-A",
+  "method": "GET",
+  "path": "/adjustments",
+  "query": {
+   "customer_id": "ctm_01aaaaaaaaaaaaaaaaaaaaaaaa",
+   "action": "refund",
+   "per_page": "10"
+  },
+  "status": 200,
+  "body": {
+   "data": [
+    {
+     "id": "adj_01aaaaaaaaaaaaaaaaaaaaaaa1",
+     "action": "refund",
+     "type": "partial",
+     "transaction_id": "txn_01aaaaaaaaaaaaaaaaaaaaaaa1",
+     "subscription_id": null,
+     "customer_id": "ctm_01aaaaaaaaaaaaaaaaaaaaaaaa",
+     "reason": "Fictional refund",
+     "currency_code": "USD",
+     "status": "approved",
+     "items": [],
+     "totals": {
+      "subtotal": "1000",
+      "tax": "0",
+      "total": "1000",
+      "fee": "0",
+      "earnings": "0",
+      "currency_code": "USD"
+     },
+     "payout_totals": null,
+     "tax_rates_used": [],
+     "created_at": "2026-10-05T09:00:00Z",
+     "updated_at": "2026-10-05T09:00:00Z"
+    }
+   ],
+   "meta": {
+    "request_id": "fictional-request-0002",
+    "pagination": {
+     "per_page": 10,
+     "next": "https://sandbox-api.paddle.com/transactions?after=x",
+     "has_more": false,
+     "estimated_total": 2
+    }
+   }
+  }
+ },
+ {
+  "name": "adjustments-customer-A-mixed",
+  "method": "GET",
+  "path": "/adjustments",
+  "query": {
+   "customer_id": "ctm_01aaaaaaaaaaaaaaaaaaaaaaaa",
+   "action": "refund",
+   "per_page": "10"
+  },
+  "status": 200,
+  "body": {
+   "data": [
+    {
+     "id": "adj_01aaaaaaaaaaaaaaaaaaaaaaa1",
+     "action": "refund",
+     "type": "partial",
+     "transaction_id": "txn_01aaaaaaaaaaaaaaaaaaaaaaa1",
+     "subscription_id": null,
+     "customer_id": "ctm_01aaaaaaaaaaaaaaaaaaaaaaaa",
+     "reason": "Fictional refund",
+     "currency_code": "USD",
+     "status": "approved",
+     "items": [],
+     "totals": {
+      "subtotal": "1000",
+      "tax": "0",
+      "total": "1000",
+      "fee": "0",
+      "earnings": "0",
+      "currency_code": "USD"
+     },
+     "payout_totals": null,
+     "tax_rates_used": [],
+     "created_at": "2026-10-05T09:00:00Z",
+     "updated_at": "2026-10-05T09:00:00Z"
+    },
+    {
+     "id": "adj_01bbbbbbbbbbbbbbbbbbbbbbb1",
+     "action": "refund",
+     "type": "partial",
+     "transaction_id": "txn_01bbbbbbbbbbbbbbbbbbbbbbb1",
+     "subscription_id": null,
+     "customer_id": "ctm_01bbbbbbbbbbbbbbbbbbbbbbbb",
+     "reason": "Fictional refund",
+     "currency_code": "USD",
+     "status": "pending_approval",
+     "items": [],
+     "totals": {
+      "subtotal": "500",
+      "tax": "0",
+      "total": "500",
+      "fee": "0",
+      "earnings": "0",
+      "currency_code": "USD"
+     },
+     "payout_totals": null,
+     "tax_rates_used": [],
+     "created_at": "2026-10-05T09:00:00Z",
+     "updated_at": "2026-10-05T09:00:00Z"
+    }
+   ],
+   "meta": {
+    "request_id": "fictional-request-0002",
+    "pagination": {
+     "per_page": 10,
+     "next": "https://sandbox-api.paddle.com/transactions?after=x",
+     "has_more": false,
+     "estimated_total": 2
+    }
+   }
+  },
+  "modes": [
+   "mixed_customers"
+  ]
+ },
+ {
+  "name": "not-found",
+  "notFound": true,
+  "method": "GET",
+  "path": "/__not_found__",
+  "status": 404,
+  "body": {
+   "error": {
+    "type": "request_error",
+    "code": "entity_not_found",
+    "detail": "Entity not found",
+    "documentation_url": "https://developer.paddle.com/errors/shared/entity_not_found"
+   },
+   "meta": {
+    "request_id": "fictional-request-0001"
+   }
+  }
+ }
+]

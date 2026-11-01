@@ -1,5 +1,6 @@
 import assert from'node:assert/strict';
-import{robotsAllowed,htmlToText,pageTitle,importUrlProblem,resolvedAddrsProblem}from'../lib/url-import';
+import{robotsAllowed,htmlToText,pageTitle,importUrlProblem,resolvedAddrsProblem,safeGet,ImportFetchError,type Addr}from'../lib/url-import';
+import{createServer}from'node:http';
 function ok(n:string){console.log('PASS',n);}
 // robots
 assert.equal(robotsAllowed('User-agent: *\nDisallow: /private','/private/page'),false);
@@ -40,3 +41,84 @@ assert.equal(resolvedAddrsProblem([{address:'93.184.216.34',family:4},{address:'
 assert.equal(resolvedAddrsProblem([{address:'93.184.216.34',family:4}]),null);
 ok('DNS validation: any private answer refuses, public passes');
 console.log('all url-import checks passed');
+
+// safeGet: SSRF protection on every hop, against a local HTTP server. Hostnames are mapped by a fake resolver:
+// 127.0.0.1 stands in for a public address, 10.x answers are private. No outside network is used.
+async function safeGetChecks(){
+const LOCAL='127.0.0.1';
+const hits:string[]=[];
+const server=createServer((req,res)=>{
+ hits.push(req.url??'');
+ const path=req.url??'/';
+ if(path==='/page'){res.writeHead(200,{'content-type':'text/html'});res.end('<title>Ok</title><p>Public page text here.</p>');return;}
+ if(path==='/to-private'){res.writeHead(302,{location:'http://private.test/secret'});res.end();return;}
+ if(path==='/to-metadata'){res.writeHead(301,{location:'http://169.254.169.254/latest/meta-data/'});res.end();return;}
+ if(path==='/to-relative'){res.writeHead(302,{location:'/page'});res.end();return;}
+ if(path==='/loop'){res.writeHead(302,{location:'/loop'});res.end();return;}
+ if(path==='/no-location'){res.writeHead(302);res.end();return;}
+ if(path==='/big'){res.writeHead(200,{'content-type':'text/html'});res.end('<p>'+'y'.repeat(5000)+'</p>');return;}
+ if(path==='/slow'){setTimeout(()=>{res.writeHead(200,{'content-type':'text/html'});res.end('<p>late</p>');},2000);return;}
+ res.writeHead(404);res.end();
+});
+await new Promise<void>(r=>server.listen(0,LOCAL,r));
+const port=(server.address() as {port:number}).port;
+const base=(host:string)=>`http://${host}:${port}`;
+let lookups:string[]=[];
+let rebindCalls=0;
+const resolve=async(host:string):Promise<Addr[]>=>{
+ lookups.push(host);
+ if(host==='public.test')return[{address:LOCAL,family:4}];
+ if(host==='private.test')return[{address:'10.0.0.5',family:4}];
+ if(host==='mixed.test')return[{address:LOCAL,family:4},{address:'10.0.0.6',family:4}];
+ // First answer public, every later answer private: a rebinding attempt.
+ if(host==='rebind.test')return rebindCalls++===0?[{address:LOCAL,family:4}]:[{address:'10.0.0.9',family:4}];
+ throw new Error('NXDOMAIN');
+};
+const addrProblem=(a:Addr[])=>a.length&&a.every(x=>x.address===LOCAL)?null:resolvedAddrsProblem(a.filter(x=>x.address!==LOCAL).length?a.filter(x=>x.address!==LOCAL):a);
+const opts={resolve,addrProblem};
+async function refused(url:string,re:RegExp,extra={}){
+ try{await safeGet(url,{...opts,...extra});}catch(e){assert.ok(e instanceof ImportFetchError,'typed error');assert.match((e as Error).message,re);return;}
+ assert.fail('expected refusal for '+url);
+}
+try{
+ const okR=await safeGet(base('public.test')+'/page',opts);
+ assert.equal(okR.status,200);assert.ok(okR.body.includes('Public page text here.'));assert.match(okR.contentType,/text\/html/);
+ ok('safeGet: fetches a public page through the checked address');
+
+ hits.length=0;
+ await refused(base('public.test')+'/to-private',/redirected to a private network address/);
+ assert.deepEqual(hits,['/to-private'],'the private target was never requested');
+ await refused(base('public.test')+'/to-metadata',/redirected to an address that cannot be imported/);
+ ok('safeGet: redirects to a private host and to the cloud metadata IP are refused, not followed');
+
+ const rel=await safeGet(base('public.test')+'/to-relative',opts);
+ assert.equal(rel.status,200);assert.ok(rel.finalUrl.endsWith('/page'));
+ ok('safeGet: a relative redirect to a public page is followed and re-checked');
+
+ await refused(base('public.test')+'/loop',/redirected too many times/);
+ await refused(base('public.test')+'/no-location',/without a redirect address/);
+ ok('safeGet: redirect loops and empty redirects stop');
+
+ await refused(base('mixed.test')+'/page',/private network/);
+ ok('safeGet: a name with any private answer is refused');
+
+ lookups=[];rebindCalls=0;
+ const rb=await safeGet(base('rebind.test')+'/page',opts);
+ assert.equal(rb.status,200);
+ assert.deepEqual(lookups,['rebind.test'],'resolved exactly once; the socket made no second lookup');
+ ok('safeGet: DNS rebinding blocked, connection pinned to the address that passed the check');
+
+ const big=await safeGet(base('public.test')+'/big',{...opts,maxBytes:1000});
+ assert.equal(big.truncated,true);assert.equal(big.bytes,1000);
+ ok('safeGet: body capped at maxBytes');
+
+ await refused(base('public.test')+'/slow',/within 10 seconds/,{deadline:Date.now()+300});
+ ok('safeGet: deadline enforced across the whole fetch');
+
+ await refused(base('nowhere.test')+'/page',/did not resolve/);
+ await refused('http://localhost:'+port+'/page',/Private or local/);
+ ok('safeGet: unresolvable and local hosts refused before any request');
+}finally{server.close();}
+console.log('all safeGet checks passed');
+}
+safeGetChecks().catch(e=>{console.error(e);process.exit(1);});

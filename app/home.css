@@ -15,7 +15,7 @@
 /* Hero fits the first screen, with the capability marquee as its
    bottom edge. Spacing scales with viewport height so short laptop screens still fit. */
 .ap-home{--hm-pad-x:clamp(14px,3vw,32px)}
-.ap-home .vp.vp-static,.ap-home .vp.vp-static .vp-page{min-height:100dvh}
+.ap-home .vp.vp-static,.ap-home .vp.vp-static .vp-page{min-height:100svh}
 .ap-home .vp.vp-static .vp-page{padding-bottom:0}
 .ap-home .vp-hero{padding-bottom:clamp(14px,3.2vh,40px)}
 .ap-home .vp-sub{max-width:min(590px,92%)}
@@ -315,7 +315,9 @@
 .hm-chat-avatar{display:grid;place-items:center;width:44px;height:44px;border-radius:14px;flex-shrink:0;background:radial-gradient(circle at 50% 35%,rgba(255,255,255,.22),rgba(255,255,255,.06));border:1px solid rgba(255,255,255,.2);box-shadow:inset 0 1px 0 rgba(255,255,255,.18)}
 .hm-chat-head>div{min-width:0;flex:1}
 .ap-public .hm-chat-head strong{display:block;font-size:14.5px;font-weight:650;color:#fff}
-.ap-public .hm-chat-head p{display:flex;align-items:center;gap:6px;margin:2px 0 0;font-size:11.5px;color:#C7D4F2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ap-public .hm-chat-head p{display:flex;align-items:center;gap:6px;margin:2px 0 0;font-size:11.5px;color:#C7D4F2;white-space:nowrap;overflow:hidden}
+/* Ellipsis has no effect on a flex row's bare text, so the status line truncates on its own span. */
+.ap-public .hm-chat-head p>span{min-width:0;overflow:hidden;text-overflow:ellipsis}
 .hm-chat-head p i{width:7px;height:7px;border-radius:50%;background:#3DDC97;box-shadow:0 0 0 3px rgba(61,220,151,.18);flex-shrink:0}
 .desk-ui .ap-home .hm-chat-reset{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.06);color:#fff;cursor:pointer;transition:background-color .2s ease,transform .14s var(--ap-e-quint)}
 .desk-ui .ap-home .hm-chat-reset:active{transform:scale(.94)}
@@ -409,9 +411,80 @@
 .hm-chat-tabs button[aria-selected=true] span{background:rgba(255,255,255,.16);color:#fff}
 @media(hover:hover) and (pointer:fine){.desk-ui .ap-home .hm-chat-tabs button[aria-selected=false]:hover{background:#F4F6FB;color:#0A1B3D}}
 .hm-chat-quick{border-top:0}
-.hm-chat-quick button[data-group=Complex]::before{background:#09318D}
+.hm-chat-quick button[data-group=Answers]::before{background:#09318D}
+.hm-chat-quick button[data-group=Handoff]::before{background:#2BB673}
+.hm-chat-quick button[data-group=Safety]::before{background:#F2A541}
 .hm-chat-quick button{animation:hm-chip-in .24s var(--ap-e-quint) both}
 @keyframes hm-chip-in{from{opacity:0;transform:translateY(3px)}}
+/* A question the owner just answered carries a marker until the demo restarts. */
+.hm-chat-quick button em{font-style:normal;padding:1px 7px;border-radius:999px;background:#E5F6EC;color:#1D6B3E;font-size:10.5px;font-weight:700}
+/* Four tabs: scroll sideways rather than wrap, and drop the counts on narrow phones. */
+.hm-chat-tabs{overflow-x:auto;scrollbar-width:none}
+.hm-chat-tabs::-webkit-scrollbar{display:none}
+.desk-ui .ap-home .hm-chat-tabs button{flex-shrink:0}
+@media(max-width:420px){.hm-chat-tabs button span{display:none}}
+
+/* Demo: working steps, answer checks, feedback, owner takeover, lead capture and owner actions.
+   State changes only: each new piece fades in at 200ms ease-out; nothing loops except the typing dots. */
+/* Working steps beside the typing dots. A new step replaces the old one with a short fade (state indication). */
+.hm-typing{align-items:center;max-width:100%}
+.hm-typing span{min-width:0;margin-left:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12.5px;color:#4A5878;animation:hm-step-in .2s var(--ap-e-quint) both}
+@keyframes hm-step-in{from{opacity:0;transform:translateY(2px)}}
+/* Source chip shows how many checks ran; opening it lists them under the quote. */
+.hm-src-n{margin-left:2px;padding:1px 6px;border-radius:999px;background:#fff;color:#4A5878;font:600 10px var(--font-geist-mono),monospace}
+.hm-checks{display:flex;flex-direction:column;gap:5px;margin:6px 0 0;padding:8px 12px;list-style:none;border-radius:10px;background:#fff;border:1px solid #E8EDF9}
+.hm-checks li{display:flex;align-items:flex-start;gap:7px;font-size:12px;line-height:1.45;color:#33415E}
+.hm-checks svg{flex-shrink:0;margin-top:2px;color:#1D6B3E}
+/* Feedback under the final answer of each question. */
+.hm-fb{display:flex;align-items:center;gap:2px;min-height:28px}
+.desk-ui .ap-home .hm-fb button{display:grid;place-items:center;width:28px;height:28px;padding:0;border:0;border-radius:8px;background:transparent;color:#6B7A99;cursor:pointer;transition:background-color .15s ease,color .15s ease,transform .12s var(--ap-e-quint)}
+.desk-ui .ap-home .hm-fb button:active{transform:scale(.95)}
+@media(hover:hover) and (pointer:fine){.desk-ui .ap-home .hm-fb button:hover{background:#E8EDF9;color:#09318D}}
+@media(pointer:coarse){.desk-ui .ap-home .hm-fb button{width:44px;height:44px}}
+.hm-fb-done{font-size:11.5px;font-weight:600;color:#1D6B3E;animation:hm-step-in .2s var(--ap-e-quint) both}
+.hm-fb-done[data-v=down]{color:#A3226F}
+/* Owner events in the conversation: a centred line between rules. */
+.ap-public .hm-sys{display:flex;align-items:center;gap:10px;margin:2px 0;font-size:11.5px;font-weight:600;line-height:1.4;color:#A3226F;animation:hm-msg-in .28s var(--ap-e-quint) both}
+.hm-sys::before,.hm-sys::after{content:'';flex:1;min-width:16px;height:1px;background:#F8C6E2}
+.hm-sys span{text-align:center}
+/* AI paused: the bar sits above the question tabs and the header dot turns pink. */
+.hm-paused{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 12px;background:#FFF7FB;border-top:1px solid #F8C6E2;font-size:12px;font-weight:600;color:#A3226F;animation:hm-step-in .2s var(--ap-e-quint) both}
+.hm-paused span{display:inline-flex;align-items:center;gap:6px;min-width:0}
+.desk-ui .ap-home .hm-paused button{flex-shrink:0;padding:5px 12px;border:1.5px solid #041A52;border-radius:999px;background:#fff;color:#041A52;font-size:12px;font-weight:600;cursor:pointer;transition:background-color .15s ease,transform .12s var(--ap-e-quint)}
+.desk-ui .ap-home .hm-paused button:active{transform:scale(.97)}
+@media(hover:hover) and (pointer:fine){.desk-ui .ap-home .hm-paused button:hover{background:#F4F6FB;border-color:#041A52}}
+.hm-chat-head p i[data-state=paused]{background:#FD91CC;box-shadow:0 0 0 3px rgba(253,145,204,.25)}
+/* Lead capture: the share button stays inert until consent is ticked. */
+.hm-lead .hm-bill-head em{background:#E8EDF9;color:#09318D}
+.hm-lead-sent .hm-bill-head em{background:#E5F6EC;color:#1D6B3E}
+.hm-lead-consent{display:flex;gap:8px;margin:8px 0 0;font-size:12px;line-height:1.45;color:#33415E;cursor:pointer}
+.desk-ui .ap-home .hm-lead-send{width:100%;margin-top:10px;padding:8px 12px;border:0;border-radius:10px;background:#041A52;color:#fff;font-size:12.5px;font-weight:600;cursor:pointer;transition:background-color .15s ease,opacity .15s ease,transform .12s var(--ap-e-quint)}
+.desk-ui .ap-home .hm-lead-send[aria-disabled=true]{opacity:.4;cursor:default}
+.desk-ui .ap-home .hm-lead-send:active:not([aria-disabled=true]){transform:scale(.97)}
+@media(hover:hover) and (pointer:fine){.desk-ui .ap-home .hm-lead-send:not([aria-disabled=true]):hover{background:#0E2E74}}
+.ap-public .hm-bill-note.hm-lead-ok{color:#1D6B3E}
+/* Owner queue: kind, title and priority on top; state and the owner's actions below. */
+.hm-queue-hint{margin:0 0 6px;font-size:12px;line-height:1.5;color:#5B6A88}
+.hm-queue li{display:block}
+.hm-q-top{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:10px}
+.hm-q-top i{font-style:normal;font:600 10px var(--font-geist-mono),monospace;padding:2px 7px;border-radius:999px;background:#EEF1F8;color:#4A5878}
+.hm-q-top i[data-prio=High]{background:#041A52;color:#fff}
+.hm-q-meta{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 10px;margin-top:6px}
+.hm-queue li .hm-q-meta small{display:inline-flex;align-items:center;gap:5px;white-space:normal;line-height:1.4}
+.hm-queue li[data-done=true] .hm-q-meta small{color:#1D6B3E;font-weight:600}
+.hm-q-act{display:flex;flex-wrap:wrap;gap:6px}
+.desk-ui .ap-home .hm-q-act button{padding:5px 12px;border:1.5px solid #DCE3F2;border-radius:999px;background:#fff;color:#0A1B3D;font-size:12px;font-weight:600;cursor:pointer;transition:background-color .15s ease,border-color .15s ease,transform .12s var(--ap-e-quint)}
+.desk-ui .ap-home .hm-q-act button[data-primary]{background:#041A52;border-color:#041A52;color:#fff}
+.desk-ui .ap-home .hm-q-act button:active{transform:scale(.97)}
+@media(hover:hover) and (pointer:fine){.desk-ui .ap-home .hm-q-act button:hover{background:#F4F6FB;border-color:#B9C6E4}.desk-ui .ap-home .hm-q-act button[data-primary]:hover{background:#0E2E74;border-color:#0E2E74}}
+.hm-queue li em[data-kind=Refund]{background:#FDE7F3;color:#A3226F}
+.hm-queue li em[data-kind=Handoff]{background:#E5F6EC;color:#1D6B3E}
+.hm-queue li em[data-kind=Lead]{background:#FFF1DC;color:#8A4B00}
+.hm-queue li em[data-kind=Feedback]{background:#F4F6FB;color:#4A5878}
+@media(prefers-reduced-motion:reduce){
+ .hm-typing span,.hm-fb-done,.hm-sys,.hm-paused{animation:none}
+ .desk-ui .ap-home :is(.hm-fb button,.hm-paused button,.hm-lead-send,.hm-q-act button){transition:none}
+}
 
 /* 02 - Before / after */
 .hm-compare{background:#fff}
@@ -469,3 +542,115 @@
 @media(max-width:860px){.hm-addons{grid-template-columns:repeat(2,minmax(0,1fr))}.hm-faq-grid{grid-template-columns:minmax(0,1fr)}.hm-faq-grid .hm-head{position:static}}
 @media(max-width:640px){.hm-addon-tabs{display:flex;flex-wrap:nowrap;max-width:100%;overflow-x:auto;scrollbar-width:none}.hm-addon-tabs::-webkit-scrollbar{display:none}.desk-ui .ap-home .hm-addon-tabs button{flex-shrink:0;padding:7px 10px;font-size:12.5px;gap:5px}.hm-addon-tabs button span{display:none}.hm-compare-grid{grid-template-columns:minmax(0,1fr)}.hm-compare-col{padding:20px}.hm-addons{grid-template-columns:minmax(0,1fr)}.hm-addon{flex-direction:row;align-items:flex-start;padding:16px 16px 16px 16px}.hm-addon-status{position:static;align-self:flex-start;margin-left:auto;white-space:nowrap}.hm-addon>div{min-width:0;flex:1}.ap-public .hm-faq-item p{padding-right:4px}.hm-faq-item summary{font-size:15.5px}}
 @media(prefers-reduced-motion:reduce){.hm-addon,.hm-chat-quick button,.ap-public .hm-faq-item p{animation:none}.hm-faq-item summary>span,.hm-faq-item summary>span::before,.hm-faq-item summary>span::after,.hm-addon{transition:none}}
+
+/* 06 - Go live and 07 - Owner's view use the same kicker and h2 as every other section.
+   The 06 title stays pinned beside the steps on wide screens, like the FAQ title, and sits above them
+   once the column gets too narrow for a 4-line heading. */
+.ap-home .ap-section-label{align-self:start;position:sticky;top:24px}
+@media(max-width:860px){.ap-home .ap-flow{grid-template-columns:minmax(0,1fr);gap:34px}.ap-home .ap-section-label{position:static}}
+
+/* Platform grid at two columns: one wide card plus seven leaves the last card alone, so it takes the row. */
+@media(min-width:641px) and (max-width:960px){.hm-bento>.hm-cell:last-child{grid-column:span 2}}
+
+/* Closing CTA: kicker at the 11px every section kicker uses. On phones the forced line break goes and the
+   heading wraps evenly, instead of leaving "agent is" alone on a line. */
+.ap-home .ap-start .ap-kicker{font-size:11px}
+.ap-home .ap-start h2{text-wrap:balance}
+@media(max-width:560px){.ap-home .hm-br-wide{display:none}}
+
+/* Keeps a link and its arrow together, so "↗" never starts a line on its own. */
+.hm-nowrap{white-space:nowrap}
+
+/* Nov 1 - Platform cards for billing support, widget replies, working hours and MCP.
+   Same rules as the cards above: static illustrations that settle in on reveal (opacity/transform,
+   ease-out), nothing loops, reduced motion shows the final state. */
+.hm-v-bill{display:flex;flex-direction:column;gap:12px;width:min(520px,100%)}
+.hm-v-bill-card{padding:10px 14px;border-radius:12px;background:#fff;border:1px solid var(--hm-line);box-shadow:0 6px 16px -12px rgba(4,26,82,.3)}
+.hm-v-bill-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:4px 10px;margin-bottom:4px}
+.hm-v-bill-head b{font:600 10.5px var(--font-geist-mono),monospace;letter-spacing:.02em;color:#09318D;text-transform:uppercase}
+.hm-v-bill-head span{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:#1D6B3E}
+.hm-v-bill-head [data-ico=verified]{color:#1D6B3E}
+.ap-public .hm-v-bill-card p{display:flex;justify-content:space-between;gap:12px;margin:0;padding:5px 0;border-top:1px solid #F0F3FA;font-size:12.5px;color:#4A5878}
+.hm-v-bill-card p b{font-weight:600;color:#0A1B3D;text-align:right}
+.hm-v-bill-card p b[data-tone=review]{color:#A3226F}
+.hm-v-provs{display:flex;flex-wrap:wrap;gap:6px;margin:0;padding:0;list-style:none}
+.hm-v-provs li{padding:4px 10px;border-radius:999px;background:#fff;border:1px solid var(--hm-line);font-size:11.5px;font-weight:600;color:#041A52;white-space:nowrap}
+.hm-v-thread{display:flex;flex-direction:column;gap:7px;width:min(320px,100%)}
+.hm-v-paused{align-self:center;padding:3px 10px;border-radius:999px;background:#FDE7F3;color:#A3226F;font:600 10.5px var(--font-geist-mono),monospace}
+.ap-public .hm-v-thread p{display:flex;align-items:flex-end;gap:7px;margin:0;font-size:12.5px;line-height:1.45}
+.hm-v-thread p span{padding:7px 11px;border-radius:12px}
+.hm-v-owner span{background:#FFF1F8;border:1px solid #F8C6E2;color:#0A1B3D;border-bottom-left-radius:4px}
+.hm-v-owner svg{flex-shrink:0}
+.hm-v-visitor{justify-content:flex-end}
+.hm-v-visitor span{background:#041A52;color:#fff;border-bottom-right-radius:4px}
+.hm-v-thread em{align-self:flex-start;font-style:normal;font:10px var(--font-geist-mono),monospace;color:#6B7A99}
+.hm-v-hours{display:flex;flex-direction:column;gap:9px;width:min(320px,100%)}
+.hm-v-week{display:flex;gap:5px}
+.hm-v-week span{flex:1;display:grid;place-items:center;height:26px;border-radius:8px;background:#041A52;color:#fff;font:600 10.5px var(--font-geist-mono),monospace}
+.hm-v-week span[data-off]{background:#E8EDF9;color:#09318D}
+.ap-public .hm-v-away{margin:0;padding:8px 12px;border-radius:12px 12px 12px 4px;background:#fff;border:1px solid var(--hm-line);font-size:12.5px;line-height:1.45;color:#0A1B3D}
+.hm-v-choice{display:flex;gap:6px}
+.hm-v-choice span{flex:1;padding:6px 8px;border-radius:999px;border:1.5px solid #DCE3F2;background:#fff;text-align:center;font-size:11.5px;font-weight:600;color:#041A52;white-space:nowrap}
+.hm-v-choice span:last-child{border-color:#041A52}
+.hm-v-mcp{font-size:11px;line-height:2}
+.hm-v-mcp .hm-v-ln{white-space:pre;overflow:hidden;text-overflow:ellipsis}
+/* Reveal: provider chips, thread lines and week cells arrive in a short stagger. */
+.ap-rv-off:not(.ap-rv-in) :is(.hm-v-bill-card,.hm-v-provs li,.hm-v-thread>*,.hm-v-week span,.hm-v-away,.hm-v-choice){opacity:0;transform:translateY(6px)}
+.ap-rv-in :is(.hm-v-bill-card,.hm-v-provs li,.hm-v-thread>*,.hm-v-week span,.hm-v-away,.hm-v-choice){transition:opacity .4s var(--ap-e-quint),transform .4s var(--ap-e-quint)}
+.ap-rv-in .hm-v-provs li{transition-delay:calc(.2s + var(--n,0)*30ms)}
+.ap-rv-in .hm-v-provs li:nth-child(2){--n:1}.ap-rv-in .hm-v-provs li:nth-child(3){--n:2}.ap-rv-in .hm-v-provs li:nth-child(4){--n:3}.ap-rv-in .hm-v-provs li:nth-child(5){--n:4}.ap-rv-in .hm-v-provs li:nth-child(6){--n:5}.ap-rv-in .hm-v-provs li:nth-child(7){--n:6}.ap-rv-in .hm-v-provs li:nth-child(8){--n:7}.ap-rv-in .hm-v-provs li:nth-child(9){--n:8}.ap-rv-in .hm-v-provs li:nth-child(n+10){--n:9}
+.ap-rv-in .hm-v-thread>:nth-child(2){transition-delay:.15s}.ap-rv-in .hm-v-thread>:nth-child(3){transition-delay:.3s}.ap-rv-in .hm-v-thread>:nth-child(4){transition-delay:.4s}
+.ap-rv-in .hm-v-week span:nth-child(2){transition-delay:.04s}.ap-rv-in .hm-v-week span:nth-child(3){transition-delay:.08s}.ap-rv-in .hm-v-week span:nth-child(4){transition-delay:.12s}.ap-rv-in .hm-v-week span:nth-child(5){transition-delay:.16s}.ap-rv-in .hm-v-week span:nth-child(6){transition-delay:.2s}.ap-rv-in .hm-v-week span:nth-child(7){transition-delay:.24s}
+.ap-rv-in .hm-v-away{transition-delay:.3s}.ap-rv-in .hm-v-choice{transition-delay:.42s}
+/* Two columns: only the first card stays wide, so the twelve cards pack without gaps
+   (the last card already takes the full row). */
+@media(min-width:641px) and (max-width:960px){.hm-bento>.hm-card-wide:not(:first-child):not(:last-child){grid-column:auto}.hm-trust-grid>li:last-child:nth-child(odd){grid-column:span 2}}
+
+/* Demo: owner replies in the widget, verification and MCP event lines, provider line on billing cards. */
+.hm-row-owner{align-self:flex-start}
+.hm-msg-owner{align-items:flex-start}
+.hm-msg-owner .hm-bubble{background:#FFF1F8;border-color:#F8C6E2}
+.hm-owner-name{font-size:11px;font-weight:650;color:#A3226F}
+.hm-owner-note{font:10.5px var(--font-geist-mono),monospace;color:#6B7A99}
+.ap-public .hm-sys[data-tone=ok]{color:#1D6B3E}
+.hm-sys[data-tone=ok]::before,.hm-sys[data-tone=ok]::after{background:#BFE6CF}
+.ap-public .hm-sys[data-tone=mcp]{color:#09318D}
+.hm-sys[data-tone=mcp]::before,.hm-sys[data-tone=mcp]::after{background:#C9D2EA}
+.ap-public .hm-bill-prov{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:4px 10px;margin:0 0 4px;padding:6px 9px;border-radius:9px;background:#F4F6FB;font-size:11.5px}
+.hm-bill-prov b{font-weight:650;color:#041A52}
+.hm-bill-prov span{display:inline-flex;align-items:center;gap:4px;font-weight:600;color:#1D6B3E}
+.hm-bill-away .hm-bill-head em{background:#FDE7F3;color:#A3226F}
+.hm-bill-mcp .hm-bill-head span{text-transform:none}
+.hm-bill-mcp .hm-bill-head em{background:#E8EDF9;color:#09318D}
+.ap-public .hm-bill-mcp .hm-bill-note{color:#4A5878;font-weight:500}
+.hm-chat-quick button[data-group=MCP]::before{background:#041A52}
+.hm-queue li em[data-kind=Proposal]{background:#E8EDF9;color:#09318D}
+
+/* 07 - Owner's view: tabs between the conversation inbox and the overview. The shown panel fades up
+   (ease-out, opacity/transform); the frame keeps its clip-path wipe on first reveal. */
+.hm-ov-tabs{display:inline-flex;gap:4px;padding:4px;margin:0 0 18px;border-radius:999px;background:#fff;border:1.5px solid #E2E7F2}
+.desk-ui .ap-home .hm-ov-tabs button{min-height:36px;padding:7px 16px;border:0;border-radius:999px;background:transparent;color:#4A5878;font-size:13px;font-weight:600;cursor:pointer;transition:background-color .18s ease,color .18s ease,transform .14s var(--ap-e-quint)}
+.desk-ui .ap-home .hm-ov-tabs button:active{transform:scale(.97)}
+.desk-ui .ap-home .hm-ov-tabs button[aria-selected=true]{background:#041A52;color:#fff}
+.desk-ui .ap-home .hm-ov-tabs button:focus-visible{outline:2px solid #FD91CC;outline-offset:2px}
+@media(hover:hover) and (pointer:fine){.desk-ui .ap-home .hm-ov-tabs button[aria-selected=false]:hover{background:#F4F6FB;color:#0A1B3D}}
+@media(pointer:coarse){.desk-ui .ap-home .hm-ov-tabs button{min-height:44px}}
+.hm-ov .hm-ov-panel[hidden]{display:none}
+.hm-ov .hm-ov-panel{animation:hm-ov-in .32s var(--ap-e-quint) both}
+@keyframes hm-ov-in{from{opacity:0;transform:translateY(6px)}}
+/* The inbox shot is shown whole (no crop); phones get a phone-sized render instead of a shrunken desktop. */
+.ap-public .hm-ov .hm-ov-inbox{height:auto;background:#fff}
+.hm-ov .hm-ov-inbox img{display:block;width:100%;min-width:0;max-width:100%;height:auto;left:auto}
+.hm-ov .hm-ov-inbox .hm-ov-narrow{display:none}
+@media(max-width:640px){.hm-ov .hm-ov-inbox .hm-ov-wide{display:none}.hm-ov .hm-ov-inbox .hm-ov-narrow{display:block;width:min(390px,100%);margin:0 auto}}
+.hm-ov-notes{display:flex;flex-wrap:wrap;gap:8px 18px;margin:20px 0 0;padding:0;list-style:none}
+.hm-ov-notes li{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;line-height:1.45;color:#33415E}
+.hm-ov-notes svg{flex-shrink:0;padding:3px;box-sizing:content-box;border-radius:50%;background:#FD91CC;color:#041A52}
+.hm-ov-links{display:flex;flex-wrap:wrap;gap:4px 22px;margin-top:6px}
+
+@media(prefers-reduced-motion:reduce){
+ .ap-rv-off:not(.ap-rv-in) :is(.hm-v-bill-card,.hm-v-provs li,.hm-v-thread>*,.hm-v-week span,.hm-v-away,.hm-v-choice){opacity:1;transform:none}
+ .ap-rv-in :is(.hm-v-bill-card,.hm-v-provs li,.hm-v-thread>*,.hm-v-week span,.hm-v-away,.hm-v-choice){transition:none}
+ .hm-ov .hm-ov-panel{animation:none}
+ .desk-ui .ap-home .hm-ov-tabs button{transition:none}
+}

@@ -1,0 +1,10 @@
+[
+ {"id":"payments.get","method":"GET","path":"/payments/{payment_id}","query":[]},
+ {"id":"payments.list","method":"GET","path":"/payments","query":["customer_id","page_size"]},
+ {"id":"payments.retry_state","method":"GET","path":"/payments/{payment_id}/retry","query":[]},
+ {"id":"subscriptions.get","method":"GET","path":"/subscriptions/{subscription_id}","query":[]},
+ {"id":"subscriptions.list","method":"GET","path":"/subscriptions","query":["customer_id","page_size"]},
+ {"id":"refunds.list","method":"GET","path":"/refunds","query":["customer_id","page_size"]},
+ {"id":"refunds.get","method":"GET","path":"/refunds/{refund_id}","query":[]},
+ {"id":"customers.get","method":"GET","path":"/customers/{customer_id}","query":[]}
+]

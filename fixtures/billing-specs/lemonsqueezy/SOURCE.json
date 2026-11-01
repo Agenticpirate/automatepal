@@ -1,0 +1,69 @@
+{
+ "provider": "lemonsqueezy",
+ "sourceUrl": "https://docs.lemonsqueezy.com/api/orders/the-order-object",
+ "repo": null,
+ "commit": null,
+ "commitDate": null,
+ "file": [
+  "https://docs.lemonsqueezy.com/api/orders/the-order-object",
+  "https://docs.lemonsqueezy.com/api/orders/retrieve-order",
+  "https://docs.lemonsqueezy.com/api/orders/list-all-orders",
+  "https://docs.lemonsqueezy.com/api/subscriptions/the-subscription-object",
+  "https://docs.lemonsqueezy.com/api/subscriptions/retrieve-subscription",
+  "https://docs.lemonsqueezy.com/api/subscription-invoices/the-subscription-invoice-object",
+  "https://docs.lemonsqueezy.com/api/subscription-invoices/list-all-subscription-invoices",
+  "https://docs.lemonsqueezy.com/api/customers/the-customer-object",
+  "https://docs.lemonsqueezy.com/api/users/retrieve-user"
+ ],
+ "upstream": {
+  "https://docs.lemonsqueezy.com/api/orders/the-order-object": {
+   "url": "https://docs.lemonsqueezy.com/api/orders/the-order-object",
+   "sha256": "adb94d55d09929da803c74d0e625769792a187a3a32c57ff03e0a4e1e6483df5",
+   "bytes": 377338
+  },
+  "https://docs.lemonsqueezy.com/api/orders/retrieve-order": {
+   "url": "https://docs.lemonsqueezy.com/api/orders/retrieve-order",
+   "sha256": "e7d4c0ccc09bf15e185aa16b9531a0d2da73cf02bd6e9f6e094dcceb547e27a3",
+   "bytes": 305790
+  },
+  "https://docs.lemonsqueezy.com/api/orders/list-all-orders": {
+   "url": "https://docs.lemonsqueezy.com/api/orders/list-all-orders",
+   "sha256": "fec083e869c6a7f6694a6f9dbaf24c5e442f77d78d297bdd3127df14a741456a",
+   "bytes": 328192
+  },
+  "https://docs.lemonsqueezy.com/api/subscriptions/the-subscription-object": {
+   "url": "https://docs.lemonsqueezy.com/api/subscriptions/the-subscription-object",
+   "sha256": "1e2307011c172b90c0e9a0e01d83b0dfebfa4a8a7d7ccf92fde42789cf6fe947",
+   "bytes": 362799
+  },
+  "https://docs.lemonsqueezy.com/api/subscriptions/retrieve-subscription": {
+   "url": "https://docs.lemonsqueezy.com/api/subscriptions/retrieve-subscription",
+   "sha256": "d142fc5d61a98b3c95100570ff39e89e6086587b827a44c769a9aa7922d68d15",
+   "bytes": 299936
+  },
+  "https://docs.lemonsqueezy.com/api/subscription-invoices/the-subscription-invoice-object": {
+   "url": "https://docs.lemonsqueezy.com/api/subscription-invoices/the-subscription-invoice-object",
+   "sha256": "e45613cdc304221e8e3dad8f3a739457ca9fddc84b50db9eb73bf70ff49f9b8f",
+   "bytes": 375552
+  },
+  "https://docs.lemonsqueezy.com/api/subscription-invoices/list-all-subscription-invoices": {
+   "url": "https://docs.lemonsqueezy.com/api/subscription-invoices/list-all-subscription-invoices",
+   "sha256": "96109e2e7696f093cf247185eb7691301ef029dc940a40425c26f89e1573afaf",
+   "bytes": 322674
+  },
+  "https://docs.lemonsqueezy.com/api/customers/the-customer-object": {
+   "url": "https://docs.lemonsqueezy.com/api/customers/the-customer-object",
+   "sha256": "ea4e6feb73a6220856b4aba2c437be85641d881ed978553088c1bd9a7cb6e672",
+   "bytes": 294710
+  },
+  "https://docs.lemonsqueezy.com/api/users/retrieve-user": {
+   "url": "https://docs.lemonsqueezy.com/api/users/retrieve-user",
+   "sha256": "9e3dcfa83024ffb860764969a60e90c99db302e880ae65d17315f23c6028954e",
+   "bytes": 256207
+  }
+ },
+ "license": "docs (no spec license)",
+ "retrievedAt": "2026-11-01T14:16:07.361Z",
+ "confidence": "docs-derived",
+ "notes": "JSON:API. contract.json is hand-written from these docs pages."
+}

@@ -1,0 +1,21 @@
+{
+ "provider": "mollie",
+ "sourceUrl": "https://github.com/mollie/openapi",
+ "repo": "mollie/openapi",
+ "commit": "84b4900bc0d6b13eb8c2f0481acd7b24924512cf",
+ "commitDate": "2026-10-26T16:20:32Z",
+ "file": [
+  "specs.yaml"
+ ],
+ "upstream": {
+  "specs.yaml": {
+   "url": "https://raw.githubusercontent.com/mollie/openapi/84b4900bc0d6b13eb8c2f0481acd7b24924512cf/specs.yaml",
+   "sha256": "01847046d5d0c577c90acc73096c6836472b18094c8c9572a328b655e8622ac3",
+   "bytes": 1949107
+  }
+ },
+ "license": "none (no license file upstream)",
+ "retrievedAt": "2026-11-01T14:09:27.718Z",
+ "confidence": "official-spec",
+ "notes": "Upstream repository has no license file. contract.json is a digest of names, types and required fields only. Needs a licensing decision by the user."
+}

@@ -1,5 +1,8 @@
-/* Tickets inbox: three panes (views rail, ticket list, ticket detail) in the brand palette.
+/* Tickets inbox: three panes (views rail, conversation list, conversation) in the brand palette.
    Navy #041A52, deep blue #09318D, pink #FD91CC, white. Amber/green stay semantic status dots.
+   Conversation layout (A2): compact pill actions and a rail footer, avatar rows with a one-line preview,
+   a participants chip naming the AI assistant, owner and visitor, a mascot empty state and a rounded
+   composer. Our own implementation with our own BotMark/ProfileMark mascots; soft greys, subtle borders.
    Selectors are prefixed with .ap-ib so they win over the generic .desk-ui form/button rules. */
 
 .ap-dash-body:has(.ap-ib){padding:0;max-width:none;gap:0}
@@ -41,7 +44,7 @@
 .ap-ib .ap-ib-av.none{background:transparent;border:1.5px dashed #B9C6E4}
 
 /* Views rail */
-.ap-ib-rail{position:sticky;top:var(--ib-top);height:var(--ib-h);overflow-y:auto;padding:18px 12px 20px;background:#FAFBFE;border-right:1px solid var(--ib-line)}
+.ap-ib-rail{position:sticky;top:var(--ib-top);height:var(--ib-h);overflow-y:auto;display:flex;flex-direction:column;padding:18px 12px 14px;background:#F7F8FB;border-right:1px solid var(--ib-line)}
 .ap-ib-rail-head{display:flex;flex-direction:column;gap:2px;padding:0 8px}
 .ap-ib-rail-head b{font-size:14px;font-weight:650;letter-spacing:-.2px;color:#041A52}
 .ap-ib-rail-head span{font-size:11.5px;color:var(--ib-muted)}
@@ -88,21 +91,24 @@
 .ap-ib-legend span{display:inline-flex;align-items:center;gap:5px}
 .ap-ib-legend i{width:7px;height:7px;border-radius:2px}
 
-.ap-ib-items{list-style:none;margin:0;padding:0}
-.ap-ib-item{position:relative;border-bottom:1px solid #EEF1F8}
-.ap-ib-item::before{content:'';position:absolute;left:0;top:12px;bottom:12px;width:3px;border-radius:0 3px 3px 0;background:var(--stripe)}
-.ap-ib .ap-ib-item-b{--bc:transparent;--bch:transparent;display:block;width:100%;margin:0;padding:13px 18px 13px 26px;border:0;border-radius:0;background:transparent;font:inherit;color:inherit;text-align:left;cursor:pointer;transition:background-color .12s ease}
+.ap-ib-items{list-style:none;margin:0;padding:6px 8px}
+.ap-ib-item{position:relative;margin:2px 0;border-radius:14px}
+.ap-ib-item::before{content:'';position:absolute;z-index:1;left:0;top:14px;bottom:14px;width:3px;border-radius:0 3px 3px 0;background:var(--stripe)}
+.ap-ib .ap-ib-item-b{--bc:transparent;--bch:transparent;display:flex;align-items:flex-start;gap:11px;width:100%;margin:0;padding:12px 12px 12px 22px;border:1px solid transparent;border-radius:14px;background:transparent;font:inherit;color:inherit;text-align:left;cursor:pointer;transition:background-color .12s ease,border-color .12s ease}
 @media(hover:hover){.ap-ib .ap-ib-item-b:hover{background:var(--ib-soft)}}
-.ap-ib-item.on .ap-ib-item-b{background:#EEF2FA}
+.ap-ib-item.on .ap-ib-item-b{background:#EEF2FA;border-color:#D5DFF7}
 .desk-ui .ap-ib .ap-ib-item-b:focus-visible{outline:2px solid #09318D;outline-offset:-2px}
 /* Row checkbox sits in the left gutter; shown on hover/focus, when checked, or once anything is selected. */
-.ap-ib-check{position:absolute;z-index:1;left:7px;top:15px;width:13px;height:13px;margin:0;cursor:pointer;opacity:0;transition:opacity .12s ease}
+.ap-ib-check{position:absolute;z-index:2;left:5px;top:16px;width:13px;height:13px;margin:0;cursor:pointer;opacity:0;transition:opacity .12s ease}
 .ap-ib-item:hover .ap-ib-check,.ap-ib-check:focus-visible,.ap-ib-check:checked,.ap-ib-items.has-sel .ap-ib-check{opacity:1}
 @media(hover:none){.ap-ib-check{opacity:1}}
 .ap-ib-item-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
-.ap-ib-item-id{font-size:11.5px;font-weight:500;letter-spacing:.2px;color:var(--ib-muted)}
-.ap-ib-item-time{flex-shrink:0;font-size:11.5px;color:#93A3C7;font-variant-numeric:tabular-nums}
-.ap-ib-item-title{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;margin:3px 0 8px;font-size:13.5px;font-weight:600;line-height:1.35;color:var(--ib-ink);overflow-wrap:anywhere}
+.ap-ib-item-main{display:flex;flex-direction:column;flex:1;min-width:0}
+.ap-ib-item-id{flex-shrink:0;font-size:11px;font-weight:600;letter-spacing:.2px;color:var(--ib-muted)}
+.ap-ib-item-time{display:inline-flex;align-items:center;gap:5px;flex-shrink:0;font-size:11.5px;color:#93A3C7;font-variant-numeric:tabular-nums}
+.ap-ib-item-pin{display:inline-flex;color:#09318D}
+.ap-ib-item-title{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13.5px;font-weight:650;line-height:1.35;color:var(--ib-ink)}
+.ap-ib-item-prev{display:block;margin:2px 0 7px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;line-height:1.45;color:var(--ib-muted)}
 .ap-ib-item-meta{display:flex;align-items:center;gap:7px;min-width:0;font-size:11.5px;color:var(--ib-body)}
 .ap-ib-item-who{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ap-ib .ap-ib-pill{display:inline-flex;align-items:center;gap:4px;flex-shrink:0;padding:2px 8px;border-radius:999px;font-size:10.5px;font-weight:650;line-height:1.5}
@@ -120,11 +126,12 @@
 /* Ticket detail */
 .ap-ib-detail{display:flex;flex-direction:column;min-width:0;min-height:var(--ib-h)}
 .ap-ib-dwrap{display:flex;flex-direction:column;flex:1;min-height:var(--ib-h)}
-.ap-ib-dhead{position:sticky;top:var(--ib-top);z-index:4;display:flex;align-items:center;gap:6px;padding:12px 24px;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--ib-line)}
+.ap-ib-dhead{position:sticky;top:var(--ib-top);z-index:4;display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:12px 24px;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--ib-line)}
 .ap-ib .ap-ib-back{--bc:transparent;display:none;align-items:center;gap:4px;margin-right:6px;padding:4px 6px 4px 0;border:0;background:none;font:inherit;font-size:12.5px;font-weight:600;color:#09318D;cursor:pointer}
-.ap-ib-did{font-size:13px;font-weight:650;letter-spacing:.2px;color:var(--ib-ink)}
-.ap-ib-dhead .ap-ib-icon{width:26px;height:26px;border-color:transparent;--bc:transparent;--bch:#E2E7F2;color:#93A3C7}
-.ap-ib-dhead-r{display:flex;align-items:center;gap:8px;margin-left:auto}
+.ap-ib-did{flex-shrink:0;font-size:12px;font-weight:650;letter-spacing:.2px;color:var(--ib-muted)}
+.ap-ib-dhead .ap-ib-icon{width:32px;height:32px;border-radius:999px;--bc:#E2E7F2;--bch:#C2D1F2;color:var(--ib-body)}
+.ap-ib-dhead-r{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-left:auto}
+.ap-ib-dhead>.ap-ib-people{max-width:100%}
 .ap-ib-dbody{display:flex;flex-direction:column;gap:20px;padding:22px 24px 12px;flex:1}
 .ap-ib-title{margin:0;font-size:22px;font-weight:620;line-height:1.25;letter-spacing:-.5px;color:var(--ib-ink);overflow-wrap:anywhere}
 .ap-ib-chips{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:-8px}
@@ -162,7 +169,7 @@
 .ap-ib-timers small{display:block;font-size:11px;color:var(--ib-muted)}
 
 /* Ticket check + next step */
-.ap-ib-card{border:1px solid #D5DFF7;border-radius:14px;background:#F4F7FE;padding:16px 18px}
+.ap-ib-card{border:1px solid #DCE4F5;border-radius:18px;background:#F5F7FC;padding:16px 18px}
 .ap-ib-card>header{display:flex;align-items:center;gap:10px}
 .ap-ib-card h3{flex:1;margin:0;font-size:14px;font-weight:650;letter-spacing:-.2px;color:var(--ib-ink)}
 .ap-ib-card-ic{display:grid;place-items:center;width:24px;height:24px;border-radius:7px;background:#09318D;color:#fff}
@@ -187,10 +194,10 @@
 .ap-ib-step-a{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
 
 /* Q&A draft + service record */
-.ap-ib-qa{display:flex;flex-direction:column;gap:10px;padding:16px 18px;border:1px solid #E2E7F2;border-radius:14px;background:#FBFCFE}
+.ap-ib-qa{display:flex;flex-direction:column;gap:10px;padding:16px 18px;border:1px solid #E6EAF3;border-radius:16px;background:#F9FAFC}
 .ap-ib-qa h3{margin:0;font-size:14px;font-weight:650;color:var(--ib-ink)}
 .ap-ib-qa-row{display:flex;flex-wrap:wrap;align-items:center;gap:14px}
-.ap-ib-svcbox{border:1px solid #E2E7F2;border-radius:12px;background:#fff}
+.ap-ib-svcbox{border:1px solid #E6EAF3;border-radius:16px;background:#fff}
 .ap-ib-svcbox>header{display:flex;align-items:baseline;gap:10px;padding:13px 14px 8px}
 .ap-ib-svcbox h3{margin:0;font-size:13.5px;font-weight:650;color:var(--ib-ink)}
 .ap-ib-svcbox>header small{flex:1;min-width:0;font-size:12px;color:var(--ib-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -208,8 +215,10 @@
 .ap-ib-thread h3 svg{color:#09318D}
 .ap-ib-thread>.ap-ib-note{margin-top:4px}
 .ap-ib-msgs{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
-.ap-ib-msg{display:flex;gap:10px;padding:10px 12px;border-radius:12px}
-.ap-ib-msg.team{background:#F4F7FE}
+.ap-ib-msg{display:flex;gap:10px;padding:10px 12px;border-radius:14px}
+.ap-ib-msg.team{background:#F5F7FC}
+.ap-ib-msg.owner{background:#FFF2F9;border:1px solid #FFD9EE}
+.ap-ib-msg.owner .ap-ib-msg-meta{color:#9C2B68}
 .ap-ib-msg-av{display:grid;place-items:center;flex-shrink:0;width:26px;height:26px;border-radius:50%;background:#FD91CC;color:#041A52;font-size:11px;font-weight:700}
 .ap-ib-msg.team .ap-ib-msg-av{border-radius:8px;background:#09318D;color:#fff}
 .ap-ib-msg-b{flex:1;min-width:0}
@@ -221,13 +230,20 @@
 .ap-ib-msg.flag .ap-ib-msg-chip{background:#FFE4F2;color:#9C2B68}
 .ap-ib-foot{margin:0;font-size:11px;line-height:1.6;color:#93A3C7;overflow-wrap:anywhere}
 
-/* Composer: internal notes only; customer replies are not enabled. */
-.ap-ib-compose{--cx:24px;position:sticky;bottom:14px;z-index:3;margin:4px var(--cx) 14px;padding:8px 8px 8px 10px;border:1px solid #DDE3F0;border-radius:14px;background:#fff;box-shadow:0 -8px 24px -16px rgba(4,26,82,.35);transition:border-color .15s ease,box-shadow .15s ease}
+/* Composer: internal notes, or replies shown in the visitor's widget once the conversation is taken over. */
+.ap-ib-compose{--cx:24px;position:sticky;bottom:14px;z-index:3;margin:4px var(--cx) 14px;padding:8px 8px 8px 12px;border:1px solid #DDE3F0;border-radius:22px;background:#fff;box-shadow:0 -8px 24px -16px rgba(4,26,82,.35);transition:border-color .15s ease,box-shadow .15s ease}
 /* Paints the gap under the floating composer so scrolled content never shows through it. */
 .ap-ib-compose::after{content:'';position:absolute;left:calc(-1px - var(--cx));right:calc(-1px - var(--cx));top:100%;height:16px;background:#fff}
 .ap-ib-compose:focus-within{border-color:#9DB3EA;box-shadow:0 0 0 3px rgba(9,49,141,.1)}
+.ap-ib-compose.is-reply:focus-within{border-color:#FD91CC;box-shadow:0 0 0 3px rgba(253,145,204,.22)}
+.ap-ib-compose-top{display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px}
+.ap-ib-compose-state{display:inline-flex;align-items:center;gap:5px;margin-left:auto;padding:2px 9px;border-radius:999px;background:#FFE4F2;color:#9C2B68;font-size:11px;font-weight:650}
+.ap-ib-compose-hint{display:flex;justify-content:space-between;gap:10px;margin:2px 2px 2px;font-size:11px;line-height:1.5;color:var(--ib-muted)}
+.ap-ib-compose-hint span{flex-shrink:0;font-variant-numeric:tabular-nums}
+.ap-ib-compose-lock{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;margin:6px 0 2px}
+.ap-ib-compose-lock p{flex:1;min-width:160px;margin:0;font-size:12.5px;color:var(--ib-body)}
 .ap-ib-tabs{display:flex;gap:4px}
-.ap-ib .ap-ib-tabs button{--bc:transparent;display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border:0;border-radius:6px;background:transparent;font:inherit;font-size:12px;font-weight:600;color:var(--ib-body)}
+.ap-ib .ap-ib-tabs button{--bc:transparent;display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border:0;border-radius:999px;background:transparent;font:inherit;font-size:12px;font-weight:600;color:var(--ib-body);cursor:pointer;transition:background-color .15s ease,color .15s ease}
 .ap-ib .ap-ib-tabs button[aria-selected=true]{background:#EEF2FA;color:#041A52}
 .ap-ib .ap-ib-tabs button:disabled{opacity:1;color:#A6B2CF}
 .ap-ib-compose-row{display:flex;align-items:flex-end;gap:8px;margin-top:4px}
@@ -237,12 +253,73 @@
 .ap-ib .ap-ib-send:not(:disabled):hover{background:#0E2E74}
 .ap-ib .ap-ib-send:not(:disabled):active{transform:scale(.94)}
 .ap-ib .ap-ib-send:disabled{opacity:.3}
+.ap-ib .ap-ib-send.pink{--bc:#041A52;background:#FD91CC;color:#041A52;border-radius:999px}
+.ap-ib .ap-ib-send.pink:not(:disabled):hover{background:#FBA6D6}
 
 /* No ticket selected */
 .ap-ib-pick{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:var(--ib-h);padding:40px;text-align:center}
-.ap-ib-pick-ic{display:grid;place-items:center;width:48px;height:48px;margin-bottom:6px;border-radius:14px;background:#EEF2FA;color:#09318D}
 .ap-ib-pick h2{margin:0;font-size:16px;font-weight:650;color:var(--ib-ink)}
-.ap-ib-pick p{max-width:300px;margin:0 0 8px;font-size:13px;line-height:1.55;color:var(--ib-muted)}
+.ap-ib-pick p{max-width:320px;margin:0 0 8px;font-size:13px;line-height:1.55;color:var(--ib-muted)}
+
+/* Rail actions: compact pills, plus Support and Settings at the bottom. */
+.ap-ib-pills{display:flex;align-items:center;gap:6px;margin:14px 0 0}
+.ap-ib .ap-ib-pillbtn{--bc:#E2E7F2;--bch:#C2D1F2;display:inline-flex;align-items:center;justify-content:center;gap:5px;height:30px;padding:0 11px;border:1px solid var(--bc);border-radius:999px;background:#fff;color:#33406B;font:inherit;font-size:12px;font-weight:600;line-height:1;text-decoration:none;white-space:nowrap;cursor:pointer;transition:background-color .15s ease,border-color .15s ease,color .15s ease,transform .12s var(--ib-ease)}
+.ap-ib .ap-ib-pillbtn.on{--bc:#C9D6F5;background:#EEF2FA;color:#09318D}
+.ap-ib .ap-ib-pillbtn.primary{--bc:#041A52;--bch:#041A52;width:30px;margin-left:auto;padding:0;background:#041A52;color:#fff}
+.ap-ib .ap-ib-pillbtn:active{transform:scale(.96)}
+.ap-ib-pillbtn-n{min-width:16px;padding:1px 5px;border-radius:999px;background:#FD91CC;color:#041A52;font-size:10px;font-weight:700}
+@media(hover:hover) and (pointer:fine){
+.ap-ib .ap-ib-pillbtn:not(.primary):hover{background:#F1F4FA;color:#041A52}
+.ap-ib .ap-ib-pillbtn.primary:hover{background:#0E2E74}
+.ap-ib .ap-ib-rail-foot a:hover{background:#EEF1F7;color:#041A52}
+.ap-ib .ap-ib-menu :is(button,a):hover{background:#F3F5FA}
+.ap-ib .ap-ib-tabs button:not([aria-selected=true]):hover{background:#F3F5FA;color:var(--ib-ink)}
+}
+/* Wide layout: the search field opens from the Search pill (always shown in the compact layouts below). */
+.ap-ib-rail>.ap-ib-search:not(.is-open){display:none}
+.ap-ib-rail>.ap-ib-search{margin-top:10px}
+.ap-ib-rail-foot{display:flex;flex-direction:column;gap:2px;margin-top:auto;padding-top:14px;border-top:1px solid var(--ib-line)}
+.ap-ib .ap-ib-rail-foot a{display:flex;align-items:center;gap:9px;padding:7px 9px;border-radius:9px;font-size:13px;font-weight:500;color:#33406B;text-decoration:none;transition:background-color .15s ease,color .15s ease}
+.ap-ib .ap-ib-rail-foot a svg{color:#93A3C7}
+.ap-ib-rail-views{margin-bottom:12px}
+
+/* Avatars: our own mascots. The AI sits on a soft disc; owner and visitor use ProfileMark tones. */
+.ap-ib-pav{display:inline-grid;place-items:center;flex-shrink:0;border-radius:50%;line-height:0}
+.ap-ib-pav svg{display:block;width:100%;height:100%}
+.ap-ib-pav.is-ai{background:#EEF2FA;box-shadow:inset 0 0 0 1px #DCE4F5}
+.ap-ib-item-b>.ap-ib-pav{margin-top:1px}
+
+/* Conversation header chip: who is in the chat and whether the AI is answering. */
+.ap-ib-people{display:inline-flex;align-items:center;gap:9px;min-width:0;padding:4px 12px 4px 5px;border:1px solid #E6EAF3;border-radius:999px;background:#F7F8FB}
+.ap-ib-people-av{display:flex;flex-shrink:0}
+.ap-ib-people-av>*{position:relative;border-radius:50%;box-shadow:0 0 0 2px #F7F8FB}
+.ap-ib-people-av>*+*{margin-left:-7px}
+.ap-ib-people-ai{display:inline-grid;transition:opacity .2s ease}
+.ap-ib-people-ai.off{opacity:.55}
+.ap-ib-people-ai.off::after{content:'';position:absolute;right:-1px;bottom:-1px;width:9px;height:9px;border-radius:50%;background:#FD91CC;box-shadow:0 0 0 2px #F7F8FB}
+.ap-ib-people-t{display:flex;flex-direction:column;min-width:0;line-height:1.25}
+.ap-ib-people-t b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;font-weight:650;color:var(--ib-ink)}
+.ap-ib-people-t small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;color:var(--ib-muted)}
+.ap-ib-people.paused{border-color:#FFD0E8;background:#FFF5FA}
+.ap-ib-people.paused .ap-ib-people-av>*{box-shadow:0 0 0 2px #FFF5FA}
+.ap-ib-people.paused .ap-ib-people-t small{color:#9C2B68;font-weight:600}
+
+/* More actions menu */
+.ap-ib-more{position:relative;display:inline-flex}
+.ap-ib-menu{position:absolute;right:0;top:calc(100% + 6px);z-index:6;display:flex;flex-direction:column;min-width:228px;padding:6px;border:1px solid #E2E7F2;border-radius:16px;background:#fff;box-shadow:0 18px 40px -18px rgba(4,26,82,.4);transform-origin:top right;animation:ap-ib-pop .16s var(--ib-ease) both}
+.ap-ib .ap-ib-menu :is(button,a){--bc:transparent;--bch:transparent;display:flex;align-items:center;gap:9px;width:100%;padding:8px 10px;border:0;border-radius:10px;background:transparent;font:inherit;font-size:12.5px;font-weight:550;color:var(--ib-ink);text-align:left;text-decoration:none;cursor:pointer;transition:background-color .12s ease}
+.ap-ib-menu svg{flex-shrink:0;color:#09318D}
+@keyframes ap-ib-pop{from{opacity:0;transform:scale(.97) translateY(-4px)}to{opacity:1;transform:none}}
+
+/* Empty conversation: the mascot cluster gathers in with a short stagger. */
+.ap-ib-cluster{display:flex;align-items:flex-end;margin-bottom:12px}
+.ap-ib-cluster>span{display:inline-grid;line-height:0;border-radius:50%;animation:ap-ib-gather .5s var(--ib-ease) both}
+.ap-ib-cluster-a{margin-right:-10px;transform:translateY(-6px)}
+.ap-ib-cluster>.ap-ib-cluster-a{animation-delay:.08s}
+.ap-ib-cluster-b{position:relative;z-index:1;padding:6px;background:#EEF2FA;box-shadow:0 0 0 4px #fff}
+.ap-ib-cluster-c{margin-left:-10px;transform:translateY(-6px)}
+.ap-ib-cluster>.ap-ib-cluster-c{animation-delay:.16s}
+@keyframes ap-ib-gather{from{opacity:0;translate:0 8px;scale:.94}to{opacity:1;translate:0 0;scale:1}}
 
 /* Action feedback */
 .ap-ib-toast{position:fixed;right:20px;bottom:20px;z-index:70;pointer-events:none}
@@ -252,9 +329,9 @@
 @keyframes ap-ib-toast{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}
 
 @media(prefers-reduced-motion:reduce){
-.ap-ib-skel i,.is-run .ap-ib-chk-ic,.ap-ib-spin{animation:none}
+.ap-ib-skel i,.is-run .ap-ib-chk-ic,.ap-ib-spin,.ap-ib-cluster>span,.ap-ib-menu{animation:none}
 .ap-ib-toast span{animation:ap-ib-fade .2s ease both}
-.ap-ib .ap-ib-btn:active,.ap-ib .ap-ib-icon:active,.ap-ib .ap-ib-send:active{transform:none}
+.ap-ib .ap-ib-btn:active,.ap-ib .ap-ib-icon:active,.ap-ib .ap-ib-send:active,.ap-ib .ap-ib-pillbtn:active{transform:none}
 }
 @keyframes ap-ib-fade{from{opacity:0}to{opacity:1}}
 
@@ -262,9 +339,10 @@
 @media(max-width:1339px){
 .ap-ib{grid-template-columns:340px minmax(0,1fr)}
 .ap-ib-left{display:flex;flex-direction:column;position:sticky;top:var(--ib-top);height:var(--ib-h);min-width:0;border-right:1px solid var(--ib-line)}
-.ap-ib-rail{position:static;height:auto;overflow:visible;padding:14px 14px 0 20px;background:#fff;border-right:0}
-.ap-ib-rail-head,.ap-ib-rail-k{display:none}
+.ap-ib-rail{position:static;display:block;height:auto;overflow:visible;padding:14px 14px 0 20px;background:#fff;border-right:0}
+.ap-ib-rail-head,.ap-ib-rail-k,.ap-ib-pills,.ap-ib-rail-foot{display:none}
 .ap-ib .ap-ib-search{margin:0}
+.ap-ib-rail>.ap-ib-search:not(.is-open){display:flex}
 .ap-ib-rail-views{display:flex;gap:6px;margin:10px -14px 0 0;padding:0 28px 2px 0;overflow-x:auto;scrollbar-width:none;mask-image:linear-gradient(to right,#000 calc(100% - 36px),transparent)}
 .ap-ib-rail-views::-webkit-scrollbar{display:none}
 .ap-ib-rail-group{display:contents}
@@ -298,7 +376,8 @@
 .ap-ib-rail{padding:12px 16px 0}
 .ap-ib-lhead{padding:14px 12px 10px 16px}
 .ap-ib-week{padding:2px 16px 14px}
-.ap-ib .ap-ib-item-b{padding:12px 14px 12px 26px}
+.ap-ib .ap-ib-item-b{padding:12px 10px 12px 22px}
+.ap-ib-people-t small{display:none}
 .ap-ib-filters{grid-template-columns:1fr;padding:0 12px 12px 16px}
 .ap-ib-dhead-r{width:100%;margin-left:0}
 .ap-ib-dhead-r .ap-ib-btn{flex:1}
@@ -319,11 +398,15 @@
 .ap-ib .ap-ib-btn.sm{min-height:40px}
 .ap-ib .ap-ib-textbtn{padding:8px 4px}
 .ap-ib-check{left:8px;top:12px;width:24px;height:24px}
-.ap-ib .ap-ib-item-b{padding-left:44px}
+.ap-ib .ap-ib-item-b{padding-left:40px}
+.ap-ib .ap-ib-pillbtn{min-height:44px;min-width:44px}
+.ap-ib .ap-ib-menu :is(button,a),.ap-ib .ap-ib-rail-foot a{min-height:44px}
+.ap-ib .ap-ib-tabs button{min-height:40px}
 .ap-ib-bulkbar{min-height:48px}
 .ap-ib-checkrow{min-height:44px}
 .ap-ib-checkrow input{width:24px;height:24px}
 .ap-ib-dhead .ap-ib-icon{width:44px;height:44px}
+.ap-ib-items{padding:6px 6px}
 .ap-ib-matrix summary{display:flex;align-items:center;min-height:44px}
 }
 

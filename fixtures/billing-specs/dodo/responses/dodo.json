@@ -1,0 +1,491 @@
+[
+ {
+  "name": "payment-A1",
+  "method": "GET",
+  "path": "/payments/pay_AAAA1111aaaa",
+  "status": 200,
+  "body": {
+   "payment_id": "pay_AAAA1111aaaa",
+   "business_id": "bus_fictional",
+   "total_amount": 4900,
+   "currency": "USD",
+   "is_update_payment_method": false,
+   "created_at": "2026-10-02T10:00:00Z",
+   "disputes": [],
+   "refunds": [],
+   "customer": {
+    "customer_id": "cus_AAAA1111aaaa",
+    "name": "Alex Payer",
+    "email": "alex.payer@example.test"
+   },
+   "is_multi_subscription": false,
+   "subscription_ids": [],
+   "includes_usage": false,
+   "service_periods": [],
+   "metadata": {},
+   "settlement_amount": 4900,
+   "settlement_currency": "USD",
+   "billing": {
+    "country": "AF"
+   },
+   "brand_id": "bus_fictional",
+   "digital_products_delivered": false,
+   "retry_attempt": 0,
+   "payment_provider": "stripe",
+   "status": "succeeded",
+   "invoice_url": "https://test.dodopayments.com/invoices/payments/pay_AAAA1111aaaa"
+  }
+ },
+ {
+  "name": "payment-B1",
+  "method": "GET",
+  "path": "/payments/pay_BBBB2222bbbb",
+  "status": 200,
+  "body": {
+   "payment_id": "pay_BBBB2222bbbb",
+   "business_id": "bus_fictional",
+   "total_amount": 2900,
+   "currency": "USD",
+   "is_update_payment_method": false,
+   "created_at": "2026-10-02T10:00:00Z",
+   "disputes": [],
+   "refunds": [],
+   "customer": {
+    "customer_id": "cus_BBBB2222bbbb",
+    "name": "Blair Payer",
+    "email": "blair.payer@example.test"
+   },
+   "is_multi_subscription": false,
+   "subscription_ids": [],
+   "includes_usage": false,
+   "service_periods": [],
+   "metadata": {},
+   "settlement_amount": 2900,
+   "settlement_currency": "USD",
+   "billing": {
+    "country": "AF"
+   },
+   "brand_id": "bus_fictional",
+   "digital_products_delivered": false,
+   "retry_attempt": 0,
+   "payment_provider": "stripe",
+   "status": "succeeded"
+  }
+ },
+ {
+  "name": "payments-connect-check",
+  "method": "GET",
+  "path": "/payments",
+  "query": {
+   "page_size": "1"
+  },
+  "status": 200,
+  "body": {
+   "items": [
+    {
+     "payment_id": "pay_AAAA1111aaaa",
+     "total_amount": 4900,
+     "currency": "USD",
+     "customer": {
+      "customer_id": "cus_AAAA1111aaaa",
+      "name": "Alex Payer",
+      "email": "alex.payer@example.test"
+     },
+     "created_at": "2026-10-02T10:00:00Z",
+     "is_multi_subscription": false,
+     "subscription_ids": [],
+     "includes_usage": false,
+     "service_periods": [],
+     "brand_id": "bus_fictional",
+     "digital_products_delivered": false,
+     "has_license_key": false,
+     "metadata": {},
+     "payment_provider": "stripe",
+     "retry_attempt": 0,
+     "business_id": "bus_fictional",
+     "settlement_currency": "USD",
+     "status": "succeeded",
+     "invoice_url": "https://test.dodopayments.com/invoices/payments/pay_AAAA1111aaaa"
+    }
+   ]
+  }
+ },
+ {
+  "name": "payments-customer-A",
+  "method": "GET",
+  "path": "/payments",
+  "query": {
+   "customer_id": "cus_AAAA1111aaaa",
+   "page_size": "20"
+  },
+  "status": 200,
+  "body": {
+   "items": [
+    {
+     "payment_id": "pay_AAAA1111aaaa",
+     "total_amount": 4900,
+     "currency": "USD",
+     "customer": {
+      "customer_id": "cus_AAAA1111aaaa",
+      "name": "Alex Payer",
+      "email": "alex.payer@example.test"
+     },
+     "created_at": "2026-10-02T10:00:00Z",
+     "is_multi_subscription": false,
+     "subscription_ids": [],
+     "includes_usage": false,
+     "service_periods": [],
+     "brand_id": "bus_fictional",
+     "digital_products_delivered": false,
+     "has_license_key": false,
+     "metadata": {},
+     "payment_provider": "stripe",
+     "retry_attempt": 0,
+     "business_id": "bus_fictional",
+     "settlement_currency": "USD",
+     "status": "succeeded",
+     "invoice_url": "https://test.dodopayments.com/invoices/payments/pay_AAAA1111aaaa"
+    },
+    {
+     "payment_id": "pay_AAAA1112aaaa",
+     "total_amount": 1900,
+     "currency": "USD",
+     "customer": {
+      "customer_id": "cus_AAAA1111aaaa",
+      "name": "Alex Payer",
+      "email": "alex.payer@example.test"
+     },
+     "created_at": "2026-10-20T10:00:00Z",
+     "is_multi_subscription": false,
+     "subscription_ids": [],
+     "includes_usage": false,
+     "service_periods": [],
+     "brand_id": "bus_fictional",
+     "digital_products_delivered": false,
+     "has_license_key": false,
+     "metadata": {},
+     "payment_provider": "stripe",
+     "retry_attempt": 1,
+     "business_id": "bus_fictional",
+     "settlement_currency": "USD",
+     "status": "failed",
+     "subscription_id": "sub_AAAA1111aaaa"
+    }
+   ]
+  }
+ },
+ {
+  "name": "payments-customer-A-mixed",
+  "method": "GET",
+  "path": "/payments",
+  "query": {
+   "customer_id": "cus_AAAA1111aaaa",
+   "page_size": "20"
+  },
+  "status": 200,
+  "body": {
+   "items": [
+    {
+     "payment_id": "pay_AAAA1111aaaa",
+     "total_amount": 4900,
+     "currency": "USD",
+     "customer": {
+      "customer_id": "cus_AAAA1111aaaa",
+      "name": "Alex Payer",
+      "email": "alex.payer@example.test"
+     },
+     "created_at": "2026-10-02T10:00:00Z",
+     "is_multi_subscription": false,
+     "subscription_ids": [],
+     "includes_usage": false,
+     "service_periods": [],
+     "brand_id": "bus_fictional",
+     "digital_products_delivered": false,
+     "has_license_key": false,
+     "metadata": {},
+     "payment_provider": "stripe",
+     "retry_attempt": 0,
+     "business_id": "bus_fictional",
+     "settlement_currency": "USD",
+     "status": "succeeded",
+     "invoice_url": "https://test.dodopayments.com/invoices/payments/pay_AAAA1111aaaa"
+    },
+    {
+     "payment_id": "pay_AAAA1112aaaa",
+     "total_amount": 1900,
+     "currency": "USD",
+     "customer": {
+      "customer_id": "cus_AAAA1111aaaa",
+      "name": "Alex Payer",
+      "email": "alex.payer@example.test"
+     },
+     "created_at": "2026-10-20T10:00:00Z",
+     "is_multi_subscription": false,
+     "subscription_ids": [],
+     "includes_usage": false,
+     "service_periods": [],
+     "brand_id": "bus_fictional",
+     "digital_products_delivered": false,
+     "has_license_key": false,
+     "metadata": {},
+     "payment_provider": "stripe",
+     "retry_attempt": 1,
+     "business_id": "bus_fictional",
+     "settlement_currency": "USD",
+     "status": "failed",
+     "subscription_id": "sub_AAAA1111aaaa"
+    },
+    {
+     "payment_id": "pay_BBBB2222bbbb",
+     "total_amount": 2900,
+     "currency": "USD",
+     "customer": {
+      "customer_id": "cus_BBBB2222bbbb",
+      "name": "Blair Payer",
+      "email": "blair.payer@example.test"
+     },
+     "created_at": "2026-10-02T10:00:00Z",
+     "is_multi_subscription": false,
+     "subscription_ids": [],
+     "includes_usage": false,
+     "service_periods": [],
+     "brand_id": "bus_fictional",
+     "digital_products_delivered": false,
+     "has_license_key": false,
+     "metadata": {},
+     "payment_provider": "stripe",
+     "retry_attempt": 0,
+     "business_id": "bus_fictional",
+     "settlement_currency": "USD",
+     "status": "succeeded"
+    }
+   ]
+  },
+  "modes": [
+   "mixed_customers"
+  ]
+ },
+ {
+  "name": "payments-customer-B",
+  "method": "GET",
+  "path": "/payments",
+  "query": {
+   "customer_id": "cus_BBBB2222bbbb",
+   "page_size": "20"
+  },
+  "status": 200,
+  "body": {
+   "items": [
+    {
+     "payment_id": "pay_BBBB2222bbbb",
+     "total_amount": 2900,
+     "currency": "USD",
+     "customer": {
+      "customer_id": "cus_BBBB2222bbbb",
+      "name": "Blair Payer",
+      "email": "blair.payer@example.test"
+     },
+     "created_at": "2026-10-02T10:00:00Z",
+     "is_multi_subscription": false,
+     "subscription_ids": [],
+     "includes_usage": false,
+     "service_periods": [],
+     "brand_id": "bus_fictional",
+     "digital_products_delivered": false,
+     "has_license_key": false,
+     "metadata": {},
+     "payment_provider": "stripe",
+     "retry_attempt": 0,
+     "business_id": "bus_fictional",
+     "settlement_currency": "USD",
+     "status": "succeeded"
+    }
+   ]
+  }
+ },
+ {
+  "name": "retry-A2",
+  "method": "GET",
+  "path": "/payments/pay_AAAA1112aaaa/retry",
+  "status": 200,
+  "body": {
+   "can_retry": false,
+   "sends_used": 0,
+   "sends_allowed": 3,
+   "automatic_retry_number": 1,
+   "automatic_retry_total": 4,
+   "next_automatic_retry_at": "2026-10-23T10:00:00Z",
+   "reason": "insufficient funds"
+  }
+ },
+ {
+  "name": "subscription-A",
+  "method": "GET",
+  "path": "/subscriptions/sub_AAAA1111aaaa",
+  "status": 200,
+  "body": {
+   "subscription_id": "sub_AAAA1111aaaa",
+   "recurring_pre_tax_amount": 1900,
+   "tax_inclusive": false,
+   "currency": "USD",
+   "status": "on_hold",
+   "created_at": "2026-06-01T00:00:00Z",
+   "product_id": "pdt_fictional",
+   "quantity": 1,
+   "trial_period_days": 0,
+   "subscription_period_interval": "Day",
+   "payment_frequency_interval": "Day",
+   "subscription_period_count": 0,
+   "payment_frequency_count": 0,
+   "next_billing_date": "2026-11-20T10:00:00Z",
+   "previous_billing_date": "2026-10-20T10:00:00Z",
+   "customer": {
+    "customer_id": "cus_AAAA1111aaaa",
+    "name": "Alex Payer",
+    "email": "alex.payer@example.test"
+   },
+   "metadata": {},
+   "cancel_at_next_billing_date": false,
+   "billing": {
+    "country": "AF"
+   },
+   "on_demand": false,
+   "addons": [],
+   "meters": [],
+   "has_payment_method": false,
+   "credit_entitlement_cart": [],
+   "meter_credit_entitlement_cart": [],
+   "brand_id": "bus_fictional"
+  }
+ },
+ {
+  "name": "subscriptions-customer-A",
+  "method": "GET",
+  "path": "/subscriptions",
+  "query": {
+   "customer_id": "cus_AAAA1111aaaa",
+   "page_size": "20"
+  },
+  "status": 200,
+  "body": {
+   "items": [
+    {
+     "subscription_id": "sub_AAAA1111aaaa",
+     "recurring_pre_tax_amount": 1900,
+     "tax_inclusive": false,
+     "currency": "USD",
+     "status": "on_hold",
+     "created_at": "2026-06-01T00:00:00Z",
+     "product_id": "pdt_fictional",
+     "quantity": 1,
+     "trial_period_days": 0,
+     "subscription_period_interval": "Day",
+     "payment_frequency_interval": "Day",
+     "subscription_period_count": 0,
+     "payment_frequency_count": 0,
+     "next_billing_date": "2026-11-20T10:00:00Z",
+     "previous_billing_date": "2026-10-20T10:00:00Z",
+     "customer": {
+      "customer_id": "cus_AAAA1111aaaa",
+      "name": "Alex Payer",
+      "email": "alex.payer@example.test"
+     },
+     "metadata": {},
+     "discounts": [],
+     "cancel_at_next_billing_date": false,
+     "billing": {
+      "country": "AF"
+     },
+     "on_demand": false,
+     "has_payment_method": false,
+     "brand_id": "bus_fictional"
+    }
+   ]
+  }
+ },
+ {
+  "name": "refunds-customer-A",
+  "method": "GET",
+  "path": "/refunds",
+  "query": {
+   "customer_id": "cus_AAAA1111aaaa",
+   "page_size": "20"
+  },
+  "status": 200,
+  "body": {
+   "items": [
+    {
+     "refund_id": "ref_AAAA1111aaaa",
+     "payment_id": "pay_AAAA1111aaaa",
+     "business_id": "bus_fictional",
+     "status": "succeeded",
+     "created_at": "2026-10-05T09:00:00Z",
+     "is_partial": true,
+     "currency": "USD",
+     "amount": 1000
+    }
+   ]
+  }
+ },
+ {
+  "name": "refunds-customer-A-mixed",
+  "method": "GET",
+  "path": "/refunds",
+  "query": {
+   "customer_id": "cus_AAAA1111aaaa",
+   "page_size": "20"
+  },
+  "status": 200,
+  "body": {
+   "items": [
+    {
+     "refund_id": "ref_AAAA1111aaaa",
+     "payment_id": "pay_AAAA1111aaaa",
+     "business_id": "bus_fictional",
+     "status": "succeeded",
+     "created_at": "2026-10-05T09:00:00Z",
+     "is_partial": true,
+     "currency": "USD",
+     "amount": 1000
+    },
+    {
+     "refund_id": "ref_BBBB2222bbbb",
+     "payment_id": "pay_BBBB2222bbbb",
+     "business_id": "bus_fictional",
+     "status": "pending",
+     "created_at": "2026-10-05T09:00:00Z",
+     "is_partial": true,
+     "currency": "USD",
+     "amount": 500
+    }
+   ]
+  },
+  "modes": [
+   "mixed_customers"
+  ]
+ },
+ {
+  "name": "customer-A",
+  "method": "GET",
+  "path": "/customers/cus_AAAA1111aaaa",
+  "status": 200,
+  "body": {
+   "customer_id": "cus_AAAA1111aaaa",
+   "business_id": "bus_fictional",
+   "name": "Alex Payer",
+   "email": "alex.payer@example.test",
+   "created_at": "2026-06-01T00:00:00Z"
+  }
+ },
+ {
+  "name": "not-found",
+  "notFound": true,
+  "method": "GET",
+  "path": "/__not_found__",
+  "status": 404,
+  "body": {
+   "code": "NOT_FOUND",
+   "message": "Resource not found"
+  }
+ }
+]

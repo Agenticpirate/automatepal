@@ -1,0 +1,20 @@
+[
+ {"name":"subscription-A","method":"GET","path":"/v1/billing/subscriptions/I-AAAA1111BBBB","status":200,"body":{
+  "id":"I-AAAA1111BBBB","status":"ACTIVE","plan_id":"P-5ML4271244454362WXNWU5NQ","start_time":"2026-06-01T00:00:00Z","create_time":"2026-06-01T00:00:00Z","update_time":"2026-10-01T00:00:00Z",
+  "subscriber":{"name":{"given_name":"Alex","surname":"Payer"},"email_address":"alex.payer@example.test","payer_id":"ABCDE23456FGH"},
+  "billing_info":{"outstanding_balance":{"currency_code":"USD","value":"19.00"},"failed_payments_count":1,
+   "last_payment":{"amount":{"currency_code":"USD","value":"19.00"},"time":"2026-09-01T00:00:00Z"},
+   "last_failed_payment":{"amount":{"currency_code":"USD","value":"19.00"},"time":"2026-10-01T00:00:00Z","reason_code":"PAYMENT_DENIED","next_payment_retry_time":"2026-10-06T00:00:00Z"},
+   "next_billing_time":"2026-11-01T10:00:00Z"}}},
+ {"name":"subscription-B","method":"GET","path":"/v1/billing/subscriptions/I-BBBB2222CCCC","status":200,"body":{
+  "id":"I-BBBB2222CCCC","status":"ACTIVE","plan_id":"P-5ML4271244454362WXNWU5NQ","start_time":"2026-07-01T00:00:00Z","create_time":"2026-07-01T00:00:00Z",
+  "subscriber":{"email_address":"blair.payer@example.test","payer_id":"JKLMN78923PQR"},
+  "billing_info":{"outstanding_balance":{"currency_code":"USD","value":"0.00"},"failed_payments_count":0,"last_payment":{"amount":{"currency_code":"USD","value":"29.00"},"time":"2026-10-01T00:00:00Z"},"next_billing_time":"2026-11-01T00:00:00Z"}}},
+ {"name":"subscription-A-transactions","method":"GET","path":"/v1/billing/subscriptions/I-AAAA1111BBBB/transactions","status":200,"body":{
+  "total_items":3,"total_pages":1,"transactions":[
+   {"id":"6TX11111AA111111A","status":"COMPLETED","amount_with_breakdown":{"gross_amount":{"currency_code":"USD","value":"19.00"},"net_amount":{"currency_code":"USD","value":"18.15"}},"payer_email":"alex.payer@example.test","time":"2026-09-01T00:00:05Z"},
+   {"id":"6TX11111AA111112A","status":"REFUNDED","amount_with_breakdown":{"gross_amount":{"currency_code":"USD","value":"19.00"}},"payer_email":"alex.payer@example.test","time":"2026-08-01T00:00:05Z"},
+   {"id":"6TX11111AA111113A","status":"DECLINED","amount_with_breakdown":{"gross_amount":{"currency_code":"USD","value":"19.00"}},"payer_email":"alex.payer@example.test","time":"2026-10-01T00:00:05Z"}]}},
+ {"name":"subscription-B-transactions","method":"GET","path":"/v1/billing/subscriptions/I-BBBB2222CCCC/transactions","status":200,"body":{
+  "total_items":1,"total_pages":1,"transactions":[{"id":"6TX22222BB222222B","status":"COMPLETED","amount_with_breakdown":{"gross_amount":{"currency_code":"USD","value":"29.00"}},"payer_email":"blair.payer@example.test","time":"2026-10-01T00:00:05Z"}]}}
+]

@@ -3,7 +3,10 @@ import Link from 'next/link';import Image from 'next/image';import {useEffect,us
 import AnswerPipeline from './components/home/AnswerPipeline';
 import BotDemo from './components/home/BotDemo';
 import AddOns from './components/home/AddOns';
+import FolderWordmark from './components/home/FolderWordmark';
 import {PlatformGlyph,CheckMark,ClockMark,VerifiedMark,type PlatformIcon} from './components/home/PlatformIcons';
+import {ProfileMark} from './components/home/BotMark';
+import {PROVIDER_LABELS,providerSentence,capabilityExceptions} from './components/home/billing-providers';
 import {SITE_URL,CONTACT_EMAIL,REPO_URL,COPYRIGHT_HOLDER} from '../lib/site';
 import './preview/video/video.css';
 import './home.css';
@@ -36,6 +39,8 @@ const PATHS: Record<string, React.ReactNode> = {
   history: (<><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></>),
   gauge: (<><path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/></>),
   check: (<><path d="M20 6 9 17l-5-5"/></>),
+  lock: (<><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></>),
+  creditcard: (<><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></>),
 };
 function Icon({ name, size = 16, strokeWidth = 2 }: { name: keyof typeof PATHS; size?: number; strokeWidth?: number }) {
   return (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{PATHS[name]}</svg>);
@@ -54,7 +59,7 @@ const VP_NAV: { label: string; href: string; icon: keyof typeof PATHS; active?: 
   { label: 'Pricing', href: '/pricing', icon: 'tag' },
 ];
 /* Capability strip: every item is a shipped preview feature (see FEATURES.md). */
-const CAPABILITIES = ['Exact source quotes','Independent grounding check','Impact × urgency priority','Human takeover','Effective-dated owner exceptions','Exact custom answers','PDF, Markdown and URL import','Consent-gated publishing','Origin and path rules','Signed webhooks','Scoped, expiring API tokens','Row-level tenant isolation','Unanswered-question CSV','Tested in English, Hindi and Telugu'];
+const CAPABILITIES = ['Exact source quotes','Independent grounding check','Read-only billing lookups','Verified customers only','Impact × urgency priority','Human takeover','Owner replies in the widget','Working hours and away message','Effective-dated owner exceptions','Exact custom answers','PDF, Markdown and URL import','Consent-gated publishing','Origin and path rules','MCP server','Signed webhooks','Scoped, expiring API tokens','Row-level tenant isolation','Unanswered-question CSV','Tested in English, Hindi and Telugu'];
 type Feature = { icon: PlatformIcon; title: string; body: string; wide?: boolean; visual: React.ReactNode };
 const FEATURES: Feature[] = [
   { icon: 'quote', wide: true, title: 'Answers your customers can check', body: 'Every reply comes with the exact passage it was built from, so customers and your team can see where it came from. A separate grounding check has to agree before anything is sent.',
@@ -73,6 +78,14 @@ const FEATURES: Feature[] = [
     visual: <div className="hm-v-bars" aria-label="Illustrative unanswered questions"><span style={{'--w':'86%'} as React.CSSProperties}>Shipping to Canada</span><span style={{'--w':'62%'} as React.CSSProperties}>Team discounts</span><span style={{'--w':'38%'} as React.CSSProperties}>Invoice copies</span><em>Illustrative</em></div> },
   { icon: 'code', title: 'Fits into your stack', body: 'Read-only API tokens that are scoped, expiring and revocable, plus webhooks signed with HMAC-SHA256.',
     visual: <pre className="hm-v-code" aria-label="Example token and webhook settings"><span className="hm-v-ln"><span>token</span>  ••••••  <i>support</i> <i>24h</i></span><span className="hm-v-ln"><span>webhook</span> HMAC-SHA256(ts + body)</span></pre> },
+  { icon: 'card', wide: true, title: 'Billing answers from your payment provider', body: `Order and charge status, payment history, failed payments and retries, invoices, renewal dates and refund status from ${providerSentence()}, where the provider supports the lookup. ${capabilityExceptions()} The customer verifies an order or invoice number and the email they paid with first, and only sees their own records. Read-only in test or live mode; refunds go to your review and nothing executes.`,
+    visual: <div className="hm-v-bill"><div className="hm-v-bill-card"><div className="hm-v-bill-head"><b>PayPal · Test mode</b><span><VerifiedMark/>Verified for this chat</span></div><p><span>Invoice ND-48213</span><b>Paid · USD 49.00</b></p><p><span>Refund request</span><b data-tone="review">Owner review · nothing executes</b></p></div><ul className="hm-v-provs" aria-label="Payment providers with a built, tested adapter">{PROVIDER_LABELS.map(p=><li key={p}>{p}</li>)}</ul></div> },
+  { icon: 'reply', title: 'Reply inside the widget', body: 'Take over a conversation and reply from Tickets. The visitor sees your message live in the widget and can answer back. Nothing is emailed, and messages are deleted with the conversation.',
+    visual: <div className="hm-v-thread" aria-hidden="true"><span className="hm-v-paused">Taken over · AI paused</span><p className="hm-v-owner"><ProfileMark size={22} tone="owner"/><span>Hi, it’s Sam. Your order ships tomorrow.</span></p><p className="hm-v-visitor"><span>Perfect, thank you!</span></p><em>Widget only · nothing emailed</em></div> },
+  { icon: 'clock', title: 'Working hours and away message', body: 'Set your time zone and opening hours. Visitors choose the AI or a person; outside your hours they see your away message and their request is saved for the team.',
+    visual: <div className="hm-v-hours" aria-hidden="true"><div className="hm-v-week">{['M','T','W','T','F','S','S'].map((d,i)=><span key={i} data-off={i>4||undefined}>{d}</span>)}</div><p className="hm-v-away">We’re away right now. Your request is saved for the team.</p><div className="hm-v-choice"><span>Ask the AI</span><span>Talk to a person</span></div></div> },
+  { icon: 'plug', wide: true, title: 'Connect AI assistants over MCP', body: 'Point an MCP client at /mcp with a scoped, expiring AutomatePal token. Five read tools cover knowledge sources, unanswered questions, tickets, overview counts and billing status. Opt-in tools, each with its own scope, propose a text source that stays unpublished until you approve it, ask the bot a test question, reply in a conversation you already took over, or change working hours and the away message. No code execution, no takeover and no email.',
+    visual: <pre className="hm-v-code hm-v-mcp" aria-label="Example MCP tool calls"><span className="hm-v-ln"><span>POST</span> /mcp  <i>Streamable HTTP</i> <i>Bearer ap_ro_••••</i></span><span className="hm-v-ln"><span>list_tickets</span>               <i>readOnlyHint</i></span><span className="hm-v-ln"><span>add_text_knowledge_source</span>  <i>stays unpublished</i></span></pre> },
 ];
 const TRUST: { icon: keyof typeof PATHS; title: string; body: string }[] = [
   { icon: 'database', title: 'Tenant isolation', body: 'Postgres row-level security separates every workspace. Tests deny cross-tenant reads, forged writes and foreign RPC calls.' },
@@ -81,6 +94,9 @@ const TRUST: { icon: keyof typeof PATHS; title: string; body: string }[] = [
   { icon: 'history', title: 'Metadata-only audit', body: 'Owner actions are recorded as metadata. Message bodies and source text stay out of logs.' },
   { icon: 'gauge', title: 'Abuse budgets', body: 'Per-conversation and daily answer budgets are enforced before any model call, and refusals count.' },
   { icon: 'shieldcheck', title: 'Consent and deletion', body: 'Knowledge needs explicit processing and publishing consent. Owners can delete their workspace data themselves.' },
+  { icon: 'lock', title: 'Encrypted, rotatable provider keys', body: 'Payment provider credentials are encrypted with AES-256-GCM under a server keyring you can rotate. They are never sent back to the browser or written to logs.' },
+  { icon: 'ban', title: 'Read-only by design: write calls are blocked in code', body: 'Every provider request is checked against a fixed list of read endpoints, plus PayPal’s token sign-in, before it leaves the server. Anything else is refused, and tests confirm no request is sent.' },
+  { icon: 'creditcard', title: 'No money movement', body: 'The bot cannot charge, capture or refund. Refund requests become review items; you record approve or decline, and nothing executes.' },
 ];
 const COMPARE:[string,string][]=[
   ['Generic bots make up an answer when your content is silent.','Every answer shows its source, or it doesn’t go out.'],
@@ -92,7 +108,12 @@ const COMPARE:[string,string][]=[
 const FAQ:[string,string][]=[
   ['How is this different from a regular AI chatbot?','A regular chatbot answers whether or not your content backs it up. AutomatePal attaches the exact passage it used, and a separate check has to agree before the reply is sent. When nothing in your sources supports an answer, the question goes to your review queue instead of becoming a guess.'],
   ['What happens when it doesn’t know the answer?','Nothing is sent to the customer. The question becomes a review item with the conversation attached, and it shows up in your unanswered list so you only have to add the missing answer once.'],
-  ['Can it handle billing questions?','Yes. It answers order status, invoice and payment-history questions from your billing records after the customer confirms their order, and it explains declines and retries. Refunds always go to a person for a decision; the bot never moves money. Billing lookups are in preview.'],
+  ['Can it handle billing questions?',`Yes. Once you connect a payment provider, it answers order and charge status, payment history, failed payments and retries, invoices, renewal dates and refund status, where the provider supports the lookup. ${capabilityExceptions()} Each answer shows the billing record it came from. Refunds always go to a person for a decision; the bot never moves money. Billing support is in preview.`],
+  ['Which payment providers does it work with?',`${providerSentence()}, each in test or live mode. Every adapter is tested against the provider’s published API contract on a local mock server. Razorpay and Lemon Squeezy are built from their API docs rather than a published spec, and Chargebee’s spec is labelled early access. ${capabilityExceptions()} So far only PayPal has also been checked against a real sandbox account.`],
+  ['Can it issue refunds?','No. The bot never charges, captures or refunds, and no write call to a provider is allowed. A refund request opens a review ticket with the payment attached. You record approve or decline, and nothing executes.'],
+  ['How are customers verified before billing answers?','The customer enters an order, invoice or payment ID and the email they paid with, and both must match the provider’s record. Verification lasts 30 minutes for that chat, every lookup stays inside that customer’s records, and the email is never stored.'],
+  ['Are owner replies emailed?','No. After you take over a conversation, your replies appear live in the widget only and the visitor can answer there. Nothing is emailed. Outside your working hours, visitors see your away message and can leave an email for a follow-up if you allow it.'],
+  ['What does the MCP server expose?','One endpoint, /mcp, over Streamable HTTP, authorized with a scoped, expiring AutomatePal token. Read tools cover knowledge sources, unanswered questions, tickets, overview counts and billing connection status. They return metadata and counts, except the unanswered-questions digest, which includes the visitors’ question text. Write tools each need their own scope: one proposes a text source, which stays unpublished until you approve and publish it; one asks the bot a test question; one replies in the widget, only in a conversation you already took over in Tickets; and one changes the chat mode, working hours, away message, AI-or-person choice and contact field. There are no code-execution, takeover or email tools.'],
   ['Can it handle complicated or multi-part questions?','It works through multi-part questions one piece at a time, follows date-limited exceptions you set, answers in the customer’s language when your sources cover the topic, and ignores instructions written into a message.'],
   ['Which languages does it support?','It replies in the language the customer writes in when your sources cover the answer. We have tested English, Hindi and Telugu so far.'],
   ['Can my whole team use it?','Yes. Invite admins, managers and agents with private links. Each role has its own permissions, enforced in the database, and every change is recorded with who made it.'],
@@ -142,6 +163,30 @@ function spot(e: React.PointerEvent<HTMLElement>) {
   e.currentTarget.style.setProperty('--mx', `${e.clientX - r.left}px`);
   e.currentTarget.style.setProperty('--my', `${e.clientY - r.top}px`);
 }
+/* 07 - Owner's view: the redesigned conversation inbox (Tickets) and the owner overview, both rendered from
+   the real app with fictional demo data. Tabs follow the ARIA tabs pattern (arrow keys move between them). */
+type OwnerTab='inbox'|'overview';
+const OWNER_TABS:{id:OwnerTab;label:string;url:string}[]=[{id:'inbox',label:'Conversation inbox',url:'tickets'},{id:'overview',label:'Owner overview',url:'owner overview'}];
+const OWNER_NOTES=['AI assistant, owner and visitor in one thread','“Taken over · AI paused” stays visible','Replies show in the widget only. Nothing is emailed.'];
+function OwnerView(){
+  const[tab,setTab]=useState<OwnerTab>('inbox');
+  const onKey=(e:React.KeyboardEvent)=>{if(e.key!=='ArrowRight'&&e.key!=='ArrowLeft')return;e.preventDefault();const next:OwnerTab=tab==='inbox'?'overview':'inbox';setTab(next);document.getElementById('ov-tab-'+next)?.focus();};
+  const cur=OWNER_TABS.find(t=>t.id===tab)!;
+  return <section className="ap-product hm-ov" aria-labelledby="owner-view-title">
+    <div className="ap-product-head"><div><p className="hm-kicker">07 / The owner’s view</p><h2 id="owner-view-title" className="hm-h2">See what needs you.<br/>Skip the rest.</h2></div><p>Every conversation in one inbox, with the AI assistant, you and the visitor in one thread. Take over, reply inside the widget and hand back when you’re done. The overview keeps the counts and trends.</p></div>
+    <div className="hm-ov-tabs" role="tablist" aria-label="Owner screens" onKeyDown={onKey}>{OWNER_TABS.map(t=><button key={t.id} id={'ov-tab-'+t.id} type="button" role="tab" aria-selected={tab===t.id} aria-controls={'ov-panel-'+t.id} tabIndex={tab===t.id?0:-1} onClick={()=>setTab(t.id)}>{t.label}</button>)}</div>
+    <div className="hm-clip ap-rv"><div className="ap-product-frame">
+      <div className="ap-product-bar"><span className="ap-chrome-dots" aria-hidden="true"><i/><i/><i/></span><span className="ap-chrome-url">AutomatePal / {cur.url}</span><span className="ap-chrome-tag">Rendered product · fictional test data</span></div>
+      <div id="ov-panel-inbox" role="tabpanel" aria-labelledby="ov-tab-inbox" hidden={tab!=='inbox'} className="ap-product-crop hm-ov-panel hm-ov-inbox">
+        <Image className="hm-ov-wide" src="/product-inbox.png" alt="Actual AutomatePal conversation inbox rendered with fictional test data: the conversation list with avatars and previews, a taken-over conversation whose header names the AI assistant, the owner and the visitor with AI paused, and the reply-in-widget composer." width={1440} height={900}/>
+        <Image className="hm-ov-narrow" src="/product-inbox-mobile.png" alt="Actual AutomatePal conversation inbox on a phone, rendered with fictional test data, showing a taken-over conversation with AI paused and the reply-in-widget composer." width={390} height={844}/>
+      </div>
+      <div id="ov-panel-overview" role="tabpanel" aria-labelledby="ov-tab-overview" hidden={tab!=='overview'} className="ap-product-crop hm-ov-panel"><Image src="/product-owner.png" alt="Actual AutomatePal owner overview rendered with fictional test data, including intervention counts, trends and the needs-intervention list." width={1280} height={2183}/></div>
+    </div></div>
+    <ul className="hm-ov-notes">{OWNER_NOTES.map(n=><li key={n}><Icon name="check" size={13} strokeWidth={3}/>{n}</li>)}</ul>
+    <div className="hm-ov-links"><Link href="/tickets" className="ap-text-link">Open the inbox ↗</Link><Link href="/owner" className="ap-text-link">Open the owner overview ↗</Link></div>
+  </section>;
+}
 export default function Landing(){
   const[open,setOpen]=useState(false);
   const statsRef=useRef<HTMLDivElement>(null);useCountUp(statsRef);
@@ -154,11 +199,11 @@ export default function Landing(){
     <div className="vp-page">
       <header className={open?'vp-header vp-open':'vp-header'}>
         <Link href="/" className="vp-logo" aria-label="AutomatePal home"><Image src="/automatepal-logo.png" alt="" width={104} height={51} priority/></Link>
-        <nav className="vp-nav" aria-label="Primary">{VP_NAV.map(n=>(<Link key={n.label} href={n.href} className={n.active?'vp-active':undefined}><Icon name={n.icon} size={14}/>{n.label}</Link>))}</nav>
+        <nav className="vp-nav" aria-label="Primary">{VP_NAV.map(n=>(<Link key={n.label} href={n.href} className={n.active?'vp-active':undefined} aria-current={n.active?'page':undefined}><Icon name={n.icon} size={14}/>{n.label}</Link>))}</nav>
         <Link href="/login" className="vp-signin"><Icon name="login" size={14}/>Sign in</Link>
         <button className="vp-burger" aria-label="Menu" aria-expanded={open} onClick={()=>setOpen(!open)}><i/><i/><i/></button>
       </header>
-      {open&&(<><div className="vp-overlay" onClick={()=>setOpen(false)}/><nav className="vp-sheet" aria-label="Mobile">{VP_NAV.map((n,i)=>(<Link key={n.label} href={n.href} className={n.active?'vp-active':undefined} style={{animationDelay:`${0.05+i*0.05}s`}} onClick={()=>setOpen(false)}><Icon name={n.icon} size={15}/>{n.label}</Link>))}<Link href="/login" className="vp-sheet-signin" style={{animationDelay:'0.25s'}} onClick={()=>setOpen(false)}><Icon name="login" size={15}/>Sign in</Link></nav></>)}
+      {open&&(<><div className="vp-overlay" onClick={()=>setOpen(false)}/><nav className="vp-sheet" aria-label="Mobile">{VP_NAV.map((n,i)=>(<Link key={n.label} href={n.href} className={n.active?'vp-active':undefined} aria-current={n.active?'page':undefined} style={{animationDelay:`${0.05+i*0.05}s`}} onClick={()=>setOpen(false)}><Icon name={n.icon} size={15}/>{n.label}</Link>))}<Link href="/login" className="vp-sheet-signin" style={{animationDelay:'0.25s'}} onClick={()=>setOpen(false)}><Icon name="login" size={15}/>Sign in</Link></nav></>)}
       <div className="vp-hero">
         <div className="vp-trust vp-anim" style={{'--d':'0.05s'} as React.CSSProperties}>
           <span className="vp-ring"><span role="img" aria-label="Source quotes"><Icon name="quote" size={15} strokeWidth={2.2}/></span></span>
@@ -233,9 +278,9 @@ export default function Landing(){
     <AddOns/>
   </section>
 
-  <section id="workflow" className="ap-flow"><div className="ap-section-label"><span>06 / Go live</span><p>Three steps to your<br/>own support agent.</p></div><div className="ap-flow-steps"><article><span>01</span><div><h3>Bring your sources.</h3><p>Paste text, upload a PDF or Markdown file, or import a public URL. You review everything before it can answer anyone.</p><Link href="/knowledge">Knowledge workspace ↗</Link></div></article><article><span>02</span><div><h3>Shape the answers.</h3><p>Ask it test questions, add exceptions and exact answers, then pick the widget’s colors, starter questions and the sites it can appear on.</p><Link href="/support">Widget studio ↗</Link></div></article><article><span>03</span><div><h3>Go live and stay in charge.</h3><p>Paste one script tag. Work a short queue ranked by impact and urgency, take over any conversation, and record refund decisions.</p><Link href="/tickets">Ticket workspace ↗</Link></div></article></div></section>
+  <section id="workflow" className="ap-flow" aria-labelledby="workflow-title"><div className="ap-section-label"><p className="hm-kicker">06 / Go live</p><h2 id="workflow-title" className="hm-h2">Three steps to your own support agent.</h2></div><div className="ap-flow-steps"><article><span>01</span><div><h3>Bring your sources.</h3><p>Paste text, upload a PDF or Markdown file, or import a public URL. You review everything before it can answer anyone.</p><Link href="/knowledge">Knowledge workspace ↗</Link></div></article><article><span>02</span><div><h3>Shape the answers.</h3><p>Ask it test questions, add exceptions and exact answers, then pick the widget’s colors, starter questions and the sites it can appear on.</p><Link href="/support">Widget studio ↗</Link></div></article><article><span>03</span><div><h3>Go live and stay in charge.</h3><p>Paste one script tag. Work a short queue ranked by impact and urgency, take over any conversation and reply in the widget, and record refund decisions.</p><Link href="/tickets">Ticket workspace ↗</Link></div></article></div></section>
 
-  <section className="ap-product"><div className="ap-product-head"><div><p className="ap-kicker">07 / The owner’s view</p><h2>See what needs you.<br/>Skip the rest.</h2></div><p>Your queue, unanswered questions and handoffs on one calm screen. Anything that needs a person is at the top, and the full record is one click away.</p></div><div className="hm-clip ap-rv"><div className="ap-product-frame"><div className="ap-product-bar"><span className="ap-chrome-dots" aria-hidden="true"><i/><i/><i/></span><span className="ap-chrome-url">AutomatePal / owner overview</span><span className="ap-chrome-tag">Rendered product · fictional test data</span></div><div className="ap-product-crop"><Image src="/product-owner.png" alt="Actual AutomatePal owner overview rendered with fictional test data, including intervention counts, trends and the needs-intervention list." width={1280} height={2183}/></div></div></div><Link href="/owner" className="ap-text-link">Open the owner overview ↗</Link></section>
+  <OwnerView/>
 
   <section id="trust" className="hm-sec hm-trust" aria-labelledby="trust-title">
     <div className="hm-head ap-rv">
@@ -254,11 +299,11 @@ export default function Landing(){
       <div className="hm-head ap-rv">
         <p className="hm-kicker">09 / Questions</p>
         <h2 id="faq-title" className="hm-h2">Questions, answered.</h2>
-        <p className="hm-lede">Have a question we didn’t cover? <Link href="/contact" className="hm-inline-link">Send it to us ↗</Link> and a person will read it.</p>
+        <p className="hm-lede">Setup steps, provider keys and the MCP tools are in the <Link href="/docs" className="hm-inline-link hm-nowrap">docs ↗</Link>. Have a question we didn’t cover? <Link href="/contact" className="hm-inline-link hm-nowrap">Send it to us ↗</Link> and a person will read it.</p>
       </div>
       <div className="hm-faq-list">{FAQ.map(([q,a])=><details key={q} className="hm-faq-item"><summary>{q}<span aria-hidden="true"/></summary><p>{a}</p></details>)}</div>
     </div>
   </section>
 
-  <section className="ap-start"><p className="ap-kicker">Free preview. Fictional data. Real workflow.</p><h2>Your AI support agent is<br/>about an hour away.</h2><Link href="/setup" className="ap-beam-btn"><span>Start the guided setup <span>↗</span></span></Link><p>Sign in → add a source → test it → paste one script tag.</p></section>
-  <footer className="ap-footer"><div className="ap-footer-grid"><div className="ap-footer-brand"><Link className="ap-mark" href="/"><Image src="/automatepal-logo.png" alt="" width={57} height={28} className="ap-logo"/>AutomatePal</Link><p>Source-quoted AI support<br/>with a person in control.</p><p className="ap-footer-note">Fictional-data preview. No live payments. No uptime, SLA or certification claim.</p></div><nav className="ap-footer-col" aria-label="Product"><h3>Product</h3><a href="#how">How it works</a><a href="#features">Platform</a><a href="#trust">Trust</a><a href="#addons">Add-ons</a><a href="#faq">FAQ</a><Link href="/pricing">Pricing</Link></nav><nav className="ap-footer-col" aria-label="Get started"><h3>Get started</h3><Link href="/setup">Guided setup</Link><Link href="/login">Sign in</Link><Link href="/support">One-hour demo</Link><Link href="/knowledge">Knowledge workspace</Link></nav><nav className="ap-footer-col" aria-label="Company"><h3>Company</h3><Link href="/status">Status</Link><Link href="/security">Security</Link><Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link><Link href="/contact">Contact</Link><a href={REPO_URL} rel="noreferrer" target="_blank">GitHub</a></nav></div><div className="ap-footer-bar"><span>© 2026 {COPYRIGHT_HOLDER}. AutomatePal - candidate preview build.</span><span>Answers quote their sources. A person keeps the final say.</span></div></footer></main></DeskShell>;}
+  <section className="ap-start"><p className="ap-kicker">Free preview. Fictional data. Real workflow.</p><h2>Your AI support agent is<br className="hm-br-wide"/> about an hour away.</h2><Link href="/setup" className="ap-beam-btn"><span>Start the guided setup <span>↗</span></span></Link><p>Sign in → add a source → test it → paste one script tag.</p></section>
+  <footer className="ap-footer"><div className="ap-footer-grid"><div className="ap-footer-brand"><Link className="ap-mark" href="/"><Image src="/automatepal-logo.png" alt="" width={57} height={28} className="ap-logo"/>AutomatePal</Link><p>Source-quoted AI support<br/>with a person in control.</p><p className="ap-footer-note">Fictional-data preview. No live payments. No uptime, SLA or certification claim.</p></div><nav className="ap-footer-col" aria-label="Product"><h3>Product</h3><a href="#how">How it works</a><a href="#features">Platform</a><a href="#trust">Trust</a><a href="#addons">Add-ons</a><a href="#faq">FAQ</a><Link href="/pricing">Pricing</Link><Link href="/docs">Docs</Link></nav><nav className="ap-footer-col" aria-label="Get started"><h3>Get started</h3><Link href="/setup">Guided setup</Link><Link href="/login">Sign in</Link><Link href="/support">One-hour demo</Link><Link href="/knowledge">Knowledge workspace</Link></nav><nav className="ap-footer-col" aria-label="Company"><h3>Company</h3><Link href="/status">Status</Link><Link href="/security">Security</Link><Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link><Link href="/contact">Contact</Link><a href={REPO_URL} rel="noreferrer" target="_blank">GitHub</a></nav></div><FolderWordmark/><div className="ap-footer-bar"><span>© 2026 {COPYRIGHT_HOLDER}. AutomatePal - candidate preview build.</span><span>Answers quote their sources. A person keeps the final say.</span></div></footer></main></DeskShell>;}

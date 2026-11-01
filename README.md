@@ -12,8 +12,13 @@ Free tiers only. No real customer data, live credentials or funds. Payment execu
 
 - `/login`: Google OAuth sign-in to a private owner workspace, then `/setup` for guided fictional source/brand/test steps and `/support` for the widget studio. Email link delivery is limited to approved addresses; use Google for the hosted preview. One-hour demo capabilities are not permanent judge links. Fresh-session independent acceptance is still required.
 - `/knowledge`: explicitly consent to processing and separately publish fictional text before using it for support. Private/unpublished is the default. Ordinary tenant budget100 answer attempts/UTC day and20/case; unsupported attempts count. Quotas and model availability can change.
-- `/tickets` and `/owner`: fictional review queue and bounded reporting, shared with the workspace team. No customer reply transport.
+- `/tickets` and `/owner`: fictional review queue and bounded reporting, shared with the workspace team. After takeover, owners reply to the visitor inside the widget only (`db/045`, built locally); nothing is emailed and there is no other reply transport.
 - `/team`: invite teammates as Admin, Manager or Agent with once-shown, email-bound invite links (nothing is emailed); roles are enforced in Postgres RLS and RPCs (`db/043`).
+- `/billing`: connect a payment provider read-only (PayPal, Stripe, Dodo Payments, Razorpay, Paddle, Square, Adyen, Mollie, Chargebee, Lemon Squeezy) in test or live mode; LIVE needs the owner and the typed phrase `CONNECT LIVE <PROVIDER>`. Visitors verify an order/invoice id plus payment email before any record is shown; refund requests become review tickets and never execute. Needs `db/044` and the billing env below. Built locally, not yet deployed.
+- `/docs`: public setup docs (widget, billing providers and capability matrix, customer verification, owner replies, working hours, MCP, limits).
+- `/mcp`: MCP server (Streamable HTTP) for one workspace, bearer = an AutomatePal token with an MCP scope created on `/integrations`. Needs `db/046`; the reply and settings tools need `db/047`. Built locally, not yet deployed.
+- `/leads`: consented lead emails for managers and up: search, CSV export (formula-safe) and delete. Needs `db/047`. Nothing is forwarded. Built locally, not yet deployed.
+- Widget SDK: `window.AutomatePal.open/close/toggle/reset/on/off` and no-PII events, documented on `/docs`.
 - `/sandbox-catalog`: owner-only live sandbox catalog/plan reads, no business writes. Visitors cannot use the project's owner sandbox; self-host with your own app/owner account below. Selected-plan AI explanation needs explicit per-question consent and uses10 attempts/owner/UTC day; refusals/errors remain visible. Current hosted acceptance is in PROGRESS, not assumed from this route's existence.
 - `/operations`: metadata-only scoped diagnostics, not uptime or all-route error proof. Health bearer scope is separately explicit and expiring. Never publish a bearer token.
 
@@ -28,11 +33,12 @@ cp .env.example .env
 ```
 
 1. Create a Supabase project with Auth and Postgres/vector extension support. Record its project URL and public anon key in `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY`. These public client identifiers are not service-role credentials. Never put a service-role key into browser configuration.
-2. Apply `db/001_*.sql` through `db/043_*.sql` in numeric order to this NEW isolated project using a trusted SQL connection/editor. Review each migration first. Many migrations are non-idempotent: do not replay the whole directory on an existing database. This is schema setup, not a backup/restore procedure. Scripts with `DATABASE_PASSWORD_FILE` need a privately stored password and correct target configuration; existing DB test scripts name the development project's host and must be adapted for your isolated project before use.
+2. Apply `db/001_*.sql` through `db/047_*.sql` in numeric order to this NEW isolated project using a trusted SQL connection/editor. Review each migration first. Many migrations are non-idempotent: do not replay the whole directory on an existing database. This is schema setup, not a backup/restore procedure. Scripts with `DATABASE_PASSWORD_FILE` need a privately stored password and correct target configuration; existing DB test scripts name the development project's host and must be adapted for your isolated project before use.
 3. Configure Supabase Google OAuth and your own Google OAuth app. Allow the Supabase callback shown by its dashboard, then add your local `http://localhost:3000/workspace` and any approved deployment redirect in Supabase Auth URL settings. Do not paste OAuth secrets into the repo. Sign-in/provider verification and any free-account limits are part of your own setup. Default email SMTP is limited.
 4. Create your own PayPal sandbox app at https://developer.paypal.com/dashboard . Set `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET` and the fixed `PAYPAL_API_BASE=https://api-m.sandbox.paypal.com`. Never use live credentials. `APP_OWNER_EMAIL` must exactly match your intended signed-in Google account email. Read-only catalog view requires existing fictional sandbox catalog/plan configuration; it will not seed or create any automatically. An empty account yields empty lists, not an invented demo.
 5. Obtain your own free-tier Gemini API key at https://aistudio.google.com/apikey and set `GEMINI_API_KEY`. Current code defaults `GEMINI_MODEL=gemini-3.1-flash-lite`, embeddings `gemini-embedding-2` at768 dimensions. Check model availability, terms and quota in your own project; do not authorize a paid upgrade. Missing/limited provider access gives an explicit safe fallback, not proof of a working answer.
-6. Keep `PROOF_PAYMENTS_ENABLED=false`. No live payment mode exists. This flag governs the proof execution path; legacy studio actions have separate review gates and must not be used as part of the read-only catalog demonstration. Do not confirm any creation/payment proposal to run this demo.
+6. For billing support, set `BILLING_ENCRYPTION_KEYS` (comma-separated `kid:base64`, 32 bytes each, e.g. `k1:$(openssl rand -base64 32)`), `BILLING_ENCRYPTION_ACTIVE_KID` (e.g. `k1`) and `BILLING_RPC_SECRET` (`openssl rand -hex 32`). Until they are set, `/billing` shows a setup banner and nothing can be saved. To try a provider with your own test keys, fill the matching live-check names in `.env.example` and run `npm run billing:live-check -- <provider>` (read-only calls).
+7. Keep `PROOF_PAYMENTS_ENABLED=false`. No live payment mode exists. This flag governs the proof execution path; legacy studio actions have separate review gates and must not be used as part of the read-only catalog demonstration. Do not confirm any creation/payment proposal to run this demo.
 
 ```sh
 npm run dev
@@ -52,6 +58,9 @@ npm run test:widget
 npm run test:tickets
 npm run test:billing
 npm run test:webhook
+npm run test:billing-support
+npm run test:mcp
+npm run test:leads
 npx tsx scripts/verify-sandbox-catalog.ts
 npx tsx scripts/verify-health-deadline.ts
 node scripts/verify-catalog-pages.mjs

@@ -1,0 +1,9 @@
+[
+ {"id":"transactions.get","method":"GET","path":"/transactions/{transaction_id}","query":[]},
+ {"id":"transactions.list","method":"GET","path":"/transactions","query":["customer_id","status","invoice_number","per_page"]},
+ {"id":"transactions.invoice","method":"GET","path":"/transactions/{transaction_id}/invoice","query":[]},
+ {"id":"subscriptions.get","method":"GET","path":"/subscriptions/{subscription_id}","query":[]},
+ {"id":"subscriptions.list","method":"GET","path":"/subscriptions","query":["customer_id","per_page"]},
+ {"id":"customers.get","method":"GET","path":"/customers/{customer_id}","query":[]},
+ {"id":"adjustments.list","method":"GET","path":"/adjustments","query":["transaction_id","customer_id","action","per_page"]}
+]

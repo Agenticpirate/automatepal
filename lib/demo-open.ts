@@ -1,5 +1,6 @@
 import {NextRequest,NextResponse} from 'next/server';
 import {buildUnansweredDigest} from './unanswered-digest';
+import {providerSummaries} from './billing/core/registry';
 
 /* Open demo-preview mode, flag NEXT_PUBLIC_DEMO_OPEN (default ON while we build; set to
    'false' and redeploy to re-lock before launch). When ON and the request has no valid
@@ -85,7 +86,10 @@ function demoFixture(key:string,req:NextRequest):NextResponse|null{
    return NextResponse.json({events:[
     {id:'de500000-0000-4000-8000-000000000001',created_at:found.created_at,kind:'created',body:'Fictional ticket created from the demo widget.'},
     {id:'de500000-0000-4000-8000-000000000002',created_at:found.ticket_updated_at,kind:'note',body:'Fictional internal note: review before any customer-facing reply.'},
-   ],requests:requests.filter(r=>r.case_id===id).map(x=>({id:x.id,created_at:x.created_at,kind:x.kind,message:x.message,status:x.status,contact_email:x.contact_consent?x.contact_email:null})),questions:queries.filter(q=>q.case_id===id).map(q=>({id:q.id,created_at:q.created_at,question:q.question,supported:q.supported,feedback:q.feedback})),coverage:'Recorded questions, review requests and internal events only. AI answer bodies and outbound replies are not stored here. Contact emails appear only when the visitor consented to share them.'},{headers:noStore});
+   ],requests:requests.filter(r=>r.case_id===id).map(x=>({id:x.id,created_at:x.created_at,kind:x.kind,message:x.message,status:x.status,contact_email:x.contact_consent?x.contact_email:null})),questions:queries.filter(q=>q.case_id===id).map(q=>({id:q.id,created_at:q.created_at,question:q.question,supported:q.supported,feedback:q.feedback})),messages:found.inbox_state==='taken_over'?[
+    {id:'de510000-0000-4000-8000-000000000001',created_at:day(1,2),author:'owner',body:'Hi, this is the fictional store owner. I have paused the assistant and will help you here.'},
+    {id:'de510000-0000-4000-8000-000000000002',created_at:day(1,1),author:'visitor',body:'Thanks! Can the fictional refill pack still ship this week?'},
+   ]:[],coverage:'Recorded questions, review requests, internal events and widget replies. AI answer bodies are not stored here. Nothing is emailed. Contact emails appear only when the visitor consented to share them.'},{headers:noStore});
   }
   return NextResponse.json({tickets,truncated:false,limit:200},{headers:noStore});
  }
@@ -115,7 +119,11 @@ function demoFixture(key:string,req:NextRequest):NextResponse|null{
  case 'sandbox-catalog':
   return NextResponse.json({asOf:new Date().toISOString(),environment:'PayPal sandbox',readOnly:true,paymentExecution:false,data:{products:[{id:'PROD-DEMO-FICTIONAL1',name:'Fictional Launch Kit'},{id:'PROD-DEMO-FICTIONAL2',name:'Fictional Starter Box'}],plans:[{id:'P-DEMO0000000000000000001',product_id:'PROD-DEMO-FICTIONAL1',name:'Fictional Monthly Plan',status:'ACTIVE'}],coverage:'First page only, up to 20 products and 20 plans. Plan status is not subscription activation, payment, revenue or customer eligibility. No subscriber/contact/transaction data returned. Fictional demo fixture; no provider call was made.'}},{headers:noStore});
  case 'support':
-  return NextResponse.json({requests,cases:tickets.map(t=>({id:t.id,created_at:t.created_at,expires_at:t.expires_at,order_label:t.order_label,inbox_state:t.inbox_state})),settings:{label:'Fictional demo store',color:'#FD91CC',initials:'AP',prompts:['What is the refund policy?','Do you ship to Pune?','Weekend hours?'],allowedOrigins:[],excludedPaths:[],autoOpen:false,side:'right',hideSources:false,hideOrder:false,hideContact:false}},{headers:noStore});
+  return NextResponse.json({requests,cases:tickets.map(t=>({id:t.id,created_at:t.created_at,expires_at:t.expires_at,order_label:t.order_label,inbox_state:t.inbox_state})),settings:{label:'Fictional demo store',color:'#FD91CC',initials:'AP',prompts:['What is the refund policy?','Do you ship to Pune?','Weekend hours?'],allowedOrigins:[],excludedPaths:[],autoOpen:false,side:'right',hideSources:false,hideOrder:false,hideContact:false,visitorChoice:true,workingHours:{enabled:true,timezone:'Asia/Kolkata',days:[1,2,3,4,5].map(day=>({day,start:'09:00',end:'18:00'})),awayMessage:'Fictional demo store: we are away right now. Leave your question and the team will reply when they are back.'}}},{headers:noStore});
+ case 'leads':{
+  const leads=requests.filter(r=>r.contact_consent&&r.contact_email).map(r=>({id:r.id,case_id:r.case_id,created_at:r.created_at,kind:r.kind,contact_email:r.contact_email as string}));
+  return NextResponse.json({leads,total:leads.length,limit:500,role:'owner',demo:true,coverage:'Fictional demo lead. Consented contact emails from widget requests, latest 500. Nothing is forwarded to email or a CRM.'},{headers:noStore});
+ }
  case 'dashboard':{
   const ev=(n:number,ms:number,kind:string,source:string,amount?:number,note?:string)=>({id:`de800000-0000-4000-8000-00000000000${n}`,ts:iso(ms),kind,source,refId:`DEMO-${n}0000FICTIONAL`,amount,currency:amount!=null?'USD':undefined,customer:'fictional-customer@example.com',note:note??'Fictional demo event'});
   const events=[
@@ -164,6 +172,22 @@ function demoFixture(key:string,req:NextRequest):NextResponse|null{
    invites:[{id:'de500000-0000-4000-8000-000000000010',email:'new.hire@north-dock.example.com',role:'agent',created_at:day(1),expires_at:iso(-6*D)}],
   },{headers:noStore});
  }
+ case 'billing':
+  // Fictional PayPal test connection and lookups. No credential, no provider call, no money movement.
+  return NextResponse.json({providers:providerSummaries(),
+   connections:[{id:'dea00000-0000-4000-8000-000000000001',provider:'paypal',mode:'test',key_id:'k1',key_hint:'AYdemo…demo',account_label:null,config:{},status:'connected',last_checked_at:day(0,2),live_confirmed_at:null,created_at:day(9),updated_at:day(0,2),needsRotation:false}],
+   events:[
+    {id:'dea10000-0000-4000-8000-000000000001',provider:'paypal',mode:'test',event:'connected',actor_id:null,created_at:day(9)},
+    {id:'dea10000-0000-4000-8000-000000000002',provider:'paypal',mode:'test',event:'check_ok',actor_id:null,created_at:day(0,2)},
+   ],
+   lookups:[
+    {id:'dea20000-0000-4000-8000-000000000001',case_id:cid(1),provider:'paypal',mode:'test',kind:'verify',intent:null,outcome:'verified',record_kind:'order',record_ref:'…901E',record_status:'COMPLETED',amount_minor:4900,currency:'USD',created_at:day(1,4)},
+    {id:'dea20000-0000-4000-8000-000000000002',case_id:cid(1),provider:'paypal',mode:'test',kind:'lookup',intent:'refund_status',outcome:'answered',record_kind:'order',record_ref:'…901E',record_status:'COMPLETED',amount_minor:4900,currency:'USD',created_at:day(1,3)},
+    {id:'dea20000-0000-4000-8000-000000000003',case_id:cid(2),provider:'paypal',mode:'test',kind:'verify',intent:null,outcome:'mismatch',record_kind:null,record_ref:null,record_status:null,amount_minor:null,currency:null,created_at:day(2,6)},
+    {id:'dea20000-0000-4000-8000-000000000004',case_id:cid(2),provider:'paypal',mode:'test',kind:'lookup',intent:'failed_payment',outcome:'answered',record_kind:'subscription',record_ref:'I-…BBBB',record_status:'ACTIVE',amount_minor:1900,currency:'USD',created_at:day(2,5)},
+   ],
+   available:true,role:'owner',encryptionReady:true,paymentExecution:false,demo:true,
+   limits:{workspacePer10Min:60,workspacePerDay:300,providerPer10Min:30,caseFailedVerifications:5,caseLookups:30,verificationMinutes:30}},{headers:noStore});
  default:return null;
  }
 }

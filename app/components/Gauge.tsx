@@ -4,8 +4,10 @@ export default function Gauge({value,color='#FD91CC',label}:{value:number;color?
     const a=Math.PI+(i/39)*Math.PI;
     const active=i<Math.round(value/100*40);
     const r=80,cx=100,cy=100;
-    const x1=cx+Math.cos(a)*(r-10),y1=cy+Math.sin(a)*(r-10);
-    const x2=cx+Math.cos(a)*r,y2=cy+Math.sin(a)*r;
+    /* Rounded: Node and the browser disagree on the last digits of sin/cos, which breaks hydration. */
+    const q=(n:number)=>Math.round(n*100)/100;
+    const x1=q(cx+Math.cos(a)*(r-10)),y1=q(cy+Math.sin(a)*(r-10));
+    const x2=q(cx+Math.cos(a)*r),y2=q(cy+Math.sin(a)*r);
     return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke={active?color:'#D8DEE9'} strokeWidth={2.5} strokeLinecap="round"/>;
   });
   return <div style={{width:'min(220px,60vw)',flexShrink:0}} role="img" aria-label={label}>

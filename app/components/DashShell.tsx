@@ -25,14 +25,16 @@ export const DP: Record<string, React.ReactNode> = {
   audit:(<><path d="M14 2v6h6"/><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><path d="M9 15h6"/><path d="M9 11h2"/></>),
   catalog:(<><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/></>),
   team:(<><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></>),
+  billing:(<><rect width="20" height="14" x="2" y="5" rx="2"/><path d="M2 10h20"/><path d="M6 15h4"/></>),
   chevron:(<path d="m7 15 5 5 5-5M7 9l5-5 5 5"/>),
+  mail:(<><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></>),
 };
 export const DIcon=({name,size=16,sw=2}:{name:keyof typeof DP;size?:number;sw?:number})=>(
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{DP[name]}</svg>
 );
 
 export type DashNotif={id:string;kind:'error'|'success'|'info';title:string;body:string;ts:string};
-const NAV:[string,string,keyof typeof DP][]=[['/owner','Overview','overview'],['/tickets','Tickets','tickets'],['/support','Widget studio','widget'],['/knowledge','Knowledge','knowledge'],['/team','Team','team'],['/setup','Setup','setup'],['/status','Status','status']];
+const NAV:[string,string,keyof typeof DP][]=[['/owner','Overview','overview'],['/tickets','Tickets','tickets'],['/billing','Billing','billing'],['/support','Widget studio','widget'],['/leads','Leads','mail'],['/knowledge','Knowledge','knowledge'],['/team','Team','team'],['/setup','Setup','setup'],['/status','Status','status']];
 type Ws={workspace_id:string;role:string;owner_email:string};
 type TeamCtx={me:{id:string};workspaces:Ws[];current:{workspace_id:string;role:string}|null;workspaceInvalid?:boolean};
 const ROLE_LABEL:Record<string,string>={owner:'Owner',admin:'Admin',manager:'Manager',agent:'Agent'};

@@ -1,0 +1,51 @@
+{
+ "provider": "razorpay",
+ "note": "Hand-written digest of razorpay.com/docs/api (see SOURCE.json for page URLs and retrievedAt). Field names and types only; no upstream text. Docs-derived: lower confidence than an official spec.",
+ "servers": ["https://api.razorpay.com"],
+ "auth": [{"type": "http", "scheme": "basic"}],
+ "operations": {
+  "payments.get": {"method": "GET", "path": "/v1/payments/{id}", "params": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string"}}],
+   "responses": {"200": {"schema": {"$ref": "#/components/schemas/payment"}}}},
+  "payments.list": {"method": "GET", "path": "/v1/payments", "params": [{"name": "from", "in": "query", "schema": {"type": "integer"}}, {"name": "to", "in": "query", "schema": {"type": "integer"}}, {"name": "count", "in": "query", "schema": {"type": "integer", "minimum": 1, "maximum": 100}}, {"name": "skip", "in": "query", "schema": {"type": "integer"}}],
+   "responses": {"200": {"schema": {"$ref": "#/components/schemas/payment_collection"}}}},
+  "orders.get": {"method": "GET", "path": "/v1/orders/{id}", "params": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string"}}],
+   "responses": {"200": {"schema": {"$ref": "#/components/schemas/order"}}}},
+  "orders.payments": {"method": "GET", "path": "/v1/orders/{id}/payments", "params": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string"}}],
+   "responses": {"200": {"schema": {"$ref": "#/components/schemas/payment_collection"}}}},
+  "payments.refunds": {"method": "GET", "path": "/v1/payments/{id}/refunds", "params": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string"}}, {"name": "count", "in": "query", "schema": {"type": "integer", "minimum": 1, "maximum": 100}}],
+   "responses": {"200": {"schema": {"type": "object", "required": ["entity", "count", "items"], "properties": {"entity": {"enum": ["collection"]}, "count": {"type": "integer"}, "items": {"type": "array", "items": {"$ref": "#/components/schemas/refund"}}}}}}},
+  "invoices.get": {"method": "GET", "path": "/v1/invoices/{id}", "params": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string"}}],
+   "responses": {"200": {"schema": {"$ref": "#/components/schemas/invoice"}}}},
+  "subscriptions.get": {"method": "GET", "path": "/v1/subscriptions/{id}", "params": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string"}}],
+   "responses": {"200": {"schema": {"$ref": "#/components/schemas/subscription"}}}},
+  "customers.get": {"method": "GET", "path": "/v1/customers/{id}", "params": [{"name": "id", "in": "path", "required": true, "schema": {"type": "string"}}],
+   "responses": {"200": {"schema": {"$ref": "#/components/schemas/customer"}}}}
+ },
+ "components": {"schemas": {
+  "payment": {"type": "object", "required": ["id", "entity", "amount", "currency", "status", "created_at"], "properties": {
+   "id": {"type": "string"}, "entity": {"enum": ["payment"]}, "amount": {"type": "integer"}, "currency": {"type": "string"},
+   "status": {"enum": ["created", "authorized", "captured", "refunded", "failed"]}, "order_id": {"type": ["string", "null"]}, "invoice_id": {"type": ["string", "null"]},
+   "method": {"type": "string"}, "amount_refunded": {"type": "integer"}, "refund_status": {"type": ["string", "null"], "enum": [null, "partial", "full"]}, "captured": {"type": "boolean"},
+   "email": {"type": ["string", "null"]}, "contact": {"type": ["string", "null"]}, "customer_id": {"type": ["string", "null"]},
+   "error_code": {"type": ["string", "null"]}, "error_description": {"type": ["string", "null"]}, "error_reason": {"type": ["string", "null"]}, "created_at": {"type": "integer"}}},
+  "payment_collection": {"type": "object", "required": ["entity", "count", "items"], "properties": {"entity": {"enum": ["collection"]}, "count": {"type": "integer"}, "items": {"type": "array", "items": {"$ref": "#/components/schemas/payment"}}}},
+  "order": {"type": "object", "required": ["id", "entity", "amount", "currency", "status", "created_at"], "properties": {
+   "id": {"type": "string"}, "entity": {"enum": ["order"]}, "amount": {"type": "integer"}, "amount_paid": {"type": "integer"}, "amount_due": {"type": "integer"}, "currency": {"type": "string"},
+   "receipt": {"type": ["string", "null"]}, "status": {"enum": ["created", "attempted", "paid"]}, "attempts": {"type": "integer"}, "created_at": {"type": "integer"}}},
+  "refund": {"type": "object", "required": ["id", "entity", "amount", "currency", "payment_id", "status", "created_at"], "properties": {
+   "id": {"type": "string"}, "entity": {"enum": ["refund"]}, "amount": {"type": "integer"}, "currency": {"type": "string"}, "payment_id": {"type": "string"},
+   "receipt": {"type": ["string", "null"]}, "status": {"enum": ["pending", "processed", "failed"]}, "speed_processed": {"type": "string"}, "created_at": {"type": "integer"}}},
+  "invoice": {"type": "object", "required": ["id", "entity", "status", "amount", "currency"], "properties": {
+   "id": {"type": "string"}, "entity": {"enum": ["invoice"]}, "receipt": {"type": ["string", "null"]}, "invoice_number": {"type": ["string", "null"]}, "customer_id": {"type": ["string", "null"]},
+   "customer_details": {"type": "object", "properties": {"id": {"type": ["string", "null"]}, "name": {"type": ["string", "null"]}, "email": {"type": ["string", "null"]}, "contact": {"type": ["string", "null"]}}},
+   "order_id": {"type": ["string", "null"]}, "payment_id": {"type": ["string", "null"]}, "status": {"enum": ["draft", "issued", "partially_paid", "paid", "cancelled", "expired", "deleted"]},
+   "amount": {"type": "integer"}, "amount_paid": {"type": "integer"}, "amount_due": {"type": "integer"}, "currency": {"type": "string"}, "short_url": {"type": ["string", "null"]},
+   "issued_at": {"type": ["integer", "null"]}, "paid_at": {"type": ["integer", "null"]}, "created_at": {"type": "integer"}}},
+  "subscription": {"type": "object", "required": ["id", "entity", "plan_id", "status"], "properties": {
+   "id": {"type": "string"}, "entity": {"enum": ["subscription"]}, "plan_id": {"type": "string"}, "customer_id": {"type": ["string", "null"]},
+   "status": {"enum": ["created", "authenticated", "active", "pending", "halted", "cancelled", "completed", "expired", "paused"]},
+   "current_start": {"type": ["integer", "null"]}, "current_end": {"type": ["integer", "null"]}, "charge_at": {"type": ["integer", "null"]}, "paid_count": {"type": "integer"},
+   "auth_attempts": {"type": "integer"}, "short_url": {"type": ["string", "null"]}, "created_at": {"type": "integer"}}},
+  "customer": {"type": "object", "required": ["id", "entity"], "properties": {"id": {"type": "string"}, "entity": {"enum": ["customer"]}, "name": {"type": ["string", "null"]}, "email": {"type": ["string", "null"]}, "contact": {"type": ["string", "null"]}, "created_at": {"type": "integer"}}}
+ }}
+}

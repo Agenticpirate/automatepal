@@ -8,7 +8,7 @@
    .h  hover-only mark, hidden at rest */
 import {D,Dot,Glyph} from './draw';
 
-export type AddOnIcon='team'|'api'|'webhook'|'csv'|'lead'|'billing'|'email'|'digest'|'automation'|'channel'|'chat'|'helpdesk'|'ticket'|'inbox'|'messenger'|'whatsapp';
+export type AddOnIcon='team'|'api'|'webhook'|'csv'|'lead'|'billing'|'email'|'digest'|'automation'|'channel'|'chat'|'helpdesk'|'ticket'|'inbox'|'messenger'|'whatsapp'|'plug';
 
 const ICONS:Record<AddOnIcon,React.ReactNode>={
  team:<>
@@ -86,6 +86,11 @@ const ICONS:Record<AddOnIcon,React.ReactNode>={
   <g className="a"><D d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></g>
   <D d="M14.05 6A5 5 0 0 1 18 10" n={1} c="w"/>
   <D d="M14.05 2a9 9 0 0 1 8 7.94" n={2} c="w"/>
+ </>,
+ plug:<>
+  <D d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8Z"/>
+  <D d="M9 8V2" n={1} c="w"/><D d="M15 8V2" n={1} c="w"/>
+  <D d="M12 22v-5" n={2}/>
  </>,
 };
 

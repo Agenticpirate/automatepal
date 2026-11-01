@@ -1,0 +1,11 @@
+[
+ {"id":"charges.get","method":"GET","path":"/v1/charges/{charge}","query":[]},
+ {"id":"charges.list","method":"GET","path":"/v1/charges","query":["customer","limit"]},
+ {"id":"payment_intents.get","method":"GET","path":"/v1/payment_intents/{intent}","query":[]},
+ {"id":"invoices.get","method":"GET","path":"/v1/invoices/{invoice}","query":[]},
+ {"id":"invoices.list","method":"GET","path":"/v1/invoices","query":["customer","status","limit"]},
+ {"id":"invoices.search","method":"GET","path":"/v1/invoices/search","query":["query"]},
+ {"id":"subscriptions.list","method":"GET","path":"/v1/subscriptions","query":["customer","status","limit"]},
+ {"id":"refunds.list","method":"GET","path":"/v1/refunds","query":["charge","limit"]},
+ {"id":"customers.get","method":"GET","path":"/v1/customers/{customer}","query":[]}
+]

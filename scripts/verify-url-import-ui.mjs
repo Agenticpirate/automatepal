@@ -20,7 +20,8 @@ try{
    r.fulfill({status:200,contentType:'application/json',body:JSON.stringify(body)});});
   await p.goto(BASE+'/knowledge');await p.waitForLoadState('networkidle');
   await p.getByText('Import one public page by URL').waitFor({state:'visible',timeout:15000});
-  await p.locator('input[type=url]').fill('https://example.com/faq');
+  // The page also has the website crawler's start URL field, so target the single-page import field by its label.
+  await p.getByRole('textbox',{name:'Import one public page by URL',exact:true}).fill('https://example.com/faq');
   await p.getByText('Fetch and review page').click();
   await p.getByText(/Fetched one page only/).waitFor({state:'visible',timeout:15000});
   assert.equal(await p.locator('label',{hasText:'Source title'}).locator('input').inputValue(),'Example FAQ');

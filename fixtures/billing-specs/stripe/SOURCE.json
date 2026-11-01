@@ -1,0 +1,21 @@
+{
+ "provider": "stripe",
+ "sourceUrl": "https://github.com/stripe/openapi",
+ "repo": "stripe/openapi",
+ "commit": "51610f5f061c9723730582a7638b8cc0e646640d",
+ "commitDate": "2026-10-29T22:36:39Z",
+ "file": [
+  "openapi/spec3.json"
+ ],
+ "upstream": {
+  "openapi/spec3.json": {
+   "url": "https://raw.githubusercontent.com/stripe/openapi/51610f5f061c9723730582a7638b8cc0e646640d/openapi/spec3.json",
+   "sha256": "7cff4cc46d0654101a36a3302f7544640f5f73e4f3cad6f264f0e23c19fa1776",
+   "bytes": 8317513
+  }
+ },
+ "license": "MIT",
+ "retrievedAt": "2026-11-01T13:49:36.542Z",
+ "confidence": "official-spec",
+ "notes": "Stripe-Version is pinned to info.version of this spec."
+}

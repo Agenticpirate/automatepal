@@ -1,6 +1,7 @@
 'use client';
 import {useEffect,useRef,useState} from 'react';
 import {AddOnGlyph,type AddOnIcon} from './AddOnIcons';
+import {SITE_BILLING_PROVIDERS,capabilityExceptions} from './billing-providers';
 import './addons.css';
 
 /* Add-ons and integrations. Statuses mirror app/integrations/Addons.tsx and FEATURES.md:
@@ -14,7 +15,8 @@ const ADDONS:AddOn[]=[
  {name:'Signed webhooks',body:'Event metadata signed with HMAC-SHA256 and delivered to a URL you own, with retries.',status:'Available',icon:'webhook',tone:'#0B3CA8'},
  {name:'CSV exports',body:'Unanswered questions, sources and tickets as formula-safe spreadsheets.',status:'Available',icon:'csv',tone:'#1F4FBF'},
  {name:'Lead capture',body:'An optional contact step in the widget that asks for consent before saving an email.',status:'Available',icon:'lead',tone:'#E25FAE'},
- {name:'Billing lookups',body:'Order, invoice and payment answers from your billing records, read-only.',status:'Preview',icon:'billing',tone:'#A3226F'},
+ {name:'Billing lookups',body:`Read-only order, payment, invoice, renewal and refund-status answers from ${SITE_BILLING_PROVIDERS.length} payment providers, where the provider supports the lookup, after the customer verifies. ${capabilityExceptions()} Test or live mode; refunds stay review-only.`,status:'Preview',icon:'billing',tone:'#A3226F'},
+ {name:'MCP server',body:'Connect an MCP client with a scoped, expiring token: read tickets, sources and counts, or propose a source that stays unpublished.',status:'Preview',icon:'plug',tone:'#09318D'},
  {name:'Email alerts',body:'Refund, handoff and unanswered-question alerts. Rules save today; delivery starts after sender verification.',status:'Preview',icon:'email',tone:'#B4237A'},
  {name:'Weekly digest',body:'Unanswered questions grouped by theme, ready to turn into answers.',status:'Preview',icon:'digest',tone:'#0E2E74'},
  {name:'Zapier and Make',body:'Send events to thousands of apps through the signed webhooks.',status:'Coming soon',icon:'automation',tone:'#5B6B8C'},

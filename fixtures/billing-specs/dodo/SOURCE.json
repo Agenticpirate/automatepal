@@ -1,0 +1,64 @@
+{
+ "provider": "dodo",
+ "sourceUrl": "https://docs.dodopayments.com/api-reference/",
+ "repo": null,
+ "commit": null,
+ "commitDate": null,
+ "file": [
+  "payments/get-payments-1",
+  "payments/get-payments",
+  "payments/retrieve-retry-state",
+  "subscriptions/get-subscriptions",
+  "subscriptions/get-subscriptions-1",
+  "refunds/get-refunds",
+  "refunds/get-refunds-1",
+  "customers/get-customers-1"
+ ],
+ "upstream": {
+  "payments/get-payments-1": {
+   "url": "https://docs.dodopayments.com/api-reference/payments/get-payments-1.md",
+   "sha256": "8d60aa73be34a76b9a8d264df6cf12a9a2b59673a74413a667452564a3988f50",
+   "bytes": 40704
+  },
+  "payments/get-payments": {
+   "url": "https://docs.dodopayments.com/api-reference/payments/get-payments.md",
+   "sha256": "3241e0feef994a7171c7a4bacdf28eaa199a4e3918623467993ffa213d4e620a",
+   "bytes": 28714
+  },
+  "payments/retrieve-retry-state": {
+   "url": "https://docs.dodopayments.com/api-reference/payments/retrieve-retry-state.md",
+   "sha256": "d069ae2cb687563a3a7feafcec12913672ca72a3e8ea7b4e6cfa042dfdd34cf2",
+   "bytes": 8572
+  },
+  "subscriptions/get-subscriptions": {
+   "url": "https://docs.dodopayments.com/api-reference/subscriptions/get-subscriptions.md",
+   "sha256": "af4ec98d71b79ab7ac6acdb33d48e0b64fa5bf7060425da8b43b4de6d6eb484f",
+   "bytes": 34915
+  },
+  "subscriptions/get-subscriptions-1": {
+   "url": "https://docs.dodopayments.com/api-reference/subscriptions/get-subscriptions-1.md",
+   "sha256": "9a5ea2884e18be42305edb9734aec1ee108e76293c36b77404ffca4f291ab77f",
+   "bytes": 27794
+  },
+  "refunds/get-refunds": {
+   "url": "https://docs.dodopayments.com/api-reference/refunds/get-refunds.md",
+   "sha256": "6cddd54b1edf36e8512281dde0383666aa947c1639a8a75ed7dab96252af90d7",
+   "bytes": 13292
+  },
+  "refunds/get-refunds-1": {
+   "url": "https://docs.dodopayments.com/api-reference/refunds/get-refunds-1.md",
+   "sha256": "dcfea91f791c332697539e8700a2743c487b489aa0450b57d7a6fa7976fd39ea",
+   "bytes": 13244
+  },
+  "customers/get-customers-1": {
+   "url": "https://docs.dodopayments.com/api-reference/customers/get-customers-1.md",
+   "sha256": "20ce6a6d08a7cfd25df1b276032186291710400713b7aa7a0a4f45eb9eb6f387",
+   "bytes": 9153
+  }
+ },
+ "license": "Apache-2.0 (stated in each excerpt info.license)",
+ "retrievedAt": "2026-11-01T13:54:06.923Z",
+ "confidence": "official-spec",
+ "notes": "Per-endpoint OpenAPI 3.1 excerpts embedded in docs pages. /openapi/openapi.documented.yml returned 404 during planning. GET /invoices/payments/{payment_id} returns application/pdf (not JSON), so it is not allowlisted; invoice links come from the payment invoice_url field. The refunds list has no payment_id filter in this spec; refunds are listed by customer_id. Page names: get-payments-1 = retrieve one, get-subscriptions = retrieve one (Mintlify numbering). info.version 1.120.26; info.license Apache 2.0.",
+ "infoVersion": "1.120.26"
+}

@@ -45,12 +45,17 @@ try{
   await p.goto(BASE+'/owner');await p.waitForLoadState('networkidle');
   await p.getByText('Open demo preview').waitFor({state:'visible',timeout:15000});
   await p.getByText('Fictional Launch Kit order').first().waitFor({state:'visible'});
-  const sparks=await p.locator('svg.ap-spark').count();assert.equal(sparks,8,'8 KPI sparklines');
+  // A3 layout (Nov 1): 4 KPI cards with sparklines and change chips, funnel, category donut,
+  // question trend line, status segment bar, budget rings and the conversations table.
+  const sparks=await p.locator('.ap-od-kpi svg.ap-spark').count();assert.equal(sparks,4,'4 KPI sparklines');
+  assert.equal(await p.locator('.ap-od-kpi .ap-od-delta').count(),4,'4 KPI change chips');
   assert.ok(await p.locator('svg .ap-line-main').count()>=1,'line chart on owner');
-  assert.ok(await p.locator('svg .ap-stack-seg').count()>=1,'stacked bars on owner');
+  assert.ok(await p.locator('.ap-od-funnel-bar').count()>=1,'funnel bars on owner');
+  assert.ok(await p.locator('.ap-od-donut svg circle[stroke]').count()>=1,'category donut on owner');
+  assert.ok(await p.locator('.ap-od-seg-bar > span').count()>=1,'status segment bar on owner');
   assert.ok(await p.locator('svg .ap-ring').count()>=1,'radial rings on owner');
-  assert.ok(await p.locator('.ap-chart-bar rect, rect.ap-chart-bar').count()>=1,'trend bars still on owner');
-  ok(name+' owner: banner, fixture rows, sparklines x8, line, stacked, rings, bars');
+  assert.ok(await p.locator('table.ap-od-tbl tbody tr').count()>=1,'conversations table rows on owner');
+  ok(name+' owner: banner, fixture rows, KPI x4 with change, funnel, donut, line, status bar, rings, table');
   assert.equal(mutations.length,0,mutations.join(','));
   await p.screenshot({path:`/downloads/automatepal-demo-open-owner-${name}.png`,fullPage:true});
   await p.goto(BASE+'/operations');await p.waitForLoadState('networkidle');

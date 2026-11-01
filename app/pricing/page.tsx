@@ -5,6 +5,7 @@ import Image from 'next/image';
 import DeskShell from '../components/DeskShell';
 import './pricing.css';
 import Gauge from '../components/Gauge';
+import {SITE_BILLING_PROVIDERS} from '../components/home/billing-providers';
 
 /* Lucide (ISC) inline icons */
 const P: Record<string, React.ReactNode> = {
@@ -22,6 +23,17 @@ const Icon=({name,size=14}:{name:keyof typeof P;size?:number})=>(
 );
 
 const tiers=[{name:'Starter',monthly:'29.50',annual:'234',equivalent:'19.50'},{name:'Growth',monthly:'64.50',annual:'474',equivalent:'39.50'},{name:'Scale',monthly:'214.50',annual:'1,554',equivalent:'129.50'}];
+/* Shipped features (FEATURES.md). Every tier gets all of them; tiers differ in test price only. */
+const INCLUDED:[string,string][]=[
+  ['Source-quoted answers','Exact passages, a separate grounding check, exact owner answers and dated exceptions.'],
+  [`Billing lookups from ${SITE_BILLING_PROVIDERS.length} payment providers`,'Read-only, verified customers only, test or live mode. Refunds go to your review; nothing executes.'],
+  ['Ticket queue and takeover','Impact × urgency priority, private notes, refund reviews, and take over or hand back at any time.'],
+  ['Owner replies in the widget','Reply live after takeover. Shown in the widget only; nothing is emailed.'],
+  ['Working hours and away message','Visitors choose the AI or a person; after hours they see your away message.'],
+  ['MCP server','Scoped, expiring tokens; read tools, an unpublished source proposal, a test question, replies in taken-over conversations and support settings.'],
+  ['Team roles, API and webhooks','Owner, admin, manager and agent roles, read-only API tokens and signed webhooks.'],
+  ['Knowledge import','Text, Markdown, CSV, small PDFs, a public URL or a site crawl, published only with your consent.'],
+];
 const NAV=[{label:'Home',href:'/',icon:'home' as const},{label:'Product',href:'/#workflow',icon:'grid' as const},{label:'Pricing',href:'/pricing',icon:'tag' as const,active:true},{label:'Contact',href:'/contact',icon:'mail' as const}];
 
 export default function Pricing(){
@@ -30,7 +42,7 @@ export default function Pricing(){
   return <DeskShell widget><main id="main-content" className="ap-cx"><div className="ap-cx-frame"><div className="ap-cx-inner">
     <div className="ap-cx-navwrap">
       <nav className="ap-cx-nav" aria-label="Primary">
-        <Link href="/" className="ap-cx-logo"><Image src="/automatepal-logo.png" alt="" width={45} height={22}/>AutomatePal</Link>
+        <Link href="/" className="ap-cx-logo"><Image src="/automatepal-logo.png" alt="" width={46} height={23}/>AutomatePal</Link>
         <div className="ap-cx-links">
           {NAV.map(n=><Link key={n.label} href={n.href} className={n.active?'ap-cx-active':undefined}><Icon name={n.icon} size={13}/>{n.label}</Link>)}
         </div>
@@ -84,6 +96,13 @@ export default function Pricing(){
         :<p>Choose monthly or annual billing, then select a plan to preview its terms. No checkout will open.</p>}
       </section>
     </div>
+
+    <section className="ap-cx-incl" aria-labelledby="incl-title">
+      <h2 id="incl-title">Included in every preview configuration</h2>
+      <p className="ap-cx-note">The same features on every tier. These plans set test prices only, not feature limits. Preview, no checkout.</p>
+      <ul>{INCLUDED.map(([t,d])=><li key={t}><span aria-hidden="true"><Icon name="check" size={12}/></span><div><b>{t}</b><small>{d}</small></div></li>)}</ul>
+      <p className="ap-cx-note"><Link className="underline" href="/docs">Read the docs ↗</Link> for setup, provider keys and the MCP tools.</p>
+    </section>
 
     <section className="ap-cx-foot">
       <p>All six configurations share the same $1 three-day trial. No setup fee is configured. These records do not establish customer eligibility, tax, shipping, fees or a refund policy.</p>

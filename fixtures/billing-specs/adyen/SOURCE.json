@@ -1,0 +1,21 @@
+{
+ "provider": "adyen",
+ "sourceUrl": "https://github.com/Adyen/adyen-openapi",
+ "repo": "Adyen/adyen-openapi",
+ "commit": "1d165a07700491fe3eff1e368ffe090a33251e19",
+ "commitDate": "2026-10-29T13:53:45Z",
+ "file": [
+  "json/CheckoutService-v71.json"
+ ],
+ "upstream": {
+  "json/CheckoutService-v71.json": {
+   "url": "https://raw.githubusercontent.com/Adyen/adyen-openapi/1d165a07700491fe3eff1e368ffe090a33251e19/json/CheckoutService-v71.json",
+   "sha256": "cc68947b5ef67aea4fd87abb9b7b3a2070e7659e81e0f997bb52b85849877f4c",
+   "bytes": 937937
+  }
+ },
+ "license": "MIT",
+ "retrievedAt": "2026-11-01T14:07:35.655Z",
+ "confidence": "official-spec",
+ "notes": "Checkout API is mostly POST; only GET /paymentLinks/{linkId} is allowlisted (GET /storedPaymentMethods returns stored card tokens and GET /sessions needs a sessionResult, so neither is used). No list endpoint exists, so the connect check reads a non-existent link: 404 means the key was accepted. Live host https://{prefix}-checkout-live.adyenpayments.com/checkout/v71 is from Adyen live-endpoint docs; the spec declares only the test server."
+}

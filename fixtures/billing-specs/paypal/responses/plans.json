@@ -1,0 +1,4 @@
+[
+ {"name":"plans-list-connect-fallback","method":"GET","path":"/v1/billing/plans","query":{"page_size":"1","page":"1"},"status":200,"body":{"plans":[{"id":"P-5ML4271244454362WXNWU5NQ","product_id":"PROD-XXCD1234QWER65782","name":"Fictional Monthly Plan","status":"ACTIVE","create_time":"2026-06-01T00:00:00Z"}],"total_items":1,"total_pages":1}},
+ {"name":"invoice-list-forbidden-no-invoicing","modes":["no_invoicing"],"method":"GET","path":"/v2/invoicing/invoices","query":{"page":"1","page_size":"1"},"status":403,"body":{"name":"NOT_AUTHORIZED","message":"Authorization failed due to insufficient permissions.","debug_id":"fictional0002"}}
+]

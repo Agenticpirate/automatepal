@@ -1,0 +1,653 @@
+[
+ {
+  "name": "payment-A1",
+  "method": "GET",
+  "path": "/v2/payments/tr_AAAA1111aa",
+  "status": 200,
+  "body": {
+   "resource": "payment",
+   "mode": "test",
+   "createdAt": "2026-10-02T10:00:00+00:00",
+   "description": "Fictional order",
+   "profileId": "pfl_Fictional01",
+   "sequenceType": "oneoff",
+   "method": "ideal",
+   "_links": {
+    "self": {
+     "href": "https://api.mollie.com/v2/payments/tr_AAAA1111aa",
+     "type": "application/hal+json"
+    },
+    "dashboard": {
+     "href": "https://my.mollie.com/dashboard/fictional",
+     "type": "text/html"
+    }
+   },
+   "id": "tr_AAAA1111aa",
+   "status": "paid",
+   "amount": {
+    "currency": "EUR",
+    "value": "49.00"
+   },
+   "amountRefunded": {
+    "currency": "EUR",
+    "value": "10.00"
+   },
+   "customerId": "cst_AAAA1111aa",
+   "paidAt": "2026-10-02T10:01:00+00:00"
+  }
+ },
+ {
+  "name": "payment-B1",
+  "method": "GET",
+  "path": "/v2/payments/tr_BBBB2222bb",
+  "status": 200,
+  "body": {
+   "resource": "payment",
+   "mode": "test",
+   "createdAt": "2026-10-02T10:00:00+00:00",
+   "description": "Fictional order",
+   "profileId": "pfl_Fictional01",
+   "sequenceType": "oneoff",
+   "method": "ideal",
+   "_links": {
+    "self": {
+     "href": "https://api.mollie.com/v2/payments/tr_BBBB2222bb",
+     "type": "application/hal+json"
+    },
+    "dashboard": {
+     "href": "https://my.mollie.com/dashboard/fictional",
+     "type": "text/html"
+    }
+   },
+   "id": "tr_BBBB2222bb",
+   "status": "paid",
+   "amount": {
+    "currency": "EUR",
+    "value": "29.00"
+   },
+   "customerId": "cst_BBBB2222bb"
+  }
+ },
+ {
+  "name": "payment-no-customer",
+  "method": "GET",
+  "path": "/v2/payments/tr_CCCC3333cc",
+  "status": 200,
+  "body": {
+   "resource": "payment",
+   "mode": "test",
+   "createdAt": "2026-10-02T10:00:00+00:00",
+   "description": "Fictional order",
+   "profileId": "pfl_Fictional01",
+   "sequenceType": "oneoff",
+   "method": "ideal",
+   "_links": {
+    "self": {
+     "href": "https://api.mollie.com/v2/payments/tr_CCCC3333cc",
+     "type": "application/hal+json"
+    },
+    "dashboard": {
+     "href": "https://my.mollie.com/dashboard/fictional",
+     "type": "text/html"
+    }
+   },
+   "id": "tr_CCCC3333cc",
+   "status": "paid",
+   "amount": {
+    "currency": "EUR",
+    "value": "9.00"
+   },
+   "billingAddress": {
+    "email": "alex.payer@example.test"
+   }
+  }
+ },
+ {
+  "name": "payments-connect-check",
+  "method": "GET",
+  "path": "/v2/payments",
+  "query": {
+   "limit": "1"
+  },
+  "status": 200,
+  "body": {
+   "count": 1,
+   "_embedded": {
+    "payments": [
+     {
+      "resource": "payment",
+      "mode": "test",
+      "createdAt": "2026-10-02T10:00:00+00:00",
+      "description": "Fictional order",
+      "profileId": "pfl_Fictional01",
+      "sequenceType": "oneoff",
+      "method": "ideal",
+      "_links": {
+       "self": {
+        "href": "https://api.mollie.com/v2/payments/tr_AAAA1111aa",
+        "type": "application/hal+json"
+       },
+       "dashboard": {
+        "href": "https://my.mollie.com/dashboard/fictional",
+        "type": "text/html"
+       }
+      },
+      "id": "tr_AAAA1111aa",
+      "status": "paid",
+      "amount": {
+       "currency": "EUR",
+       "value": "49.00"
+      },
+      "amountRefunded": {
+       "currency": "EUR",
+       "value": "10.00"
+      },
+      "customerId": "cst_AAAA1111aa",
+      "paidAt": "2026-10-02T10:01:00+00:00"
+     }
+    ]
+   },
+   "_links": {
+    "self": {
+     "href": "https://api.mollie.com/v2/payments",
+     "type": "application/hal+json"
+    },
+    "previous": null,
+    "next": null,
+    "documentation": {
+     "href": "https://docs.mollie.com/",
+     "type": "text/html"
+    }
+   }
+  }
+ },
+ {
+  "name": "customer-A",
+  "method": "GET",
+  "path": "/v2/customers/cst_AAAA1111aa",
+  "status": 200,
+  "body": {
+   "resource": "customer",
+   "id": "cst_AAAA1111aa",
+   "mode": "test",
+   "name": "Fictional",
+   "email": "alex.payer@example.test",
+   "locale": null,
+   "metadata": null,
+   "createdAt": "2026-06-01T00:00:00+00:00",
+   "_links": {
+    "self": {
+     "href": "https://api.mollie.com/v2/customers/cst_AAAA1111aa",
+     "type": "application/hal+json"
+    },
+    "dashboard": {
+     "href": "https://my.mollie.com/dashboard/fictional",
+     "type": "text/html"
+    },
+    "documentation": {
+     "href": "https://docs.mollie.com/",
+     "type": "text/html"
+    }
+   }
+  }
+ },
+ {
+  "name": "customer-B",
+  "method": "GET",
+  "path": "/v2/customers/cst_BBBB2222bb",
+  "status": 200,
+  "body": {
+   "resource": "customer",
+   "id": "cst_BBBB2222bb",
+   "mode": "test",
+   "name": "Fictional",
+   "email": "blair.payer@example.test",
+   "locale": null,
+   "metadata": null,
+   "createdAt": "2026-06-01T00:00:00+00:00",
+   "_links": {
+    "self": {
+     "href": "https://api.mollie.com/v2/customers/cst_BBBB2222bb",
+     "type": "application/hal+json"
+    },
+    "dashboard": {
+     "href": "https://my.mollie.com/dashboard/fictional",
+     "type": "text/html"
+    },
+    "documentation": {
+     "href": "https://docs.mollie.com/",
+     "type": "text/html"
+    }
+   }
+  }
+ },
+ {
+  "name": "customer-A-payments",
+  "method": "GET",
+  "path": "/v2/customers/cst_AAAA1111aa/payments",
+  "query": {
+   "limit": "10"
+  },
+  "status": 200,
+  "body": {
+   "count": 3,
+   "_embedded": {
+    "payments": [
+     {
+      "resource": "payment",
+      "mode": "test",
+      "createdAt": "2026-10-02T10:00:00+00:00",
+      "description": "Fictional order",
+      "profileId": "pfl_Fictional01",
+      "sequenceType": "oneoff",
+      "method": "ideal",
+      "_links": {
+       "self": {
+        "href": "https://api.mollie.com/v2/payments/tr_AAAA1111aa",
+        "type": "application/hal+json"
+       },
+       "dashboard": {
+        "href": "https://my.mollie.com/dashboard/fictional",
+        "type": "text/html"
+       }
+      },
+      "id": "tr_AAAA1111aa",
+      "status": "paid",
+      "amount": {
+       "currency": "EUR",
+       "value": "49.00"
+      },
+      "amountRefunded": {
+       "currency": "EUR",
+       "value": "10.00"
+      },
+      "customerId": "cst_AAAA1111aa",
+      "paidAt": "2026-10-02T10:01:00+00:00"
+     },
+     {
+      "resource": "payment",
+      "mode": "test",
+      "createdAt": "2026-10-02T10:00:00+00:00",
+      "description": "Fictional order",
+      "profileId": "pfl_Fictional01",
+      "sequenceType": "recurring",
+      "method": "ideal",
+      "_links": {
+       "self": {
+        "href": "https://api.mollie.com/v2/payments/tr_AAAA1112aa",
+        "type": "application/hal+json"
+       },
+       "dashboard": {
+        "href": "https://my.mollie.com/dashboard/fictional",
+        "type": "text/html"
+       }
+      },
+      "id": "tr_AAAA1112aa",
+      "status": "failed",
+      "amount": {
+       "currency": "EUR",
+       "value": "19.00"
+      },
+      "customerId": "cst_AAAA1111aa",
+      "subscriptionId": "sub_AAAA1111aa",
+      "failedAt": "2026-10-20T10:00:00+00:00",
+      "details": {
+       "failureReason": "insufficient_funds"
+      }
+     },
+     {
+      "resource": "payment",
+      "mode": "test",
+      "createdAt": "2026-10-02T10:00:00+00:00",
+      "description": "Fictional order",
+      "profileId": "pfl_Fictional01",
+      "sequenceType": "oneoff",
+      "method": "ideal",
+      "_links": {
+       "self": {
+        "href": "https://api.mollie.com/v2/payments/tr_AAAA1113aa",
+        "type": "application/hal+json"
+       },
+       "dashboard": {
+        "href": "https://my.mollie.com/dashboard/fictional",
+        "type": "text/html"
+       },
+       "checkout": {
+        "href": "https://www.mollie.com/checkout/select-method/fictionalA3",
+        "type": "text/html"
+       }
+      },
+      "id": "tr_AAAA1113aa",
+      "status": "open",
+      "amount": {
+       "currency": "EUR",
+       "value": "5.00"
+      },
+      "customerId": "cst_AAAA1111aa"
+     }
+    ]
+   },
+   "_links": {
+    "self": {
+     "href": "https://api.mollie.com/v2/customers/cst_AAAA1111aa/payments",
+     "type": "application/hal+json"
+    },
+    "previous": null,
+    "next": null,
+    "documentation": {
+     "href": "https://docs.mollie.com/",
+     "type": "text/html"
+    }
+   }
+  }
+ },
+ {
+  "name": "customer-A-payments-mixed",
+  "method": "GET",
+  "path": "/v2/customers/cst_AAAA1111aa/payments",
+  "query": {
+   "limit": "10"
+  },
+  "status": 200,
+  "body": {
+   "count": 4,
+   "_embedded": {
+    "payments": [
+     {
+      "resource": "payment",
+      "mode": "test",
+      "createdAt": "2026-10-02T10:00:00+00:00",
+      "description": "Fictional order",
+      "profileId": "pfl_Fictional01",
+      "sequenceType": "oneoff",
+      "method": "ideal",
+      "_links": {
+       "self": {
+        "href": "https://api.mollie.com/v2/payments/tr_AAAA1111aa",
+        "type": "application/hal+json"
+       },
+       "dashboard": {
+        "href": "https://my.mollie.com/dashboard/fictional",
+        "type": "text/html"
+       }
+      },
+      "id": "tr_AAAA1111aa",
+      "status": "paid",
+      "amount": {
+       "currency": "EUR",
+       "value": "49.00"
+      },
+      "amountRefunded": {
+       "currency": "EUR",
+       "value": "10.00"
+      },
+      "customerId": "cst_AAAA1111aa",
+      "paidAt": "2026-10-02T10:01:00+00:00"
+     },
+     {
+      "resource": "payment",
+      "mode": "test",
+      "createdAt": "2026-10-02T10:00:00+00:00",
+      "description": "Fictional order",
+      "profileId": "pfl_Fictional01",
+      "sequenceType": "recurring",
+      "method": "ideal",
+      "_links": {
+       "self": {
+        "href": "https://api.mollie.com/v2/payments/tr_AAAA1112aa",
+        "type": "application/hal+json"
+       },
+       "dashboard": {
+        "href": "https://my.mollie.com/dashboard/fictional",
+        "type": "text/html"
+       }
+      },
+      "id": "tr_AAAA1112aa",
+      "status": "failed",
+      "amount": {
+       "currency": "EUR",
+       "value": "19.00"
+      },
+      "customerId": "cst_AAAA1111aa",
+      "subscriptionId": "sub_AAAA1111aa",
+      "failedAt": "2026-10-20T10:00:00+00:00",
+      "details": {
+       "failureReason": "insufficient_funds"
+      }
+     },
+     {
+      "resource": "payment",
+      "mode": "test",
+      "createdAt": "2026-10-02T10:00:00+00:00",
+      "description": "Fictional order",
+      "profileId": "pfl_Fictional01",
+      "sequenceType": "oneoff",
+      "method": "ideal",
+      "_links": {
+       "self": {
+        "href": "https://api.mollie.com/v2/payments/tr_AAAA1113aa",
+        "type": "application/hal+json"
+       },
+       "dashboard": {
+        "href": "https://my.mollie.com/dashboard/fictional",
+        "type": "text/html"
+       },
+       "checkout": {
+        "href": "https://www.mollie.com/checkout/select-method/fictionalA3",
+        "type": "text/html"
+       }
+      },
+      "id": "tr_AAAA1113aa",
+      "status": "open",
+      "amount": {
+       "currency": "EUR",
+       "value": "5.00"
+      },
+      "customerId": "cst_AAAA1111aa"
+     },
+     {
+      "resource": "payment",
+      "mode": "test",
+      "createdAt": "2026-10-02T10:00:00+00:00",
+      "description": "Fictional order",
+      "profileId": "pfl_Fictional01",
+      "sequenceType": "oneoff",
+      "method": "ideal",
+      "_links": {
+       "self": {
+        "href": "https://api.mollie.com/v2/payments/tr_BBBB2222bb",
+        "type": "application/hal+json"
+       },
+       "dashboard": {
+        "href": "https://my.mollie.com/dashboard/fictional",
+        "type": "text/html"
+       }
+      },
+      "id": "tr_BBBB2222bb",
+      "status": "paid",
+      "amount": {
+       "currency": "EUR",
+       "value": "29.00"
+      },
+      "customerId": "cst_BBBB2222bb"
+     }
+    ]
+   },
+   "_links": {
+    "self": {
+     "href": "https://api.mollie.com/v2/customers/cst_AAAA1111aa/payments",
+     "type": "application/hal+json"
+    },
+    "previous": null,
+    "next": null,
+    "documentation": {
+     "href": "https://docs.mollie.com/",
+     "type": "text/html"
+    }
+   }
+  },
+  "modes": [
+   "mixed_customers"
+  ]
+ },
+ {
+  "name": "customer-A-subscriptions",
+  "method": "GET",
+  "path": "/v2/customers/cst_AAAA1111aa/subscriptions",
+  "query": {
+   "limit": "10"
+  },
+  "status": 200,
+  "body": {
+   "count": 2,
+   "_embedded": {
+    "subscriptions": [
+     {
+      "resource": "subscription",
+      "id": "sub_AAAA1111aa",
+      "mode": "test",
+      "status": "active",
+      "amount": {
+       "currency": "EUR",
+       "value": "19.00"
+      },
+      "interval": "1 month",
+      "startDate": "2026-06-01",
+      "nextPaymentDate": "2026-11-20",
+      "description": "Fictional plan",
+      "method": null,
+      "times": null,
+      "timesRemaining": null,
+      "webhookUrl": null,
+      "metadata": null,
+      "customerId": "cst_AAAA1111aa",
+      "createdAt": "2026-06-01T00:00:00+00:00",
+      "_links": {
+       "self": {
+        "href": "https://api.mollie.com/v2/customers/cst_AAAA1111aa/subscriptions/sub_AAAA1111aa",
+        "type": "application/hal+json"
+       },
+       "customer": {
+        "href": "https://api.mollie.com/v2/customers/cst_AAAA1111aa",
+        "type": "application/hal+json"
+       }
+      }
+     },
+     {
+      "resource": "subscription",
+      "id": "sub_AAAA1112aa",
+      "mode": "test",
+      "status": "suspended",
+      "amount": {
+       "currency": "EUR",
+       "value": "19.00"
+      },
+      "interval": "1 month",
+      "startDate": "2026-06-01",
+      "nextPaymentDate": null,
+      "description": "Fictional plan",
+      "method": null,
+      "times": null,
+      "timesRemaining": null,
+      "webhookUrl": null,
+      "metadata": null,
+      "customerId": "cst_AAAA1111aa",
+      "createdAt": "2026-06-01T00:00:00+00:00",
+      "_links": {
+       "self": {
+        "href": "https://api.mollie.com/v2/customers/cst_AAAA1111aa/subscriptions/sub_AAAA1112aa",
+        "type": "application/hal+json"
+       },
+       "customer": {
+        "href": "https://api.mollie.com/v2/customers/cst_AAAA1111aa",
+        "type": "application/hal+json"
+       }
+      }
+     }
+    ]
+   },
+   "_links": {
+    "self": {
+     "href": "https://api.mollie.com/v2/customers/cst_AAAA1111aa/subscriptions",
+     "type": "application/hal+json"
+    },
+    "previous": null,
+    "next": null,
+    "documentation": {
+     "href": "https://docs.mollie.com/",
+     "type": "text/html"
+    }
+   }
+  }
+ },
+ {
+  "name": "payment-A1-refunds",
+  "method": "GET",
+  "path": "/v2/payments/tr_AAAA1111aa/refunds",
+  "query": {
+   "limit": "10"
+  },
+  "status": 200,
+  "body": {
+   "count": 1,
+   "_embedded": {
+    "refunds": [
+     {
+      "resource": "refund",
+      "id": "re_AAAA1111aa",
+      "mode": "test",
+      "description": "Fictional refund",
+      "amount": {
+       "currency": "EUR",
+       "value": "10.00"
+      },
+      "paymentId": "tr_AAAA1111aa",
+      "status": "refunded",
+      "createdAt": "2026-10-05T09:00:00+00:00",
+      "metadata": null,
+      "_links": {
+       "self": {
+        "href": "https://api.mollie.com/v2/payments/tr_AAAA1111aa/refunds/re_AAAA1111aa",
+        "type": "application/hal+json"
+       },
+       "payment": {
+        "href": "https://api.mollie.com/v2/payments/tr_AAAA1111aa",
+        "type": "application/hal+json"
+       }
+      }
+     }
+    ]
+   },
+   "_links": {
+    "self": {
+     "href": "https://api.mollie.com/v2/payments/tr_AAAA1111aa/refunds",
+     "type": "application/hal+json"
+    },
+    "previous": null,
+    "next": null,
+    "documentation": {
+     "href": "https://docs.mollie.com/",
+     "type": "text/html"
+    }
+   }
+  }
+ },
+ {
+  "name": "not-found",
+  "notFound": true,
+  "method": "GET",
+  "path": "/__not_found__",
+  "status": 404,
+  "body": {
+   "status": 404,
+   "title": "Not Found",
+   "detail": "No payment exists with token tr_unknown.",
+   "_links": {
+    "documentation": {
+     "href": "https://docs.mollie.com/overview/handling-errors",
+     "type": "text/html"
+    }
+   }
+  }
+ }
+]

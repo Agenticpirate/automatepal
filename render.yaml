@@ -16,3 +16,19 @@ services:
         sync: false
       - key: NODE_VERSION
         value: 22
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: ANTHROPIC_MODEL
+        value: claude-haiku-5-5
+      - key: LLM_DAILY_USD_CAP
+        value: "1.00"
+      - key: CONTEXT_DEV_API_KEY
+        sync: false
+      - key: BILLING_ENCRYPTION_KEYS
+        sync: false
+      - key: BILLING_ENCRYPTION_ACTIVE_KID
+        value: k1
+      - key: BILLING_RPC_SECRET
+        sync: false
+      - key: NEXT_PUBLIC_SITE_URL
+        sync: false

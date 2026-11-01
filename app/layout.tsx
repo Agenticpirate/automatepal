@@ -1,6 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Inter, Instrument_Serif } from "next/font/google";
 import "./globals.css";
+// The root error and not-found screens render PublicShell, so Next preloads its stylesheet on every route and
+// warns when a page never uses it. Loading it here (every selector is scoped under .ps) removes the unused preload.
+import "./components/public-shell.css";
 import { SITE_URL } from "../lib/site";
 
 const geistSans = Geist({

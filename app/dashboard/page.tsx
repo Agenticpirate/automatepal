@@ -37,7 +37,7 @@ export default function Dashboard() {
   }, []);
 
   const cols = useMemo<ColDef<Event>[]>(() => [
-    { field: "ts", headerName: "Time", width: 180, valueFormatter: (p) => new Date(p.value).toLocaleString() },
+    { field: "ts", headerName: "Time", width: 200, valueFormatter: (p) => new Date(p.value).toLocaleString() },
     { field: "kind", headerName: "Event", width: 150, valueFormatter: (p) => KIND_LABEL[p.value] ?? p.value,
       cellStyle: (p): CellStyle | undefined => {
         if (p.value === "payment_failed") return { color: "#dc2626", fontWeight: "600" };
@@ -45,10 +45,11 @@ export default function Dashboard() {
         return undefined;
       } },
     { field: "source", headerName: "Source", width: 140 },
-    { field: "customer", headerName: "Customer", flex: 1 },
+    // Minimum widths: below them the grid scrolls sideways instead of cutting columns to "fi…".
+    { field: "customer", headerName: "Customer", flex: 1, minWidth: 140 },
     { field: "amount", headerName: "Amount", width: 110, valueFormatter: (p) => (p.value != null ? `$${Number(p.value).toFixed(2)}` : "") },
-    { field: "note", headerName: "Note", flex: 1.4 },
-    { field: "refId", headerName: "PayPal ID", flex: 1 },
+    { field: "note", headerName: "Note", flex: 1.4, minWidth: 180 },
+    { field: "refId", headerName: "PayPal ID", flex: 1, minWidth: 150 },
   ], []);
 
   const selected=showDemo?demo:stats;
@@ -61,13 +62,13 @@ export default function Dashboard() {
 
   const vol=(anchor?Array.from({length:14},(_,i)=>{const day=new Date(anchor-(13-i)*86400000).toISOString().slice(0,10);return {day,total:events.filter(e=>e.source===(showDemo?"simulation":"paypal_sandbox")&&e.kind==="payment_succeeded"&&e.ts.startsWith(day)).reduce((a,e)=>a+(e.amount??0),0)};}):[]);
   return (
-    <main className="mx-auto max-w-6xl p-4">
-      <header className="mb-4 flex items-center justify-between">
+    <main className="ap-revenue mx-auto w-full max-w-6xl p-4">
+      <header className="mb-4 flex items-center justify-between gap-3">
         <div>
           <h1 className="text-xl font-bold">Revenue dashboard</h1>
           <p className="text-sm text-gray-500">PayPal sandbox recorded activity. Fictional events are labelled simulation.</p>
         </div>
-        <Link href="/workspace" className="rounded-lg border px-3 py-2 text-sm">Back to agent</Link>
+        <Link href="/workspace" className="shrink-0 whitespace-nowrap rounded-lg border px-3 py-2 text-sm">Back to agent</Link>
       </header>
       {error&&<p role="alert" className="mb-4 rounded bg-amber-50 p-4">{error} <Link href="/login" className="underline">Sign in</Link></p>}
       <div className="mb-4 flex gap-3"><button onClick={()=>setShowDemo(false)} className="rounded border p-2 text-sm">PayPal sandbox</button><button onClick={()=>setShowDemo(true)} className="rounded border p-2 text-sm">Fictional demo</button></div>

@@ -1,0 +1,472 @@
+[
+ {
+  "name": "invoice-A1",
+  "method": "GET",
+  "path": "/api/v2/invoices/AP-INV-1001",
+  "status": 200,
+  "body": {
+   "invoice": {
+    "currency_code": "USD",
+    "customer_id": "cbA111",
+    "deleted": false,
+    "id": "AP-INV-1001",
+    "is_gifted": false,
+    "price_type": "tax_exclusive",
+    "recurring": true,
+    "status": "paid",
+    "sub_total": 4900,
+    "tax": 0,
+    "term_finalized": true,
+    "date": 1790000000,
+    "subscription_id": "subA111",
+    "total": 4900,
+    "amount_paid": 4900,
+    "amount_due": 0
+   }
+  }
+ },
+ {
+  "name": "invoice-B1",
+  "method": "GET",
+  "path": "/api/v2/invoices/AP-INV-2001",
+  "status": 200,
+  "body": {
+   "invoice": {
+    "currency_code": "USD",
+    "customer_id": "cbB222",
+    "deleted": false,
+    "id": "AP-INV-2001",
+    "is_gifted": false,
+    "price_type": "tax_exclusive",
+    "recurring": true,
+    "status": "paid",
+    "sub_total": 2900,
+    "tax": 0,
+    "term_finalized": true,
+    "date": 1790000000,
+    "total": 2900,
+    "amount_paid": 2900,
+    "amount_due": 0
+   }
+  }
+ },
+ {
+  "name": "subscription-A",
+  "method": "GET",
+  "path": "/api/v2/subscriptions/subA111",
+  "status": 200,
+  "body": {
+   "subscription": {
+    "currency_code": "USD",
+    "customer_id": "cbA111",
+    "decommissioned": false,
+    "deleted": false,
+    "has_scheduled_advance_invoices": false,
+    "has_scheduled_changes": false,
+    "id": "subA111",
+    "status": "active",
+    "created_at": 1782000000,
+    "next_billing_at": 1793923200,
+    "current_term_end": 1793923200,
+    "due_invoices_count": 1,
+    "subscription_items": [
+     {
+      "item_price_id": "plan-monthly-USD",
+      "item_type": "plan",
+      "amount": 1900,
+      "quantity": 1
+     }
+    ]
+   },
+   "customer": {
+    "allow_direct_debit": false,
+    "auto_collection": "on",
+    "created_at": 1781000000,
+    "deleted": false,
+    "excess_payments": 0,
+    "id": "cbA111",
+    "net_term_days": 0,
+    "promotional_credits": 0,
+    "refundable_credits": 0,
+    "unbilled_charges": 0,
+    "email": "alex.payer@example.test"
+   }
+  }
+ },
+ {
+  "name": "customer-A",
+  "method": "GET",
+  "path": "/api/v2/customers/cbA111",
+  "status": 200,
+  "body": {
+   "customer": {
+    "allow_direct_debit": false,
+    "auto_collection": "on",
+    "created_at": 1781000000,
+    "deleted": false,
+    "excess_payments": 0,
+    "id": "cbA111",
+    "net_term_days": 0,
+    "promotional_credits": 0,
+    "refundable_credits": 0,
+    "unbilled_charges": 0,
+    "email": "alex.payer@example.test"
+   }
+  }
+ },
+ {
+  "name": "customer-B",
+  "method": "GET",
+  "path": "/api/v2/customers/cbB222",
+  "status": 200,
+  "body": {
+   "customer": {
+    "allow_direct_debit": false,
+    "auto_collection": "on",
+    "created_at": 1781000000,
+    "deleted": false,
+    "excess_payments": 0,
+    "id": "cbB222",
+    "net_term_days": 0,
+    "promotional_credits": 0,
+    "refundable_credits": 0,
+    "unbilled_charges": 0,
+    "email": "blair.payer@example.test"
+   }
+  }
+ },
+ {
+  "name": "txns-connect-check",
+  "method": "GET",
+  "path": "/api/v2/transactions",
+  "query": {
+   "limit": "1"
+  },
+  "status": 200,
+  "body": {
+   "list": [
+    {
+     "transaction": {
+      "currency_code": "USD",
+      "deleted": false,
+      "gateway": "chargebee",
+      "id": "txn_A111",
+      "payment_method": "card",
+      "type": "payment",
+      "date": 1790000000,
+      "customer_id": "cbA111",
+      "subscription_id": "subA111",
+      "status": "success",
+      "amount": 4900
+     }
+    }
+   ]
+  }
+ },
+ {
+  "name": "txns-customer-A",
+  "method": "GET",
+  "path": "/api/v2/transactions",
+  "query": {
+   "customer_id[is]": "cbA111",
+   "limit": "10"
+  },
+  "status": 200,
+  "body": {
+   "list": [
+    {
+     "transaction": {
+      "currency_code": "USD",
+      "deleted": false,
+      "gateway": "chargebee",
+      "id": "txn_A111",
+      "payment_method": "card",
+      "type": "payment",
+      "date": 1790000000,
+      "customer_id": "cbA111",
+      "subscription_id": "subA111",
+      "status": "success",
+      "amount": 4900
+     }
+    },
+    {
+     "transaction": {
+      "currency_code": "USD",
+      "deleted": false,
+      "gateway": "chargebee",
+      "id": "txn_A112",
+      "payment_method": "card",
+      "type": "payment",
+      "date": 1791728000,
+      "customer_id": "cbA111",
+      "subscription_id": "subA111",
+      "status": "failure",
+      "amount": 1900,
+      "error_text": "Card declined"
+     }
+    }
+   ]
+  }
+ },
+ {
+  "name": "txns-customer-A-mixed",
+  "method": "GET",
+  "path": "/api/v2/transactions",
+  "query": {
+   "customer_id[is]": "cbA111",
+   "limit": "10"
+  },
+  "status": 200,
+  "body": {
+   "list": [
+    {
+     "transaction": {
+      "currency_code": "USD",
+      "deleted": false,
+      "gateway": "chargebee",
+      "id": "txn_A111",
+      "payment_method": "card",
+      "type": "payment",
+      "date": 1790000000,
+      "customer_id": "cbA111",
+      "subscription_id": "subA111",
+      "status": "success",
+      "amount": 4900
+     }
+    },
+    {
+     "transaction": {
+      "currency_code": "USD",
+      "deleted": false,
+      "gateway": "chargebee",
+      "id": "txn_A112",
+      "payment_method": "card",
+      "type": "payment",
+      "date": 1791728000,
+      "customer_id": "cbA111",
+      "subscription_id": "subA111",
+      "status": "failure",
+      "amount": 1900,
+      "error_text": "Card declined"
+     }
+    },
+    {
+     "transaction": {
+      "currency_code": "USD",
+      "deleted": false,
+      "gateway": "chargebee",
+      "id": "txn_B221",
+      "payment_method": "card",
+      "type": "payment",
+      "date": 1790000000,
+      "customer_id": "cbB222",
+      "status": "success",
+      "amount": 2900
+     }
+    }
+   ]
+  },
+  "modes": [
+   "mixed_customers"
+  ]
+ },
+ {
+  "name": "invoices-customer-A",
+  "method": "GET",
+  "path": "/api/v2/invoices",
+  "query": {
+   "customer_id[is]": "cbA111",
+   "limit": "10"
+  },
+  "status": 200,
+  "body": {
+   "list": [
+    {
+     "invoice": {
+      "currency_code": "USD",
+      "customer_id": "cbA111",
+      "deleted": false,
+      "id": "AP-INV-1001",
+      "is_gifted": false,
+      "price_type": "tax_exclusive",
+      "recurring": true,
+      "status": "paid",
+      "sub_total": 4900,
+      "tax": 0,
+      "term_finalized": true,
+      "date": 1790000000,
+      "subscription_id": "subA111",
+      "total": 4900,
+      "amount_paid": 4900,
+      "amount_due": 0
+     }
+    },
+    {
+     "invoice": {
+      "currency_code": "USD",
+      "customer_id": "cbA111",
+      "deleted": false,
+      "id": "AP-INV-1002",
+      "is_gifted": false,
+      "price_type": "tax_exclusive",
+      "recurring": true,
+      "status": "payment_due",
+      "sub_total": 1900,
+      "tax": 0,
+      "term_finalized": true,
+      "date": 1790000000,
+      "subscription_id": "subA111",
+      "total": 1900,
+      "amount_paid": 0,
+      "amount_due": 1900,
+      "next_retry_at": 1793836800,
+      "dunning_attempts": []
+     }
+    }
+   ]
+  }
+ },
+ {
+  "name": "subs-customer-A",
+  "method": "GET",
+  "path": "/api/v2/subscriptions",
+  "query": {
+   "customer_id[is]": "cbA111",
+   "limit": "10"
+  },
+  "status": 200,
+  "body": {
+   "list": [
+    {
+     "subscription": {
+      "currency_code": "USD",
+      "customer_id": "cbA111",
+      "decommissioned": false,
+      "deleted": false,
+      "has_scheduled_advance_invoices": false,
+      "has_scheduled_changes": false,
+      "id": "subA111",
+      "status": "active",
+      "created_at": 1782000000,
+      "next_billing_at": 1793923200,
+      "current_term_end": 1793923200,
+      "due_invoices_count": 1,
+      "subscription_items": [
+       {
+        "item_price_id": "plan-monthly-USD",
+        "item_type": "plan",
+        "amount": 1900,
+        "quantity": 1
+       }
+      ]
+     },
+     "customer": {
+      "allow_direct_debit": false,
+      "auto_collection": "on",
+      "created_at": 1781000000,
+      "deleted": false,
+      "excess_payments": 0,
+      "id": "cbA111",
+      "net_term_days": 0,
+      "promotional_credits": 0,
+      "refundable_credits": 0,
+      "unbilled_charges": 0,
+      "email": "alex.payer@example.test"
+     }
+    }
+   ]
+  }
+ },
+ {
+  "name": "credit-notes-customer-A",
+  "method": "GET",
+  "path": "/api/v2/credit_notes",
+  "query": {
+   "customer_id[is]": "cbA111",
+   "limit": "10"
+  },
+  "status": 200,
+  "body": {
+   "list": [
+    {
+     "credit_note": {
+      "currency_code": "USD",
+      "customer_id": "cbA111",
+      "deleted": false,
+      "id": "CN-A1",
+      "price_type": "tax_exclusive",
+      "status": "refunded",
+      "sub_total": 1000,
+      "type": "refundable",
+      "date": 1790259200,
+      "reference_invoice_id": "AP-INV-1001",
+      "total": 1000,
+      "amount_refunded": 1000
+     }
+    }
+   ]
+  }
+ },
+ {
+  "name": "credit-notes-customer-A-mixed",
+  "method": "GET",
+  "path": "/api/v2/credit_notes",
+  "query": {
+   "customer_id[is]": "cbA111",
+   "limit": "10"
+  },
+  "status": 200,
+  "body": {
+   "list": [
+    {
+     "credit_note": {
+      "currency_code": "USD",
+      "customer_id": "cbA111",
+      "deleted": false,
+      "id": "CN-A1",
+      "price_type": "tax_exclusive",
+      "status": "refunded",
+      "sub_total": 1000,
+      "type": "refundable",
+      "date": 1790259200,
+      "reference_invoice_id": "AP-INV-1001",
+      "total": 1000,
+      "amount_refunded": 1000
+     }
+    },
+    {
+     "credit_note": {
+      "currency_code": "USD",
+      "customer_id": "cbB222",
+      "deleted": false,
+      "id": "CN-B1",
+      "price_type": "tax_exclusive",
+      "status": "refund_due",
+      "sub_total": 500,
+      "type": "refundable",
+      "date": 1790259200,
+      "reference_invoice_id": "AP-INV-2001",
+      "total": 500,
+      "amount_refunded": 0
+     }
+    }
+   ]
+  },
+  "modes": [
+   "mixed_customers"
+  ]
+ },
+ {
+  "name": "not-found",
+  "notFound": true,
+  "method": "GET",
+  "path": "/__not_found__",
+  "status": 404,
+  "body": {
+   "message": "Sorry, we couldn't find that resource",
+   "type": "invalid_request",
+   "api_error_code": "resource_not_found",
+   "http_status_code": 404
+  }
+ }
+]

@@ -1,0 +1,978 @@
+{
+ "provider": "adyen",
+ "documents": [
+  {
+   "file": "json/CheckoutService-v71.json",
+   "openapi": "3.1.0",
+   "info": {
+    "title": "Adyen Checkout API",
+    "version": "71"
+   },
+   "servers": [
+    {
+     "url": "https://checkout-test.adyen.com/v71"
+    }
+   ],
+   "paths": {
+    "/paymentLinks/{linkId}": {
+     "get": {
+      "operationId": "get-paymentLinks-linkId",
+      "parameters": [
+       {
+        "name": "linkId",
+        "in": "path",
+        "required": true,
+        "style": "simple",
+        "explode": false,
+        "schema": {
+         "type": "string"
+        }
+       }
+      ],
+      "responses": {
+       "200": {
+        "content": {
+         "application/json": {
+          "schema": {
+           "$ref": "#/components/schemas/PaymentLinkResponse"
+          }
+         }
+        }
+       },
+       "400": {
+        "content": {
+         "application/json": {
+          "schema": {
+           "$ref": "#/components/schemas/ServiceError"
+          }
+         }
+        }
+       },
+       "401": {
+        "content": {
+         "application/json": {
+          "schema": {
+           "$ref": "#/components/schemas/ServiceError"
+          }
+         }
+        }
+       },
+       "403": {
+        "content": {
+         "application/json": {
+          "schema": {
+           "$ref": "#/components/schemas/ServiceError"
+          }
+         }
+        }
+       },
+       "422": {
+        "content": {
+         "application/json": {
+          "schema": {
+           "$ref": "#/components/schemas/ServiceError"
+          }
+         }
+        }
+       },
+       "500": {
+        "content": {
+         "application/json": {
+          "schema": {
+           "$ref": "#/components/schemas/ServiceError"
+          }
+         }
+        }
+       }
+      },
+      "security": [
+       {
+        "BasicAuth": []
+       },
+       {
+        "ApiKeyAuth": []
+       }
+      ]
+     }
+    }
+   },
+   "components": {
+    "securitySchemes": {
+     "ApiKeyAuth": {
+      "type": "apiKey",
+      "name": "X-API-Key",
+      "in": "header"
+     },
+     "BasicAuth": {
+      "type": "http",
+      "scheme": "basic"
+     }
+    },
+    "schemas": {
+     "PaymentLinkResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+       "allowedPaymentMethods": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       },
+       "amount": {
+        "$ref": "#/components/schemas/Amount"
+       },
+       "applicationInfo": {
+        "$ref": "#/components/schemas/ApplicationInfo"
+       },
+       "billingAddress": {
+        "$ref": "#/components/schemas/Address"
+       },
+       "blockedPaymentMethods": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       },
+       "captureDelayHours": {
+        "type": "integer",
+        "format": "int32"
+       },
+       "countryCode": {
+        "type": "string",
+        "maxLength": 100
+       },
+       "dateOfBirth": {
+        "type": "string",
+        "format": "date"
+       },
+       "deliverAt": {
+        "type": "string",
+        "format": "date-time"
+       },
+       "deliveryAddress": {
+        "$ref": "#/components/schemas/Address"
+       },
+       "description": {
+        "type": "string"
+       },
+       "expiresAt": {
+        "type": "string",
+        "format": "date-time"
+       },
+       "fundOrigin": {
+        "$ref": "#/components/schemas/FundOrigin"
+       },
+       "fundRecipient": {
+        "$ref": "#/components/schemas/FundRecipient"
+       },
+       "id": {
+        "type": "string",
+        "readOnly": true
+       },
+       "installmentOptions": {
+        "type": "object",
+        "additionalProperties": {
+         "$ref": "#/components/schemas/InstallmentOption"
+        }
+       },
+       "lineItems": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/LineItem"
+        }
+       },
+       "manualCapture": {
+        "type": "boolean"
+       },
+       "mcc": {
+        "type": "string",
+        "maxLength": 16
+       },
+       "merchantAccount": {
+        "type": "string"
+       },
+       "merchantOrderReference": {
+        "type": "string",
+        "maxLength": 1000
+       },
+       "metadata": {
+        "type": "object",
+        "additionalProperties": {
+         "type": "string"
+        },
+        "maxLength": 80
+       },
+       "platformChargebackLogic": {
+        "$ref": "#/components/schemas/PlatformChargebackLogic"
+       },
+       "recurringProcessingModel": {
+        "type": "string",
+        "enum": [
+         "CardOnFile",
+         "Subscription",
+         "UnscheduledCardOnFile"
+        ],
+        "maxLength": 50
+       },
+       "reference": {
+        "type": "string"
+       },
+       "requiredShopperFields": {
+        "type": "array",
+        "items": {
+         "type": "string",
+         "enum": [
+          "billingAddress",
+          "deliveryAddress",
+          "shopperEmail",
+          "shopperName",
+          "telephoneNumber"
+         ]
+        }
+       },
+       "returnUrl": {
+        "type": "string",
+        "maxLength": 8000
+       },
+       "reusable": {
+        "type": "boolean"
+       },
+       "riskData": {
+        "$ref": "#/components/schemas/RiskData"
+       },
+       "shopperEmail": {
+        "type": "string",
+        "maxLength": 500
+       },
+       "shopperLocale": {
+        "type": "string",
+        "maxLength": 32
+       },
+       "shopperName": {
+        "$ref": "#/components/schemas/Name"
+       },
+       "shopperReference": {
+        "type": "string",
+        "maxLength": 256,
+        "minLength": 3
+       },
+       "shopperStatement": {
+        "type": "string",
+        "maxLength": 10000
+       },
+       "showRemovePaymentMethodButton": {
+        "type": "boolean",
+        "default": true
+       },
+       "socialSecurityNumber": {
+        "type": "string",
+        "maxLength": 32
+       },
+       "splitCardFundingSources": {
+        "type": "boolean",
+        "default": false
+       },
+       "splits": {
+        "type": "array",
+        "items": {
+         "$ref": "#/components/schemas/Split"
+        }
+       },
+       "status": {
+        "type": "string",
+        "enum": [
+         "active",
+         "completed",
+         "expired",
+         "paid",
+         "paymentPending"
+        ]
+       },
+       "store": {
+        "type": "string"
+       },
+       "storePaymentMethodMode": {
+        "type": "string",
+        "enum": [
+         "askForConsent",
+         "disabled",
+         "enabled"
+        ]
+       },
+       "telephoneNumber": {
+        "type": "string",
+        "maxLength": 32
+       },
+       "themeId": {
+        "type": "string"
+       },
+       "threeDS2RequestData": {
+        "$ref": "#/components/schemas/CheckoutSessionThreeDS2RequestData"
+       },
+       "updatedAt": {
+        "type": "string",
+        "format": "date-time"
+       },
+       "url": {
+        "type": "string",
+        "readOnly": true
+       }
+      },
+      "required": [
+       "amount",
+       "id",
+       "merchantAccount",
+       "reference",
+       "status",
+       "url"
+      ]
+     },
+     "ServiceError": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+       "additionalData": {
+        "type": "object",
+        "additionalProperties": {
+         "type": "string"
+        }
+       },
+       "errorCode": {
+        "type": "string"
+       },
+       "errorType": {
+        "type": "string"
+       },
+       "message": {
+        "type": "string"
+       },
+       "pspReference": {
+        "type": "string"
+       },
+       "status": {
+        "type": "integer",
+        "format": "int32"
+       }
+      }
+     },
+     "Amount": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+       "currency": {
+        "type": "string",
+        "maxLength": 3,
+        "minLength": 3
+       },
+       "value": {
+        "type": "integer",
+        "format": "int64"
+       }
+      },
+      "required": [
+       "currency",
+       "value"
+      ]
+     },
+     "ApplicationInfo": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+       "adyenLibrary": {
+        "$ref": "#/components/schemas/CommonField"
+       },
+       "adyenPaymentSource": {
+        "$ref": "#/components/schemas/CommonField"
+       },
+       "externalPlatform": {
+        "$ref": "#/components/schemas/ExternalPlatform"
+       },
+       "merchantApplication": {
+        "$ref": "#/components/schemas/CommonField"
+       },
+       "merchantDevice": {
+        "$ref": "#/components/schemas/MerchantDevice"
+       },
+       "shopperInteractionDevice": {
+        "$ref": "#/components/schemas/ShopperInteractionDevice"
+       }
+      }
+     },
+     "Address": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+       "city": {
+        "type": "string",
+        "maxLength": 3000
+       },
+       "country": {
+        "type": "string"
+       },
+       "houseNumberOrName": {
+        "type": "string",
+        "maxLength": 3000
+       },
+       "postalCode": {
+        "type": "string"
+       },
+       "stateOrProvince": {
+        "type": "string"
+       },
+       "street": {
+        "type": "string",
+        "maxLength": 3000
+       }
+      },
+      "required": [
+       "city",
+       "country",
+       "houseNumberOrName",
+       "postalCode",
+       "street"
+      ]
+     },
+     "FundOrigin": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+       "billingAddress": {
+        "$ref": "#/components/schemas/Address"
+       },
+       "shopperEmail": {
+        "type": "string"
+       },
+       "shopperName": {
+        "$ref": "#/components/schemas/Name"
+       },
+       "telephoneNumber": {
+        "type": "string"
+       },
+       "walletIdentifier": {
+        "type": "string"
+       }
+      }
+     },
+     "FundRecipient": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+       "IBAN": {
+        "type": "string"
+       },
+       "billingAddress": {
+        "$ref": "#/components/schemas/Address"
+       },
+       "paymentMethod": {
+        "$ref": "#/components/schemas/CardDetails"
+       },
+       "shopperEmail": {
+        "type": "string"
+       },
+       "shopperName": {
+        "$ref": "#/components/schemas/Name"
+       },
+       "shopperReference": {
+        "type": "string",
+        "maxLength": 256,
+        "minLength": 3
+       },
+       "storedPaymentMethodId": {
+        "type": "string",
+        "maxLength": 64
+       },
+       "subMerchant": {
+        "$ref": "#/components/schemas/SubMerchant"
+       },
+       "telephoneNumber": {
+        "type": "string"
+       },
+       "walletIdentifier": {
+        "type": "string"
+       },
+       "walletOwnerTaxId": {
+        "type": "string"
+       },
+       "walletPurpose": {
+        "type": "string",
+        "enum": [
+         "identifiedBoleto",
+         "transferDifferentWallet",
+         "transferOwnWallet",
+         "transferSameWallet",
+         "unidentifiedBoleto"
+        ]
+       }
+      }
+     },
+     "InstallmentOption": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+       "maxValue": {
+        "type": "integer",
+        "format": "int32"
+       },
+       "plans": {
+        "type": "array",
+        "items": {
+         "type": "string",
+         "enum": [
+          "bonus",
+          "buynow_paylater",
+          "interes_refund_prctg",
+          "interest_bonus",
+          "nointeres_refund_prctg",
+          "nointerest_bonus",
+          "refund_prctg",
+          "regular",
+          "revolving",
+          "with_interest"
+         ]
+        }
+       },
+       "preselectedValue": {
+        "type": "integer",
+        "format": "int32"
+       },
+       "values": {
+        "type": "array",
+        "items": {
+         "type": "integer",
+         "format": "int32"
+        }
+       }
+      }
+     },
+     "LineItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+       "amountExcludingTax": {
+        "type": "integer",
+        "format": "int64"
+       },
+       "amountIncludingTax": {
+        "type": "integer",
+        "format": "int64"
+       },
+       "brand": {
+        "type": "string"
+       },
+       "color": {
+        "type": "string"
+       },
+       "description": {
+        "type": "string",
+        "maxLength": 10000
+       },
+       "id": {
+        "type": "string"
+       },
+       "imageUrl": {
+        "type": "string"
+       },
+       "itemCategory": {
+        "type": "string"
+       },
+       "manufacturer": {
+        "type": "string"
+       },
+       "marketplaceSellerId": {
+        "type": "string"
+       },
+       "productUrl": {
+        "type": "string"
+       },
+       "quantity": {
+        "type": "integer",
+        "format": "int64"
+       },
+       "receiverEmail": {
+        "type": "string"
+       },
+       "riskCategory": {
+        "type": "string"
+       },
+       "size": {
+        "type": "string"
+       },
+       "sku": {
+        "type": "string"
+       },
+       "taxAmount": {
+        "type": "integer",
+        "format": "int64"
+       },
+       "taxPercentage": {
+        "type": "integer",
+        "format": "int64"
+       },
+       "upc": {
+        "type": "string"
+       }
+      }
+     },
+     "PlatformChargebackLogic": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+       "behavior": {
+        "type": "string",
+        "enum": [
+         "deductFromOneBalanceAccount",
+         "deductAccordingToSplitRatio",
+         "deductFromLiableAccount"
+        ]
+       },
+       "costAllocationAccount": {
+        "type": "string"
+       },
+       "targetAccount": {
+        "type": "string"
+       }
+      }
+     },
+     "RiskData": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+       "clientData": {
+        "type": "string",
+        "maxLength": 5000
+       },
+       "customFields": {
+        "type": "object",
+        "additionalProperties": {
+         "type": "string"
+        }
+       },
+       "fraudOffset": {
+        "type": "integer",
+        "format": "int32"
+       },
+       "profileReference": {
+        "type": "string"
+       }
+      }
+     },
+     "Name": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+       "firstName": {
+        "type": "string",
+        "maxLength": 80
+       },
+       "lastName": {
+        "type": "string",
+        "maxLength": 80
+       }
+      },
+      "required": [
+       "firstName",
+       "lastName"
+      ]
+     },
+     "Split": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+       "account": {
+        "type": "string"
+       },
+       "amount": {
+        "$ref": "#/components/schemas/SplitAmount"
+       },
+       "description": {
+        "type": "string"
+       },
+       "reference": {
+        "type": "string"
+       },
+       "type": {
+        "type": "string",
+        "enum": [
+         "AcquiringFees",
+         "AdyenCommission",
+         "AdyenFees",
+         "AdyenMarkup",
+         "BalanceAccount",
+         "Commission",
+         "Default",
+         "Interchange",
+         "MarketPlace",
+         "PaymentFee",
+         "Remainder",
+         "SchemeFee",
+         "Surcharge",
+         "Tip",
+         "TopUp",
+         "VAT"
+        ]
+       }
+      },
+      "required": [
+       "type"
+      ]
+     },
+     "CheckoutSessionThreeDS2RequestData": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+       "homePhone": {
+        "$ref": "#/components/schemas/Phone"
+       },
+       "mobilePhone": {
+        "$ref": "#/components/schemas/Phone"
+       },
+       "threeDSRequestorChallengeInd": {
+        "type": "string",
+        "enum": [
+         "01",
+         "02",
+         "03",
+         "04",
+         "05",
+         "06"
+        ]
+       },
+       "workPhone": {
+        "$ref": "#/components/schemas/Phone"
+       }
+      }
+     },
+     "CommonField": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+       "name": {
+        "type": "string"
+       },
+       "version": {
+        "type": "string"
+       }
+      }
+     },
+     "ExternalPlatform": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+       "integrator": {
+        "type": "string"
+       },
+       "name": {
+        "type": "string"
+       },
+       "version": {
+        "type": "string"
+       }
+      }
+     },
+     "MerchantDevice": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+       "os": {
+        "type": "string"
+       },
+       "osVersion": {
+        "type": "string"
+       },
+       "reference": {
+        "type": "string"
+       }
+      }
+     },
+     "ShopperInteractionDevice": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+       "locale": {
+        "type": "string"
+       },
+       "os": {
+        "type": "string"
+       },
+       "osVersion": {
+        "type": "string"
+       }
+      }
+     },
+     "CardDetails": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+       "billingSequenceNumber": {
+        "type": "string"
+       },
+       "brand": {
+        "type": "string"
+       },
+       "checkoutAttemptId": {
+        "type": "string"
+       },
+       "cupsecureplus.smscode": {
+        "type": "string",
+        "deprecated": true
+       },
+       "cvc": {
+        "type": "string"
+       },
+       "encryptedCard": {
+        "type": "string",
+        "maxLength": 40000
+       },
+       "encryptedCardNumber": {
+        "type": "string",
+        "maxLength": 15000
+       },
+       "encryptedExpiryMonth": {
+        "type": "string",
+        "maxLength": 15000
+       },
+       "encryptedExpiryYear": {
+        "type": "string",
+        "maxLength": 15000
+       },
+       "encryptedPassword": {
+        "type": "string",
+        "maxLength": 15000
+       },
+       "encryptedSecurityCode": {
+        "type": "string",
+        "maxLength": 15000
+       },
+       "expiryMonth": {
+        "type": "string"
+       },
+       "expiryYear": {
+        "type": "string"
+       },
+       "fastlaneData": {
+        "type": "string"
+       },
+       "fundingSource": {
+        "type": "string",
+        "enum": [
+         "credit",
+         "debit",
+         "prepaid"
+        ]
+       },
+       "holderName": {
+        "type": "string",
+        "maxLength": 15000
+       },
+       "networkPaymentReference": {
+        "type": "string"
+       },
+       "number": {
+        "type": "string"
+       },
+       "recurringDetailReference": {
+        "type": "string",
+        "deprecated": true
+       },
+       "sdkData": {
+        "type": "string",
+        "maxLength": 50000
+       },
+       "shopperNotificationReference": {
+        "type": "string"
+       },
+       "srcCorrelationId": {
+        "type": "string"
+       },
+       "srcDigitalCardId": {
+        "type": "string"
+       },
+       "srcScheme": {
+        "type": "string"
+       },
+       "srcTokenReference": {
+        "type": "string"
+       },
+       "storedPaymentMethodId": {
+        "type": "string",
+        "maxLength": 64
+       },
+       "threeDS2SdkVersion": {
+        "type": "string",
+        "maxLength": 12
+       },
+       "type": {
+        "type": "string",
+        "default": "scheme",
+        "enum": [
+         "bcmc",
+         "scheme",
+         "networkToken",
+         "giftcard",
+         "card",
+         "clicktopay"
+        ]
+       }
+      },
+      "title": "Card"
+     },
+     "SubMerchant": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+       "city": {
+        "type": "string"
+       },
+       "country": {
+        "type": "string"
+       },
+       "mcc": {
+        "type": "string"
+       },
+       "name": {
+        "type": "string"
+       },
+       "taxId": {
+        "type": "string"
+       }
+      }
+     },
+     "SplitAmount": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+       "currency": {
+        "type": "string",
+        "maxLength": 3,
+        "minLength": 3
+       },
+       "value": {
+        "type": "integer",
+        "format": "int64"
+       }
+      },
+      "required": [
+       "value"
+      ]
+     },
+     "Phone": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+       "cc": {
+        "type": "string",
+        "maxLength": 3,
+        "minLength": 1
+       },
+       "subscriber": {
+        "type": "string",
+        "maxLength": 15
+       }
+      }
+     }
+    }
+   }
+  }
+ ]
+}

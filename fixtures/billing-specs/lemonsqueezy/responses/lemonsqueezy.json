@@ -1,0 +1,429 @@
+[
+ {
+  "name": "users-me",
+  "method": "GET",
+  "path": "/v1/users/me",
+  "status": 200,
+  "body": {
+   "data": {
+    "type": "users",
+    "id": "1",
+    "attributes": {
+     "name": "Fictional Owner",
+     "email": "owner@example.test",
+     "created_at": "2026-01-01T00:00:00.000000Z"
+    }
+   }
+  },
+  "contentType": "application/vnd.api+json"
+ },
+ {
+  "name": "orders-connect-check",
+  "method": "GET",
+  "path": "/v1/orders",
+  "query": {
+   "page[size]": "1"
+  },
+  "status": 200,
+  "body": {
+   "data": [
+    {
+     "type": "orders",
+     "id": "101",
+     "attributes": {
+      "store_id": 1,
+      "customer_id": 11,
+      "identifier": "aaaa1111-2222-4333-8444-555566660101",
+      "order_number": 1101,
+      "user_name": "Fictional",
+      "user_email": "alex.payer@example.test",
+      "currency": "USD",
+      "subtotal": 4900,
+      "total": 4900,
+      "status": "partial_refund",
+      "refunded": false,
+      "refunded_at": "2026-10-05T09:00:00.000000Z",
+      "refunded_amount": 1000,
+      "test_mode": true,
+      "urls": {
+       "receipt": "https://app.lemonsqueezy.com/my-orders/fictional-101"
+      },
+      "created_at": "2026-10-02T10:00:00.000000Z",
+      "updated_at": "2026-10-02T10:00:00.000000Z"
+     }
+    }
+   ]
+  },
+  "contentType": "application/vnd.api+json"
+ },
+ {
+  "name": "order-A",
+  "method": "GET",
+  "path": "/v1/orders/101",
+  "status": 200,
+  "body": {
+   "data": {
+    "type": "orders",
+    "id": "101",
+    "attributes": {
+     "store_id": 1,
+     "customer_id": 11,
+     "identifier": "aaaa1111-2222-4333-8444-555566660101",
+     "order_number": 1101,
+     "user_name": "Fictional",
+     "user_email": "alex.payer@example.test",
+     "currency": "USD",
+     "subtotal": 4900,
+     "total": 4900,
+     "status": "partial_refund",
+     "refunded": false,
+     "refunded_at": "2026-10-05T09:00:00.000000Z",
+     "refunded_amount": 1000,
+     "test_mode": true,
+     "urls": {
+      "receipt": "https://app.lemonsqueezy.com/my-orders/fictional-101"
+     },
+     "created_at": "2026-10-02T10:00:00.000000Z",
+     "updated_at": "2026-10-02T10:00:00.000000Z"
+    }
+   }
+  },
+  "contentType": "application/vnd.api+json"
+ },
+ {
+  "name": "order-B",
+  "method": "GET",
+  "path": "/v1/orders/202",
+  "status": 200,
+  "body": {
+   "data": {
+    "type": "orders",
+    "id": "202",
+    "attributes": {
+     "store_id": 1,
+     "customer_id": 22,
+     "identifier": "aaaa1111-2222-4333-8444-555566660202",
+     "order_number": 1202,
+     "user_name": "Fictional",
+     "user_email": "blair.payer@example.test",
+     "currency": "USD",
+     "subtotal": 2900,
+     "total": 2900,
+     "status": "paid",
+     "refunded": false,
+     "refunded_at": null,
+     "refunded_amount": 0,
+     "test_mode": true,
+     "urls": {
+      "receipt": "https://app.lemonsqueezy.com/my-orders/fictional-202"
+     },
+     "created_at": "2026-10-02T10:00:00.000000Z",
+     "updated_at": "2026-10-02T10:00:00.000000Z"
+    }
+   }
+  },
+  "contentType": "application/vnd.api+json"
+ },
+ {
+  "name": "order-live",
+  "method": "GET",
+  "path": "/v1/orders/303",
+  "status": 200,
+  "body": {
+   "data": {
+    "type": "orders",
+    "id": "303",
+    "attributes": {
+     "store_id": 1,
+     "customer_id": 11,
+     "identifier": "aaaa1111-2222-4333-8444-555566660303",
+     "order_number": 1303,
+     "user_name": "Fictional",
+     "user_email": "alex.payer@example.test",
+     "currency": "USD",
+     "subtotal": 4900,
+     "total": 4900,
+     "status": "paid",
+     "refunded": false,
+     "refunded_at": null,
+     "refunded_amount": 0,
+     "test_mode": false,
+     "urls": {
+      "receipt": "https://app.lemonsqueezy.com/my-orders/fictional-303"
+     },
+     "created_at": "2026-10-02T10:00:00.000000Z",
+     "updated_at": "2026-10-02T10:00:00.000000Z"
+    }
+   }
+  },
+  "contentType": "application/vnd.api+json"
+ },
+ {
+  "name": "subscription-A",
+  "method": "GET",
+  "path": "/v1/subscriptions/501",
+  "status": 200,
+  "body": {
+   "data": {
+    "type": "subscriptions",
+    "id": "501",
+    "attributes": {
+     "store_id": 1,
+     "customer_id": 11,
+     "order_id": 101,
+     "product_name": "Fictional plan",
+     "user_name": "Fictional",
+     "user_email": "alex.payer@example.test",
+     "status": "past_due",
+     "status_formatted": "Past due",
+     "card_last_four": "4242",
+     "renews_at": "2026-11-20T10:00:00.000000Z",
+     "ends_at": null,
+     "trial_ends_at": null,
+     "test_mode": true,
+     "urls": {
+      "update_payment_method": "https://app.lemonsqueezy.com/subscription/fictional/payment-details",
+      "customer_portal": "https://app.lemonsqueezy.com/billing"
+     },
+     "created_at": "2026-06-01T00:00:00.000000Z",
+     "updated_at": "2026-10-20T10:00:00.000000Z"
+    }
+   }
+  },
+  "contentType": "application/vnd.api+json"
+ },
+ {
+  "name": "invoices-sub-A",
+  "method": "GET",
+  "path": "/v1/subscription-invoices",
+  "query": {
+   "filter[subscription_id]": "501",
+   "page[size]": "10"
+  },
+  "status": 200,
+  "body": {
+   "data": [
+    {
+     "type": "subscription-invoices",
+     "id": "9001",
+     "attributes": {
+      "store_id": 1,
+      "subscription_id": 501,
+      "customer_id": 11,
+      "user_email": "alex.payer@example.test",
+      "billing_reason": "renewal",
+      "card_last_four": "4242",
+      "currency": "USD",
+      "status": "paid",
+      "status_formatted": "Paid",
+      "refunded": false,
+      "refunded_at": null,
+      "refunded_amount": 0,
+      "subtotal": 1900,
+      "total": 1900,
+      "test_mode": true,
+      "urls": {
+       "invoice_url": "https://app.lemonsqueezy.com/my-orders/fictional/subscription-invoice/9001"
+      },
+      "created_at": "2026-09-20T10:00:00.000000Z",
+      "updated_at": "2026-09-20T10:00:00.000000Z"
+     }
+    },
+    {
+     "type": "subscription-invoices",
+     "id": "9002",
+     "attributes": {
+      "store_id": 1,
+      "subscription_id": 501,
+      "customer_id": 11,
+      "user_email": "alex.payer@example.test",
+      "billing_reason": "renewal",
+      "card_last_four": "4242",
+      "currency": "USD",
+      "status": "refunded",
+      "status_formatted": "Paid",
+      "refunded": true,
+      "refunded_at": "2026-10-01T00:00:00.000000Z",
+      "refunded_amount": 1900,
+      "subtotal": 1900,
+      "total": 1900,
+      "test_mode": true,
+      "urls": {
+       "invoice_url": "https://app.lemonsqueezy.com/my-orders/fictional/subscription-invoice/9002"
+      },
+      "created_at": "2026-08-20T10:00:00.000000Z",
+      "updated_at": "2026-09-20T10:00:00.000000Z"
+     }
+    },
+    {
+     "type": "subscription-invoices",
+     "id": "9003",
+     "attributes": {
+      "store_id": 1,
+      "subscription_id": 501,
+      "customer_id": 11,
+      "user_email": "alex.payer@example.test",
+      "billing_reason": "renewal",
+      "card_last_four": "4242",
+      "currency": "USD",
+      "status": "pending",
+      "status_formatted": "Paid",
+      "refunded": false,
+      "refunded_at": null,
+      "refunded_amount": 0,
+      "subtotal": 1900,
+      "total": 1900,
+      "test_mode": true,
+      "urls": {
+       "invoice_url": "https://app.lemonsqueezy.com/my-orders/fictional/subscription-invoice/9003"
+      },
+      "created_at": "2026-10-20T10:00:00.000000Z",
+      "updated_at": "2026-09-20T10:00:00.000000Z"
+     }
+    }
+   ]
+  },
+  "contentType": "application/vnd.api+json"
+ },
+ {
+  "name": "invoices-sub-A-mixed",
+  "method": "GET",
+  "path": "/v1/subscription-invoices",
+  "query": {
+   "filter[subscription_id]": "501",
+   "page[size]": "10"
+  },
+  "status": 200,
+  "body": {
+   "data": [
+    {
+     "type": "subscription-invoices",
+     "id": "9001",
+     "attributes": {
+      "store_id": 1,
+      "subscription_id": 501,
+      "customer_id": 11,
+      "user_email": "alex.payer@example.test",
+      "billing_reason": "renewal",
+      "card_last_four": "4242",
+      "currency": "USD",
+      "status": "paid",
+      "status_formatted": "Paid",
+      "refunded": false,
+      "refunded_at": null,
+      "refunded_amount": 0,
+      "subtotal": 1900,
+      "total": 1900,
+      "test_mode": true,
+      "urls": {
+       "invoice_url": "https://app.lemonsqueezy.com/my-orders/fictional/subscription-invoice/9001"
+      },
+      "created_at": "2026-09-20T10:00:00.000000Z",
+      "updated_at": "2026-09-20T10:00:00.000000Z"
+     }
+    },
+    {
+     "type": "subscription-invoices",
+     "id": "9002",
+     "attributes": {
+      "store_id": 1,
+      "subscription_id": 501,
+      "customer_id": 11,
+      "user_email": "alex.payer@example.test",
+      "billing_reason": "renewal",
+      "card_last_four": "4242",
+      "currency": "USD",
+      "status": "refunded",
+      "status_formatted": "Paid",
+      "refunded": true,
+      "refunded_at": "2026-10-01T00:00:00.000000Z",
+      "refunded_amount": 1900,
+      "subtotal": 1900,
+      "total": 1900,
+      "test_mode": true,
+      "urls": {
+       "invoice_url": "https://app.lemonsqueezy.com/my-orders/fictional/subscription-invoice/9002"
+      },
+      "created_at": "2026-08-20T10:00:00.000000Z",
+      "updated_at": "2026-09-20T10:00:00.000000Z"
+     }
+    },
+    {
+     "type": "subscription-invoices",
+     "id": "9003",
+     "attributes": {
+      "store_id": 1,
+      "subscription_id": 501,
+      "customer_id": 11,
+      "user_email": "alex.payer@example.test",
+      "billing_reason": "renewal",
+      "card_last_four": "4242",
+      "currency": "USD",
+      "status": "pending",
+      "status_formatted": "Paid",
+      "refunded": false,
+      "refunded_at": null,
+      "refunded_amount": 0,
+      "subtotal": 1900,
+      "total": 1900,
+      "test_mode": true,
+      "urls": {
+       "invoice_url": "https://app.lemonsqueezy.com/my-orders/fictional/subscription-invoice/9003"
+      },
+      "created_at": "2026-10-20T10:00:00.000000Z",
+      "updated_at": "2026-09-20T10:00:00.000000Z"
+     }
+    },
+    {
+     "type": "subscription-invoices",
+     "id": "9900",
+     "attributes": {
+      "store_id": 1,
+      "subscription_id": 601,
+      "customer_id": 22,
+      "user_email": "blair.payer@example.test",
+      "billing_reason": "renewal",
+      "card_last_four": "4242",
+      "currency": "USD",
+      "status": "paid",
+      "status_formatted": "Paid",
+      "refunded": false,
+      "refunded_at": null,
+      "refunded_amount": 0,
+      "subtotal": 1900,
+      "total": 1900,
+      "test_mode": true,
+      "urls": {
+       "invoice_url": "https://app.lemonsqueezy.com/my-orders/fictional/subscription-invoice/9900"
+      },
+      "created_at": "2026-09-20T10:00:00.000000Z",
+      "updated_at": "2026-09-20T10:00:00.000000Z"
+     }
+    }
+   ]
+  },
+  "contentType": "application/vnd.api+json",
+  "modes": [
+   "mixed_customers"
+  ]
+ },
+ {
+  "name": "not-found",
+  "notFound": true,
+  "method": "GET",
+  "path": "/__not_found__",
+  "status": 404,
+  "body": {
+   "jsonapi": {
+    "version": "1.0"
+   },
+   "errors": [
+    {
+     "detail": "Not found",
+     "status": "404",
+     "title": "Not Found"
+    }
+   ]
+  }
+ }
+]

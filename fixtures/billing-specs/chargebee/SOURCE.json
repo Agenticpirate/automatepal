@@ -1,0 +1,21 @@
+{
+ "provider": "chargebee",
+ "sourceUrl": "https://github.com/chargebee/openapi",
+ "repo": "chargebee/openapi",
+ "commit": "06f6ff8a4dd98577961acb29bf1d2d0c41684748",
+ "commitDate": "2026-09-24T16:12:53Z",
+ "file": [
+  "spec/chargebee_api_v2_pc_v2_spec.json"
+ ],
+ "upstream": {
+  "spec/chargebee_api_v2_pc_v2_spec.json": {
+   "url": "https://raw.githubusercontent.com/chargebee/openapi/06f6ff8a4dd98577961acb29bf1d2d0c41684748/spec/chargebee_api_v2_pc_v2_spec.json",
+   "sha256": "a92d203879cc3fd9814089e662d4ef384412e97017a9e97fed64627b07bdd5d5",
+   "bytes": 12803120
+  }
+ },
+ "license": "MIT",
+ "retrievedAt": "2026-11-01T14:12:58.933Z",
+ "confidence": "official-spec-early-access",
+ "notes": "Labelled early-access per the user."
+}

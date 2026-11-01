@@ -1,0 +1,445 @@
+[
+ {
+  "name": "payment-A1",
+  "method": "GET",
+  "path": "/v1/payments/pay_AAAA1111aaaa01",
+  "status": 200,
+  "body": {
+   "entity": "payment",
+   "currency": "INR",
+   "method": "upi",
+   "captured": true,
+   "amount_refunded": 100000,
+   "refund_status": "partial",
+   "order_id": "order_AAAA1111aaaa01",
+   "invoice_id": null,
+   "customer_id": null,
+   "error_code": null,
+   "error_description": null,
+   "error_reason": null,
+   "contact": "+910000000000",
+   "created_at": 1790000000,
+   "id": "pay_AAAA1111aaaa01",
+   "amount": 499900,
+   "status": "captured",
+   "email": "alex.payer@example.test"
+  }
+ },
+ {
+  "name": "payment-B1",
+  "method": "GET",
+  "path": "/v1/payments/pay_BBBB2222bbbb01",
+  "status": 200,
+  "body": {
+   "entity": "payment",
+   "currency": "INR",
+   "method": "upi",
+   "captured": true,
+   "amount_refunded": 0,
+   "refund_status": null,
+   "order_id": "order_BBBB2222bbbb01",
+   "invoice_id": null,
+   "customer_id": null,
+   "error_code": null,
+   "error_description": null,
+   "error_reason": null,
+   "contact": "+910000000000",
+   "created_at": 1790000000,
+   "id": "pay_BBBB2222bbbb01",
+   "amount": 299900,
+   "status": "captured",
+   "email": "blair.payer@example.test"
+  }
+ },
+ {
+  "name": "payment-I1",
+  "method": "GET",
+  "path": "/v1/payments/pay_AAAA1113aaaa03",
+  "status": 200,
+  "body": {
+   "entity": "payment",
+   "currency": "INR",
+   "method": "upi",
+   "captured": true,
+   "amount_refunded": 0,
+   "refund_status": null,
+   "order_id": "order_AAAA1113aaaa03",
+   "invoice_id": "inv_AAAA1111aaaa01",
+   "customer_id": null,
+   "error_code": null,
+   "error_description": null,
+   "error_reason": null,
+   "contact": "+910000000000",
+   "created_at": 1790000000,
+   "id": "pay_AAAA1113aaaa03",
+   "amount": 150000,
+   "status": "captured",
+   "email": "alex.payer@example.test"
+  }
+ },
+ {
+  "name": "payments-connect-check",
+  "method": "GET",
+  "path": "/v1/payments",
+  "query": {
+   "count": "1"
+  },
+  "status": 200,
+  "body": {
+   "entity": "collection",
+   "count": 1,
+   "items": [
+    {
+     "entity": "payment",
+     "currency": "INR",
+     "method": "upi",
+     "captured": true,
+     "amount_refunded": 100000,
+     "refund_status": "partial",
+     "order_id": "order_AAAA1111aaaa01",
+     "invoice_id": null,
+     "customer_id": null,
+     "error_code": null,
+     "error_description": null,
+     "error_reason": null,
+     "contact": "+910000000000",
+     "created_at": 1790000000,
+     "id": "pay_AAAA1111aaaa01",
+     "amount": 499900,
+     "status": "captured",
+     "email": "alex.payer@example.test"
+    }
+   ]
+  }
+ },
+ {
+  "name": "order-A1",
+  "method": "GET",
+  "path": "/v1/orders/order_AAAA1111aaaa01",
+  "status": 200,
+  "body": {
+   "entity": "order",
+   "currency": "INR",
+   "attempts": 2,
+   "amount_due": 0,
+   "created_at": 1789999100,
+   "id": "order_AAAA1111aaaa01",
+   "amount": 499900,
+   "amount_paid": 499900,
+   "receipt": "AP-ORD-1001",
+   "status": "paid"
+  }
+ },
+ {
+  "name": "order-A1-payments",
+  "method": "GET",
+  "path": "/v1/orders/order_AAAA1111aaaa01/payments",
+  "status": 200,
+  "body": {
+   "entity": "collection",
+   "count": 2,
+   "items": [
+    {
+     "entity": "payment",
+     "currency": "INR",
+     "method": "upi",
+     "captured": true,
+     "amount_refunded": 100000,
+     "refund_status": "partial",
+     "order_id": "order_AAAA1111aaaa01",
+     "invoice_id": null,
+     "customer_id": null,
+     "error_code": null,
+     "error_description": null,
+     "error_reason": null,
+     "contact": "+910000000000",
+     "created_at": 1790000000,
+     "id": "pay_AAAA1111aaaa01",
+     "amount": 499900,
+     "status": "captured",
+     "email": "alex.payer@example.test"
+    },
+    {
+     "entity": "payment",
+     "currency": "INR",
+     "method": "upi",
+     "captured": false,
+     "amount_refunded": 0,
+     "refund_status": null,
+     "order_id": "order_AAAA1111aaaa01",
+     "invoice_id": null,
+     "customer_id": null,
+     "error_code": "BAD_REQUEST_ERROR",
+     "error_description": "Payment failed because the bank declined it",
+     "error_reason": "payment_failed",
+     "contact": "+910000000000",
+     "created_at": 1789999400,
+     "id": "pay_AAAA1112aaaa02",
+     "amount": 499900,
+     "status": "failed",
+     "email": "alex.payer@example.test"
+    }
+   ]
+  }
+ },
+ {
+  "name": "order-A1-payments-mixed",
+  "method": "GET",
+  "path": "/v1/orders/order_AAAA1111aaaa01/payments",
+  "status": 200,
+  "body": {
+   "entity": "collection",
+   "count": 3,
+   "items": [
+    {
+     "entity": "payment",
+     "currency": "INR",
+     "method": "upi",
+     "captured": true,
+     "amount_refunded": 100000,
+     "refund_status": "partial",
+     "order_id": "order_AAAA1111aaaa01",
+     "invoice_id": null,
+     "customer_id": null,
+     "error_code": null,
+     "error_description": null,
+     "error_reason": null,
+     "contact": "+910000000000",
+     "created_at": 1790000000,
+     "id": "pay_AAAA1111aaaa01",
+     "amount": 499900,
+     "status": "captured",
+     "email": "alex.payer@example.test"
+    },
+    {
+     "entity": "payment",
+     "currency": "INR",
+     "method": "upi",
+     "captured": false,
+     "amount_refunded": 0,
+     "refund_status": null,
+     "order_id": "order_AAAA1111aaaa01",
+     "invoice_id": null,
+     "customer_id": null,
+     "error_code": "BAD_REQUEST_ERROR",
+     "error_description": "Payment failed because the bank declined it",
+     "error_reason": "payment_failed",
+     "contact": "+910000000000",
+     "created_at": 1789999400,
+     "id": "pay_AAAA1112aaaa02",
+     "amount": 499900,
+     "status": "failed",
+     "email": "alex.payer@example.test"
+    },
+    {
+     "entity": "payment",
+     "currency": "INR",
+     "method": "upi",
+     "captured": true,
+     "amount_refunded": 0,
+     "refund_status": null,
+     "order_id": "order_BBBB2222bbbb01",
+     "invoice_id": null,
+     "customer_id": null,
+     "error_code": null,
+     "error_description": null,
+     "error_reason": null,
+     "contact": "+910000000000",
+     "created_at": 1790000000,
+     "id": "pay_BBBB2222bbbb01",
+     "amount": 299900,
+     "status": "captured",
+     "email": "blair.payer@example.test"
+    }
+   ]
+  },
+  "modes": [
+   "mixed_customers"
+  ]
+ },
+ {
+  "name": "order-B1",
+  "method": "GET",
+  "path": "/v1/orders/order_BBBB2222bbbb01",
+  "status": 200,
+  "body": {
+   "entity": "order",
+   "currency": "INR",
+   "attempts": 2,
+   "amount_due": 0,
+   "created_at": 1789999100,
+   "id": "order_BBBB2222bbbb01",
+   "amount": 299900,
+   "amount_paid": 299900,
+   "receipt": "AP-ORD-1002",
+   "status": "paid"
+  }
+ },
+ {
+  "name": "order-B1-payments",
+  "method": "GET",
+  "path": "/v1/orders/order_BBBB2222bbbb01/payments",
+  "status": 200,
+  "body": {
+   "entity": "collection",
+   "count": 1,
+   "items": [
+    {
+     "entity": "payment",
+     "currency": "INR",
+     "method": "upi",
+     "captured": true,
+     "amount_refunded": 0,
+     "refund_status": null,
+     "order_id": "order_BBBB2222bbbb01",
+     "invoice_id": null,
+     "customer_id": null,
+     "error_code": null,
+     "error_description": null,
+     "error_reason": null,
+     "contact": "+910000000000",
+     "created_at": 1790000000,
+     "id": "pay_BBBB2222bbbb01",
+     "amount": 299900,
+     "status": "captured",
+     "email": "blair.payer@example.test"
+    }
+   ]
+  }
+ },
+ {
+  "name": "order-I1-payments",
+  "method": "GET",
+  "path": "/v1/orders/order_AAAA1113aaaa03/payments",
+  "status": 200,
+  "body": {
+   "entity": "collection",
+   "count": 1,
+   "items": [
+    {
+     "entity": "payment",
+     "currency": "INR",
+     "method": "upi",
+     "captured": true,
+     "amount_refunded": 0,
+     "refund_status": null,
+     "order_id": "order_AAAA1113aaaa03",
+     "invoice_id": "inv_AAAA1111aaaa01",
+     "customer_id": null,
+     "error_code": null,
+     "error_description": null,
+     "error_reason": null,
+     "contact": "+910000000000",
+     "created_at": 1790000000,
+     "id": "pay_AAAA1113aaaa03",
+     "amount": 150000,
+     "status": "captured",
+     "email": "alex.payer@example.test"
+    }
+   ]
+  }
+ },
+ {
+  "name": "refunds-A1",
+  "method": "GET",
+  "path": "/v1/payments/pay_AAAA1111aaaa01/refunds",
+  "query": {
+   "count": "10"
+  },
+  "status": 200,
+  "body": {
+   "entity": "collection",
+   "count": 1,
+   "items": [
+    {
+     "id": "rfnd_AAAA1111aaaa01",
+     "entity": "refund",
+     "amount": 100000,
+     "currency": "INR",
+     "payment_id": "pay_AAAA1111aaaa01",
+     "receipt": null,
+     "status": "processed",
+     "speed_processed": "normal",
+     "created_at": 1790086400
+    }
+   ]
+  }
+ },
+ {
+  "name": "invoice-A1",
+  "method": "GET",
+  "path": "/v1/invoices/inv_AAAA1111aaaa01",
+  "status": 200,
+  "body": {
+   "id": "inv_AAAA1111aaaa01",
+   "entity": "invoice",
+   "invoice_number": "AP/2026/0007",
+   "receipt": "AP-RCPT-7",
+   "customer_id": "cust_AAAA1111aaaa01",
+   "customer_details": {
+    "id": "cust_AAAA1111aaaa01",
+    "name": "Alex Payer",
+    "email": "alex.payer@example.test",
+    "contact": null
+   },
+   "order_id": "order_AAAA1113aaaa03",
+   "payment_id": "pay_AAAA1113aaaa03",
+   "status": "paid",
+   "amount": 150000,
+   "amount_paid": 150000,
+   "amount_due": 0,
+   "currency": "INR",
+   "short_url": "https://rzp.io/i/fictionalA1",
+   "issued_at": 1790000000,
+   "paid_at": 1790000060,
+   "created_at": 1790000000
+  }
+ },
+ {
+  "name": "subscription-A1",
+  "method": "GET",
+  "path": "/v1/subscriptions/sub_AAAA1111aaaa01",
+  "status": 200,
+  "body": {
+   "id": "sub_AAAA1111aaaa01",
+   "entity": "subscription",
+   "plan_id": "plan_FICTIONAL0001",
+   "customer_id": "cust_AAAA1111aaaa01",
+   "status": "pending",
+   "current_start": 1790000000,
+   "current_end": 1792592000,
+   "charge_at": 1792678400,
+   "paid_count": 3,
+   "auth_attempts": 2,
+   "short_url": "https://rzp.io/i/subA1",
+   "created_at": 1782000000
+  }
+ },
+ {
+  "name": "customer-A1",
+  "method": "GET",
+  "path": "/v1/customers/cust_AAAA1111aaaa01",
+  "status": 200,
+  "body": {
+   "id": "cust_AAAA1111aaaa01",
+   "entity": "customer",
+   "name": "Alex Payer",
+   "email": "alex.payer@example.test",
+   "contact": null,
+   "created_at": 1781000000
+  }
+ },
+ {
+  "name": "not-found",
+  "notFound": true,
+  "method": "GET",
+  "path": "/__not_found__",
+  "status": 400,
+  "body": {
+   "error": {
+    "code": "BAD_REQUEST_ERROR",
+    "description": "The id provided does not exist"
+   }
+  }
+ }
+]

@@ -1,0 +1,9 @@
+[
+ {"id":"invoices.get","method":"GET","path":"/invoices/{invoice-id}","query":[]},
+ {"id":"invoices.list","method":"GET","path":"/invoices","query":["customer_id[is]","limit"]},
+ {"id":"subscriptions.get","method":"GET","path":"/subscriptions/{subscription-id}","query":[]},
+ {"id":"subscriptions.list","method":"GET","path":"/subscriptions","query":["customer_id[is]","limit"]},
+ {"id":"customers.get","method":"GET","path":"/customers/{customer-id}","query":[]},
+ {"id":"transactions.list","method":"GET","path":"/transactions","query":["customer_id[is]","limit"]},
+ {"id":"credit_notes.list","method":"GET","path":"/credit_notes","query":["customer_id[is]","reference_invoice_id[is]","limit"]}
+]

@@ -1,0 +1,30 @@
+/* Footer folder wordmark (FolderWordmark.tsx). Every pixel is a folder in brand pink on the
+   navy footer. Sizes are in grid cells (--u), so the mark scales with its width.
+   Only transform and opacity animate. Opening is quick (the pointer is asking), closing is
+   slower so the folders leave a short wake behind the pointer. */
+
+.fw-mark{--fw-back:#E25FAE;--fw-front:#FD91CC;--fw-paper:#fff;--fw-sheet:#DCE3F2;position:relative;isolation:isolate;container-type:inline-size;width:100%;margin-top:64px;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
+/* Hit area a little larger than the letters so folders start opening as the pointer arrives. */
+.fw-mark::before{content:'';position:absolute;inset:-28px -16px;z-index:-1}
+
+.fw-f{--u:calc(100cqw / var(--fw-span));position:absolute;width:calc(var(--u)*var(--fw-w));height:calc(var(--u)*var(--fw-h));perspective:calc(var(--u)*3);pointer-events:none}
+/* Back plate and tab */
+.fw-f::before,.fw-f::after{content:'';position:absolute;background:var(--fw-back)}
+.fw-f::before{left:calc(var(--u)*.05);top:0;width:calc(var(--u)*.58);height:calc(var(--u)*.26);border-radius:calc(var(--u)*.09) calc(var(--u)*.11) 0 0}
+.fw-f::after{inset:calc(var(--u)*.12) 0 0;border-radius:calc(var(--u)*.11)}
+/* Paper: hidden behind the front at rest, rises out when the folder opens */
+.fw-p{position:absolute;z-index:1;left:calc(var(--u)*.14);right:calc(var(--u)*.14);top:calc(var(--u)*.37);height:calc(var(--u)*.58);border-radius:calc(var(--u)*.05);background:var(--fw-paper);box-shadow:calc(var(--u)*.07) calc(var(--u)*-.05) 0 var(--fw-sheet);transition:transform .42s var(--ap-e-quint)}
+/* Front flap hinges on its bottom edge and tips toward the viewer */
+.fw-fr{position:absolute;z-index:2;inset:calc(var(--u)*.3) 0 0;border-radius:calc(var(--u)*.11);background:linear-gradient(180deg,rgba(255,255,255,.34),rgba(255,255,255,0) 38%),var(--fw-front);box-shadow:inset 0 calc(var(--u)*.03) 0 rgba(255,255,255,.55),0 calc(var(--u)*.04) calc(var(--u)*.1) rgba(4,26,82,.45);transform-origin:50% 100%;transition:transform .42s var(--ap-e-quint)}
+.fw-fr::after{content:'';position:absolute;inset:0;border-radius:inherit;background:#fff;opacity:0;transition:opacity .42s ease}
+
+.fw-f[data-open] .fw-p{transform:translateY(-42%);transition-duration:.22s}
+.fw-f[data-open] .fw-fr{transform:rotateX(-42deg);transition-duration:.22s}
+.fw-f[data-open] .fw-fr::after{opacity:.16;transition-duration:.22s}
+
+/* Reduced motion: no tipping or rising, the opened folders only brighten. */
+@media(prefers-reduced-motion:reduce){
+ .fw-f[data-open] .fw-p,.fw-f[data-open] .fw-fr{transform:none}
+ .fw-f[data-open] .fw-fr::after{opacity:.3}
+}
+@media(max-width:560px){.fw-mark{margin-top:44px}}

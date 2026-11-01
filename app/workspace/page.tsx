@@ -73,12 +73,15 @@ export default function Home() {
           <h1 className="text-xl font-bold">AutomatePal</h1>
           <p className="text-sm text-gray-500">AI billing &amp; revenue copilot on PayPal (sandbox)</p>
         </div>
-        {email?<button className="text-sm underline" onClick={async()=>{await browserAuth()?.auth.signOut();setEmail('');setPending([]);router.push('/login');}}>Sign out</button>:<Link href="/login" className="text-sm underline">Sign in</Link>}
+        {/* One wrapping group, so a second row lines up with the first instead of splitting to both edges. */}
+        <nav aria-label="Workspace tools" className="flex flex-wrap items-center gap-2">
+        {email?<button className="mr-1 text-sm underline" onClick={async()=>{await browserAuth()?.auth.signOut();setEmail('');setPending([]);router.push('/login');}}>Sign out</button>:<Link href="/login" className="mr-1 text-sm underline">Sign in</Link>}
         <Link href="/knowledge" className="rounded-lg border px-3 py-2 text-sm">Knowledge</Link>
         <Link href="/tax" className="rounded-lg border px-3 py-2 text-sm">Tax worksheet</Link>
         <Link href="/setup" className="rounded-lg border px-3 py-2 text-sm">Quick setup</Link>
         <Link href="/proof" className="rounded-lg border px-3 py-2 text-sm">Proof-to-Pay</Link>
         <Link href="/dashboard" className="rounded-lg bg-black px-3 py-2 text-sm text-white">Revenue dashboard</Link>
+        </nav>
       </header>
 
       <aside className="mt-4 rounded-xl border border-blue-100 bg-blue-50 p-4 text-sm"><strong>Sandbox studio</strong><p className="my-1 text-gray-600">{email?'Your account is private. Review each creation before it runs.':'Sign in to try the beta. Public visitors can explore fictional data; PayPal tools are owner-only.'}</p><button disabled={busy} onClick={prepareDemo} className="mt-2 rounded border border-blue-200 bg-white px-3 py-2 text-xs">Prepare fictional demo (no AI needed)</button></aside>

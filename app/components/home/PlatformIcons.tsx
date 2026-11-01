@@ -4,7 +4,7 @@
 import {D,Dot,Glyph} from './draw';
 import './platform.css';
 
-export type PlatformIcon='quote'|'inbox'|'usercheck'|'sliders'|'filetext'|'appwindow'|'barchart'|'code';
+export type PlatformIcon='quote'|'inbox'|'usercheck'|'sliders'|'filetext'|'appwindow'|'barchart'|'code'|'card'|'reply'|'clock'|'plug';
 
 const ICONS:Record<PlatformIcon,React.ReactNode>={
  quote:<>
@@ -45,6 +45,23 @@ const ICONS:Record<PlatformIcon,React.ReactNode>={
  code:<>
   <g className="a r"><D d="m16 18 6-6-6-6"/></g>
   <g className="a l"><D d="m8 6-6 6 6 6" n={1}/></g>
+ </>,
+ card:<>
+  <D d="M4 5h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"/>
+  <D d="M2 10h20" n={1}/>
+  <D d="M6 15h4" n={2} c="w"/>
+ </>,
+ reply:<>
+  <D d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+  <D d="M8 9h8" n={1} c="w"/><D d="M8 13h5" n={2} c="w"/>
+ </>,
+ clock:<>
+  <D d="M22 12a10 10 0 1 1-20 0a10 10 0 1 1 20 0"/>
+  <D d="M12 6v6l4 2" n={1} c="w"/>
+ </>,
+ plug:<>
+  <D d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8Z"/>
+  <D d="M9 8V2" n={1} c="w"/><D d="M15 8V2" n={1} c="w"/><D d="M12 22v-5" n={2}/>
  </>,
 };
 

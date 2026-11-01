@@ -1,0 +1,10 @@
+[
+ {"id":"payments.get","method":"GET","path":"/v1/payments/{id}","query":[]},
+ {"id":"payments.list","method":"GET","path":"/v1/payments","query":["count"]},
+ {"id":"orders.get","method":"GET","path":"/v1/orders/{id}","query":[]},
+ {"id":"orders.payments","method":"GET","path":"/v1/orders/{id}/payments","query":[]},
+ {"id":"payments.refunds","method":"GET","path":"/v1/payments/{id}/refunds","query":["count"]},
+ {"id":"invoices.get","method":"GET","path":"/v1/invoices/{id}","query":[]},
+ {"id":"subscriptions.get","method":"GET","path":"/v1/subscriptions/{id}","query":[]},
+ {"id":"customers.get","method":"GET","path":"/v1/customers/{id}","query":[]}
+]

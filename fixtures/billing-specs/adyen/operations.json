@@ -1,0 +1,3 @@
+[
+ {"id":"paymentLinks.get","method":"GET","path":"/paymentLinks/{linkId}","query":[]}
+]

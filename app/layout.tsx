@@ -31,7 +31,15 @@ export const metadata: Metadata = {
 };
 
 // Brand navy tints the mobile browser address bar (Chrome on Android, Safari).
-export const viewport: Viewport = { themeColor: '#041A52' };
+// Zoom stays enabled (no maximum-scale). The keyboard resizes the layout on Android so pinned composers stay
+// above it, as they already do on iOS. One light brand theme, so form controls never switch to dark styling.
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: '#041A52',
+  colorScheme: 'light',
+  interactiveWidget: 'resizes-content',
+};
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (

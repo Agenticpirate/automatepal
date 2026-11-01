@@ -278,6 +278,8 @@
 
 /* Single pane: list first, the selected ticket replaces it. */
 @media(max-width:1079px){
+/* The page scrolls here, so a sticky selection bar would slide under the workspace top bar. */
+.ap-ib-bulkbar{position:static}
 .ap-ib{display:block;min-height:0}
 .ap-ib-left{position:static;height:auto;border-right:0}
 .ap-ib-list{flex:none}
@@ -306,4 +308,31 @@
 .ap-ib-timers,.ap-ib-svc-grid{grid-template-columns:1fr;gap:12px}
 .ap-ib-ai{margin-left:0}
 .ap-ib-toast{left:12px;right:12px;bottom:12px}
+}
+
+/* Touch screens: 44pt targets without changing the desktop density. */
+@media(pointer:coarse){
+.ap-ib .ap-ib-search{height:44px}
+.ap-ib .ap-ib-chip,.ap-ib .ap-ib-inline{height:auto;min-height:40px}
+.desk-ui .ap-ib :is(.ap-ib-chip,.ap-ib-inline) select{min-height:40px}
+.ap-ib .ap-ib-btn,.ap-ib .ap-ib-icon,.ap-ib .ap-ib-send{min-height:44px;min-width:44px}
+.ap-ib .ap-ib-btn.sm{min-height:40px}
+.ap-ib .ap-ib-textbtn{padding:8px 4px}
+.ap-ib-check{left:8px;top:12px;width:24px;height:24px}
+.ap-ib .ap-ib-item-b{padding-left:44px}
+.ap-ib-bulkbar{min-height:48px}
+.ap-ib-checkrow{min-height:44px}
+.ap-ib-checkrow input{width:24px;height:24px}
+.ap-ib-dhead .ap-ib-icon{width:44px;height:44px}
+.ap-ib-matrix summary{display:flex;align-items:center;min-height:44px}
+}
+
+/* iPhone Duo and other foldables, held like a book: list on one half, ticket on the other, nothing under
+   the fold. Progressive enhancement: Safari 27.1 ships the Viewport Segments API behind a feature flag and
+   Chrome/Edge support it; everywhere else these rules are ignored and the responsive layout above applies. */
+@media(horizontal-viewport-segments:2){
+.ap-ib.has-active{display:grid;grid-template-columns:env(viewport-segment-width 0 0) minmax(0,1fr);column-gap:calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0))}
+.ap-ib.has-active .ap-ib-left{display:flex;flex-direction:column}
+.ap-ib.has-active .ap-ib-detail{display:flex}
+.ap-ib.has-active .ap-ib-back{display:none}
 }

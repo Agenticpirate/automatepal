@@ -40,7 +40,7 @@
 .ap-cx-tray{background:#F0E9F4;border-radius:24px;padding:clamp(14px,2.4vw,24px);margin-top:clamp(24px,4vh,36px)}
 .ap-cx-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 .ap-cx-card{background:#fff;border:1.5px solid #E7EBF4;border-radius:18px;padding:22px;display:flex;flex-direction:column;transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease}
-.ap-cx-card:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(9,49,141,.10)}
+@media(hover:hover) and (pointer:fine){.ap-cx-card:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(9,49,141,.10)}}
 .ap-cx-card.ap-cx-selected{border-color:#FD91CC;box-shadow:0 0 0 3px rgba(253,145,204,.35),0 12px 30px rgba(226,95,174,.16)}
 .ap-cx-tier{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600;color:#0A1B3D}
 .ap-cx-tier i{width:8px;height:8px;border-radius:50%;background:#09318D;display:inline-block}
@@ -49,7 +49,7 @@
 .ap-cx-line{margin:10px 0 0;font-size:13px;line-height:1.6;color:#33456E}
 .ap-cx-note{margin:8px 0 0;font-size:11.5px;line-height:1.6;color:#7A88AC}
 .ap-cx-select{margin-top:18px;width:100%;display:inline-flex;align-items:center;justify-content:center;gap:8px;background:#041A52;color:#fff;border:0;border-radius:999px;padding:12px 16px;font-size:13.5px;font-weight:600;cursor:pointer;transition:background .15s ease,transform .15s ease}
-.ap-cx-select:hover{background:#0E2E74;transform:translateY(-1px)}
+@media(hover:hover) and (pointer:fine){.ap-cx-select:hover{background:#0E2E74;transform:translateY(-1px)}}
 .ap-cx-select[aria-pressed=true]{background:#FD91CC;color:#041A52}
 .ap-cx-select small{display:block;font-size:10.5px;font-weight:400;opacity:.75}
 .ap-cx-state{margin-top:18px;border-top:1px solid #EEF1F8;padding-top:14px;font-size:11.5px;line-height:1.65;color:#7A88AC}

@@ -88,6 +88,8 @@
 
 .ps :focus-visible{outline:2px solid #09318D;outline-offset:3px;border-radius:4px}
 
+/* A pinned contents list taller than the screen hides its own last links; on short screens it scrolls away. */
+@media(max-height:720px){.ps-toc{position:static}}
 @media(max-width:860px){
 .ps-doc{grid-template-columns:minmax(0,1fr)}
 .ps-toc{position:static;padding:14px 16px;border-radius:12px;background:var(--ps-tint)}

@@ -42,6 +42,19 @@
  .ap-home .vp-trust{--trust-size:34px}
 }
 .ap-home .vp-sub{text-wrap:balance}
+/* Tracking in em, not px: the inherited `.ap-public h1{letter-spacing:-5.2px}` was tuned for a 77px headline
+   and crushed the letters at the ~46px the headline gets on short wide screens (iPhone Duo opened flat in
+   landscape, 951x585). -.067em is the same -5.2px at 77px, so large desktops look identical. */
+@media(min-width:721px){.ap-home .vp .vp-headline{letter-spacing:-.067em}}
+/* Very short landscape screens (iPhone Duo closed and turned sideways is 594x368; phones in landscape):
+   drop the decorative trust pill and tighten the rhythm so the calls to action land on the first screen. */
+@media(orientation:landscape) and (max-height:480px){
+ .ap-home .vp-trust{display:none}
+ .ap-home .vp .vp-headline{font-size:clamp(24px,min(5.4vw,11.5vh),44px);line-height:1.06}
+ .ap-home .vp-sub{margin-top:8px;font-size:13.5px;line-height:1.45;max-width:min(560px,94%)}
+ .ap-home .hm-hero-ctas{margin-top:12px;gap:10px}
+ .ap-home .hm-hero-ctas .vp-cta,.ap-home .hm-cta-ghost{padding-top:10px;padding-bottom:10px}
+}
 @media(max-width:720px){
  /* Phones: let each headline line wrap at a readable size instead of shrinking to one line */
  .ap-home .vp .vp-headline{font-size:clamp(26px,8.6vw,44px);letter-spacing:-.04em;line-height:1.04;text-wrap:balance}

@@ -5,7 +5,7 @@
 .ap-dash{display:grid;grid-template-columns:230px 1fr;min-height:100vh;background:#EEF1F8;color:#0A1B3D;font-family:'Inter','Segoe UI',system-ui,sans-serif}
 
 /* Sidebar */
-.ap-dash-side{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:6px;background:#041A52;color:#DCE4F7;padding:20px 14px}
+.ap-dash-side{position:sticky;top:0;height:100vh;height:100dvh;display:flex;flex-direction:column;gap:6px;background:#041A52;color:#DCE4F7;padding:20px 14px}
 .ap-dash-brand{display:flex;align-items:center;gap:10px;color:#fff;font-weight:650;font-size:16px;text-decoration:none;padding:4px 8px 16px;letter-spacing:-.4px}
 .ap-dash-side nav{display:flex;flex-direction:column;gap:4px}
 .ap-dash-side nav a{display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:12px;font-size:13.5px;font-weight:500;color:#B9C7EA;text-decoration:none;transition:background .15s ease,color .15s ease}
@@ -108,7 +108,7 @@
 @media(max-width:900px){
 .ap-dash{grid-template-columns:1fr}
 .ap-dash-side{display:none}
-.ap-dash-mobilenav{display:flex;gap:6px;overflow-x:auto;padding:10px 16px;border-bottom:1px solid #DDE3F0;background:#fff;position:sticky;top:63px;z-index:14}
+.ap-dash-mobilenav{display:flex;gap:6px;overflow-x:auto;overscroll-behavior-x:contain;padding:10px 16px;border-bottom:1px solid #DDE3F0;background:#fff;position:sticky;top:63px;z-index:14}
 .ap-dash-mobilenav a{display:inline-flex;align-items:center;gap:7px;white-space:nowrap;font-size:12px;font-weight:600;color:#4A5878;text-decoration:none;border:1.5px solid #DDE3F0;border-radius:999px;padding:7px 13px}
 .ap-dash-mobilenav a.ap-dash-active{background:#FD91CC;color:#041A52;border-color:#041A52}
 .ap-dash-kpis{grid-template-columns:repeat(2,1fr)}
@@ -126,7 +126,7 @@
 .ap-dash-ticketgrid{display:grid;gap:18px;align-items:start}
 @media(min-width:1100px){.ap-dash-ticketgrid{grid-template-columns:1fr 1fr}}
 .ap-dash-ticket{transition:border-color .18s,box-shadow .18s,transform .18s}
-.ap-dash-ticket:hover{border-color:#B9C6E4;box-shadow:0 6px 22px rgba(4,26,82,.07);transform:translateY(-1px)}
+@media(hover:hover) and (pointer:fine){.ap-dash-ticket:hover{border-color:#B9C6E4;box-shadow:0 6px 22px rgba(4,26,82,.07);transform:translateY(-1px)}}
 .ap-dash-ticket-active{border-color:#FD91CC!important;box-shadow:0 0 0 3px rgba(253,145,204,.28)}
 .ap-dash-ticket-id{background:none;border:0;padding:0;font-size:12.5px;font-weight:700;color:#09318D;text-decoration:underline;cursor:pointer}
 
@@ -208,3 +208,10 @@
 .desk-ui .ap-dash .ap-dash-ws select{appearance:none;-webkit-appearance:none;width:100%;margin:0;padding:0 18px 0 0;border:0;background:transparent;color:#fff;font-size:12.5px;font-weight:600;outline:none;cursor:pointer;text-overflow:ellipsis}
 .desk-ui .ap-dash .ap-dash-ws select option{color:#0A1B3D}
 .ap-dash-ws:focus-within{border-color:#FD91CC}
+
+/* Short screens (phones in landscape, iPhone Duo closed and sideways at 594x368): two pinned bars would
+   take a third of the height, so the workspace top bar and the page tabs scroll away with the content. */
+@media(max-height:500px){
+.ap-dash-top,.ap-dash-mobilenav{position:static}
+.ap-dash-side{position:static;height:auto;min-height:100%}
+}

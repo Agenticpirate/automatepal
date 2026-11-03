@@ -1,4 +1,4 @@
-import {z} from 'zod';
+import {z} from 'zod';import './zod-csp';
 /* Working hours for the person-handoff path. Outside these hours the visitor sees the away message and
    their request is saved for the team. Disabled (the default) means a person can always be asked. */
 export const DEFAULT_AWAY_MESSAGE = 'We are away right now. Leave your question and the team will reply when they are back.';

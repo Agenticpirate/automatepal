@@ -2,7 +2,7 @@
 // 127.0.0.1 stands in for a public address, and 10.x answers are private.
 import assert from'node:assert/strict';
 import{createServer}from'node:http';
-import{crawlSite,parseLinkList,normalizeUrl,pathAllowed,parseSitemap,robotsSitemaps,htmlToMarkdown,looksJsRendered,MAX_PAGES}from'../lib/crawl';
+import{crawlSite,listSitemapUrls,parseLinkList,normalizeUrl,pathAllowed,parseSitemap,robotsSitemaps,htmlToMarkdown,looksJsRendered,MAX_PAGES}from'../lib/crawl';
 import{contextDevRenderer}from'../lib/context-dev';
 import{resolvedAddrsProblem,type Addr}from'../lib/url-import';
 function ok(n:string){console.log('PASS',n);}
@@ -21,6 +21,8 @@ const server=createServer((req,res)=>{
  if(path==='/robots.txt'){res.writeHead(200,{'content-type':'text/plain'});res.end(`User-agent: *\nDisallow: /private\nSitemap: http://shop.test:${port}/sitemap_index.xml`);return;}
  if(path==='/sitemap_index.xml')return xml(`<sitemapindex><sitemap><loc>http://shop.test:${port}/sitemap-pages.xml</loc></sitemap><sitemap><loc>http://shop.test:${port}/sitemap-blog.xml</loc></sitemap></sitemapindex>`);
  if(path==='/sitemap-pages.xml')return xml(`<urlset><url><loc>http://shop.test:${port}/</loc></url><url><loc>http://shop.test:${port}/pricing?utm_source=x</loc></url><url><loc>http://other.test:${port}/elsewhere</loc></url><url><loc>http://shop.test:${port}/private/admin</loc></url></urlset>`);
+ if(path==='/sitemap-broken-index.xml')return xml(`<sitemapindex><sitemap><loc>http://shop.test:${port}/sitemap-blog.xml</loc></sitemap><sitemap><loc>http://shop.test:${port}/sitemap-down.xml</loc></sitemap></sitemapindex>`);
+ if(path==='/sitemap-down.xml'){res.writeHead(503,{'content-type':'text/plain'});res.end('busy');return;}
  if(path==='/sitemap-blog.xml')return xml(`<urlset><url><loc>http://shop.test:${port}/blog/one</loc></url><url><loc>http://shop.test:${port}/blog/two</loc></url></urlset>`);
  if(path==='/')return html(page('Home',body('Welcome to the shop.'),['/pricing','/blog/one','/about#team','/logo.png','mailto:a@b.c','http://partner.test:'+port+'/partner','/to-private','/js-app']));
  if(path==='/pricing')return html(page('Pricing',body('Plans start at 12 dollars.'),['/blog/two']));
@@ -84,6 +86,18 @@ async function main(){
   const blogOnly=await crawlSite({mode:'sitemap',url:base()+'/sitemap_index.xml',maxPages:1,includePaths:['/blog'],fetchOptions,delayMs:0});
   assert.deepEqual(blogOnly.pages.map(p=>new URL(p.url).pathname),['/blog/one'],'include paths applied to the whole sitemap before the page cap');
   ok('sitemap: filters run before the page cap, so pages listed late are still found');
+  // ---- Scheduled refresh sitemap list: complete only when every file was read and no cap cut it short ----
+  const full=await listSitemapUrls(base()+'/sitemap_index.xml',{fetchOptions,delayMs:0});
+  assert.equal(full.complete,true);assert.ok(full.urls.includes(base()+'/blog/two')&&full.urls.includes(base()+'/'),'both nested files read');
+  const broken=await listSitemapUrls(base()+'/sitemap-broken-index.xml',{fetchOptions,delayMs:0});
+  assert.equal(broken.complete,false,'a nested sitemap answering 503 makes the read partial');assert.deepEqual(broken.urls,[base()+'/blog/one',base()+'/blog/two'],'pages from the readable file are still listed');
+  const cut=await listSitemapUrls(base()+'/sitemap-blog.xml',{max:1,fetchOptions,delayMs:0});
+  assert.equal(cut.complete,false,'a list cut at the URL cap is partial');assert.equal(cut.urls.length,1);
+  const exact=await listSitemapUrls(base()+'/sitemap-blog.xml',{max:2,fetchOptions,delayMs:0});
+  assert.equal(exact.complete,true,'a list that exactly fills the cap is complete');
+  const gone=await listSitemapUrls(base()+'/sitemap-missing.xml',{fetchOptions,delayMs:0});
+  assert.deepEqual(gone,{urls:[],complete:false},'an unreadable sitemap is not an empty complete list');
+  ok('refresh sitemap list: a failing nested file or a URL cap makes the read partial');
 
   // ---- Site mode: depth, allowed domains, private redirect, JS page ----
   hits.length=0;

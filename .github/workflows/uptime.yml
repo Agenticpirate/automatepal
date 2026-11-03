@@ -1,0 +1,28 @@
+# Checks /api/status every 10 minutes and fails loudly (GitHub sends a failed-workflow notification to the
+# repository's watchers) when the app does not answer 200, or the release field is not a 12-character commit
+# hash (or "local"), or the mode is not preview or production. Needs the repository secret APP_URL.
+name: Uptime
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+permissions: {}
+jobs:
+  status:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - name: Check /api/status
+        env:
+          APP_URL: ${{ secrets.APP_URL }}
+        run: |
+          set -euo pipefail
+          if [ -z "${APP_URL}" ]; then echo "::error::Set the APP_URL repository secret."; exit 1; fi
+          code=$(curl -sS -o status.json -w '%{http_code}' --max-time 90 --retry 2 --retry-delay 15 --retry-all-errors "${APP_URL%/}/api/status" || echo 000)
+          echo "HTTP $code"; cat status.json 2>/dev/null || true; echo
+          if [ "$code" != "200" ]; then echo "::error::/api/status returned HTTP $code"; exit 1; fi
+          release=$(jq -r '.release // empty' status.json)
+          mode=$(jq -r '.mode // empty' status.json)
+          if ! printf '%s' "$release" | grep -Eq '^([0-9a-f]{12}|local)$'; then echo "::error::Unexpected release format: '$release'"; exit 1; fi
+          if [ "$mode" != "preview" ] && [ "$mode" != "production" ]; then echo "::error::Unexpected mode: '$mode'"; exit 1; fi
+          echo "OK: release $release, mode $mode"

@@ -107,7 +107,10 @@ export function htmlToMarkdown(html:string,url:string,o:{mainContentOnly?:boolea
   if(article?.content)root={innerHTML:(article.title&&!/<h1\b/i.test(article.content)?'<h1>'+escapeHtml(article.title)+'</h1>':'')+article.content};
  }
  if(!root){for(const sel of ['nav','header','footer','aside','[role=navigation]','[aria-hidden=true]','.cookie','#cookie-banner'])safeQueryAll(document,sel).forEach(n=>n.remove());root={innerHTML:document.body?.innerHTML??document.documentElement?.innerHTML??''};}
- let md=turndown.turndown(root.innerHTML);
+ // Hand Turndown a parsed linkedom element, not a string: its browser build (the one bundled for Cloudflare
+ // Workers) parses strings with the global `document`, which Workers do not have.
+ const holder=parseHTML('<!doctype html><html><head></head><body><div id="ap-md-root">'+root.innerHTML+'</div></body></html>').document.getElementById('ap-md-root');
+ let md=holder?turndown.turndown(holder as never):'';
  md=md.replace(/!\[[^\]]*\]\((?:data:[^)]*|[^)]{300,})\)/g,'')   // inline image data and huge image URLs
       .replace(/\[([^\]]+)\]\((?:javascript:|data:)[^)]*\)/gi,'$1')
       .replace(/\n{3,}/g,'\n\n').trim();
@@ -164,7 +167,7 @@ export async function crawlSite(o:CrawlOptions):Promise<CrawlResult>{
    // Like SiteGPT, only URLs on the sitemap's own hostname (plus allowed domains) are added. Filters run on the
    // full sitemap before the page cap, so "only /docs" finds docs pages even when they are listed last.
    const keep=(u:string)=>{const n=normalizeUrl(u);if(!n)return null;const h=new URL(n).hostname;return (h===rootHost||allowed.has(h))&&pathAllowed(n,o.includePaths,o.excludePaths)&&!SKIP_EXT.test(new URL(n).pathname)?n:null;};
-   const urls=await readSitemaps(start,get,keep,cap*4,stop);
+   const urls=(await readSitemaps(start,get,keep,cap*4,stop)).urls;
    seeds=urls.map(url=>({url,depth:0,follow:false}));
    if(!seeds.length)skipped.push({url:start,reason:'The sitemap listed no pages on '+rootHost+'.'});
   }else{
@@ -233,19 +236,34 @@ export async function crawlSite(o:CrawlOptions):Promise<CrawlResult>{
  return{pages,skipped,discovered,truncated,stoppedBy};
 }
 
-async function readSitemaps(start:string,get:(u:string,b:number)=>Promise<{status:number;body:string;contentType:string}>,keep:(u:string)=>string|null,want:number,stop:()=>boolean):Promise<string[]>{
- const pages:string[]=[];const queue=[start];const done=new Set<string>();const have=new Set<string>();let read=0;
- while(queue.length&&done.size<MAX_SITEMAPS&&pages.length<want&&read<MAX_SITEMAP_URLS){
-  if(stop())break;
-  const sm=queue.shift()!;if(done.has(sm))continue;done.add(sm);
-  let r;try{r=await get(sm,MAX_SITEMAP_BYTES);}catch(e){if(e instanceof ImportFetchError&&e.status===400)throw e;continue;}
-  if(r.status<200||r.status>=300)continue;
-  if(/\.gz$/i.test(sm)||/gzip/i.test(r.contentType))continue; // compressed sitemaps are not supported
+/* Page URLs listed by a sitemap (and nested sitemaps) on the sitemap's own hostname, for the scheduled
+   refresh. Same safeGet (SSRF checks on every hop), size caps and politeness delay as crawlSite.
+   `complete` is true only when every sitemap file was read and no URL, file or time cap cut the list short,
+   so the caller can treat "not listed" as a removal signal only for a complete read. */
+export async function listSitemapUrls(url:string,o:{max?:number;fetchOptions?:CrawlOptions['fetchOptions'];delayMs?:number;deadline?:number;signal?:AbortSignal}={}):Promise<SitemapRead>{
+ const start=normalizeUrl(url);const problem=start?importUrlProblem(start):'Enter a full https:// URL.';
+ if(problem||!start)throw new ImportFetchError(problem??'Enter a full https:// URL.',400);
+ const host=new URL(start).hostname,deadline=o.deadline??Date.now()+20_000,delay=o.delayMs??1000;let last=0;
+ const get=async(u:string,maxBytes:number)=>{const wait=last+delay-Date.now();if(wait>0)await new Promise(r=>setTimeout(r,wait));last=Date.now();return safeGet(u,{...(o.fetchOptions??{}),headers:{'user-agent':UA,accept:'application/xml,text/xml;q=0.9,*/*;q=0.5'},maxBytes,deadline:Math.min(deadline,Date.now()+10_000)});};
+ const keep=(u:string)=>{const n=normalizeUrl(u);return n&&new URL(n).hostname===host&&!SKIP_EXT.test(new URL(n).pathname)?n:null;};
+ return readSitemaps(start,get,keep,Math.max(1,Math.min(o.max??500,MAX_SITEMAP_URLS)),()=>!!o.signal?.aborted||deadline-Date.now()<2000);
+}
+export type SitemapRead={urls:string[];complete:boolean};
+async function readSitemaps(start:string,get:(u:string,b:number)=>Promise<{status:number;body:string;contentType:string}>,keep:(u:string)=>string|null,want:number,stop:()=>boolean):Promise<SitemapRead>{
+ const pages:string[]=[];const queue=[start];const done=new Set<string>();const have=new Set<string>();let read=0,complete=true;
+ while(queue.length){
+  const sm=queue.shift()!;if(done.has(sm))continue;
+  // A file left unread (file, URL or time cap) or one that failed makes the list incomplete.
+  if(done.size>=MAX_SITEMAPS||pages.length>=want||read>=MAX_SITEMAP_URLS||stop()){complete=false;break;}
+  done.add(sm);
+  let r;try{r=await get(sm,MAX_SITEMAP_BYTES);}catch(e){if(e instanceof ImportFetchError&&e.status===400)throw e;complete=false;continue;}
+  if(r.status<200||r.status>=300){complete=false;continue;}
+  if(/\.gz$/i.test(sm)||/gzip/i.test(r.contentType)){complete=false;continue;} // compressed sitemaps are not supported
   const p=parseSitemap(r.body);
-  for(const u of p.pages){read++;const k=keep(u);if(k&&!have.has(k)){have.add(k);pages.push(k);}if(pages.length>=want||read>=MAX_SITEMAP_URLS)break;}
+  for(let i=0;i<p.pages.length;i++){read++;const k=keep(p.pages[i]);if(k&&!have.has(k)){have.add(k);pages.push(k);}if(pages.length>=want||read>=MAX_SITEMAP_URLS){if(i<p.pages.length-1)complete=false;break;}}
   for(const s of p.sitemaps)if(!done.has(s))queue.push(s);
  }
- return pages.slice(0,want);
+ return{urls:pages.slice(0,want),complete};
 }
 /* A page whose HTML is mostly an empty app shell: scripts plus a mount point or a "needs JavaScript" notice. */
 export function looksJsRendered(html:string):boolean{

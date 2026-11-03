@@ -64,7 +64,7 @@ export default function AnswerPipeline(){
  },[live,auto]);
 
  const sc=SCENARIOS[s],done=step>=4,review=sc.id==='review';
- return <div ref={ref} className="hm-pipe" data-scenario={sc.id} data-live={live&&auto}>
+ return <div ref={ref} className="hm-pipe" data-demo="answer-pipeline" data-scenario={sc.id} data-live={live&&auto}>
   <div className="hm-pipe-top">
    <span className="hm-pipe-live"><i aria-hidden="true"/>Every answer, checked</span>
    <div className="hm-tabs" role="group" aria-label="Example question">

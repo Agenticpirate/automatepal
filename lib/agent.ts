@@ -7,7 +7,7 @@ import { GoogleGenAI, Type, FunctionCallingConfigMode } from "@google/genai";
 import type { Content, FunctionDeclaration } from "@google/genai";
 import { MUTATIONS, proposeAction } from "./actions";
 import { requestContext } from "./session";
-import { z } from "zod";
+import { z } from "zod";import './zod-csp';
 import * as paypal from "./paypal";
 import { addEvent, allEvents, computeStats } from "./store";
 

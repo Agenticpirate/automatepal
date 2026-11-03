@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod';import './zod-csp';
 
 // A display-only fixture. Never turn this into payment/order lookup evidence.
 const fixture = z.object({

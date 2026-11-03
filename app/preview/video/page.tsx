@@ -37,7 +37,7 @@ const STATS: Stat[] = [
 ];
 const NAV: { label: string; href: string; icon: keyof typeof PATHS; active?: boolean }[] = [
   { label: 'Home', href: '/', icon: 'home', active: true },
-  { label: 'Product', href: '/#workflow', icon: 'grid' },
+  { label: 'Product', href: '/#features', icon: 'grid' },
   { label: 'Pricing', href: '/pricing', icon: 'tag' },
   { label: 'Contact', href: '/contact', icon: 'mail' },
 ];

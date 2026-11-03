@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod';import './zod-csp';
 import {requestContext} from './session';
 import {allEvents,addEvent} from './store';
 import * as paypal from './paypal';

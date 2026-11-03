@@ -2,7 +2,6 @@
 import {useEffect,useRef,useState} from 'react';
 import Link from 'next/link';
 import {BotMark,ProfileMark} from './BotMark';
-import {SITE_BILLING_PROVIDERS} from './billing-providers';
 
 /* Interactive chat demo for the home page. Scripted, fictional North Dock store with fictional
    billing records. Nothing leaves the page: no AI call, no payment, no message.
@@ -175,7 +174,7 @@ function LeadCard({sent,disabled,onSend}:{sent:boolean;disabled:boolean;onSend:(
  const[ok,setOk]=useState(false);
  const blocked=!ok||disabled;
  if(sent)return <div className="hm-bill hm-lead hm-lead-sent"><div className="hm-bill-head"><span>Contact request</span><em>Saved</em></div>
-  <Row k="Email" v="buyer@example.com"/><Row k="Consent" v="Given" tone="ok"/><p className="hm-bill-note hm-lead-ok">Saved for the owner. No email is sent automatically.</p></div>;
+  <Row k="Email" v="buyer@example.com"/><Row k="Consent" v="Given" tone="ok"/><p className="hm-bill-note hm-lead-ok">Saved for the owner. Nothing is emailed to the visitor.</p></div>;
  return <div className="hm-bill hm-lead"><div className="hm-bill-head"><span>Contact request</span><em>Optional</em></div>
   <Row k="Email (fictional)" v="buyer@example.com"/>
   <label className="hm-lead-consent"><input type="checkbox" checked={ok} onChange={e=>setOk(e.target.checked)}/>North Dock may contact me about this question.</label>
@@ -193,7 +192,7 @@ export default function BotDemo(){
  const[verified,setVerified]=useState(false);
  const[queue,setQueue]=useState<QueueRow[]>([]);
  const[tally,setTally]=useState({answered:0,review:0});
- const[open,setOpen]=useState(true);
+ const open=true;
  const[group,setGroup]=useState<Group>('Answers');
  const logRef=useRef<HTMLDivElement>(null);
  const timers=useRef<number[]>([]);
@@ -298,40 +297,16 @@ export default function BotDemo(){
  function reset(){stopTimers();setMsgs([WELCOME]);setThinking(null);setBusy(false);setPaused(false);setLearned({});setVerified(false);setQueue([]);setTally({answered:0,review:0});setGroup('Answers');setPick(0);}
 
  const locked=busy||paused;
- return <div className="hm-demo-grid">
+ const trace=[...msgs].reverse().find(m=>m.from==='bot'&&(m.source||(m.checks?.length??0)>0||m.card));
+ return <div className="hm-demo-grid" data-demo="scripted-chat">
   <div className="hm-demo-head">
    <p className="hm-kicker">01 / See it in action</p>
    <h2 id="demo-title" className="hm-h2">Ask it something. <span className="ap-hl">Watch it work</span>.</h2>
-   <p className="hm-lede">Meet the assistant for North Dock, a made-up store. Ask a question and watch each step: it searches published sources, quotes the passage, verifies the customer before it reads billing records, and refuses tricks. Refunds, handoffs and unknowns land in your owner queue, where you can decide, take over and reply, or publish the missing answer.</p>
+   <p className="hm-lede">A working walkthrough of the assistant for North Dock, a made-up store. Pick a question and watch it search the sources, quote the passage, verify the customer before it reads billing records, and send anything it can’t back up to you.</p>
   </div>
-  <div className="hm-demo-side">
-   <ul className="hm-demo-points">
-    <li><span><Ico d={I.quote} s={15}/></span><div><b>Answers cite the exact passage</b><small>A second check has to agree before the reply goes out. Answers you write go out word for word.</small></div></li>
-    <li><span><Ico d={I.card} s={15}/></span><div><b>Billing from your payment provider <em className="hm-tag">Preview</em></b><small>Read-only lookups in PayPal, Stripe and {SITE_BILLING_PROVIDERS.length-2} more providers, after the customer verifies an order or invoice number and the email they paid with.</small></div></li>
-    <li><span><Ico d={I.spark} s={15}/></span><div><b>Handles the hard questions</b><small>Date-limited exceptions, multi-part billing questions, and instructions or prompt requests hidden in a message.</small></div></li>
-    <li><span><Ico d={I.inbox} s={15}/></span><div><b>You stay in control</b><small>Refunds, handoffs, leads and thumbs-down answers come to you. Take over and reply in the widget, record a decision or publish an answer.</small></div></li>
-    <li><span><Ico d={I.clock} s={15}/></span><div><b>Your hours, your tools</b><small>An away message outside working hours, and an MCP server so your own AI client can read tickets or propose a source.</small></div></li>
-   </ul>
-   <section className="hm-queue" aria-label="Owner review queue">
-    <div className="hm-queue-head"><b>Owner review queue</b><span aria-live="polite">{tally.answered} handled by AI · {tally.review} sent to you</span></div>
-    {queue.length?<>
-     <p className="hm-queue-hint">You’re the owner here. Act on an item to see what happens next.</p>
-     <ul>{queue.map(q=><li key={q.id} data-done={!!q.done}>
-      <div className="hm-q-top"><em data-kind={q.kind}>{q.kind}</em><span>{q.title}</span><i data-prio={q.prio}>{q.prio}</i></div>
-      <div className="hm-q-meta"><small>{q.done&&<Ico d={I.check} s={11}/>}{q.state}</small>
-       {q.action&&<div className="hm-q-act">
-        {q.action==='refund'&&<><button type="button" data-primary onClick={()=>act(q.id,'approve')}>Approve</button><button type="button" onClick={()=>act(q.id,'decline')}>Decline</button></>}
-        {q.action==='learn'&&<button type="button" data-primary onClick={()=>act(q.id,'learn')}>Publish an answer</button>}
-        {q.action==='approve'&&<button type="button" data-primary onClick={()=>act(q.id,'approve')}>Approve proposal</button>}
-        {q.action==='takeover'&&<button type="button" data-primary onClick={()=>act(q.id,'takeover')}>Take over</button>}
-        {q.action==='release'&&<button type="button" onClick={release}>Hand back to AI</button>}
-       </div>}
-      </div>
-     </li>)}</ul></>
-     :<p className="hm-queue-empty">Nothing needs you yet. Try a refund, ask for a person, or a question the sources don’t cover.</p>}
-   </section>
-  </div>
-
+  <div className="hm-stage">
+   <div className="hm-stage-bar" aria-hidden="true"><span className="hm-stage-dots"><i/><i/><i/></span><span className="hm-stage-url">help.northdock.example</span><span className="hm-stage-tag">Live demo · fictional data</span></div>
+   <div className="hm-stage-body">
   <div className="hm-chat-wrap">
    <div className="hm-chat-stage">
    <div className="hm-chat" data-open={open} aria-hidden={!open} inert={!open}>
@@ -383,13 +358,45 @@ export default function BotDemo(){
      <button type="submit" aria-disabled={locked} aria-label="Ask: try this question"><span>Ask</span><Ico d={I.send}/></button>
     </form>
    </div>
-   <p className="hm-chat-teaser" data-show={!open} aria-hidden={open}>Questions about an order or a bill? Ask me.</p>
-   <button type="button" className="hm-launcher" aria-expanded={open} aria-label={open?'Close chat':'Open chat'} onClick={()=>setOpen(o=>!o)}>
-    <span className="hm-launcher-face" data-face="bot"><BotMark size={40}/></span>
-    <span className="hm-launcher-face" data-face="x"><Ico d={I.x} s={20}/></span>
-   </button>
    </div>
-   <p className="hm-chat-note">Scripted walkthrough on fictional data. No AI call, payment or message leaves this page. <Link href="/support">Create your one-hour live widget demo ↗</Link></p>
   </div>
+   <aside className="hm-trace" aria-label="What the agent did">
+    <div className="hm-trace-card">
+     <div className="hm-trace-head"><b>What the agent did</b><span data-state={thinking?'run':trace?'done':'idle'}>{thinking?'Working':trace?'Last answer':'Waiting for a question'}</span></div>
+     {thinking?<p className="hm-trace-live"><i aria-hidden="true"/>{thinking}…</p>
+      :trace?<div className="hm-trace-body">
+       {trace.source&&<div className="hm-trace-src"><small>Source</small><b>{trace.source.label}</b>{trace.source.quote&&<blockquote>{trace.source.quote}</blockquote>}</div>}
+       {(trace.checks?.length??0)>0&&<ul className="hm-trace-checks">{trace.checks!.map(c=><li key={c}><Ico d={I.check} s={12}/>{c}</li>)}</ul>}
+       {!trace.source&&!(trace.checks?.length)&&<p className="hm-trace-note">Read-only lookup. Nothing was changed in the payment provider.</p>}
+      </div>
+      :<p className="hm-trace-empty">Pick a question in the chat. Every step it takes shows up here: the source it used, the quote and the checks that had to pass.</p>}
+    </div>
+    <dl className="hm-trace-stats">
+     <div><dt>Handled by AI</dt><dd>{tally.answered}</dd></div>
+     <div><dt>Sent to you</dt><dd>{tally.review}</dd></div>
+     <div><dt>Customer verified</dt><dd>{verified?'Yes':'Not yet'}</dd></div>
+    </dl>
+    <section className="hm-queue" aria-label="Owner review queue">
+     <div className="hm-queue-head"><b>Owner review queue</b><span aria-live="polite">{tally.answered} handled by AI · {tally.review} sent to you</span></div>
+     {queue.length?<>
+      <p className="hm-queue-hint">You’re the owner here. Act on an item to see what happens next.</p>
+      <ul>{queue.map(q=><li key={q.id} data-done={!!q.done}>
+       <div className="hm-q-top"><em data-kind={q.kind}>{q.kind}</em><span>{q.title}</span><i data-prio={q.prio}>{q.prio}</i></div>
+       <div className="hm-q-meta"><small>{q.done&&<Ico d={I.check} s={11}/>}{q.state}</small>
+        {q.action&&<div className="hm-q-act">
+         {q.action==='refund'&&<><button type="button" data-primary onClick={()=>act(q.id,'approve')}>Approve</button><button type="button" onClick={()=>act(q.id,'decline')}>Decline</button></>}
+         {q.action==='learn'&&<button type="button" data-primary onClick={()=>act(q.id,'learn')}>Publish an answer</button>}
+         {q.action==='approve'&&<button type="button" data-primary onClick={()=>act(q.id,'approve')}>Approve proposal</button>}
+         {q.action==='takeover'&&<button type="button" data-primary onClick={()=>act(q.id,'takeover')}>Take over</button>}
+         {q.action==='release'&&<button type="button" onClick={release}>Hand back to AI</button>}
+        </div>}
+       </div>
+      </li>)}</ul></>
+      :<p className="hm-queue-empty">Nothing needs you yet. Try a refund, ask for a person, or a question the sources don’t cover.</p>}
+    </section>
+   </aside>
+   </div>
+  </div>
+  <p className="hm-chat-note">Scripted walkthrough on fictional data. No AI call, payment or message leaves this page. <Link href="/support">Create your one-hour live widget demo ↗</Link></p>
  </div>;
 }

@@ -1,4 +1,4 @@
-import{z}from'zod';
+import{z}from'zod';import './zod-csp';
 import{workingHours}from'./working-hours';
 import{followUpList}from'./follow-ups';
 const origin=z.string().max(200).refine(v=>{try{const u=new URL(v);return u.protocol==='https:'&&u.origin===v&&!u.username&&!u.password}catch{return false}},'Use an exact HTTPS origin, without a path');

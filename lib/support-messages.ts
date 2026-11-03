@@ -1,5 +1,5 @@
-import {z} from 'zod';
-/* Owner replies in the widget (045). Messages are shown live in the widget only; nothing is emailed. */
+import {z} from 'zod';import './zod-csp';
+/* Owner replies in the widget (045). Messages are shown live in the widget; Tickets can also email a reply to an address the visitor gave with consent (lib/email.ts). */
 export const POLL_MS = 5000;
 export const MESSAGE_MAX = 1000;
 // Control characters except newline (\n) are stripped; carriage returns are normalised to newlines first.

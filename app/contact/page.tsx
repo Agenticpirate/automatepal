@@ -1,3 +1,4 @@
+import {modeText} from '../../lib/app-mode';
 import Link from 'next/link';
 import type {Metadata} from 'next';
 import PublicShell,{DocHead} from '../components/PublicShell';
@@ -5,7 +6,7 @@ import {CONTACT_EMAIL,REPO_URL} from '../../lib/site';
 
 const description='How to reach the AutomatePal beta owner for support, data deletion, security and abuse reports.';
 export const metadata:Metadata={title:'Contact and abuse reports',description,alternates:{canonical:'/contact'},
- openGraph:{title:'Contact and abuse reports | AutomatePal',description,url:'/contact',images:[{url:'/opengraph-image',width:1200,height:630,alt:'AutomatePal fictional-data preview, no live payments'}]},
+ openGraph:{title:'Contact and abuse reports | AutomatePal',description,url:'/contact',images:[{url:'/opengraph-image',width:1200,height:630,alt:modeText('AutomatePal fictional-data preview, no live payments','AutomatePal: source-backed support, no live payments')}]},
  twitter:{card:'summary_large_image',title:'Contact and abuse reports | AutomatePal',description,images:['/opengraph-image']}};
 
 export default function Contact(){return <PublicShell>
@@ -22,7 +23,7 @@ export default function Contact(){return <PublicShell>
    </section>
   </div>
   <section className="ps-card" aria-labelledby="c-not"><h2 id="c-not">What not to send</h2>
-   <p>Never email or paste real customer details, payment credentials or sensitive business data. This beta works with fictional data only - see the <Link href="/privacy">privacy notice</Link> and <Link href="/terms">beta terms</Link>. Current service state is on the <Link href="/status">status page</Link>. Security controls and the vulnerability-reporting policy are on the <Link href="/security">security page</Link>.</p>
+   <p>Never email or paste real customer details, payment credentials or sensitive business data. {modeText('This beta works with fictional data only - see the','Read how data is handled in the')} <Link href="/privacy">privacy notice</Link> and <Link href="/terms">beta terms</Link>. Current service state is on the <Link href="/status">status page</Link>. Security controls and the vulnerability-reporting policy are on the <Link href="/security">security page</Link>.</p>
   </section>
  </div>
 </PublicShell>;}

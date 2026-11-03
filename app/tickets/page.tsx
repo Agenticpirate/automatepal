@@ -1,4 +1,5 @@
 'use client';
+import {modeText} from '../../lib/app-mode';
 import DeskShell from '../components/DeskShell';
 import {formatMoney} from '../../lib/billing/core/money';
 import DashShell,{type DashNotif} from '../components/DashShell';
@@ -51,7 +52,7 @@ export default function Tickets(){
  const[selected,setSelected]=useState<string[]>([]),[bulk,setBulk]=useState('open');
  const[active,setActive]=useState<string|null>(null),[timeline,setTimeline]=useState<Timeline|null>(null),[note,setNote]=useState(''),[tags,setTags]=useState(''),[editTags,setEditTags]=useState(false),[showAll,setShowAll]=useState(false);
  /* Composer mode (internal note or widget reply), the reply draft, browser-local pins and the header menu. */
- const[mode,setMode]=useState<'note'|'reply'>('note'),[reply,setReply]=useState(''),[pins,setPins]=useState<string[]>([]),[menuOpen,setMenuOpen]=useState(false),[searchOpen,setSearchOpen]=useState(false);
+ const[mode,setMode]=useState<'note'|'reply'>('note'),[reply,setReply]=useState(''),[emailVisitor,setEmailVisitor]=useState(false),[pins,setPins]=useState<string[]>([]),[menuOpen,setMenuOpen]=useState(false),[searchOpen,setSearchOpen]=useState(false);
  /* n changes on every message so a repeated toast re-mounts and replays its entrance. */
  const say=(text:string,ok:boolean)=>setToast(prev=>({text,ok,n:(prev?.n??0)+1}));
 
@@ -85,7 +86,7 @@ export default function Tickets(){
  const week=weekSummary(rows,asOf);
  const attentionCount=rows.filter(needsYou).length;
 
- function exportCsv(){const blob=new Blob([ticketCsv(visible)],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='automatepal-fictional-tickets.csv';a.click();URL.revokeObjectURL(url);}
+ function exportCsv(){const blob=new Blob([ticketCsv(visible)],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=modeText('automatepal-fictional-tickets.csv','automatepal-tickets.csv');a.click();URL.revokeObjectURL(url);}
  function clearFilters(){setStatus('all');setPriority('all');setCategory('all');setSearch('');setView('all');}
  const focusNote=()=>document.getElementById('ap-ib-note')?.focus();
 
@@ -217,10 +218,10 @@ export default function Tickets(){
       </div>
      </li>)}</ol>
     </section>
-    <p className="ap-ib-foot">Full ticket ID: {t.id}. Resolved/closed also pause AI. Reopening does not extend the demo link. First owner review is not a customer-response or SLA metric. Widget replies appear in the visitor&apos;s widget only; nothing is emailed.</p>
+    <p className="ap-ib-foot">Full ticket ID: {t.id}. Resolved/closed also pause AI. Reopening does not extend the demo link. First owner review is not a customer-response or SLA metric. Widget replies appear in the visitor&apos;s widget. A reply is also emailed only when you tick “Also email this reply” and the visitor gave an address with consent.</p>
    </div>
 
-   <form className={'ap-ib-compose'+(mode==='reply'?' is-reply':'')} onSubmit={e=>{e.preventDefault();if(mode==='reply'){if(t.inbox_state==='taken_over'&&reply.trim())void act({action:'reply',id:t.id,body:reply},()=>setReply(''));}else if(note.trim())void act({action:'note',id:t.id,body:note},()=>setNote(''));}}>
+   <form className={'ap-ib-compose'+(mode==='reply'?' is-reply':'')} onSubmit={e=>{e.preventDefault();if(mode==='reply'){if(t.inbox_state==='taken_over'&&reply.trim())void act({action:'reply',id:t.id,body:reply,...(emailVisitor?{emailVisitor:true}:{})},()=>{setReply('');setEmailVisitor(false);});}else if(note.trim())void act({action:'note',id:t.id,body:note},()=>setNote(''));}}>
     <div className="ap-ib-compose-top">
      <div className="ap-ib-tabs" role="tablist" aria-label="Message type">
       <button type="button" role="tab" aria-selected={mode==='note'} onClick={()=>setMode('note')}><I n="note" s={11}/>Internal note</button>
@@ -229,14 +230,15 @@ export default function Tickets(){
      {paused&&<span className="ap-ib-compose-state"><I n="pause" s={11}/>{t.inbox_state==='taken_over'?'Taken over · AI paused':'AI paused'}</span>}
     </div>
     {mode==='note'?<div className="ap-ib-compose-row">
-     <textarea id="ap-ib-note" aria-label="Internal note" value={note} maxLength={2000} rows={2} onChange={e=>setNote(e.target.value)} onKeyDown={e=>{if(e.key==='Enter'&&(e.metaKey||e.ctrlKey)){e.preventDefault();e.currentTarget.form?.requestSubmit();}}} placeholder="Write an internal note. Fictional details only, no secrets or customer information."/>
+     <textarea id="ap-ib-note" aria-label="Internal note" value={note} maxLength={2000} rows={2} onChange={e=>setNote(e.target.value)} onKeyDown={e=>{if(e.key==='Enter'&&(e.metaKey||e.ctrlKey)){e.preventDefault();e.currentTarget.form?.requestSubmit();}}} placeholder={modeText('Write an internal note. Fictional details only, no secrets or customer information.','Write an internal note. No secrets or payment details.')}/>
      <button type="submit" className="ap-ib-send" aria-label="Save internal note" title="Save internal note (Ctrl/⌘ + Enter)" disabled={busy||!note.trim()}><I n="arrowUp" s={15} sw={2.4}/></button>
     </div>:t.inbox_state==='taken_over'?<>
      <div className="ap-ib-compose-row">
-      <textarea id="ap-ib-reply" aria-label="Reply to the visitor in the widget" aria-describedby="ap-ib-reply-hint" value={reply} maxLength={MESSAGE_MAX} rows={2} onChange={e=>setReply(e.target.value)} onKeyDown={e=>{if(e.key==='Enter'&&(e.metaKey||e.ctrlKey)){e.preventDefault();e.currentTarget.form?.requestSubmit();}}} placeholder="Write to the visitor. Fictional details only."/>
+      <textarea id="ap-ib-reply" aria-label="Reply to the visitor in the widget" aria-describedby="ap-ib-reply-hint" value={reply} maxLength={MESSAGE_MAX} rows={2} onChange={e=>setReply(e.target.value)} onKeyDown={e=>{if(e.key==='Enter'&&(e.metaKey||e.ctrlKey)){e.preventDefault();e.currentTarget.form?.requestSubmit();}}} placeholder={modeText('Write to the visitor. Fictional details only.','Write to the visitor.')}/>
       <button type="submit" className="ap-ib-send pink" aria-label="Send reply in widget" title="Send reply in widget (Ctrl/⌘ + Enter)" disabled={busy||!reply.trim()||expired}><I n="send" s={14} sw={2.2}/></button>
      </div>
-     <p className="ap-ib-compose-hint" id="ap-ib-reply-hint">{expired?'The demo link has expired, so the visitor can no longer see replies.':"Shown live in the visitor's widget only. Nothing is emailed."}<span aria-live="polite">{reply.length}/{MESSAGE_MAX}</span></p>
+     <p className="ap-ib-compose-hint" id="ap-ib-reply-hint">{expired?'The demo link has expired, so the visitor can no longer see replies.':emailVisitor?"Shown live in the visitor's widget, and emailed only if the visitor left an address with consent.":"Shown live in the visitor's widget only. Nothing is emailed."}<span aria-live="polite">{reply.length}/{MESSAGE_MAX}</span></p>
+     <label className="ap-ib-compose-hint" style={{justifyContent:'flex-start',gap:8}}><input type="checkbox" checked={emailVisitor} onChange={e=>setEmailVisitor(e.target.checked)}/>Also email this reply to the visitor (only to an address they gave with consent; only your reply text is sent)</label>
     </>:<div className="ap-ib-compose-lock">
      <p>Take over to reply in the widget.</p>
      <button type="button" disabled={busy||t.inbox_state==='closed'} className="ap-ib-btn primary sm" onClick={()=>void act({ids:[t.id],patch:{takeover:true,status:'pending'}},()=>setMode('reply'))}><I n="pause" s={13}/>Take over and reply</button>
@@ -252,11 +254,11 @@ export default function Tickets(){
   <h1 className="ap-ib-sr">Tickets</h1>
   <div className="ap-ib-left">
    <nav className="ap-ib-rail" aria-label="Ticket views">
-    <div className="ap-ib-rail-head"><b>Support inbox</b><span>{loaded&&!loadError?`${rows.length} loaded`:'Fictional workspace'}</span></div>
+    <div className="ap-ib-rail-head"><b>Support inbox</b><span>{loaded&&!loadError?`${rows.length} loaded`:modeText('Fictional workspace','Your workspace')}</span></div>
     <div className="ap-ib-pills">
      <button type="button" className={'ap-ib-pillbtn'+(searchOpen||search?' on':'')} aria-expanded={searchOpen||!!search} aria-controls="ap-ib-search" onClick={()=>{const next=!(searchOpen||!!search);setSearchOpen(next);if(!next)setSearch('');else window.setTimeout(()=>document.getElementById('ap-ib-search')?.focus(),0);}}><I n="search" s={13}/>Search</button>
      <button type="button" className={'ap-ib-pillbtn'+(filtersOpen||filterCount?' on':'')} aria-expanded={filtersOpen} aria-controls="ap-ib-filters" onClick={()=>setFiltersOpen(!filtersOpen)}><I n="filter" s={13}/>Filter{filterCount>0&&<span className="ap-ib-pillbtn-n">{filterCount}</span>}</button>
-     <Link href="/setup" className="ap-ib-pillbtn primary" aria-label="New fictional demo chat" title="New fictional demo chat"><I n="plus" s={14} sw={2.4}/></Link>
+     <Link href="/setup" className="ap-ib-pillbtn primary" aria-label={modeText('New fictional demo chat','New test chat')} title={modeText('New fictional demo chat','New test chat')}><I n="plus" s={14} sw={2.4}/></Link>
     </div>
     <label className={'ap-ib-search'+(searchOpen||search?' is-open':'')}><I n="search" s={14}/><input id="ap-ib-search" type="search" aria-label="Search ticket, fixture or tag" placeholder="Search" value={search} onChange={e=>setSearch(e.target.value)} maxLength={160}/></label>
     <div className="ap-ib-rail-views">{(['Inbox','Queues'] as const).map(g=><div key={g} className="ap-ib-rail-group">
@@ -294,7 +296,7 @@ export default function Tickets(){
 
      {!loaded&&<ul className="ap-ib-items" aria-label="Loading tickets">{[0,1,2,3].map(i=><li key={i} className="ap-ib-skel"><i/><i/><i/></li>)}</ul>}
      {loadError&&<div className="ap-ib-empty"><p>{loadError}</p><button type="button" className="ap-ib-btn sm" disabled={busy} onClick={refresh}><I n="refresh" s={13}/>Retry</button></div>}
-     {loaded&&!loadError&&!rows.length&&<div className="ap-ib-empty"><p>No tickets yet.</p><Link href="/setup" className="ap-ib-link">Create a fictional demo in Quick setup</Link></div>}
+     {loaded&&!loadError&&!rows.length&&<div className="ap-ib-empty"><p>No tickets yet.</p><Link href="/setup" className="ap-ib-link">{modeText('Create a fictional demo in Quick setup','Create a test chat in Quick setup')}</Link></div>}
      {loaded&&rows.length>0&&!visible.length&&<div className="ap-ib-empty"><p>No loaded tickets match this view.</p><button type="button" className="ap-ib-textbtn" onClick={clearFilters}>Clear filters</button></div>}
 
      {visible.length>0&&<div className={'ap-ib-bulkbar'+(selected.length?' on':'')}>

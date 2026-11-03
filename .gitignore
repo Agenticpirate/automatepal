@@ -42,3 +42,7 @@ next-env.d.ts
 data/
 
 !.env.example
+
+# Cloudflare Workers build output (OpenNext) and local Wrangler state
+/.open-next/
+/.wrangler/

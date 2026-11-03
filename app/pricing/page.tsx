@@ -1,4 +1,5 @@
 'use client';
+import {modeText} from '../../lib/app-mode';
 import {useState} from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -28,13 +29,13 @@ const INCLUDED:[string,string][]=[
   ['Source-quoted answers','Exact passages, a separate grounding check, exact owner answers and dated exceptions.'],
   [`Billing lookups from ${SITE_BILLING_PROVIDERS.length} payment providers`,'Read-only, verified customers only, test or live mode. Refunds go to your review; nothing executes.'],
   ['Ticket queue and takeover','Impact × urgency priority, private notes, refund reviews, and take over or hand back at any time.'],
-  ['Owner replies in the widget','Reply live after takeover. Shown in the widget only; nothing is emailed.'],
+  ['Owner replies in the widget','Reply live after takeover. Optionally email the reply when the visitor gave an address with consent.'],
   ['Working hours and away message','Visitors choose the AI or a person; after hours they see your away message.'],
   ['MCP server','Scoped, expiring tokens; read tools, an unpublished source proposal, a test question, replies in taken-over conversations and support settings.'],
   ['Team roles, API and webhooks','Owner, admin, manager and agent roles, read-only API tokens and signed webhooks.'],
   ['Knowledge import','Text, Markdown, CSV, small PDFs, a public URL or a site crawl, published only with your consent.'],
 ];
-const NAV=[{label:'Home',href:'/',icon:'home' as const},{label:'Product',href:'/#workflow',icon:'grid' as const},{label:'Pricing',href:'/pricing',icon:'tag' as const,active:true},{label:'Contact',href:'/contact',icon:'mail' as const}];
+const NAV=[{label:'Home',href:'/',icon:'home' as const},{label:'Product',href:'/#features',icon:'grid' as const},{label:'Pricing',href:'/pricing',icon:'tag' as const,active:true},{label:'Contact',href:'/contact',icon:'mail' as const}];
 
 export default function Pricing(){
   const[interval,setInterval]=useState<'month'|'year'>('month'),[selected,setSelected]=useState<string|null>(null),[menu,setMenu]=useState(false);
@@ -56,14 +57,14 @@ export default function Pricing(){
     </div>
 
     <header className="ap-cx-hero">
-      <span className="ap-cx-badge"><i/>Fictional test-mode configuration</span>
+      <span className="ap-cx-badge"><i/>{modeText('Fictional test-mode configuration','Demo configuration, not for sale')}</span>
       <h1 className="ap-cx-h1"><span className="ap-cx-ln"><span>Demo</span></span> <span className="ap-cx-ln"><span><em>pricing.</em></span></span></h1>
-      <p className="ap-cx-sub">Not a real commercial offer. No checkout, charges or subscriptions are available. Every plan starts with a fictional USD $1 three-day trial, followed by the selected recurring configuration below.</p>
+      <p className="ap-cx-sub">Not a real commercial offer. No checkout, charges or subscriptions are available. {modeText('Every plan starts with a fictional USD $1 three-day trial, followed by the selected recurring configuration below.','Every plan starts with a demo USD $1 three-day trial, followed by the selected recurring configuration below.')}</p>
       <div role="group" aria-label="Billing interval" className="ap-cx-toggle">
         <button type="button" aria-pressed={interval==='month'} onClick={()=>setInterval('month')}>Monthly {interval==='month'&&<Icon name="check" size={13}/>}</button>
         <button type="button" aria-pressed={interval==='year'} onClick={()=>setInterval('year')}>Annual {interval==='year'&&<Icon name="check" size={13}/>}</button>
       </div>
-      <span className="ap-cx-trial-note">USD · fictional trial: $1 for 3 days</span>
+      <span className="ap-cx-trial-note">{modeText('USD · fictional trial: $1 for 3 days','USD · demo trial: $1 for 3 days')}</span>
     </header>
 
     <div className="ap-cx-tray">
@@ -90,7 +91,7 @@ export default function Pricing(){
 
       <section role="status" aria-live="polite" aria-atomic="true" className="ap-cx-status">
         {choice?<><h2>{choice.name} / {interval==='year'?'annual':'monthly'} selected</h2>
-          <p>Fictional $1 for 3 days, then ${interval==='year'?choice.annual:choice.monthly} per {interval==='year'?'year':'month'}. {interval==='year'?'The annual total is not billed monthly.':'Recurring monthly configuration.'}</p>
+          <p>{modeText('Fictional','Demo:')} $1 for 3 days, then ${interval==='year'?choice.annual:choice.monthly} per {interval==='year'?'year':'month'}. {interval==='year'?'The annual total is not billed monthly.':'Recurring monthly configuration.'}</p>
           <p className="ap-cx-note">Selection is local to this page and resets when reloaded. Nothing was saved, subscribed or charged. No feature entitlement changes.</p>
           <button type="button" className="ap-cx-clear" onClick={()=>setSelected(null)}>Clear selection</button></>
         :<p>Choose monthly or annual billing, then select a plan to preview its terms. No checkout will open.</p>}

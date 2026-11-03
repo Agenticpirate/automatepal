@@ -118,6 +118,33 @@ try{
  await refused(base('nowhere.test')+'/page',/did not resolve/);
  await refused('http://localhost:'+port+'/page',/Private or local/);
  ok('safeGet: unresolvable and local hosts refused before any request');
+
+ // Cloudflare Workers transport (fetch, no pinned socket). fetch() resolves names itself, so the literal
+ // 127.0.0.1 stands in for a public host here; every other host still goes through the real checks.
+ const pub=`http://${LOCAL}:${port}`;
+ const fopts={transport:'fetch' as const,resolve,addrProblem,urlProblem:(raw:string)=>new URL(raw).hostname===LOCAL?null:importUrlProblem(raw)};
+ const resolveLocal=async(h:string):Promise<Addr[]>=>h===LOCAL?[{address:LOCAL,family:4}]:resolve(h);
+ const fo={...fopts,resolve:resolveLocal};
+ const fOk=await safeGet(pub+'/page',fo);
+ assert.equal(fOk.status,200);assert.ok(fOk.body.includes('Public page text here.'));assert.match(fOk.contentType,/text\/html/);
+ ok('safeGet (Workers fetch): fetches a public page');
+ hits.length=0;
+ await refused(pub+'/to-private',/redirected to a private network address/,fo);
+ assert.deepEqual(hits,['/to-private'],'fetch path: the private target was never requested');
+ await refused(pub+'/to-metadata',/redirected to an address that cannot be imported/,fo);
+ ok('safeGet (Workers fetch): redirects to a private host and the metadata IP are refused, not followed');
+ const fRel=await safeGet(pub+'/to-relative',fo);
+ assert.equal(fRel.status,200);assert.ok(fRel.finalUrl.endsWith('/page'));
+ await refused(pub+'/loop',/redirected too many times/,fo);
+ await refused(pub+'/no-location',/without a redirect address/,fo);
+ ok('safeGet (Workers fetch): relative redirects re-checked; loops and empty redirects stop');
+ const fBig=await safeGet(pub+'/big',{...fo,maxBytes:1000});
+ assert.equal(fBig.truncated,true);assert.equal(fBig.bytes,1000);
+ await refused(pub+'/slow',/within 10 seconds/,{...fo,deadline:Date.now()+300});
+ ok('safeGet (Workers fetch): body cap and deadline enforced');
+ await refused(base('mixed.test')+'/page',/private network/,fo);
+ await refused('http://localhost:'+port+'/page',/Private or local/,fo);
+ ok('safeGet (Workers fetch): private answers and local hosts refused before any request');
 }finally{server.close();}
 console.log('all safeGet checks passed');
 }

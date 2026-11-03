@@ -1,4 +1,4 @@
-import {z} from 'zod';
+import {z} from 'zod';import './zod-csp';
 export const alertPreferences=z.object({minimum_priority:z.enum(['normal','high','urgent']),reasons:z.array(z.enum(['refund','handoff','negative_feedback','unanswered'])).max(4),channel:z.enum(['telegram','email']),quiet_start:z.number().int().min(0).max(23),quiet_end:z.number().int().min(0).max(23),timezone:z.enum(['Asia/Kolkata','UTC']),digest:z.boolean()}).strict();
 export const defaultAlerts={minimum_priority:'high' as const,reasons:['refund','handoff','negative_feedback','unanswered'] as ('refund'|'handoff'|'negative_feedback'|'unanswered')[],channel:'telegram' as const,quiet_start:22,quiet_end:7,timezone:'Asia/Kolkata' as const,digest:true};
 export function isQuiet(p:z.infer<typeof alertPreferences>,date:Date){const hour=Number(new Intl.DateTimeFormat('en-GB',{hour:'2-digit',hourCycle:'h23',timeZone:p.timezone}).format(date));return p.quiet_start===p.quiet_end?false:p.quiet_start<p.quiet_end?hour>=p.quiet_start&&hour<p.quiet_end:hour>=p.quiet_start||hour<p.quiet_end;}

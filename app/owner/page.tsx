@@ -1,4 +1,5 @@
 'use client';
+import {modeText} from '../../lib/app-mode';
 /* Owner overview, A3 layout (Nov 1 2026): KPI row with period-over-period change, funnel,
    category donut, question trend, status split, budget, knowledge gaps and a searchable,
    paged conversations/questions table. Own implementation of a common admin-dashboard layout;
@@ -12,6 +13,8 @@ import {useEffect,useMemo,useState} from 'react';
 import Link from 'next/link';
 import {authHeaders} from '../../lib/browser-auth';
 import Alerts from './alerts';
+import EmailSettings from './email-settings';
+import InsightTopics from './insight-topics';
 import {ticketLabel} from '../../lib/tickets';
 import {unansweredCsv,downloadCsv} from '../../lib/exports';
 import {clusterQuestions} from '../../lib/cluster';
@@ -20,13 +23,17 @@ import './owner-dash.css';
 type Ticket={id:string;created_at:string;order_label:string;inbox_state:string;ticket_status:string;priority:string;category:string;assigned_to_owner:boolean};
 type Query={id:string;case_id:string;created_at:string;question:string;supported:boolean;feedback:number|null};
 type Req={id:string;case_id:string;created_at:string;kind:string;status:string};
-type Data={asOf:string;tickets:Ticket[];queries:Query[];requests:Req[];usage:{utcDay:string;answersToday:number;dailyLimit:number;sources:number;sourceLimit:number;pageUnits:number;pageLimit:number};truncated:Record<string,boolean>;coverage:string};
+type Insight={case_id:string;topic:string;sentiment:'positive'|'neutral'|'negative';outcome:'resolved'|'unresolved'|'escalated';labeled_at:string};
+type Open={case_id:string;day:string;source:string;opens:number};
+type Data={insights?:Insight[];opens?:Open[];insightSettings?:{topics:string[]|null;enabled:boolean};asOf:string;tickets:Ticket[];queries:Query[];requests:Req[];usage:{utcDay:string;answersToday:number;dailyLimit:number;sources:number;sourceLimit:number;pageUnits:number;pageLimit:number};truncated:Record<string,boolean>;coverage:string};
 type Range=7|30|90;
 const DAY=86400000,PAGE=10;
 const STATUS_ORDER=['new','open','in_progress','pending','resolved','closed'];
 const nice=(s:string)=>{const t=(s||'general').replace(/_/g,' ');return t.charAt(0).toUpperCase()+t.slice(1);};
 function countBy<T>(items:T[],key:(x:T)=>string,order:string[]=[]){const m=new Map<string,number>();for(const x of items){const k=key(x)||'general';m.set(k,(m.get(k)??0)+1);}const rank=(k:string)=>{const i=order.indexOf(k);return i<0?order.length:i;};return [...m.entries()].sort((a,b)=>rank(a[0])-rank(b[0])||b[1]-a[1]).map(([k,value])=>({key:k,label:nice(k),value}));}
 
+/* Opens the custom-response form on Knowledge with the question filled in. */
+const answerHref=(q:string)=>'/knowledge?answer='+encodeURIComponent(q.slice(0,300))+'#custom-responses';
 const needsAttention=(t:Ticket)=>!['resolved','closed'].includes(t.ticket_status)&&(t.inbox_state==='attention'||['high','urgent'].includes(t.priority)||['refund','handoff'].includes(t.category));
 
 function buildNotifs(d:Data):DashNotif[]{
@@ -45,7 +52,7 @@ function inWindow<T extends {created_at:string}>(items:T[],from:number,to:number
 
 export default function Owner(){
  const[d,setD]=useState<Data|null>(null),[notice,setNotice]=useState('Loading owner overview...'),[days,setDays]=useState<Range>(7),[q,setQ]=useState('');
- const[tab,setTab]=useState<'conversations'|'questions'>('conversations'),[status,setStatus]=useState('all'),[page,setPage]=useState(0);
+ const[tab,setTab]=useState<'conversations'|'questions'>('conversations'),[donut,setDonut]=useState<'topics'|'category'>('topics'),[status,setStatus]=useState('all'),[page,setPage]=useState(0);
  function read(){authHeaders().then(headers=>fetch('/api/owner-overview',{headers})).then(r=>r.json()).then(x=>{if(x.error)throw Error(x.error);setD(x);setNotice('Snapshot '+x.asOf);}).catch(()=>{setD(null);setNotice('Overview unavailable. Sign in or retry when the service recovers.');});}
  useEffect(()=>{read();},[]);
 
@@ -71,8 +78,16 @@ export default function Owner(){
    {label:'Handoffs to a person',icon:'tickets' as const,value:String(kind(cur.r,'human_handoff')),now:kind(cur.r,'human_handoff'),prev:hasPrev?kind(prv.r,'human_handoff'):null,lowerIsBetter:true,series:perDay(cur.r,r=>r.kind==='human_handoff')},
    {label:'Leads captured',icon:'status' as const,value:String(kind(cur.r,'lead_callback')),now:kind(cur.r,'lead_callback'),prev:hasPrev?kind(prv.r,'lead_callback'):null,series:perDay(cur.r,r=>r.kind==='lead_callback')},
   ];
+  /* Widget opens (db/051) and AI labels for conversations active in this range. */
+  const startDay=new Date(start).toISOString().slice(0,10);
+  const openedCases=new Set((d.opens??[]).filter(o=>o.day>=startDay).map(o=>o.case_id));
+  const activeCases=new Set([...cur.q.map(x=>x.case_id),...cur.t.map(x=>x.id),...openedCases]);
+  const labels=(d.insights??[]).filter(x=>activeCases.has(x.case_id));
+  const topics=countBy(labels,x=>x.topic).map(p=>({...p,label:p.key==='other'?'Other':p.key}));
+  const sentiments=['positive','neutral','negative'].map(k=>({key:k,label:nice(k),value:labels.filter(x=>x.sentiment===k).length}));
+  const outcomes=['resolved','unresolved','escalated'].map(k=>({key:k,label:nice(k),value:labels.filter(x=>x.outcome===k).length}));
   const funnel={steps:[
-   {label:'Conversations',value:convos(cur)},
+   openedCases.size?{label:'Widget opened',value:Math.max(openedCases.size,casesWith(cur.q,()=>true))}:{label:'Conversations',value:convos(cur)},
    {label:'Asked a question',value:casesWith(cur.q,()=>true)},
    {label:'Got a sourced answer',value:casesWith(cur.q,x=>x.supported)},
    {label:'Rated helpful',value:casesWith(cur.q,x=>x.feedback===1)},
@@ -81,7 +96,7 @@ export default function Owner(){
   const statuses=countBy(d.tickets,t=>t.ticket_status,STATUS_ORDER);
   const week={answered:cur.q.filter(x=>x.supported).length,unanswered:cur.q.filter(x=>!x.supported).length,reviews:cur.r.length,leads:kind(cur.r,'lead_callback'),rated:cur.q.filter(x=>x.feedback===1||x.feedback===-1).length,helpful:cur.q.filter(x=>x.feedback===1).length,total:cur.q.length};
   const prevTotal=prv.q.length;
-  return {kpis,funnel,categories,statuses,trend,week,prevTotal,hasPrev,attention:d.tickets.filter(needsAttention),themes:clusterQuestions(d.queries.filter(x=>!x.supported)),queue:{refunds:d.requests.filter(r=>r.status==='pending_review'&&r.kind==='refund_request').length,taken:d.tickets.filter(t=>t.inbox_state==='taken_over').length,unassigned:d.tickets.filter(t=>!t.assigned_to_owner&&!['closed','resolved'].includes(t.ticket_status)).length,negative:d.queries.filter(x=>x.feedback===-1).length}};
+  return {kpis,funnel,opensRecorded:openedCases.size>0,topics,sentiments,outcomes,labeled:labels.length,categories,statuses,trend,week,prevTotal,hasPrev,attention:d.tickets.filter(needsAttention),themes:clusterQuestions(d.queries.filter(x=>!x.supported)),queue:{refunds:d.requests.filter(r=>r.status==='pending_review'&&r.kind==='refund_request').length,taken:d.tickets.filter(t=>t.inbox_state==='taken_over').length,unassigned:d.tickets.filter(t=>!t.assigned_to_owner&&!['closed','resolved'].includes(t.ticket_status)).length,negative:d.queries.filter(x=>x.feedback===-1).length}};
  },[d,days]);
 
  const needle=q.trim().toLowerCase(),match=(...s:string[])=>!needle||s.join(' ').toLowerCase().includes(needle);
@@ -98,7 +113,7 @@ export default function Owner(){
  return <DeskShell widget><DashShell crumb="Overview" notifications={d?buildNotifs(d):[]} search={q} onSearch={s=>{setQ(s);setPage(0);}}><main className="ap-dash-headrow" style={{display:'contents'}}>
  <header className="ap-od-head">
   <div>
-   <p className="ap-dash-kicker">Owner overview / fictional data</p>
+   <p className="ap-dash-kicker">{modeText('Owner overview / fictional data','Owner overview')}</p>
    <h1 className="ap-dash-h1"><span className="ap-dash-ln"><span>Know what needs you.</span></span></h1>
    <p className="ap-dash-sub">A private snapshot of your conversations, answers, queue and budget. Nothing here sends a customer reply or moves money.</p>
   </div>
@@ -123,13 +138,19 @@ export default function Owner(){
  <div className="ap-od-grid">
   <section className="ap-dash-card ap-od-span2">
    <div className="ap-od-cardhead"><h2 className="ap-dash-h2">Conversation funnel</h2><span className="ap-dash-badge ap-dash-b-mut">{days} days</span></div>
-   <p className="ap-dash-muted ap-od-desc">How far conversations got. Each step counts conversations, not messages. Widget opens without a question are not recorded yet.</p>
+   <p className="ap-dash-muted ap-od-desc">How far conversations got. Each step counts conversations, not messages.{v.opensRecorded?' Widget opened counts conversations whose widget or help page was opened in this range.':' Widget opens are counted from now on; none are recorded in this range yet.'}</p>
    {v.funnel.steps[0].value?<FunnelBars steps={v.funnel.steps} sides={v.funnel.sides}/>:<p className="ap-dash-empty ap-od-empty">Not enough data yet. Conversations in this range will show here.</p>}
   </section>
   <section className="ap-dash-card">
-   <div className="ap-od-cardhead"><h2 className="ap-dash-h2">Tickets by category</h2></div>
-   <p className="ap-dash-muted ap-od-desc">Tickets opened in this range, by the category the escalation rules set.</p>
-   {v.categories.length?<CategoryDonut parts={v.categories} label="Tickets by category"/>:<p className="ap-dash-empty ap-od-empty">No tickets opened in this range.</p>}
+   <div className="ap-od-cardhead"><h2 className="ap-dash-h2">{v.topics.length&&donut==='topics'?'Conversation topics':'Tickets by category'}</h2>{v.topics.length>0&&<span className="ap-dash-toggle" role="group" aria-label="Breakdown"><button aria-pressed={donut==='topics'} onClick={()=>setDonut('topics')}>AI topics</button><button aria-pressed={donut==='category'} onClick={()=>setDonut('category')}>Ticket category</button></span>}</div>
+   {v.topics.length&&donut==='topics'?<>
+    <p className="ap-dash-muted ap-od-desc">Topics an AI model gave {v.labeled} conversation{v.labeled===1?'':'s'} in this range, from your topic list. Labels can be wrong; they are for trends, not decisions.</p>
+    <CategoryDonut parts={v.topics.length>6?[...v.topics.slice(0,5),{key:'rest',label:'Other topics',value:v.topics.slice(5).reduce((n,p)=>n+p.value,0)}]:v.topics} label="Conversation topics"/>
+    <p className="ap-dash-muted" style={{margin:'10px 0 4px'}}>Sentiment</p><SegmentBar parts={v.sentiments} label="Conversation sentiment"/>
+    <p className="ap-dash-muted" style={{margin:'10px 0 4px'}}>Outcome</p><SegmentBar parts={v.outcomes} label="Conversation outcome"/>
+   </>:<>
+   <p className="ap-dash-muted ap-od-desc">Tickets opened in this range, by the category the escalation rules set.{v.topics.length?'':' AI topics appear here once conversations are labelled.'}</p>
+   {v.categories.length?<CategoryDonut parts={v.categories} label="Tickets by category"/>:<p className="ap-dash-empty ap-od-empty">No tickets opened in this range.</p>}</>}
   </section>
 
   <section className="ap-dash-card ap-od-span2">
@@ -171,7 +192,7 @@ export default function Owner(){
    <div className="ap-od-cardhead"><h2 className="ap-dash-h2">Unanswered themes</h2></div>
    <p className="ap-dash-muted ap-od-desc">Knowledge gaps: unanswered questions grouped by shared words. One new source can cover a whole group. Rough word matching, not a model judgment.</p>
    {!v.themes.length&&<p className="ap-dash-muted" style={{marginTop:8}}>No unanswered questions in the loaded snapshot.</p>}
-   <div>{v.themes.slice(0,5).map(c=><div key={c.sample} className="ap-dash-row ap-od-gap"><div style={{display:'flex',alignItems:'center',gap:9,minWidth:0}}><span className="ap-dash-badge ap-dash-b-mut">{c.size} {c.size===1?'time':'times'}:</span>{' '}<span style={{fontSize:12,overflowWrap:'anywhere'}}>{c.sample}</span></div></div>)}</div>
+   <div>{v.themes.slice(0,5).map(c=><div key={c.sample} className="ap-dash-row ap-od-gap"><div style={{display:'flex',alignItems:'center',gap:9,minWidth:0}}><span className="ap-dash-badge ap-dash-b-mut">{c.size} {c.size===1?'time':'times'}:</span>{' '}<span style={{fontSize:12,overflowWrap:'anywhere'}}>{c.sample}</span></div><Link className="ap-dash-btn ap-dash-btn-ghost ap-od-open" href={answerHref(c.sample)} aria-label={'Write an answer: '+c.sample}>Write an answer</Link></div>)}</div>
    {v.themes.length>0&&<Link href="/knowledge" className="ap-od-more">Write an answer in Knowledge</Link>}
   </section>
  </div>
@@ -185,7 +206,7 @@ export default function Owner(){
      <option value="all">All statuses</option>
      {tab==='conversations'?(v?.statuses??[]).map(s=><option key={s.key} value={s.key}>{s.label}</option>):<><option value="answered">Answered</option><option value="unanswered">Unanswered</option></>}
     </select></label>
-    <button disabled={!d.queries.length} onClick={()=>downloadCsv('automatepal-fictional-unanswered.csv',unansweredCsv(d.queries))} className="ap-dash-btn ap-dash-btn-ghost">Export unanswered questions CSV</button>
+    <button disabled={!d.queries.length} onClick={()=>downloadCsv(modeText('automatepal-fictional-unanswered.csv','automatepal-unanswered.csv'),unansweredCsv(d.queries))} className="ap-dash-btn ap-dash-btn-ghost">Export unanswered questions CSV</button>
    </div>
   </div>
   {!shown.length?<p className="ap-dash-empty ap-od-empty">{rows.length===0&&!needle&&status==='all'?(tab==='conversations'?'No conversations yet.':'No questions yet.'):'Nothing matches this search or filter.'}</p>:
@@ -205,10 +226,12 @@ export default function Owner(){
     <td data-label="Result"><span className={'ap-dash-badge '+(x.supported?'ap-dash-b-ok':'ap-dash-b-err')}>{x.supported?'supported':'unanswered'}</span></td>
     <td data-label="Feedback">{x.feedback===1?'helpful':x.feedback===-1?<span className="ap-dash-badge ap-dash-b-err">negative feedback</span>:'none'}</td>
     <td data-label="Asked">{fmtDate(x.created_at)}</td>
-    <td data-label="Actions">{x.supported?(x.case_id?<Link className="ap-dash-btn ap-dash-btn-ghost ap-od-open" href={'/tickets?ticket='+x.case_id}>Open</Link>:null):<Link className="ap-dash-btn ap-dash-btn-ghost ap-od-open" href="/knowledge">Write an answer</Link>}</td>
+    <td data-label="Actions">{x.supported?(x.case_id?<Link className="ap-dash-btn ap-dash-btn-ghost ap-od-open" href={'/tickets?ticket='+x.case_id}>Open</Link>:null):<Link className="ap-dash-btn ap-dash-btn-ghost ap-od-open" href={answerHref(x.question)}>Write an answer</Link>}</td>
    </tr>)}</tbody>
   </table>}
   {rows.length>PAGE&&<nav className="ap-od-pager" aria-label="Table pages"><button className="ap-dash-btn ap-dash-btn-ghost" disabled={cur===0} onClick={()=>setPage(cur-1)}>Previous</button><span>Page {cur+1} of {pages}</span><button className="ap-dash-btn ap-dash-btn-ghost" disabled={cur>=pages-1} onClick={()=>setPage(cur+1)}>Next</button></nav>}
  </section>
- <Alerts/></>}</main></DashShell></DeskShell>;
+ <InsightTopics topics={d.insightSettings?.topics??null} enabled={d.insightSettings?.enabled??true} available={!!d.insightSettings}/>
+ <Alerts/>
+ <EmailSettings/></>}</main></DashShell></DeskShell>;
 }

@@ -15,5 +15,5 @@ export default function DemoBanner(){
  if(!show||!onApp)return null;
  // Inline styles: app pages load different stylesheets, so the banner must not depend on any of them.
  // It scrolls with the page: pinned, it covered the workspace top bar (also sticky at top 0) on every page.
- return <div className="ap-demo-banner" role="note" style={{position:'relative',zIndex:60,padding:'8px 14px',background:'#FD91CC',color:'#041A52',fontSize:12,fontWeight:600,lineHeight:1.4,textAlign:'center',borderBottom:'2px solid #041A52',fontFamily:"var(--font-geist-sans),'Inter',system-ui,sans-serif"}}>Open demo preview - fictional data, read-only, nothing sends. <Link href="/login" style={{color:'#09318D',textDecoration:'underline'}}>Sign in</Link> for your own workspace.</div>;
+ return <div className="ap-demo-banner" data-demo="open-demo" role="note" style={{position:'relative',zIndex:60,padding:'8px 14px',background:'#FD91CC',color:'#041A52',fontSize:12,fontWeight:600,lineHeight:1.4,textAlign:'center',borderBottom:'2px solid #041A52',fontFamily:"var(--font-geist-sans),'Inter',system-ui,sans-serif"}}>Open demo preview - fictional data, read-only, nothing sends. <Link href="/login" style={{color:'#09318D',textDecoration:'underline'}}>Sign in</Link> for your own workspace.</div>;
 }

@@ -1,6 +1,6 @@
 import {McpServer} from '@modelcontextprotocol/sdk/server/mcp.js';
 import type {CallToolResult, ToolAnnotations} from '@modelcontextprotocol/sdk/types.js';
-import {z} from 'zod';
+import {z} from 'zod';import '../zod-csp';
 import {answerKnowledge, embedKnowledge, exactCustomAnswer, instructionExtraction, safeKnowledge, type KnowledgeSource} from '../knowledge';
 import {parseVector, rankChunks, type OwnerChunk} from '../owner-retrieval';
 import {buildUnansweredDigest, type DigestInteraction} from '../unanswered-digest';

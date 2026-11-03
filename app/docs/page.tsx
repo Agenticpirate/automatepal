@@ -1,3 +1,4 @@
+import {modeText} from '../../lib/app-mode';
 import Link from 'next/link';
 import type {Metadata} from 'next';
 import PublicShell,{Doc,DocHead} from '../components/PublicShell';
@@ -12,7 +13,7 @@ import './docs.css';
    Not in app/sitemap.ts on purpose (verify-seo expects exactly seven public paths). */
 const description='How to install the AutomatePal widget, control it from your page, connect a payment provider read-only, verify customers, reply in the widget, set working hours, manage leads and connect an MCP client. Includes what is not built yet.';
 export const metadata:Metadata={title:'Docs',description,alternates:{canonical:'/docs'},robots:{index:true,follow:true},
- openGraph:{title:'Docs | AutomatePal',description,url:'/docs',images:[{url:'/opengraph-image',width:1200,height:630,alt:'AutomatePal fictional-data preview, no live payments'}]},
+ openGraph:{title:'Docs | AutomatePal',description,url:'/docs',images:[{url:'/opengraph-image',width:1200,height:630,alt:modeText('AutomatePal fictional-data preview, no live payments','AutomatePal: source-backed support, no live payments')}]},
  twitter:{card:'summary_large_image',title:'Docs | AutomatePal',description,images:['/opengraph-image']}};
 const TOC:[string,string][]=[['install','Install the widget'],['sdk','Widget SDK and events'],['followups','Follow-up suggestions'],['billing','Connect billing'],['verification','Customer verification'],['refunds','Refund reviews'],['replies','Owner replies'],['hours','Working hours'],['leads','Leads'],['mcp','MCP server'],['limits','Limits and what is not built']];
 const INTENT_LABEL:Record<BillingIntent,string>={order_status:'Order or charge status',payment_history:'Payment history',failed_payment:'Failed payment and retry',invoice:'Invoice link',renewal:'Subscription renewal',refund_status:'Refund status'};
@@ -48,7 +49,7 @@ export default function Docs(){
  const providers=providerSummaries();
  const tools=Object.keys(TOOL_SCOPES) as McpToolName[];
  return <PublicShell>
-  <DocHead kicker="Docs" title="Set up AutomatePal" lede={<>Everything here is built and covered by the repo’s checks. This is a fictional-data preview: payment execution stays off, and some features are built locally but not yet on the hosted preview. See <a href="#limits">Limits and what is not built</a>.</>} updated="2026-11-01"/>
+  <DocHead kicker="Docs" title="Set up AutomatePal" lede={<>Everything here is built and covered by the repo’s checks. {modeText('This is a fictional-data preview: payment execution stays off, and some features are built locally but not yet on the hosted preview.','Payment execution stays off and billing is read-only. Some features are built but not yet on the hosted site.')} See <a href="#limits">Limits and what is not built</a>.</>} updated="2026-11-01"/>
   <Doc toc={TOC}>
    <section id="install" aria-labelledby="install-h">
     <h2 id="install-h">Install the widget</h2>
@@ -152,7 +153,7 @@ document.querySelector('#help-link').onclick = () => AutomatePal.open();`}</code
     <ul>
      <li>Take over a conversation in Tickets. AI answers pause, including one already being prepared, and the header shows “Taken over · AI paused”.</li>
      <li>Use <b>Reply in widget</b> in the composer. The visitor sees the message in the widget within a few seconds while their page is open, and can answer in the same thread.</li>
-     <li>Replies are shown in the widget only. Nothing is emailed.</li>
+     <li>Replies are shown in the widget. If the visitor left an email address with consent on that conversation, you can tick “Also email this reply” to send them your reply text as well. It is off by default, and nothing else from the conversation is emailed to the visitor.</li>
      <li>Up to 100 messages per conversation (50 from the visitor), 1,000 characters each. Replies stop when you release or close the conversation or its link expires.</li>
      <li>Ticket history records “Owner replied in the widget” without the text. Messages are deleted with the conversation and by preview-data deletion.</li>
     </ul>
@@ -210,7 +211,7 @@ document.querySelector('#help-link').onclick = () => AutomatePal.open();`}</code
      <li>Only PayPal has been checked against a real sandbox account. The other providers are verified against their published contracts and local mocks, not real accounts.</li>
      <li>Polar, Braintree and Cashfree adapters are not built, and no other provider is supported.</li>
      <li>Payment execution is off everywhere. The bot cannot charge, capture or refund, and refund decisions are records only.</li>
-     <li>No email, Slack, WhatsApp or SMS delivery. Owner replies reach the visitor only inside the widget.</li>
+     <li>No Slack, WhatsApp or SMS delivery. Email is sent through Resend only when it is configured: owner alerts, new-lead notices, the weekly digest, team invites, and a reply you choose to email to a visitor who gave an address with consent. Without it, emails are recorded as dry runs and nothing is sent.</li>
      <li>No external MCP client (for example a desktop assistant or an IDE) has been acceptance-tested yet.</li>
      <li>No SOC 2, HIPAA or uptime SLA. See <Link href="/security">Security</Link> and <Link href="/status">Status</Link>.</li>
     </ul>

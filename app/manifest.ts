@@ -1,10 +1,11 @@
+import {modeText} from '../lib/app-mode';
 import type {MetadataRoute} from 'next';
 // Icons for Android home screen shortcuts and browsers that read the web manifest.
 export default function manifest():MetadataRoute.Manifest{
  return{
   name:'AutomatePal',
   short_name:'AutomatePal',
-  description:'Source-backed support and owner review. Fictional-data preview, no live payments.',
+  description:'Source-backed support and owner review. '+modeText('Fictional-data preview, no live payments.','Read-only billing, no live payments.'),
   start_url:'/',
   display:'browser',
   background_color:'#041A52',

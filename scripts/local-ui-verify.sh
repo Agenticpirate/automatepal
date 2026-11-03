@@ -3,7 +3,7 @@
 # (per docs/KIRO_BRIEF.md: no pipes, kill stray `next start` between runs). Uses the current .next build.
 # Skips scripts that need the live site or a different build flag; pass names to run a subset.
 cd "$(dirname "$0")/.."
-skip=(verify-seo-hosted verify-demo-open verify-team-api verify-team-ui verify-cache-headers)
+skip=(verify-seo-hosted verify-demo-open verify-team-api verify-team-ui verify-cache-headers verify-production-mode)
 mkdir -p /tmp/ap-ui-logs; fail=0
 scripts=(${@:-scripts/verify-*.mjs})
 for s in $scripts; do

@@ -1,4 +1,4 @@
-import {z} from 'zod';
+import {z} from 'zod';import './zod-csp';
 /* Owner-defined follow-up suggestions, shown as buttons after an answer in the widget. Deterministic: the
    owner's order, minus duplicates and the question just asked, first FOLLOW_UP_SHOWN only. Plain text only
    (rendered as React text, and angle brackets and control characters are refused when saved). */

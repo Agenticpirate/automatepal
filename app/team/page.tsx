@@ -117,7 +117,7 @@ export default function Team(){
      <div className="tm" style={{gap:18}}>
       <section className="ap-dash-card" aria-labelledby="tm-invite">
        <h2 id="tm-invite" className="ap-dash-h2">Invite a teammate</h2>
-       <p className="ap-dash-muted">You get a private link to share yourself. Nothing is emailed.</p>
+       <p className="ap-dash-muted">When email is set up on this server, we email the invite to them. You also see the private link once, so you can share it yourself.</p>
        {canInvite?<form className="tm-form" onSubmit={invite}>
         <label className="tm-label">Work email<input className="tm-input" type="email" required maxLength={254} placeholder="name@company.com" value={email} onChange={e=>setEmail(e.target.value)}/></label>
         <div className="tm-label" role="group" aria-label="Role">Role

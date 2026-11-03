@@ -1,4 +1,4 @@
-import {z} from 'zod';
+import {z} from 'zod';import '../zod-csp';
 import {widgetSettings} from '../widget';
 import {workingHours} from '../working-hours';
 // Widget settings an MCP client may read and change: chat mode (workingHours.enabled: a person can be asked

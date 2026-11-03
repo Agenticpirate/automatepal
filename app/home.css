@@ -654,3 +654,63 @@
  .hm-ov .hm-ov-panel{animation:none}
  .desk-ui .ap-home .hm-ov-tabs button{transition:none}
 }
+
+/* ── Demo section, framed stage (Nov 3): the chat is always open inside a product frame, next to a live
+   trace of what the agent did. Replaces the floating launcher that left the right column empty. ── */
+.hm-demo-grid{display:block}
+.hm-demo-head{max-width:720px;margin-bottom:clamp(28px,4vw,44px)}
+.hm-stage{position:relative;border:2px solid #041A52;border-radius:26px;background:#fff;overflow:hidden;box-shadow:10px 10px 0 rgba(253,145,204,.55),0 40px 80px -40px rgba(4,26,82,.45)}
+.hm-stage-bar{display:flex;align-items:center;gap:14px;padding:12px 18px;background:#041A52;color:#C7D4F2}
+.hm-stage-dots{display:flex;gap:6px;flex:none}
+.hm-stage-dots i{width:10px;height:10px;border-radius:50%;background:#FD91CC}
+.hm-stage-dots i:nth-child(2){background:#7D9BE0}
+.hm-stage-dots i:nth-child(3){background:#fff}
+.hm-stage-url{flex:1;min-width:0;max-width:420px;margin:0 auto;padding:6px 14px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);font:12px var(--font-geist-mono),monospace;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hm-stage-tag{flex:none;font:11px var(--font-geist-mono),monospace;color:#FD91CC}
+.hm-stage-body{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);gap:clamp(20px,2.6vw,32px);padding:clamp(18px,2.6vw,30px);background:radial-gradient(70% 60% at 80% 0%,rgba(253,145,204,.14),transparent 70%),linear-gradient(180deg,#F4F7FD,#EEF2FB)}
+.hm-stage .hm-chat-wrap{min-width:0}
+.hm-stage .hm-chat-stage{padding-bottom:0}
+.hm-stage .hm-chat{height:600px;border:1.5px solid #CFD8EC;border-radius:20px;box-shadow:0 1px 2px rgba(4,26,82,.06),0 24px 48px -28px rgba(4,26,82,.4)}
+.hm-trace{display:flex;flex-direction:column;gap:14px;min-width:0}
+.hm-trace-card{background:#fff;border:1.5px solid #DCE3F2;border-radius:18px;padding:16px 18px;box-shadow:0 1px 3px rgba(4,26,82,.05)}
+.hm-trace-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.ap-public .hm-trace-head b{font-size:13.5px;font-weight:650;color:#041A52}
+.hm-trace-head span{display:inline-flex;align-items:center;gap:6px;font:600 10.5px var(--font-geist-mono),monospace;padding:3px 9px;border-radius:999px;background:#EEF1F8;color:#4A5878}
+.hm-trace-head span::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor}
+.hm-trace-head span[data-state=run]{background:#FDE7F3;color:#A3226F}
+.hm-trace-head span[data-state=done]{background:#E3F6EC;color:#0D6B3C}
+.hm-trace-empty,.hm-trace-note{margin:0;font-size:13px;line-height:1.55;color:#5B6A88}
+.hm-trace-live{display:flex;align-items:center;gap:10px;margin:0;font-size:13px;color:#09318D}
+.hm-trace-live i{width:14px;height:14px;border-radius:50%;border:2px solid #DCE3F2;border-top-color:#09318D;animation:hm-trace-spin .8s linear infinite}
+@keyframes hm-trace-spin{to{transform:rotate(360deg)}}
+.hm-trace-body{display:grid;gap:12px}
+.hm-trace-src small{display:block;font:600 10px var(--font-geist-mono),monospace;letter-spacing:.06em;text-transform:uppercase;color:#7A88AC}
+.ap-public .hm-trace-src b{display:block;margin-top:3px;font-size:13px;font-weight:600;color:#0A1B3D}
+.hm-trace-src blockquote{margin:8px 0 0;padding:10px 12px;border-left:3px solid #FD91CC;border-radius:0 10px 10px 0;background:#F7F9FD;font-size:13px;line-height:1.5;color:#0A1B3D}
+.hm-trace-checks{display:grid;gap:7px;margin:0;padding:0;list-style:none}
+.hm-trace-checks li{display:flex;align-items:flex-start;gap:8px;font-size:12.5px;line-height:1.45;color:#0A1B3D;animation:hm-q-in .45s var(--ap-e-quint) both}
+.hm-trace-checks li:nth-child(2){animation-delay:.08s}.hm-trace-checks li:nth-child(3){animation-delay:.16s}
+.hm-trace-checks svg{flex:none;margin-top:2px;padding:2px;width:16px;height:16px;border-radius:50%;background:#E3F6EC;color:#0D6B3C}
+.hm-trace-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0}
+.hm-trace-stats div{padding:12px 14px;border-radius:14px;background:#fff;border:1.5px solid #DCE3F2}
+.hm-trace-stats dt{font-size:11px;color:#6B7A99}
+.hm-trace-stats dd{margin:4px 0 0;font-size:20px;font-weight:650;letter-spacing:-.02em;color:#041A52;font-variant-numeric:tabular-nums}
+.hm-stage .hm-queue{flex:1}
+.ap-public .hm-demo .hm-chat-note{margin:16px 2px 0}
+@media(max-width:960px){
+ .hm-stage-body{grid-template-columns:minmax(0,1fr)}
+ .hm-stage-tag{display:none}
+}
+@media(max-width:640px){
+ .hm-stage{border-radius:20px;box-shadow:5px 5px 0 rgba(253,145,204,.55)}
+ .hm-stage-bar{padding:10px 12px}
+ .hm-stage-body{padding:12px;gap:14px}
+ .hm-stage .hm-chat{height:540px}
+ .hm-trace-stats dd{font-size:17px}
+}
+@media(prefers-reduced-motion:reduce){.hm-trace-live i,.hm-trace-checks li{animation:none}}
+/* The old two-area grid pinned the chat to grid-area "chat"; inside the stage both columns are auto-placed. */
+.hm-stage .hm-chat-wrap,.hm-stage .hm-trace{grid-area:auto}
+/* Hero microcopy under the CTAs, and the label under the illustrative stats row. */
+.ap-home .hm-hero-note{margin:14px 0 0;font-size:12.5px;color:#B9C6E4;letter-spacing:.01em}
+.ap-home .hm-stats-note{margin:10px 0 0;font:11px var(--font-geist-mono),monospace;color:#8B9BC4;text-align:center}

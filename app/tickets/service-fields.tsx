@@ -1,4 +1,5 @@
 'use client';
+import {modeText} from '../../lib/app-mode';
 import {useRouter} from 'next/navigation';
 import {useState} from 'react';
 import Link from 'next/link';
@@ -30,7 +31,7 @@ export function QaDraft(){
  const[question,setQuestion]=useState(''),[answer,setAnswer]=useState('');
  return <section className="ap-ib-qa" aria-label="Prepare resolved ticket as Q&A">
   <h3>Prepare resolved ticket as Q&amp;A</h3>
-  <p className="ap-ib-note">Write a reusable fictional question and verified answer. Internal notes are never copied automatically. This transfers an unsaved draft in this tab; nothing is published or sent to a model.</p>
+  <p className="ap-ib-note">{modeText('Write a reusable fictional question and verified answer.','Write a reusable question and verified answer.')} Internal notes are never copied automatically. This transfers an unsaved draft in this tab; nothing is published or sent to a model.</p>
   <label className="ap-ib-field">Reusable question<input id="ap-ib-qa-q" value={question} maxLength={300} onChange={e=>setQuestion(e.target.value)}/></label>
   <label className="ap-ib-field">Reviewed answer<textarea value={answer} maxLength={5000} rows={4} onChange={e=>setAnswer(e.target.value)}/></label>
   <div className="ap-ib-qa-row">

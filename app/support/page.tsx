@@ -1,4 +1,5 @@
 "use client";
+import {modeText} from '../../lib/app-mode';
 import DeskShell from '../components/DeskShell';
 import DashShell,{DashNotif,DIcon} from '../components/DashShell';
 import {useEffect,useState} from 'react';
@@ -19,11 +20,11 @@ export default function Support(){const[cases,setCases]=useState<InboxCase[]>([]
  const pending=requests.filter(r=>r.status==='pending_review').length;
  return <DeskShell widget><DashShell crumb="Widget studio" notifications={buildNotifs(requests,cases)}><main style={{display:'contents'}}>
 <header>
-<p className="ap-dash-kicker">Customer support / fictional sandbox</p>
+<p className="ap-dash-kicker">{modeText('Customer support / fictional sandbox','Customer support')}</p>
 <h1 className="ap-dash-h1"><span className="ap-dash-ln"><span>A customer question. A clear next step.</span></span></h1>
-<p className="ap-dash-sub">Answer questions from your loaded knowledge with an embeddable support panel and a private review queue. This prototype uses fictional orders. It does not connect a business&apos;s real PayPal account or issue refunds.</p>
+<p className="ap-dash-sub">Answer questions from your loaded knowledge with an embeddable support panel and a private review queue. {modeText('This prototype uses fictional orders. It does not connect a business\'s real PayPal account or issue refunds.','Test chats use a sample order. Billing connections are read-only, and refunds are never issued automatically.')}</p>
 <div style={{display:'flex',alignItems:'center',gap:12,marginTop:14,flexWrap:'wrap'}}>
-<button disabled={busy} onClick={()=>action({action:'create_demo'})} className="ap-dash-btn"><DIcon name="widget" size={13}/>Create one-hour fictional demo</button>
+<button disabled={busy} onClick={()=>action({action:'create_demo'})} className="ap-dash-btn"><DIcon name="widget" size={13}/>{modeText('Create one-hour fictional demo','Create a one-hour test chat')}</button>
 <p role="status" className="ap-dash-muted" style={{margin:0,wordBreak:'break-word'}}>{notice}</p>
 </div>
 </header>
@@ -47,11 +48,11 @@ export default function Support(){const[cases,setCases]=useState<InboxCase[]>([]
 <label className="ap-dash-field" style={{marginTop:12}}>Allowed external origins (one per line)<textarea rows={3} value={branding.allowedOrigins.join('\n')} onChange={e=>setBranding({...branding,allowedOrigins:e.target.value.split('\n').filter(Boolean).slice(0,10)})} placeholder="https://your-test-site.example" className="ap-dash-select" style={{resize:'vertical',fontFamily:'inherit'}}/></label>
 <label className="ap-dash-field" style={{marginTop:12}}>Excluded paths (one per line)<textarea rows={3} value={branding.excludedPaths.join('\n')} onChange={e=>setBranding({...branding,excludedPaths:e.target.value.split('\n').filter(Boolean).slice(0,20)})} placeholder="/account" className="ap-dash-select" style={{resize:'vertical',fontFamily:'inherit'}}/></label>
 <label className="ap-dash-field" style={{marginTop:12,flexDirection:'row',alignItems:'center',gap:8}}>Button position<select value={branding.side} onChange={e=>setBranding({...branding,side:e.target.value})} className="ap-dash-select" style={{width:'auto',marginTop:0}}><option value="right">Right</option><option value="left">Left</option></select></label>
-<div style={{display:'flex',flexDirection:'column',gap:9,marginTop:12}}>{([['autoOpen','Open automatically on first visit'],['hideSources','Hide supporting quotes (not a privacy boundary)'],['hideOrder','Hide fictional order card'],['hideContact','Hide optional contact field']] as const).map(([key,label])=><label key={key} className="ap-dash-checkrow"><input type="checkbox" checked={branding[key]} onChange={e=>setBranding({...branding,[key]:e.target.checked})}/>{label}</label>)}</div>
+<div style={{display:'flex',flexDirection:'column',gap:9,marginTop:12}}>{([['autoOpen','Open automatically on first visit'],['hideSources','Hide supporting quotes (not a privacy boundary)'],['hideOrder',modeText('Hide fictional order card','Hide sample order card')],['hideContact','Hide optional contact field']] as const).map(([key,label])=><label key={key} className="ap-dash-checkrow"><input type="checkbox" checked={branding[key]} onChange={e=>setBranding({...branding,[key]:e.target.checked})}/>{label}</label>)}</div>
 <p className="ap-dash-muted" style={{margin:'10px 0 0'}}>The chat frame loads only when opened. Open/closed state persists within this tab while navigating.</p>
 </section>
 <section aria-label="Working hours" style={{marginTop:18,borderTop:'1.5px solid #EEF1F8',paddingTop:16}}><h3 className="ap-dash-h2" style={{fontSize:15}}>Working hours</h3>
-<p className="ap-dash-muted" style={{margin:'8px 0 0'}}>When a visitor asks for a person outside these hours, the widget shows your away message and saves the request for the team. Replies happen in the widget after you take over in Tickets. Nothing is emailed.</p>
+<p className="ap-dash-muted" style={{margin:'8px 0 0'}}>When a visitor asks for a person outside these hours, the widget shows your away message and saves the request for the team. Replies happen in the widget after you take over in Tickets. You can also email a reply to a visitor who left an address with consent.</p>
 <label className="ap-dash-checkrow" style={{marginTop:12}}><input type="checkbox" checked={branding.visitorChoice} onChange={e=>setBranding({...branding,visitorChoice:e.target.checked})}/>Let visitors choose AI or a person</label>
 <label className="ap-dash-checkrow" style={{marginTop:9}}><input type="checkbox" checked={branding.workingHours.enabled} onChange={e=>setBranding({...branding,workingHours:{...branding.workingHours,enabled:e.target.checked}})}/>Use working hours for the person handoff</label>
 <label className="ap-dash-field" style={{marginTop:12}}>Time zone<input list="ap-time-zones" maxLength={64} value={branding.workingHours.timezone} onChange={e=>setBranding({...branding,workingHours:{...branding.workingHours,timezone:e.target.value}})} className="ap-dash-select" placeholder="Asia/Kolkata"/></label>
@@ -66,12 +67,12 @@ export default function Support(){const[cases,setCases]=useState<InboxCase[]>([]
 <button disabled={busy} onClick={()=>action({action:'settings',settings:{...branding,followUps:branding.followUps.map(f=>f.trim()).filter(Boolean)}})} className="ap-dash-btn ap-dash-btn-ghost" style={{marginTop:14}}>Save widget settings</button>
 </section>
 {token&&<section className="ap-dash-card"><h2 className="ap-dash-h2">Embed preview</h2>
-<p className="ap-dash-muted" style={{margin:'8px 0 0'}}>Anyone with this demo token can submit up to five requests for this fictional case. It expires in one hour. Do not use it for real customers.</p>
+<p className="ap-dash-muted" style={{margin:'8px 0 0'}}>{modeText('Anyone with this demo token can submit up to five requests for this fictional case. It expires in one hour. Do not use it for real customers.','Anyone with this link can submit up to five requests in this test chat. It expires in one hour, so use it for testing.')}</p>
 <pre className="ap-dash-snippet">{snippet}</pre>
 <a href={'/help?token='+token} target="_blank" rel="noreferrer" style={{display:'inline-block',margin:'12px 0',fontSize:13,color:'#09318D',textDecoration:'underline'}}>Open customer demo ↗</a>
-<iframe title="Fictional customer support preview" referrerPolicy="no-referrer" src={'/help?token='+token} style={{height:650,width:'100%',maxWidth:420,borderRadius:16,border:'1.5px solid #E2E7F2'}}/></section>}
+<iframe title={modeText('Fictional customer support preview','Customer support preview')} referrerPolicy="no-referrer" src={'/help?token='+token} style={{height:650,width:'100%',maxWidth:420,borderRadius:16,border:'1.5px solid #E2E7F2'}}/></section>}
 <section className="ap-dash-card"><h2 className="ap-dash-h2">Handoff inbox</h2>
-<p className="ap-dash-muted" style={{margin:'8px 0 0'}}>Take over pauses AI answers, including answers still being checked. Release reopens the case; resolve closes it. After you take over, reply from Tickets; replies appear in the visitor&apos;s widget only and nothing is emailed. A link still expires after one hour.</p>
+<p className="ap-dash-muted" style={{margin:'8px 0 0'}}>Take over pauses AI answers, including answers still being checked. Release reopens the case; resolve closes it. After you take over, reply from Tickets; replies appear in the visitor&apos;s widget, and are emailed only when you choose to and the visitor gave an address with consent. A link still expires after one hour.</p>
 <div style={{marginTop:8}}>{cases.map(c=><div key={c.id} className="ap-dash-row" style={{flexWrap:'wrap',gap:10}}>
 <div style={{display:'flex',alignItems:'center',gap:9,flexWrap:'wrap',flex:1,minWidth:200}}><span style={{fontSize:12.5,fontWeight:600,color:'#0A1B3D',wordBreak:'break-word'}}>{c.order_label}</span><span className={'ap-dash-badge '+(c.inbox_state==='attention'?'ap-dash-b-err':c.inbox_state==='closed'?'ap-dash-b-ok':'ap-dash-b-info')}>{c.inbox_state.replace('_',' ')}</span><small style={{color:'#93A3C7'}}>{c.id.slice(0,8)}</small></div>
 <div style={{display:'flex',flexWrap:'wrap',gap:6}}>

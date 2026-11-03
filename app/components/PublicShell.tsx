@@ -1,3 +1,4 @@
+import {modeText} from '../../lib/app-mode';
 import Link from 'next/link';
 import Image from 'next/image';
 import {COPYRIGHT_HOLDER,REPO_URL} from '../../lib/site';
@@ -22,10 +23,12 @@ export default function PublicShell({children}:{children:React.ReactNode}){
   <main id="main-content" className="ps-main">{children}</main>
   <footer className="ps-foot">
    <div className="ps-in">
-    <p>© 2026 {COPYRIGHT_HOLDER}. AutomatePal is a fictional-data preview. No live payments.</p>
+    <p>© 2026 {COPYRIGHT_HOLDER}. {modeText('AutomatePal is a fictional-data preview. No live payments.','Billing stays read-only. No live payments.')}</p>
     <nav aria-label="Legal and trust">
      <Link href="/privacy">Privacy</Link>
      <Link href="/terms">Terms</Link>
+     <Link href="/legal/dpa">DPA</Link>
+     <Link href="/legal/subprocessors">Subprocessors</Link>
      <Link href="/security">Security</Link>
      <Link href="/status">Status</Link>
      <Link href="/contact">Contact</Link>

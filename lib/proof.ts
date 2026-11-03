@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod';import './zod-csp';
 import { GoogleGenAI } from '@google/genai';
 export const proofInput=z.object({
  title:z.string().trim().min(3).max(120),amount:z.number().positive().max(1000).refine(n=>Number.isInteger(Math.round(n*1000000)/10000),'Use at most two decimal places'),

@@ -1,4 +1,5 @@
-// Public-URL import helpers. Server-only (node:http/https/dns); the pure checks are unit-tested without network.
+// Public-URL import helpers. Server-only. Node: pinned node:http/https requests. Cloudflare Workers: fetch() with
+// per-hop checks (see fetchRequest). The pure checks are unit-tested without network.
 import {request as httpRequest} from 'node:http';
 import {request as httpsRequest} from 'node:https';
 import {lookup as dnsLookup} from 'node:dns/promises';
@@ -58,6 +59,9 @@ export type SafeGetOptions={
  addrProblem?:(addrs:Addr[],host:string)=>string|null;
  urlProblem?:(raw:string)=>string|null;
  maxBytes?:number;maxRedirects?:number;deadline?:number;headers?:Record<string,string>;
+ /* 'node' connects to the checked address (pinned). 'fetch' is used on Cloudflare Workers, which do not support
+    Node's custom lookup; tests can force either. Default: 'fetch' on Workers, otherwise 'node'. */
+ transport?:'node'|'fetch';
 };
 export type SafeGetResult={status:number;contentType:string;body:string;bytes:number;truncated:boolean;finalUrl:string};
 export class ImportFetchError extends Error{constructor(message:string,public status:number){super(message);}}
@@ -85,9 +89,42 @@ function pinnedRequest(u:URL,addr:Addr,o:Required<Pick<SafeGetOptions,'maxBytes'
   req.end();
  });
 }
+/* Cloudflare Workers path. Workers cannot pin a connection to a checked address, so each hop is still validated
+   and its DNS answers checked before the request, and redirects are followed by hand and re-checked. What is
+   NOT guaranteed here, unlike the Node path: fetch() resolves the name again, so a rebinding answer between the
+   check and the request is possible. Cloudflare documents that Workers sockets cannot reach localhost or private
+   network IPs (developers.cloudflare.com/workers/runtime-apis/tcp-sockets), and fetch() uses the same outbound
+   network, which is what limits that residual window to public addresses. */
+const onWorkers=()=>typeof navigator!=='undefined'&&(navigator as {userAgent?:string}).userAgent==='Cloudflare-Workers';
+async function fetchRequest(u:URL,o:Required<Pick<SafeGetOptions,'maxBytes'|'deadline'>>&{headers:Record<string,string>}):Promise<{status:number;location:string|null;contentType:string;body:Uint8Array;bytes:number;truncated:boolean}>{
+ const left=o.deadline-Date.now();
+ if(left<=0)throw new ImportFetchError('The page could not be fetched within 10 seconds.',502);
+ const ctl=new AbortController(),hard=setTimeout(()=>ctl.abort(),left);
+ try{
+  let res:Response;
+  try{res=await fetch(u.toString(),{method:'GET',redirect:'manual',headers:o.headers,signal:ctl.signal});}
+  catch{throw new ImportFetchError('The page could not be fetched within 10 seconds.',502);}
+  const status=res.status;
+  if(status>=300&&status<400){await res.body?.cancel().catch(()=>{});return {status,location:res.headers.get('location'),contentType:'',body:new Uint8Array(0),bytes:0,truncated:false};}
+  const chunks:Uint8Array[]=[];let bytes=0,truncated=false;
+  const reader=res.body?.getReader();
+  if(reader){
+   for(;;){
+    let r:ReadableStreamReadResult<Uint8Array>;
+    try{r=await reader.read();}catch{throw new ImportFetchError('The page could not be fetched within 10 seconds.',502);}
+    if(r.done)break;
+    bytes+=r.value.length;
+    if(bytes>o.maxBytes){chunks.push(r.value.subarray(0,r.value.length-(bytes-o.maxBytes)));truncated=true;await reader.cancel().catch(()=>{});break;}
+    chunks.push(r.value);
+   }
+  }
+  const body=new Uint8Array(chunks.reduce((n,c)=>n+c.length,0));let at=0;for(const c of chunks){body.set(c,at);at+=c.length;}
+  return {status,location:null,contentType:res.headers.get('content-type')??'',body,bytes:Math.min(bytes,o.maxBytes),truncated};
+ }finally{clearTimeout(hard);}
+}
 export async function safeGet(raw:string,opts:SafeGetOptions={}):Promise<SafeGetResult>{
  const resolve=opts.resolve??defaultResolve,addrProblem=opts.addrProblem??resolvedAddrsProblem,urlProblem=opts.urlProblem??importUrlProblem;
- const maxRedirects=opts.maxRedirects??3,maxBytes=opts.maxBytes??262144,deadline=opts.deadline??Date.now()+10000,headers=opts.headers??{};
+ const maxRedirects=opts.maxRedirects??3,maxBytes=opts.maxBytes??262144,deadline=opts.deadline??Date.now()+10000,headers=opts.headers??{},transport=opts.transport??(onWorkers()?'fetch':'node');
  let current=raw;
  for(let hop=0;hop<=maxRedirects;hop++){
   const problem=urlProblem(current);
@@ -98,7 +135,7 @@ export async function safeGet(raw:string,opts:SafeGetOptions={}):Promise<SafeGet
   const host=u.hostname.replace(/^\[|\]$/g,'');
   const ap=addrProblem(addrs,host);
   if(ap)throw new ImportFetchError(hop?'The page redirected to a private network address, so it was not followed.':ap,400);
-  const r=await pinnedRequest(u,addrs[0],{maxBytes,deadline,headers});
+  const r=transport==='fetch'?await fetchRequest(u,{maxBytes,deadline,headers}):await pinnedRequest(u,addrs[0],{maxBytes,deadline,headers});
   if(r.status>=300&&r.status<400){
    if(!r.location)throw new ImportFetchError('The site answered '+r.status+' without a redirect address.',502);
    current=new URL(r.location,u).toString();

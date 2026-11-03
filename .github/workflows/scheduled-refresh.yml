@@ -1,0 +1,31 @@
+# Calls the app's scheduled-job endpoint every hour. The endpoint decides what is due (transcript retention
+# purge, website refresh into the owner's review queue, AI conversation labels, weekly digests) and bounds
+# the work per call. Needs repository secrets APP_URL (for example https://automatepal.onrender.com, no
+# trailing slash) and CRON_SECRET (the same value as the server's CRON_SECRET, at least 32 characters).
+name: Scheduled refresh
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+permissions: {}
+concurrency:
+  group: scheduled-refresh
+  cancel-in-progress: false
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Call POST /api/cron/refresh
+        env:
+          APP_URL: ${{ secrets.APP_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          set -euo pipefail
+          if [ -z "${APP_URL}" ] || [ -z "${CRON_SECRET}" ]; then echo "::error::Set the APP_URL and CRON_SECRET repository secrets."; exit 1; fi
+          # A free Render instance may be asleep; the long timeout covers the cold start.
+          code=$(curl -sS -o body.json -w '%{http_code}' --max-time 120 --retry 2 --retry-delay 20 --retry-all-errors \
+            -X POST -H "Authorization: Bearer ${CRON_SECRET}" -H 'Content-Type: application/json' "${APP_URL%/}/api/cron/refresh")
+          cat body.json; echo
+          if [ "$code" != "200" ] && [ "$code" != "207" ]; then echo "::error::Scheduled jobs returned HTTP $code"; exit 1; fi
+          if [ "$code" = "207" ]; then echo "::warning::One or more scheduled jobs reported a failure; see the response above."; fi

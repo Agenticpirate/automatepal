@@ -1,6 +1,7 @@
 import {NextRequest,NextResponse} from 'next/server';
 import {buildUnansweredDigest} from './unanswered-digest';
 import {providerSummaries} from './billing/core/registry';
+import {buildConversations} from './transcripts';
 
 /* Open demo-preview mode, flag NEXT_PUBLIC_DEMO_OPEN (default ON while we build; set to
    'false' and redeploy to re-lock before launch). When ON and the request has no valid
@@ -89,7 +90,7 @@ function demoFixture(key:string,req:NextRequest):NextResponse|null{
    ],requests:requests.filter(r=>r.case_id===id).map(x=>({id:x.id,created_at:x.created_at,kind:x.kind,message:x.message,status:x.status,contact_email:x.contact_consent?x.contact_email:null})),questions:queries.filter(q=>q.case_id===id).map(q=>({id:q.id,created_at:q.created_at,question:q.question,supported:q.supported,feedback:q.feedback})),messages:found.inbox_state==='taken_over'?[
     {id:'de510000-0000-4000-8000-000000000001',created_at:day(1,2),author:'owner',body:'Hi, this is the fictional store owner. I have paused the assistant and will help you here.'},
     {id:'de510000-0000-4000-8000-000000000002',created_at:day(1,1),author:'visitor',body:'Thanks! Can the fictional refill pack still ship this week?'},
-   ]:[],coverage:'Recorded questions, review requests, internal events and widget replies. AI answer bodies are not stored here. Nothing is emailed. Contact emails appear only when the visitor consented to share them.'},{headers:noStore});
+   ]:[],coverage:'Recorded questions, review requests, internal events and widget replies. Full AI answers are in Chat history. A reply is emailed only when you tick “Also email this reply” and the visitor gave an address with consent. Contact emails appear only when the visitor consented to share them.'},{headers:noStore});
   }
   return NextResponse.json({tickets,truncated:false,limit:200},{headers:noStore});
  }
@@ -120,6 +121,19 @@ function demoFixture(key:string,req:NextRequest):NextResponse|null{
   return NextResponse.json({asOf:new Date().toISOString(),environment:'PayPal sandbox',readOnly:true,paymentExecution:false,data:{products:[{id:'PROD-DEMO-FICTIONAL1',name:'Fictional Launch Kit'},{id:'PROD-DEMO-FICTIONAL2',name:'Fictional Starter Box'}],plans:[{id:'P-DEMO0000000000000000001',product_id:'PROD-DEMO-FICTIONAL1',name:'Fictional Monthly Plan',status:'ACTIVE'}],coverage:'First page only, up to 20 products and 20 plans. Plan status is not subscription activation, payment, revenue or customer eligibility. No subscriber/contact/transaction data returned. Fictional demo fixture; no provider call was made.'}},{headers:noStore});
  case 'support':
   return NextResponse.json({requests,cases:tickets.map(t=>({id:t.id,created_at:t.created_at,expires_at:t.expires_at,order_label:t.order_label,inbox_state:t.inbox_state})),settings:{label:'Fictional demo store',color:'#FD91CC',initials:'AP',prompts:['What is the refund policy?','Do you ship to Pune?','Weekend hours?'],allowedOrigins:[],excludedPaths:[],autoOpen:false,side:'right',hideSources:false,hideOrder:false,hideContact:false,visitorChoice:true,workingHours:{enabled:true,timezone:'Asia/Kolkata',days:[1,2,3,4,5].map(day=>({day,start:'09:00',end:'18:00'})),awayMessage:'Fictional demo store: we are away right now. Leave your question and the team will reply when they are back.'}}},{headers:noStore});
+ case 'history':{
+  // Fictional transcripts built from the same fixtures; answers are written here, nothing is stored.
+  const answers:Record<string,string>={'What is the refund policy?':'Unopened fictional kits can be returned within 30 days for a refund review by the owner.','Is the Launch Kit vegan?':'Yes. The fictional Launch Kit lists only plant-based ingredients.'};
+  const conversations=buildConversations(tickets.map(t=>({id:t.id,created_at:t.created_at,ticket_status:t.ticket_status,inbox_state:t.inbox_state,order_label:t.order_label})),
+   queries.map(q=>({...q,answer:q.supported?(answers[q.question]??'Answered from the fictional store FAQ.'):'Not enough verified source information. A person can review this.',source:q.case_id===cid(3)?'hosted_page':'widget'})),[],requests.map(r=>({id:r.id,case_id:r.case_id,created_at:r.created_at,kind:r.kind,message:r.message})));
+  return NextResponse.json({conversations,total:conversations.length,truncated:false,retentionDays:90,role:'owner',demo:true,coverage:'Fictional demo conversations. Transcripts hold visitor questions, AI answers, person-chat messages and requests.'},{headers:noStore});
+ }
+ case 'email-settings':
+  return NextResponse.json({settings:{owner_alerts:true,weekly_digest:true,new_leads:true},log:[{id:'deb00000-0000-4000-8000-000000000001',created_at:day(1,2),email_type:'owner_alert',status:'dry_run'},{id:'deb00000-0000-4000-8000-000000000002',created_at:day(3,1),email_type:'weekly_digest',status:'dry_run'}],transport:'dry_run',canEdit:false,caps:'Per workspace per UTC day: 20 owner alerts, 20 new-lead emails, 20 invites, 50 visitor replies, 100 in total; one weekly digest every 6 days.'},{headers:noStore});
+ case 'knowledge-refresh':
+  return NextResponse.json({settings:{frequency:'weekly',sitemap_url:'https://north-dock.example.com/sitemap.xml',last_run_at:day(2,3),next_due_at:iso(-5*D),last_summary:{checked:4,changed:1,added:0,removed:0,sitemap:'read'}},items:[],limits:'Each run re-checks up to 15 saved pages, least recently checked first, so every saved page takes its turn. It proposes up to 5 sitemap pages that were not in an earlier read; dismissed pages are not proposed again. A saved page is proposed for removal only when it answers 404 or 410, or when a fully read sitemap no longer lists it (only pages on the same host as the sitemap); a dismissed removal is not proposed again. The same robots.txt, private-address and size checks as an import apply.'},{headers:noStore});
+ case 'insights':
+  return NextResponse.json({topics:['Billing','Shipping','Refunds','Account','Product','Technical issue'],enabled:true,canEdit:false},{headers:noStore});
  case 'leads':{
   const leads=requests.filter(r=>r.contact_consent&&r.contact_email).map(r=>({id:r.id,case_id:r.case_id,created_at:r.created_at,kind:r.kind,contact_email:r.contact_email as string}));
   return NextResponse.json({leads,total:leads.length,limit:500,role:'owner',demo:true,coverage:'Fictional demo lead. Consented contact emails from widget requests, latest 500. Nothing is forwarded to email or a CRM.'},{headers:noStore});

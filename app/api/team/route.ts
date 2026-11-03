@@ -6,6 +6,7 @@ import { validOrigin } from '../../../lib/origin';
 import { allowRequest } from '../../../lib/rate-limit';
 import { limitedJson } from '../../../lib/limited-json';
 import { demoGate, demoLocked } from '../../../lib/demo-open';
+import { deliver, memberEmailStore, teamInviteEmail } from '../../../lib/email';
 
 const noStore = { 'Cache-Control': 'no-store' };
 const sha = (t: string) => createHash('sha256').update(t).digest('hex');
@@ -62,7 +63,11 @@ export async function POST(req: NextRequest) {
       if (r.error) throw r.error;
       const origin = process.env.APP_URL || req.nextUrl.origin;
       // Token travels in the URL fragment, so it never reaches server logs or referrers.
-      return NextResponse.json({ note: 'Invite created. Share this link privately; it works once, for 7 days, and only for that email address.', link: `${new URL(origin).origin}/invite#${token}` }, { headers: { ...noStore, 'Referrer-Policy': 'no-referrer' } });
+      const link = `${new URL(origin).origin}/invite#${token}`;
+      // The link is still shown once here; the email (lib/email.ts) is a convenience and never blocks the invite.
+      const mail = await deliver(memberEmailStore(ctx.client), teamInviteEmail(body.email, link, body.role)).catch(() => ({ status: 'failed' as const }));
+      const mailNote = mail.status === 'sent' ? ' We also emailed it to them.' : mail.status === 'dry_run' ? ' Email is not configured on this server, so no invite email was sent.' : ' The invite email was not sent.';
+      return NextResponse.json({ note: 'Invite created. Share this link privately; it works once, for 7 days, and only for that email address.' + mailNote, link, email: mail.status }, { headers: { ...noStore, 'Referrer-Policy': 'no-referrer' } });
     }
     if (body.action === 'revoke_invite') {
       const r = await ctx.client.rpc('revoke_workspace_invite', { p_id: body.id });

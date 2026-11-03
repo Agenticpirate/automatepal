@@ -1,7 +1,7 @@
 import {requestContext} from './session';
 import {allEvents} from './store';
 import * as paypal from './paypal';
-import {z} from 'zod';
+import {z} from 'zod';import './zod-csp';
 // Read-only. This report never unlocks or retries an uncertain payment operation.
 export async function reconcileProof(rawId:string){
  const id=z.string().uuid().parse(rawId),ctx=requestContext.getStore();

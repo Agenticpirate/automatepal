@@ -57,7 +57,8 @@ export async function deliver(store:EmailStore,msg:EmailMessage,deps:EmailDeps={
  if(emailTransport(env)==='dry_run'){await finish('dry_run',null);return{status:'dry_run',id:r.id};}
  const f=deps.fetch??fetch,ctrl=new AbortController(),timer=setTimeout(()=>ctrl.abort(),deps.timeoutMs??8000);
  try{
-  const res=await f(RESEND_URL,{method:'POST',redirect:'error',signal:ctrl.signal,headers:{Authorization:'Bearer '+env.RESEND_API_KEY,'Content-Type':'application/json','Idempotency-Key':r.id},
+  // redirect:'manual' (Workers reject 'error'); a 3xx is not ok, so it is recorded as failed.
+  const res=await f(RESEND_URL,{method:'POST',redirect:'manual',signal:ctrl.signal,headers:{Authorization:'Bearer '+env.RESEND_API_KEY,'Content-Type':'application/json','Idempotency-Key':r.id},
    body:JSON.stringify({from:emailFrom(env),to:[to.data],subject:msg.subject,text:msg.text,...(emailReplyTo(env)?{reply_to:emailReplyTo(env)}:{})})});
   const body=await res.json().catch(()=>null) as {id?:unknown}|null;
   const id=typeof body?.id==='string'&&PROVIDER_ID.test(body.id)?body.id:null;

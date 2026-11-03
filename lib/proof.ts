@@ -17,7 +17,7 @@ async function github(path:string){
  const headers:Record<string,string>={Accept:'application/vnd.github+json','User-Agent':'AutomatePal-Proof-Beta'};
  if(cached?.etag)headers['If-None-Match']=cached.etag;
  if(process.env.GITHUB_PUBLIC_READ_TOKEN)headers.Authorization='Bearer '+process.env.GITHUB_PUBLIC_READ_TOKEN;
- const r=await fetch('https://api.github.com'+path,{headers,signal:AbortSignal.timeout(15000),cache:'no-store',redirect:'error'});
+ const r=await fetch('https://api.github.com'+path,{headers,signal:AbortSignal.timeout(15000),cache:'no-store',redirect:'manual'});
  if(r.status===304&&cached)return cached.data;
  if(!r.ok){
   const body=await r.json().catch(()=>({}));const rate=r.headers.get('x-ratelimit-remaining');

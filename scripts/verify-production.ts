@@ -31,7 +31,7 @@ async function main(){
  {const {s,calls}=store();let req:{url:string;init:RequestInit}|null=null;
   const r=await deliver(s,newLeadEmail('owner@example.com',CASE,'https://app.example'),{env,fetch:(async(url:string,init:RequestInit)=>{req={url,init};return new Response(JSON.stringify({id:'msg_123-abc'}),{status:200});}) as unknown as typeof fetch});
   assert.equal(r.status,'sent');assert.equal(r.providerId,'msg_123-abc');assert.equal(req!.url,RESEND_URL);
-  const h=req!.init.headers as Record<string,string>;assert.equal(h.Authorization,'Bearer '+fakeKey);assert.equal(h['Idempotency-Key'],UUID);assert.equal(req!.init.redirect,'error');
+  const h=req!.init.headers as Record<string,string>;assert.equal(h.Authorization,'Bearer '+fakeKey);assert.equal(h['Idempotency-Key'],UUID);assert.equal(req!.init.redirect,'manual','Workers reject redirect:error');
   const body=JSON.parse(String(req!.init.body));assert.deepEqual(body.to,['owner@example.com']);assert.equal(body.from,env.EMAIL_FROM);assert.deepEqual(calls.finish,[[UUID,'sent','msg_123-abc']]);ok();}
  {const {s,calls}=store();const r=await deliver(s,newLeadEmail('owner@example.com',CASE),{env,fetch:(async()=>new Response('{"message":"bad"}',{status:422})) as typeof fetch});assert.equal(r.status,'failed');assert.deepEqual(calls.finish,[[UUID,'failed',null]]);ok();}
  {const {s,calls}=store();const r=await deliver(s,newLeadEmail('owner@example.com',CASE),{env,fetch:(async()=>{throw Error('down');}) as typeof fetch});assert.equal(r.status,'failed');assert.equal(calls.finish.length,1);ok();}

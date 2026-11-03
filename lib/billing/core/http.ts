@@ -2,7 +2,8 @@ import {BillingError, type AdapterDeps, type BillingMode, type OperationSpec, ty
 import {breakerAllows, breakerFailure, breakerSuccess, inCooldown, setCooldown, takeToken} from './breaker';
 
 // Outbound hardening for every provider call: allowlist first (read-only enforced in code),
-// then cooldown, breaker and token bucket, then fetch with a 10 s timeout, redirect:'error',
+// then cooldown, breaker and token bucket, then fetch with a 10 s timeout, no redirects followed (redirect:'manual';
+// any 3xx is treated as a network failure, because Cloudflare Workers reject redirect:'error'),
 // a 1 MB streamed body cap, one jittered retry on network errors/5xx, and Retry-After on 429.
 export const TIMEOUT_MS = 10_000;
 export const MAX_BODY_BYTES = 1024 * 1024;
@@ -86,7 +87,9 @@ async function attempt(deps: AdapterDeps, url: string, init: RequestInit): Promi
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), deps.timeoutMs ?? TIMEOUT_MS);
   try {
-    const res = await deps.fetch(url, {...init, signal: ctrl.signal, redirect: 'error'});
+    const res = await deps.fetch(url, {...init, signal: ctrl.signal, redirect: 'manual'});
+    // Never follow a redirect: a provider API answering 3xx is treated as a failed request.
+    if (res.type === 'opaqueredirect' || (res.status >= 300 && res.status < 400)) { await res.body?.cancel().catch(() => {}); return {kind: 'network'}; }
     return {kind: 'ok', res};
   } catch {
     return ctrl.signal.aborted ? {kind: 'timeout'} : {kind: 'network'};

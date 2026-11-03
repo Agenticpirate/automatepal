@@ -42,7 +42,7 @@ export async function recordServerError(info:ErrorInfo,deps:Deps={}):Promise<{re
  if(hook&&recent.length>=BURST&&now-lastAlert>=COOLDOWN_MS){
   lastAlert=now;
   const ctrl=new AbortController(),t=setTimeout(()=>ctrl.abort(),5000);
-  try{const r=await (deps.fetch??fetch)(hook,{method:'POST',redirect:'error',signal:ctrl.signal,headers:{'Content-Type':'application/json'},
+  try{const r=await (deps.fetch??fetch)(hook,{method:'POST',redirect:'manual',signal:ctrl.signal,headers:{'Content-Type':'application/json'},
    body:JSON.stringify({text:`AutomatePal: ${recent.length} server errors in the last ${WINDOW_MS/60000} minutes (release ${rel}, latest route ${route}).`,count:recent.length,windowMinutes:WINDOW_MS/60000,release:rel,route})});alerted=r.ok;}
   catch{/* alert delivery is best effort */}finally{clearTimeout(t);}
  }

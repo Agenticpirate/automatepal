@@ -28,8 +28,9 @@ jobs:
       - run: npm ci
       - run: npm audit --omit=dev --audit-level=high
       - run: npm run lint
-      - run: npx tsc --noEmit
       - run: npm run build
+      # After the build: next build generates the global route types (LayoutProps, PageProps) tsc needs.
+      - run: npx tsc --noEmit
       - name: Install test browsers
         run: npx playwright install --with-deps chromium webkit
       - name: Unit and fixture suites

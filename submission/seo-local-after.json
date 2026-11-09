@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-11-01T17:53:31.279Z",
+  "checkedAt": "2026-11-03T18:30:58.221Z",
   "results": [
     {
       "path": "/",
@@ -7,7 +7,7 @@
       "title": "AutomatePal - AI support that cites its sources",
       "description": "AI customer support that answers from your own docs, quotes the passage it used and sends anything it can’t back up to your team. Fictional-data preview. No live payments.",
       "canonical": "https://automatepal.onrender.com/",
-      "og": "https://automatepal.onrender.com/opengraph-image?a6ac03da2353ea17",
+      "og": "https://automatepal.onrender.com/opengraph-image?0136edd62d96fbbe",
       "twitter": "summary_large_image",
       "h1": 1,
       "robotsHeader": null

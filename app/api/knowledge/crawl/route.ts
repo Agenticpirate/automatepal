@@ -8,6 +8,7 @@ import{limitedJson}from'../../../../lib/limited-json';
 import{crawlSite,parseLinkList,MAX_PAGES,MAX_DEPTH}from'../../../../lib/crawl';
 import{ImportFetchError}from'../../../../lib/url-import';
 import{contextDevRenderer,contextDevAvailable}from'../../../../lib/context-dev';
+import{importGithubDocs,parseGithubRepo,GITHUB_MAX_FILES}from'../../../../lib/github-import';
 
 /* Owner-only website crawl for review. Fetches up to MAX_PAGES pages inside one request and returns them as
    Markdown; nothing is saved, embedded or published here. The owner then picks pages in the knowledge
@@ -15,7 +16,7 @@ import{contextDevRenderer,contextDevAvailable}from'../../../../lib/context-dev';
 export const maxDuration=60;
 const list=z.array(z.string().trim().min(1).max(200)).max(20).default([]);
 const body=z.object({
- mode:z.enum(['site','sitemap','links']),
+ mode:z.enum(['site','sitemap','links','github']),
  url:z.string().trim().max(500).optional(),
  links:z.string().max(20000).optional(),
  depth:z.number().int().min(1).max(MAX_DEPTH).default(2),
@@ -39,6 +40,12 @@ export async function POST(req:NextRequest){
  if(!await allowRequest('crawl:'+ctx.actorId))return NextResponse.json({error:'Please wait a minute between website imports.'},{status:429});
  let b:z.infer<typeof body>;
  try{b=body.parse(await limitedJson(req,40000));}catch{return NextResponse.json({error:'Check the import settings and try again.'},{status:400});}
+ // GitHub docs (Phase 3): Markdown and text files from a public repository, same review list.
+ if(b.mode==='github'){
+  const repo=parseGithubRepo(b.url??'');if(!repo)return NextResponse.json({error:'Enter a public GitHub repository, such as https://github.com/owner/repo or https://github.com/owner/repo/tree/main/docs'},{status:400});
+  try{const r=await importGithubDocs(repo,{maxFiles:Math.min(b.maxPages,GITHUB_MAX_FILES),skipUrls:b.skipUrls,deadline:Date.now()+50_000});return NextResponse.json({...r,notLinks:[],browserRenders:0,note:'Docs read from GitHub for your review. Nothing is saved or published until you choose pages and confirm processing consent.'},{headers:{'Cache-Control':'no-store'}});}
+  catch(e){if(e instanceof ImportFetchError)return NextResponse.json({error:e.message},{status:e.status});return NextResponse.json({error:'The GitHub import failed. Check the repository address and try again.'},{status:502});}
+ }
  let links:string[]|undefined,notLinks:string[]=[];
  if(b.mode==='links'){const p=parseLinkList(b.links??'');links=p.links.slice(0,b.maxPages);notLinks=p.notLinks.slice(0,20);if(!links.length)return NextResponse.json({error:'Add at least one link, such as https://example.com/pricing',notLinks},{status:400});}
  else if(!b.url)return NextResponse.json({error:b.mode==='sitemap'?'Enter the sitemap URL, such as https://example.com/sitemap.xml':'Enter the website URL to start from.'},{status:400});

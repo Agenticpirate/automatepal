@@ -14,6 +14,7 @@ import Link from 'next/link';
 import {authHeaders} from '../../lib/browser-auth';
 import Alerts from './alerts';
 import EmailSettings from './email-settings';
+import SlackSettings from './slack-settings';
 import InsightTopics from './insight-topics';
 import {ticketLabel} from '../../lib/tickets';
 import {unansweredCsv,downloadCsv} from '../../lib/exports';
@@ -233,5 +234,6 @@ export default function Owner(){
  </section>
  <InsightTopics topics={d.insightSettings?.topics??null} enabled={d.insightSettings?.enabled??true} available={!!d.insightSettings}/>
  <Alerts/>
- <EmailSettings/></>}</main></DashShell></DeskShell>;
+ <EmailSettings/>
+ <SlackSettings/></>}</main></DashShell></DeskShell>;
 }

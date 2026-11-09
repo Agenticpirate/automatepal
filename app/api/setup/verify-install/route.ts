@@ -41,7 +41,9 @@ export async function POST(req:NextRequest){
     const hit=detectWidgetScript(html,b.token);
     let originAllowed:boolean|null=null;
     if(hit.found){
-      const{data:ws}=await ctx.client.from('widget_settings').select('controls').eq('user_id',ctx.userId).maybeSingle();
+      // The bot whose install key is on the page (db/062), else the Main bot.
+      const byKey=hit.tokenFound&&/^pk_(live|test)_/.test(hit.tokenFound)?await ctx.client.from('widget_settings').select('controls').eq('user_id',ctx.userId).eq('public_key',hit.tokenFound).maybeSingle():null;
+      const{data:ws}=byKey?.data?byKey:await ctx.client.from('widget_settings').select('controls').eq('user_id',ctx.userId).eq('bot_id',ctx.userId).maybeSingle();
       const allowed:string[]=(ws?.controls as{allowedOrigins?:string[]}|null)?.allowedOrigins??[];
       const pageOrigin=new URL(finalUrl).origin;
       const appOrigin=process.env.NEXT_PUBLIC_APP_ORIGIN??new URL(req.url).origin;

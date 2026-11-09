@@ -19,13 +19,14 @@ const page = (origin) => `<!doctype html><html><body><h1>${origin}</h1><script s
 async function seed() {
   await db.query('begin');
   await db.query("select set_config('app.widget_key_rpc','1',true)");
-  await db.query(`insert into widget_settings(user_id,label,public_key,key_active,controls) values($1,'Shop help',$2,true,$3)
-    on conflict(user_id) do update set label='Shop help',public_key=$2,key_active=true,controls=$3`, [OWNER, KEY, JSON.stringify({allowedOrigins: [SHOP]})]);
+  await db.query(`insert into widget_settings(user_id,bot_id,label,public_key,key_active,controls) values($1,$1,'Shop help',$2,true,$3)
+    on conflict(bot_id) do update set label='Shop help',public_key=$2,key_active=true,controls=$3`, [OWNER, KEY, JSON.stringify({allowedOrigins: [SHOP]})]);
   await db.query('insert into custom_responses(user_id,question,answer,published) values($1,$2,$3,true) on conflict do nothing', [OWNER, Q, A]);
   await db.query('commit');
 }
 async function cleanup() {
   await db.query("delete from support_cases where user_id=$1 and source='widget'", [OWNER]);
+  await db.query("delete from bots where workspace_id=$1 and id<>$1", [OWNER]).catch(() => {});
   await db.query('delete from custom_responses where user_id=$1 and question=$2', [OWNER, Q]);
   await db.query('begin'); await db.query("select set_config('app.widget_key_rpc','1',true)");
   await db.query('delete from widget_settings where user_id=$1', [OWNER]); await db.query('commit');
@@ -90,6 +91,26 @@ async function main() {
     await fresh.route(`${SHOP}/**`, r => r.fulfill({contentType: 'text/html', body: page(SHOP)}));
     await fresh.goto(`${SHOP}/again`); await fresh.waitForTimeout(2500);
     assert.equal(await fresh.locator('#automatepal-billing-widget').count(), 0, 'turned-off key shows nothing'); ok();
+    // A second bot (db/062): its own key, name and look on the same site.
+    {
+      const KEY2 = 'pk_test_E2eSecondBot0000000000000'.slice(0, 32);
+      const bot2 = (await db.query("insert into bots(workspace_id,name) values($1,'Docs bot') returning id", [OWNER])).rows[0].id;
+      await db.query('begin'); await db.query("select set_config('app.widget_key_rpc','1',true)");
+      await db.query("insert into widget_settings(user_id,bot_id,label,color,public_key,key_active,controls) values($1,$2,'Docs help','#0f766e',$3,true,$4)", [OWNER, bot2, KEY2, JSON.stringify({allowedOrigins: [SHOP]})]);
+      await db.query('commit');
+      const c2 = await browser.newContext(); const t = await c2.newPage();
+      await t.route(`${SHOP}/**`, r => r.fulfill({contentType: 'text/html', body: `<!doctype html><body><script src="${APP}/widget.js" data-bot="${KEY2}" async></script></body>`}));
+      await t.goto(`${SHOP}/docs`);
+      const b2 = t.locator('#automatepal-billing-widget button'); await b2.waitFor({timeout: 20000});
+      assert.equal((await b2.innerText()).trim(), 'Docs help', 'second bot has its own name'); ok();
+      await b2.click();
+      await t.frameLocator('#automatepal-billing-widget iframe').locator('header').getByText('Docs help').waitFor({timeout: 30000}); ok();
+      const tok = new URL(await t.locator('#automatepal-billing-widget iframe').getAttribute('src')).searchParams.get('token');
+      const caseBot = (await db.query("select bot_id from support_cases where token_hash=encode(sha256($1::bytea),'hex')", [tok])).rows[0]?.bot_id;
+      assert.equal(caseBot, bot2, 'conversation belongs to the second bot'); ok();
+      await c2.close();
+      await db.query('delete from bots where id=$1', [bot2]);
+    }
     // Logo, per-page starters and the chat language, on a fresh visitor at /pricing.
     const PNG1 = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
     await db.query('begin'); await db.query("select set_config('app.widget_key_rpc','1',true)");
@@ -127,7 +148,7 @@ async function main() {
       ok(); await c2.close();
       assert.ok(name);
     }
-    console.log(`PASS widget key end to end: ${n} checks; lazy conversation on first open, signed frame grant lets shop.example frame /help, exact answer through the widget, conversation reused across loads, reset starts a new one, other sites get no widget, no session and no framing, turned-off key shows nothing, tag-manager installs (?bot= injected, AutomatePalConfig) work, logo on button and header, per-page starters, Spanish chat.`);
+    console.log(`PASS widget key end to end: ${n} checks; lazy conversation on first open, signed frame grant lets shop.example frame /help, exact answer through the widget, conversation reused across loads, reset starts a new one, other sites get no widget, no session and no framing, turned-off key shows nothing, tag-manager installs (?bot= injected, AutomatePalConfig) work, logo on button and header, per-page starters, Spanish chat, a second bot with its own key, name and conversations.`);
   } finally {
     await browser.close();
     await cleanup().catch(() => {});

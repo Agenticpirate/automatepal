@@ -19,6 +19,7 @@
     "test:mcp": "tsx scripts/verify-mcp-server.ts",
     "test:plans": "tsx scripts/verify-subscriptions.ts",
     "test:phase3": "tsx scripts/verify-phase3.ts",
+    "test:push": "tsx scripts/verify-push.ts",
     "test:leads": "tsx scripts/verify-leads.ts",
     "test:production": "tsx scripts/verify-production.ts",
     "load:check": "node scripts/load-check.mjs",

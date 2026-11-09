@@ -36,7 +36,7 @@ jobs:
       - name: Unit and fixture suites
         run: |
           set -e
-          for s in test:plans test:phase3 test:safety test:hardening test:webhook test:billing test:tickets test:billing-support test:mcp test:leads test:production test:widget; do
+          for s in test:plans test:phase3 test:push test:safety test:hardening test:webhook test:billing test:tickets test:billing-support test:mcp test:leads test:production test:widget; do
             echo "::group::$s"; npm run -s $s; echo "::endgroup::"
           done
   database:
@@ -79,6 +79,7 @@ jobs:
           for i in $(seq 1 90); do curl -sf -o /dev/null http://localhost:3100/widget.js && break; sleep 1; done
           E2E_APP=http://localhost:3100 SUPABASE_URL=http://127.0.0.1:54321 ANON_KEY="$ANON_KEY" SERVICE_ROLE_KEY="$SERVICE_ROLE_KEY" node scripts/verify-plan-e2e.mjs
           E2E_APP=http://localhost:3100 SUPABASE_URL=http://127.0.0.1:54321 ANON_KEY="$ANON_KEY" SERVICE_ROLE_KEY="$SERVICE_ROLE_KEY" node scripts/verify-chat-api-e2e.mjs
+          E2E_APP=http://localhost:3100 node scripts/verify-push-sw.mjs
       - if: failure()
         uses: actions/upload-artifact@v4
         with: {name: db-logs, path: /tmp/ap-db-logs, retention-days: 7}

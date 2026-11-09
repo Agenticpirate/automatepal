@@ -9,6 +9,8 @@ const nextConfig: NextConfig = {
   // APP_MODE (preview | production) is read on the server; client components get the same value here.
   env: { NEXT_PUBLIC_APP_MODE: process.env.APP_MODE === 'production' ? 'production' : 'preview' },
   async headers(){return [
+   // The push service worker (public/sw.js) must update promptly.
+   {source:'/sw.js',headers:[{key:'Cache-Control',value:'no-cache'},{key:'Content-Type',value:'text/javascript; charset=utf-8'}]},
    {source:'/:path*',headers:[
     {key:'X-Content-Type-Options',value:'nosniff'},
     {key:'Referrer-Policy',value:'no-referrer'},

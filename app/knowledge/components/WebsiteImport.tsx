@@ -9,7 +9,7 @@ import'./website-import.css';
 type Page={url:string;title:string;markdown:string;chars:number;pageUnits:number;via:'html'|'render'};
 type Skip={url:string;reason:string};
 type Result={pages:Page[];skipped:Skip[];discovered:number;truncated:boolean;stoppedBy?:string;browserRenders:number;notLinks:string[];note:string};
-type Mode='site'|'sitemap'|'links';
+type Mode='site'|'sitemap'|'links'|'github';
 type Row={page:Page;pick:boolean;state:'ready'|'saving'|'saved'|'failed';msg?:string};
 const lines=(s:string)=>s.split('\n').map(x=>x.trim()).filter(Boolean).slice(0,20);
 
@@ -37,7 +37,7 @@ export default function WebsiteImport({onSaved,sourcesLeft,existingTitles}:{onSa
  useEffect(()=>{let on=true;void(async()=>{try{const r=await fetch('/api/knowledge/crawl',{headers:await authHeaders()});if(r.ok){const d=await r.json();if(on)setCanRender(!!d.browserRendering);}}catch{/* status only */}})();return()=>{on=false};},[]);
 
  async function crawl(){
-  setBusy(true);setNotice(mode==='links'?'Fetching your links…':'Crawling. This can take up to a minute for larger sites…');setResult(null);setRows([]);
+  setBusy(true);setNotice(mode==='links'?'Fetching your links…':mode==='github'?'Reading Markdown files from GitHub…':'Crawling. This can take up to a minute for larger sites…');setResult(null);setRows([]);
   try{
    const r=await fetch('/api/knowledge/crawl',{method:'POST',headers:{'Content-Type':'application/json',...await authHeaders()},body:JSON.stringify({mode,url:mode==='links'?undefined:url.trim(),links:mode==='links'?links:undefined,depth,maxPages,includePaths:lines(include),excludePaths:lines(exclude),allowedDomains:lines(allowed),includeSelectors:lines(keepSel),excludeSelectors:lines(dropSel),mainContentOnly:mainOnly,useBrowserRendering:render&&canRender})});
    const d=await r.json();
@@ -77,22 +77,22 @@ export default function WebsiteImport({onSaved,sourcesLeft,existingTitles}:{onSa
   <h2 id="wi-title" className="ap-dash-h2">Import from your website</h2>
   <p className="ap-dash-muted" style={{margin:'8px 0 0'}}>Crawl a site, a sitemap or a list of links. Pages are fetched, cleaned to their main text and shown here for review. Nothing is saved until you pick pages below. robots.txt is respected and private addresses are refused.</p>
   <div className="wi-modes" role="tablist" aria-label="Import method">
-   {([['site','Crawl a website'],['sitemap','Use a sitemap'],['links','List of links']] as const).map(([m,l])=><button key={m} type="button" role="tab" aria-selected={mode===m} onClick={()=>setMode(m)}>{l}</button>)}
+   {([['site','Crawl a website'],['sitemap','Use a sitemap'],['links','List of links'],['github','GitHub docs']] as const).map(([m,l])=><button key={m} type="button" role="tab" aria-selected={mode===m} onClick={()=>setMode(m)}>{l}</button>)}
   </div>
   {mode==='links'
    ?<label className="ap-dash-field">Links, one per line<textarea value={links} onChange={e=>setLinks(e.target.value)} rows={4} maxLength={20000} placeholder={'https://example.com/pricing\nhttps://example.com/faq'} className="ap-dash-select" style={{resize:'vertical',fontFamily:'inherit'}}/></label>
-   :<label className="ap-dash-field">{mode==='site'?'Website URL to start from':'Sitemap URL'}<input type="url" value={url} onChange={e=>setUrl(e.target.value)} maxLength={500} placeholder={mode==='site'?'https://example.com':'https://example.com/sitemap.xml'} className="ap-dash-select"/></label>}
+   :<label className="ap-dash-field">{mode==='site'?'Website URL to start from':mode==='github'?'Public GitHub repository or folder':'Sitemap URL'}<input type="url" value={url} onChange={e=>setUrl(e.target.value)} maxLength={500} placeholder={mode==='site'?'https://example.com':mode==='github'?'https://github.com/owner/repo/tree/main/docs':'https://example.com/sitemap.xml'} className="ap-dash-select"/></label>}
   <div className="wi-grid">
    {mode==='site'&&<label className="ap-dash-field">Link depth<select value={depth} onChange={e=>setDepth(Number(e.target.value))} className="ap-dash-select">{[1,2,3,4,5].map(n=><option key={n} value={n}>{n}{n===1?' (start page and its links)':''}</option>)}</select></label>}
    <label className="ap-dash-field">Most pages<select value={maxPages} onChange={e=>setMaxPages(Number(e.target.value))} className="ap-dash-select">{[5,10,20,30,50].map(n=><option key={n} value={n}>{n}</option>)}</select></label>
   </div>
   <details className="wi-more"><summary>Filters and options</summary>
    <div className="wi-grid">
-    {mode!=='links'&&<label className="ap-dash-field">Only URLs containing (one per line)<textarea value={include} onChange={e=>setInclude(e.target.value)} rows={2} placeholder="/help" className="ap-dash-select"/></label>}
-    {mode!=='links'&&<label className="ap-dash-field">Skip URLs containing (one per line)<textarea value={exclude} onChange={e=>setExclude(e.target.value)} rows={2} placeholder="/blog/tag" className="ap-dash-select"/></label>}
+    {mode!=='links'&&mode!=='github'&&<label className="ap-dash-field">Only URLs containing (one per line)<textarea value={include} onChange={e=>setInclude(e.target.value)} rows={2} placeholder="/help" className="ap-dash-select"/></label>}
+    {mode!=='links'&&mode!=='github'&&<label className="ap-dash-field">Skip URLs containing (one per line)<textarea value={exclude} onChange={e=>setExclude(e.target.value)} rows={2} placeholder="/blog/tag" className="ap-dash-select"/></label>}
     {mode==='site'&&<label className="ap-dash-field">Also add pages on (hostnames)<textarea value={allowed} onChange={e=>setAllowed(e.target.value)} rows={2} placeholder="docs.example.com" className="ap-dash-select"/></label>}
-    <label className="ap-dash-field">Keep only these parts (CSS selectors)<textarea value={keepSel} onChange={e=>setKeepSel(e.target.value)} rows={2} placeholder="main" className="ap-dash-select"/></label>
-    <label className="ap-dash-field">Remove these parts (CSS selectors)<textarea value={dropSel} onChange={e=>setDropSel(e.target.value)} rows={2} placeholder=".newsletter" className="ap-dash-select"/></label>
+    {mode!=='github'&&<><label className="ap-dash-field">Keep only these parts (CSS selectors)<textarea value={keepSel} onChange={e=>setKeepSel(e.target.value)} rows={2} placeholder="main" className="ap-dash-select"/></label>
+    <label className="ap-dash-field">Remove these parts (CSS selectors)<textarea value={dropSel} onChange={e=>setDropSel(e.target.value)} rows={2} placeholder=".newsletter" className="ap-dash-select"/></label></>}
    </div>
    <label className="ap-dash-checkrow"><input type="checkbox" checked={mainOnly} onChange={e=>setMainOnly(e.target.checked)}/>Extract main content only (leave out menus, headers and footers)</label>
    <label className="ap-dash-checkrow" style={{marginTop:8}}><input type="checkbox" checked={render&&canRender} disabled={!canRender} onChange={e=>setRender(e.target.checked)}/>{canRender?'Use browser rendering for pages built with JavaScript (Context.dev, up to 10 pages per import)':'Browser rendering for JavaScript sites is available to signed-in owners when Context.dev is connected'}</label>

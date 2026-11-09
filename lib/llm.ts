@@ -9,13 +9,18 @@
 import{GoogleGenAI}from'@google/genai';
 
 export type LlmProvider='anthropic'|'gemini';
-export type LlmCall={system:string;user:string;maxTokens:number;temperature?:number;purpose:string};
+/* tier 'deep' (Phase 3, db/058): the owner's "deep answers" choice runs the answer on a larger model; every
+   other call (grounding, classification, labels) stays on the fast model. */
+export type LlmTier='fast'|'deep';
+export type LlmCall={system:string;user:string;maxTokens:number;temperature?:number;purpose:string;tier?:LlmTier};
 export type LlmUsage={provider:LlmProvider;model:string;purpose:string;inputTokens:number;outputTokens:number;usd:number};
 
 // USD per million tokens. Haiku 5.5 list price for prompts up to 100k tokens (Anthropic pricing, Oct 2026).
 // Unknown models are priced at Sonnet-level rates so the ceiling errs on the safe side.
 const PRICES:Record<string,{in:number;out:number}>={
  'claude-haiku-5-5':{in:0.10,out:0.50},
+ 'claude-sonnet-5-5':{in:2.00,out:10.00},
+ 'claude-opus-5-5':{in:4.00,out:20.00},
  'claude-haiku-4-5-20251001':{in:1.00,out:5.00},
 };
 const FALLBACK_PRICE={in:2.00,out:10.00};
@@ -29,8 +34,21 @@ export function llmProvider():LlmProvider{
  if(forced==='anthropic'||forced==='gemini')return forced;
  return process.env.ANTHROPIC_API_KEY?'anthropic':'gemini';
 }
-export function llmModel(p=llmProvider()):string{
+export function llmModel(p=llmProvider(),tier:LlmTier='fast'):string{
+ if(tier==='deep')return p==='anthropic'?(process.env.ANTHROPIC_DEEP_MODEL||'claude-sonnet-5-5'):(process.env.GEMINI_DEEP_MODEL||process.env.GEMINI_MODEL||'gemini-3.1-flash-lite');
  return p==='anthropic'?(process.env.ANTHROPIC_MODEL||'claude-haiku-5-5'):(process.env.GEMINI_MODEL||'gemini-3.1-flash-lite');
+}
+/* Request settings per model family, for short structured JSON judgments:
+   - Haiku 5.x: thinking off ({type:'disabled'}, accepted at the default effort) so the small output cap goes to the JSON.
+   - Sonnet 5.5: 'disabled' is a 400; 'between_tools' turns thinking off (effort high or below). Non-default
+     temperature is a 400. Server-side refusal fallback ("default", Claude API) is on.
+   - Opus 5.5: thinking cannot be turned off; low effort plus output headroom for the thinking it does.
+   - Other Claude 5+ models: thinking off as before. Older models: temperature. */
+export function anthropicSettings(model:string,c:Pick<LlmCall,'maxTokens'|'temperature'>):{body:Record<string,unknown>;beta?:string;maxTokens:number}{
+ if(/^claude-sonnet-5-5/.test(model))return{body:{thinking:{type:'between_tools'},output_config:{effort:'low'},fallbacks:'default'},beta:'server-side-fallback-2026-07-01',maxTokens:c.maxTokens};
+ if(/^claude-opus-5-5/.test(model))return{body:{output_config:{effort:'low'},fallbacks:'default'},beta:'server-side-fallback-2026-07-01',maxTokens:c.maxTokens+3000};
+ if(/^claude-[a-z]+-[5-9]/.test(model))return{body:{thinking:{type:'disabled'}},maxTokens:c.maxTokens};
+ return{body:{temperature:c.temperature??0},maxTokens:c.maxTokens};
 }
 export function priceUsd(model:string,inputTokens:number,outputTokens:number):number{
  const p=PRICES[model]??(model.startsWith('gemini')?{in:0,out:0}:FALLBACK_PRICE);
@@ -56,14 +74,16 @@ export function extractJson(text:string):string{
 }
 
 async function callAnthropic(c:LlmCall,model:string):Promise<{text:string;inputTokens:number;outputTokens:number}>{
- const ctrl=new AbortController();const timer=setTimeout(()=>ctrl.abort(),20000);
+ const ctrl=new AbortController();const timer=setTimeout(()=>ctrl.abort(),c.tier==='deep'?40000:20000);const set=anthropicSettings(model,c);
  try{
-  const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',signal:ctrl.signal,headers:{'x-api-key':process.env.ANTHROPIC_API_KEY??'','anthropic-version':'2023-06-01','content-type':'application/json'},
-   // Claude 5.x models reject `temperature` ("deprecated for this model") and can start adaptive thinking, which
-   // spends the small output cap before any JSON is written. These are short structured judgments, so thinking is off.
-   body:JSON.stringify({model,max_tokens:c.maxTokens,...(/^claude-[a-z]+-[5-9]/.test(model)?{thinking:{type:'disabled'}}:{temperature:c.temperature??0}),system:c.system+' Respond with the JSON object only, no code fence and no other text.',messages:[{role:'user',content:c.user}]})});
+  const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',signal:ctrl.signal,headers:{'x-api-key':process.env.ANTHROPIC_API_KEY??'','anthropic-version':'2023-06-01','content-type':'application/json',...(set.beta?{'anthropic-beta':set.beta}:{})},
+   // Claude 5.x models reject `temperature` and can start thinking, which spends the small output cap before any
+   // JSON is written. anthropicSettings picks the per-family way to keep these short judgments direct.
+   body:JSON.stringify({model,max_tokens:set.maxTokens,...set.body,system:c.system+' Respond with the JSON object only, no code fence and no other text.',messages:[{role:'user',content:c.user}]})});
   if(!r.ok){const status=r.status;let msg='Anthropic request failed with HTTP '+status;try{const e=await r.json() as {error?:{message?:string}};if(e?.error?.message)msg+=': '+e.error.message.slice(0,200);}catch{/* body not JSON */}throw new LlmError(msg,status);}
   const d=await r.json() as {content?:{type:string;text?:string}[];usage?:{input_tokens?:number;output_tokens?:number;cache_creation_input_tokens?:number;cache_read_input_tokens?:number};stop_reason?:string};
+  // A policy decline (after any fallback) is no answer: callers return their safe fallback.
+  if(d.stop_reason==='refusal')throw new LlmError('The model declined this request.',422);
   const text=(d.content??[]).filter(x=>x.type==='text').map(x=>x.text??'').join('');
   if(d.stop_reason==='max_tokens'&&!text.trim().endsWith('}'))throw new LlmError('Model reply hit the output cap before finishing.',502);
   const u=d.usage??{};
@@ -84,12 +104,12 @@ export const guardedSystem=(system:string)=>system.includes(INSTRUCTION_GUARD)?s
    treat a throw as "no answer" and return their safe fallback. */
 export async function generateJson(call:LlmCall):Promise<string>{
  const c={...call,system:guardedSystem(call.system)};
- const provider=llmProvider(),model=llmModel(provider);
+ const provider=llmProvider(),model=llmModel(provider,c.tier??'fast');
  if(c.system.length+c.user.length>MAX_INPUT_CHARS)throw new LlmError('Prompt too large for the spend guard.',413);
  if(!(c.maxTokens>0&&c.maxTokens<=2000))throw new LlmError('Output token cap must be between 1 and 2000.',400);
  roll();
  // Worst case for this call, priced before it is sent, must still fit under the daily ceiling.
- const worst=priceUsd(model,Math.ceil((c.system.length+c.user.length)/3),c.maxTokens);
+ const worst=priceUsd(model,Math.ceil((c.system.length+c.user.length)/3),provider==='anthropic'?anthropicSettings(model,c).maxTokens:c.maxTokens);
  if(ledger.usd+worst>dailyCap())throw new LlmError('Daily model spend ceiling reached; answering paused until UTC midnight.',429);
  if(provider==='anthropic'&&!process.env.ANTHROPIC_API_KEY)throw new LlmError('ANTHROPIC_API_KEY is not set.',500);
  if(provider==='gemini'&&!process.env.GEMINI_API_KEY)throw new LlmError('GEMINI_API_KEY is not set.',500);

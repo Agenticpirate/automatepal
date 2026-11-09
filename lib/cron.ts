@@ -11,6 +11,7 @@ import type {SupabaseClient} from '@supabase/supabase-js';
 import {refreshWorkspace,type RefreshDeps} from './refresh';
 import {labelBatch,type InsightItem,type LabelDeps} from './insights';
 import {deliver,serviceEmailStore,weeklyDigestEmail,type DigestData,type EmailDeps} from './email';
+import {deliverDueWebhooks} from './webhook-worker';
 
 /* Bearer CRON_SECRET (at least 32 characters), compared in constant time over SHA-256 digests. */
 export function cronAuthorized(header:string|null,secret:string|undefined=process.env.CRON_SECRET):boolean{
@@ -71,5 +72,7 @@ export async function runScheduledJobs(client:SupabaseClient,budgetMs=50_000,dep
    }
   }
  }catch{out.digest={ok:false};}
+ // 5. Webhook retries (first attempts go out right after each visitor request).
+ try{out.webhooks=left()<2_000?{ok:true,skipped:'time'}:await deliverDueWebhooks(client,{limit:20,deadline:deadline-1_000});}catch{out.webhooks={ok:false};}
  return out;
 }

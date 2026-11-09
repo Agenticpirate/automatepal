@@ -57,3 +57,27 @@ function BotRowEdit({bot, busy, onRename, onDelete}: {bot: Bot; busy: boolean; o
     {!bot.main && <button type="button" className="ap-dash-btn ap-dash-btn-ghost" disabled={busy} onClick={onDelete}>Delete</button>}
   </div>;
 }
+
+/* Stats filter for Overview, Tickets and Chat history: '' = all bots, else a bot id (the Main bot's id is the
+   workspace id). Remembered separately from the bot being edited. Hidden when the workspace has one bot. */
+const FKEY = 'ap-bot-filter', FEVENT = 'ap-bot-filter-change';
+function readFilter(): string { try { return localStorage.getItem(FKEY) ?? ''; } catch { return ''; } }
+function subscribeFilter(cb: () => void) { window.addEventListener(FEVENT, cb); window.addEventListener('storage', cb); return () => { window.removeEventListener(FEVENT, cb); window.removeEventListener('storage', cb); }; }
+export function useBotFilter(): string { return useSyncExternalStore(subscribeFilter, readFilter, () => ''); }
+function setFilter(id: string) { try { if (id) localStorage.setItem(FKEY, id); else localStorage.removeItem(FKEY); } catch { /* blocked storage: all bots */ } window.dispatchEvent(new Event(FEVENT)); }
+export function BotFilter() {
+  const filter = useBotFilter();
+  const [bots, setBots] = useState<Bot[]>([]);
+  useEffect(() => {
+    void authHeaders().then(h => fetch('/api/bots', {headers: h})).then(r => r.ok ? r.json() : null).then(d => {
+      if (!d) return; setBots(d.bots);
+      const cur = readFilter(); if (cur && !d.bots.some((b: Bot) => b.id === cur)) setFilter('');
+    }).catch(() => {});
+  }, []);
+  if (bots.length < 2) return null;
+  return <label className="ap-dash-muted" style={{display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12}}>Bot
+    <select aria-label="Show conversations of" value={filter} onChange={e => setFilter(e.target.value)} className="ap-dash-select" style={{padding: '5px 8px', fontSize: 12, width: 'auto'}}>
+      <option value="">All bots</option>
+      {bots.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
+    </select></label>;
+}

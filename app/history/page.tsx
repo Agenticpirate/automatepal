@@ -6,6 +6,7 @@ import DashShell,{DIcon} from '../components/DashShell';
 import {authHeaders} from '../../lib/browser-auth';
 import {downloadCsv} from '../../lib/exports';
 import {filterConversations,transcriptsCsv,RETENTION_DAYS,type Conversation} from '../../lib/transcripts';
+import {BotFilter,useBotFilter,withBot} from '../components/BotPicker';
 /* Chat history: every conversation with its full transcript (visitor questions, AI answers, person chat and
    requests). Search, filter by date, status and source, open a transcript, export a formula-safe CSV of the
    filtered list, and delete one conversation (managers and up). Admins set the retention. */
@@ -14,13 +15,13 @@ const when=(s:string)=>new Date(s).toLocaleString('en-US',{month:'short',day:'nu
 const SOURCE_LABEL:Record<string,string>={widget:'Website widget',hosted_page:'Hosted help page',api:'API',mcp:'MCP'};
 const AUTHOR:Record<string,string>={visitor:'Visitor',ai:'AI answer',owner:'Your team',request:'Request'};
 const rank:Record<string,number>={owner:4,admin:3,manager:2,agent:1};
-export default function History(){
+export default function History(){const botFilter=useBotFilter();
  const[data,setData]=useState<Data|null>(null),[error,setError]=useState(''),[notice,setNotice]=useState(''),[busy,setBusy]=useState(false);
  const[q,setQ]=useState(''),[from,setFrom]=useState(''),[to,setTo]=useState(''),[status,setStatus]=useState('all'),[source,setSource]=useState('all');
  const[open,setOpen]=useState<string|null>(null),[confirm,setConfirm]=useState<string|null>(null);
  const apply=useCallback((ok:boolean,d:Data&{error?:string})=>{if(!ok||d.error){setError(d.error??'Could not load chat history.');setData(null);}else{setError('');setData(d);}},[]);
- const load=useCallback(async()=>{const r=await fetch('/api/history',{headers:await authHeaders()});apply(r.ok,await r.json());},[apply]);
- useEffect(()=>{authHeaders().then(headers=>fetch('/api/history',{headers})).then(async r=>apply(r.ok,await r.json())).catch(()=>setError('Could not load chat history.'));},[apply]);
+ const load=useCallback(async()=>{const r=await fetch(withBot('/api/history',botFilter),{headers:await authHeaders()});apply(r.ok,await r.json());},[apply,botFilter]);
+ useEffect(()=>{authHeaders().then(headers=>fetch(withBot('/api/history',botFilter),{headers})).then(async r=>apply(r.ok,await r.json())).catch(()=>setError('Could not load chat history.'));},[apply,botFilter]);
  const shown=useMemo(()=>data?filterConversations(data.conversations,{q,from,to,status,source}):[],[data,q,from,to,status,source]);
  const statuses=useMemo(()=>[...new Set((data?.conversations??[]).map(c=>c.status))].sort(),[data]);
  const role=rank[data?.role??'agent']??1;
@@ -32,6 +33,7 @@ export default function History(){
 <p className="ap-dash-kicker">Customer support / chat history</p>
 <h1 className="ap-dash-h1"><span className="ap-dash-ln"><span>Chat history</span></span></h1>
 <p className="ap-dash-sub">Every conversation with its full transcript: what visitors asked, what the AI answered, and what your team wrote. Transcripts are deleted automatically after the retention period below.</p>
+<BotFilter/>
 </header>
 {error&&<section className="ap-dash-card" role="alert"><p className="ap-dash-muted" style={{margin:0}}>{error}</p></section>}
 {data&&<section className="ap-dash-card" aria-labelledby="hist-h">

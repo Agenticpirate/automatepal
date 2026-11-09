@@ -7,6 +7,7 @@ import {limitedJson} from '../../../lib/limited-json';
 import {demoGate,demoLocked} from '../../../lib/demo-open';
 import {filterConversations,transcriptsCsv} from '../../../lib/transcripts';
 import {loadConversations} from '../../../lib/transcripts-load';
+import {statsBot} from '../../../lib/bot-filter';
 /* Chat history (db/049). GET lists conversations with their transcripts (latest 300 conversations),
    filtered by ?q, ?from, ?to (UTC days), ?status and ?source; ?format=csv exports the filtered list.
    POST {action:'delete',id} deletes one conversation (manager and up); POST {action:'retention',days}
@@ -16,7 +17,7 @@ const LIMIT=300;
 export async function GET(req:NextRequest){
  const c=await authenticate(req);if(!c){const d=demoGate(req,'history');if(d)return d;return NextResponse.json({error:'Please sign in.'},{status:401});}
  const p=req.nextUrl.searchParams,f={q:p.get('q')?.slice(0,200)??'',from:p.get('from')??'',to:p.get('to')??'',status:p.get('status')??'all',source:p.get('source')??'all'};
- const [loaded,ret]=await Promise.all([loadConversations(c),c.client.from('transcript_settings').select('retention_days').eq('user_id',c.userId).maybeSingle()]);
+ const [loaded,ret]=await Promise.all([loadConversations(c,undefined,statsBot(p.get('bot'))),c.client.from('transcript_settings').select('retention_days').eq('user_id',c.userId).maybeSingle()]);
  if(!loaded||ret.error)return NextResponse.json({error:'Chat history is not enabled on this database yet.'},{status:503,headers:noStore});
  const list=filterConversations(loaded.conversations,f);
  if(p.get('format')==='csv')return new NextResponse(transcriptsCsv(list),{headers:{...noStore,'Content-Type':'text/csv; charset=utf-8','Content-Disposition':`attachment; filename="automatepal-chat-history-${new Date().toISOString().slice(0,10)}.csv"`}});

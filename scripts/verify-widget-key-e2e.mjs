@@ -90,7 +90,23 @@ async function main() {
     await fresh.route(`${SHOP}/**`, r => r.fulfill({contentType: 'text/html', body: page(SHOP)}));
     await fresh.goto(`${SHOP}/again`); await fresh.waitForTimeout(2500);
     assert.equal(await fresh.locator('#automatepal-billing-widget').count(), 0, 'turned-off key shows nothing'); ok();
-    console.log(`PASS widget key end to end: ${n} checks; lazy conversation on first open, signed frame grant lets shop.example frame /help, exact answer through the widget, conversation reused across loads, reset starts a new one, other sites get no widget, no session and no framing, turned-off key shows nothing.`);
+    // Tag-manager style installs on an allowed origin: script injected by JavaScript with the key in the URL,
+    // and the AutomatePalConfig variant with no data- attributes at all.
+    await db.query('begin'); await db.query("select set_config('app.widget_key_rpc','1',true)"); await db.query('update widget_settings set key_active=true where user_id=$1', [OWNER]); await db.query('commit');
+    for (const [name, html] of [
+      ['injected ?bot=', `<!doctype html><body><script>var s=document.createElement('script');s.async=true;s.src='${APP}/widget.js?bot=${KEY}';document.body.appendChild(s);</script></body>`],
+      ['AutomatePalConfig', `<!doctype html><body><script>window.AutomatePalConfig={bot:'${KEY}'};</script><script src="${APP}/widget.js" async></script></body>`],
+    ]) {
+      const c2 = await browser.newContext(); const t = await c2.newPage();
+      await t.route(`${SHOP}/**`, r => r.fulfill({contentType: 'text/html', body: html}));
+      await t.goto(`${SHOP}/gtm`);
+      await t.locator('#automatepal-billing-widget button').waitFor({timeout: 20000});
+      await t.locator('#automatepal-billing-widget button').click();
+      await t.waitForFunction(() => document.getElementById('automatepal-billing-widget')?.shadowRoot?.querySelector('iframe')?.src.includes('fsig='), null, {timeout: 20000});
+      ok(); await c2.close();
+      assert.ok(name);
+    }
+    console.log(`PASS widget key end to end: ${n} checks; lazy conversation on first open, signed frame grant lets shop.example frame /help, exact answer through the widget, conversation reused across loads, reset starts a new one, other sites get no widget, no session and no framing, turned-off key shows nothing, tag-manager installs (?bot= injected, AutomatePalConfig) work.`);
   } finally {
     await browser.close();
     await cleanup().catch(() => {});

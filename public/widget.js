@@ -1,9 +1,12 @@
 /* AutomatePal support widget loader. Original code, MIT.
    Install: <script src="https://automatepal.com/widget.js" data-bot="pk_live_…" async></script>
+   Where a tag manager or site builder drops data- attributes, the key can go in the URL instead
+   (widget.js?bot=pk_live_…) or in window.AutomatePalConfig={bot:'pk_live_…'} set before the script.
    (data-demo-token="<64 hex>" still loads a one-hour owner demo). */
 (async()=>{
- const script=document.currentScript;if(!script)return;
- const demoToken=script.getAttribute('data-demo-token'),botKey=script.getAttribute('data-bot');
+ const script=document.currentScript||document.querySelector('script[src*="/widget.js"]');if(!script||!script.src)return;
+ const cfg=window.AutomatePalConfig&&typeof window.AutomatePalConfig==='object'?window.AutomatePalConfig:{};
+ const demoToken=script.getAttribute('data-demo-token'),botKey=script.getAttribute('data-bot')||new URL(script.src).searchParams.get('bot')||(typeof cfg.bot==='string'?cfg.bot:null);
  const keyMode=!!botKey&&/^pk_(live|test)_[A-Za-z0-9]{24}$/.test(botKey),demoMode=!keyMode&&!!demoToken&&/^[a-f0-9]{64}$/.test(demoToken);
  if((!keyMode&&!demoMode)||document.getElementById('automatepal-billing-widget'))return;
  const base=new URL(script.src).origin,id=keyMode?botKey:demoToken,key='automatepal-demo-'+id,sessionKey='automatepal-session-'+id;let settings;

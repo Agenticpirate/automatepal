@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
   if (Number(req.headers.get("content-length") ?? 0) > 128000) return NextResponse.json({ error: "Request too large" }, { status: 413 });
   const session = await authenticate(req);
   if (!session) { const d=demoLocked(); if(d) return d; return NextResponse.json({ error: "Please sign in." }, { status: 401 }); }
-  if (!allowRequest(session.actorId)) return NextResponse.json({error:"Please wait a minute before sending more messages."},{status:429});
+  if (!await allowRequest(session.actorId)) return NextResponse.json({error:"Please wait a minute before sending more messages."},{status:429});
   if (!validOrigin(req)) return NextResponse.json({ error: "Invalid origin" }, { status: 403 });
   let body;
   try { body = input.parse(await limitedJson(req,128000)); }

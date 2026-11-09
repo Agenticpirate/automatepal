@@ -12,7 +12,7 @@ export async function POST(req:NextRequest){
   const ctx=await authenticate(req);
   if(!ctx){const d=demoLocked();if(d)return d;return NextResponse.json({error:'Please sign in.'},{status:401});}
   if(!validOrigin(req))return NextResponse.json({error:'Invalid origin'},{status:403});
-  if(!allowRequest('test-answer:'+ctx.actorId))return NextResponse.json({error:'Please wait a minute.'},{status:429});
+  if(!await allowRequest('test-answer:'+ctx.actorId))return NextResponse.json({error:'Please wait a minute.'},{status:429});
   try{
     const b=z.object({question:z.string().trim().min(3).max(300)}).parse(await limitedJson(req,2000));
     safeKnowledge(b.question);

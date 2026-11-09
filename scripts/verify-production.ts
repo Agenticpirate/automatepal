@@ -58,7 +58,7 @@ async function main(){
  // ---------- 6.6 CSP ----------
  {const c=buildCsp({nonce:'abc123',pathname:'/owner',supabase:'https://x.supabase.co wss://x.supabase.co'});
   assert.match(c,/script-src 'self' 'nonce-abc123' 'strict-dynamic'(;|$)/);assert.match(c,/frame-ancestors 'self'/);assert.match(c,/connect-src 'self' https:\/\/x\.supabase\.co wss:\/\/x\.supabase\.co;/);assert.ok(!/unsafe-eval/.test(c));assert.match(c,/object-src 'none'/);
-  assert.ok(!/frame-ancestors/.test(buildCsp({nonce:'a',pathname:'/help'})),'/help is embeddable');assert.equal(embeddable('/helpdesk'),false);assert.equal(embeddable('/help/x'),true);
+  assert.match(buildCsp({nonce:'a',pathname:'/help'}),/frame-ancestors 'self'(;|$)/,'/help without a grant: this app only');assert.match(buildCsp({nonce:'a',pathname:'/help',frameOrigin:'https://shop.example'}),/frame-ancestors 'self' https:\/\/shop\.example/,'/help with a grant: that one origin');assert.match(buildCsp({nonce:'a',pathname:'/owner',frameOrigin:'https://shop.example'}),/frame-ancestors 'self'(;|$)/,'grants apply to /help only');assert.equal(embeddable('/helpdesk'),false);assert.equal(embeddable('/help/x'),true);
   assert.match(buildCsp({nonce:'a',pathname:'/',dev:true}),/'unsafe-eval'/);assert.notEqual(newNonce(),newNonce());assert.match(newNonce(),/^[A-Za-z0-9+/]{22}==$/);
   assert.equal(supabaseOrigins('https://abc.supabase.co'),'https://abc.supabase.co wss://abc.supabase.co');assert.equal(supabaseOrigins('http://127.0.0.1:54321'),'http://127.0.0.1:54321 ws://127.0.0.1:54321');ok();}
  // ---------- 6.3 refresh diff ----------

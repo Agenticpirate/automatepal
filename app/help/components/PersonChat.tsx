@@ -1,5 +1,6 @@
 "use client";
 import {modeText} from '../../../lib/app-mode';
+import {widgetText, type WidgetText} from '../../../lib/widget-i18n';
 import {useCallback, useEffect, useRef, useState} from 'react';
 import {mergeMessages, nextCursor, POLL_MS, MESSAGE_MAX, type SupportMessage} from '../../../lib/support-messages';
 
@@ -32,7 +33,7 @@ export function useCaseThread(token: string, enabled: boolean, expiresAt?: strin
   return {messages, inboxState, refresh: poll};
 }
 
-export default function PersonChat({token, messages, onSent}: {token: string; messages: SupportMessage[]; onSent: () => void}) {
+export default function PersonChat({token, messages, onSent, tx = widgetText('en')}: {token: string; messages: SupportMessage[]; onSent: () => void; tx?: WidgetText}) {
   const [text, setText] = useState(''), [busy, setBusy] = useState(false), [note, setNote] = useState('');
   async function send(e: React.FormEvent) {
     e.preventDefault(); if (!text.trim()) return; setBusy(true);
@@ -43,15 +44,15 @@ export default function PersonChat({token, messages, onSent}: {token: string; me
     } catch { setNote('Could not send the message.'); } finally { setBusy(false); }
   }
   return <section aria-label="Conversation with a person" className="mb-4 rounded-2xl border border-pink-200 bg-white p-4">
-    <h2 className="text-sm font-semibold">Chat with a person</h2>
-    <p className="mt-1 text-xs leading-5 text-gray-500">A person from the team has joined. AI answers are paused. Replies appear here.</p>
-    {!messages.length && <p className="mt-3 text-xs text-gray-500">Waiting for the team&apos;s first message.</p>}
+    <h2 className="text-sm font-semibold">{tx.personTitle}</h2>
+    <p className="mt-1 text-xs leading-5 text-gray-500">{tx.personJoined}</p>
+    {!messages.length && <p className="mt-3 text-xs text-gray-500">{tx.personWaiting}</p>}
     <ol className="mt-3 space-y-2">{messages.map(m => <li key={m.id} className={'rounded-xl p-3 text-sm leading-6 ' + (m.author === 'visitor' ? 'ml-8 bg-blue-50' : 'mr-8 bg-pink-50')}>
       <span className="block text-xs font-semibold text-gray-600">{m.author === 'owner' ? 'Team' : 'You'}</span>
       <p className="whitespace-pre-wrap break-words">{m.body}</p>
     </li>)}</ol>
     <form onSubmit={send} className="mt-3 space-y-2">
-      <label className="block text-sm">Your reply<textarea value={text} maxLength={MESSAGE_MAX} rows={2} onChange={e => setText(e.target.value)} className="mt-2 block w-full rounded-lg border p-3" placeholder={modeText('Fictional details only','Never share card numbers or passwords')}/></label>
+      <label className="block text-sm">{tx.yourReply}<textarea value={text} maxLength={MESSAGE_MAX} rows={2} onChange={e => setText(e.target.value)} className="mt-2 block w-full rounded-lg border p-3" placeholder={modeText('Fictional details only','Never share card numbers or passwords')}/></label>
       <button disabled={busy || !text.trim()} className="min-h-11 w-full rounded-lg border p-3 text-sm disabled:opacity-50">{busy ? 'Sending...' : 'Send to the team'}</button>
     </form>
     <p aria-live="polite" className="mt-2 text-xs leading-5 text-gray-600">{note}</p>

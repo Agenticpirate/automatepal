@@ -13,6 +13,9 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
     "public/pdf.worker.min.mjs",
+    // Cloudflare build output (npm run cf:build), generated and git-ignored.
+    ".open-next/**",
+    ".wrangler/**",
   ]),
 ]);
 

@@ -46,3 +46,5 @@ services:
         sync: false
       - key: ALERT_WEBHOOK_URL
         sync: false
+      - key: WIDGET_FRAME_SECRET
+        sync: false

@@ -31,12 +31,13 @@ export async function POST(req:NextRequest){
  const c=await authenticate(req);if(!c){const d=demoLocked();if(d)return d;return NextResponse.json({error:'Please sign in.'},{status:401});}
  if(!validOrigin(req))return NextResponse.json({error:'Invalid origin'},{status:403});
  if(!roleAtLeast(c.role,'manager'))return NextResponse.json({error:'Only managers, admins and the owner can manage scheduled refresh.'},{status:403});
- if(!allowRequest('refresh:'+c.actorId))return NextResponse.json({error:'Please wait a minute.'},{status:429});
+ if(!await allowRequest('refresh:'+c.actorId))return NextResponse.json({error:'Please wait a minute.'},{status:429});
  let b:z.infer<typeof Action>;try{b=Action.parse(await limitedJson(req,2000));}catch{return NextResponse.json({error:'Check the fields and try again.'},{status:400});}
  if(b.action==='settings'){
   const url=b.sitemapUrl?b.sitemapUrl:null;
   if(url){const problem=/^https:\/\//.test(url)?importUrlProblem(url):'Use an https:// sitemap URL.';if(problem)return NextResponse.json({error:problem},{status:400});}
   const r=await c.client.rpc('set_refresh_settings',{p_frequency:b.frequency,p_sitemap_url:url});
+  if(r.error&&/Upgrade required/.test(r.error.message))return NextResponse.json({error:r.error.message.replace(/^Upgrade required: /,'')+'. Upgrade on the Plan page.'},{status:402});
   if(r.error||r.data!==true)return NextResponse.json({error:'Schedule not saved. Check the sitemap URL.'},{status:400});
   return NextResponse.json({note:b.frequency==='off'?'Scheduled refresh is off.':`Saved. Your website sources are re-checked ${b.frequency}; changes wait here for your review and nothing is published automatically.`},{headers:noStore});
  }

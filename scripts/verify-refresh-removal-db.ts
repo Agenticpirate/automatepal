@@ -3,6 +3,7 @@
 import {Client} from 'pg';
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
+import {COMP_FIXTURES_SQL} from './test-plan-fixture';
 const local = process.env.LOCAL_DATABASE_URL;
 if (!local) { console.error('verify-refresh-removal-db: set LOCAL_DATABASE_URL to the local Supabase database (refusing to run without it).'); process.exit(1); }
 const host = new URL(local).hostname;
@@ -27,7 +28,7 @@ const val = async (sql: string, args: unknown[] = []) => Object.values((await on
 async function main() {
   await c.connect();
   try {
-    await c.query('BEGIN');
+    await c.query('BEGIN');await c.query(COMP_FIXTURES_SQL);
     const A = randomUUID(), B = randomUUID(), managerA = randomUUID(), agentA = randomUUID();
     for (const u of [A, B, managerA, agentA]) await c.query('insert into auth.users(id,email,email_confirmed_at) values($1,$2,now())', [u, `${u.slice(0, 8)}@p53.example.test`]);
     await c.query("insert into workspace_members(workspace_id,user_id,role) values($1,$2,'manager'),($1,$3,'agent')", [A, managerA, agentA]);

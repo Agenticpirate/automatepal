@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
   const ctx = await authenticate(req);
   if (!ctx) { const d = demoLocked(); if (d) return d; return NextResponse.json({error: 'Please sign in.'}, {status: 401}); }
   if (!roleAtLeast(ctx.role, 'manager')) return NextResponse.json({error: DENIED}, {status: 403});
-  if (!allowRequest('leads:' + ctx.actorId)) return NextResponse.json({error: 'Please wait a minute.'}, {status: 429});
+  if (!await allowRequest('leads:' + ctx.actorId)) return NextResponse.json({error: 'Please wait a minute.'}, {status: 429});
   try {
     const d = z.object({action: z.literal('delete'), id: z.string().uuid()}).parse(await limitedJson(req, 2000));
     const r = await ctx.client.rpc('delete_lead', {p_id: d.id});

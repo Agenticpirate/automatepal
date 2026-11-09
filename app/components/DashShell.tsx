@@ -35,7 +35,7 @@ export const DIcon=({name,size=16,sw=2}:{name:keyof typeof DP;size?:number;sw?:n
 );
 
 export type DashNotif={id:string;kind:'error'|'success'|'info';title:string;body:string;ts:string};
-const NAV:[string,string,keyof typeof DP][]=[['/owner','Overview','overview'],['/tickets','Tickets','tickets'],['/history','Chat history','history'],['/billing','Billing','billing'],['/support','Widget studio','widget'],['/leads','Leads','mail'],['/knowledge','Knowledge','knowledge'],['/team','Team','team'],['/setup','Setup','setup'],['/status','Status','status']];
+const NAV:[string,string,keyof typeof DP][]=[['/owner','Overview','overview'],['/tickets','Tickets','tickets'],['/history','Chat history','history'],['/billing','Billing','billing'],['/support','Widget studio','widget'],['/leads','Leads','mail'],['/knowledge','Knowledge','knowledge'],['/team','Team','team'],['/setup','Setup','setup'],['/plan','Plan','billing'],['/status','Status','status']];
 type Ws={workspace_id:string;role:string;owner_email:string};
 type TeamCtx={me:{id:string};workspaces:Ws[];current:{workspace_id:string;role:string}|null;workspaceInvalid?:boolean};
 const ROLE_LABEL:Record<string,string>={owner:'Owner',admin:'Admin',manager:'Manager',agent:'Agent'};

@@ -29,6 +29,9 @@ async function recordAnswer(token:string,id:unknown,answer:unknown,source:string
 const alertOwner=(token:string,event:'handoff'|'refund_review'|'lead')=>{void notifyOwner(hash(token),event).catch(()=>{});};
 const tokenSchema=z.string().regex(/^[a-f0-9]{64}$/);
 const hash=(t:string)=>createHash('sha256').update(t).digest('hex');
+const B62='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+// 24 unbiased base62 characters (rejection sampling), about 143 bits.
+function newWidgetKey(mode:'live'|'test'){let out='';while(out.length<24){for(const b of randomBytes(32)){if(b<248&&out.length<24)out+=B62[b%62];}}return `pk_${mode}_${out}`;}
 function publicClient(){return createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!,process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,{auth:{persistSession:false}});}
 export async function GET(req:NextRequest){
  const token=req.nextUrl.searchParams.get('token');
@@ -41,8 +44,10 @@ export async function GET(req:NextRequest){
  const ctx=await authenticate(req);if(!ctx){const d=demoGate(req,'support');if(d)return d;return NextResponse.json({error:'Please sign in.'},{status:401});}
  const {data,error}=await ctx.client.from('support_requests').select('id,case_id,created_at,kind,message,status,contact_email,contact_consent').eq('user_id',ctx.userId).order('created_at',{ascending:false}).limit(100);
  const cases=await ctx.client.from('support_cases').select('id,created_at,expires_at,order_label,inbox_state').eq('user_id',ctx.userId).order('created_at',{ascending:false}).limit(100);
- const settings=await ctx.client.from('widget_settings').select('label,color,initials,prompts,controls').eq('user_id',ctx.userId).maybeSingle();
- return NextResponse.json(error?{error:'Could not load requests.'}:{requests:data,cases:cases.data??[],settings:settings.data?{...settings.data,...settings.data.controls}:null},{status:error?503:200,headers:{'Cache-Control':'no-store'}});
+ // Key columns arrive with db/055; on a database without them, fall back to the settings alone.
+ let settings:{data:{label:string;color:string;initials:string;prompts:string[];controls:Record<string,unknown>;public_key?:string|null;key_active?:boolean;logo_type?:string|null;logo_version?:number}|null}=await ctx.client.from('widget_settings').select('label,color,initials,prompts,controls,public_key,key_active,logo_type,logo_version').eq('user_id',ctx.userId).maybeSingle();
+ if((settings as {error?:unknown}).error)settings=await ctx.client.from('widget_settings').select('label,color,initials,prompts,controls').eq('user_id',ctx.userId).maybeSingle();
+ return NextResponse.json(error?{error:'Could not load requests.'}:{requests:data,cases:cases.data??[],settings:settings.data?{...settings.data,...settings.data.controls}:null,installKey:settings.data?.public_key?{publicKey:settings.data.public_key,active:settings.data.key_active}:null,logoVersion:settings.data?.logo_type?settings.data.logo_version??null:null},{status:error?503:200,headers:{'Cache-Control':'no-store'}});
 }
 export async function POST(req:NextRequest){
  if(!validOrigin(req))return NextResponse.json({error:'Invalid origin'},{status:403});
@@ -52,7 +57,7 @@ export async function POST(req:NextRequest){
   if(body?.action==='feedback'){const d=z.object({token:tokenSchema,id:z.string().uuid(),feedback:z.union([z.literal(1),z.literal(-1)])}).parse(body);const {data,error}=await publicClient().rpc('support_rate_knowledge',{p_hash:hash(d.token),p_id:d.id,p_feedback:d.feedback});if(error||!data)throw Error('Feedback unavailable.');return NextResponse.json({note:'Feedback recorded.'});}
   if(body?.action==='open'){
    const d=z.object({token:tokenSchema,source:sourceSchema}).parse(body);
-   if(!allowRequest('open:'+hash(d.token),Date.now(),10))return NextResponse.json({recorded:false},{status:429});
+   if(!await allowRequest('open:'+hash(d.token),Date.now(),10))return NextResponse.json({recorded:false},{status:429});
    const r=await publicClient().rpc('support_record_open',{p_hash:hash(d.token),p_source:d.source}).then(x=>!x.error&&x.data===true,()=>false);
    return NextResponse.json({recorded:r},{headers:{'Cache-Control':'no-store'}});
   }
@@ -60,19 +65,19 @@ export async function POST(req:NextRequest){
    const d=z.object({token:tokenSchema,question:z.string().trim().min(3).max(500),source:sourceSchema}).parse(body);safeKnowledge(d.question);
    // Prompt-injection guard (same check as the widget): refused before the rate limit, budget or any model call.
    if(promptInjection(d.question))return NextResponse.json({error:PROMPT_INJECTION_REFUSAL,code:'prompt_injection'},{status:400,headers:{'Cache-Control':'no-store'}});
-   if(!allowRequest(hash(d.token)))return NextResponse.json({error:'Please wait a minute.'},{status:429});
+   if(!await allowRequest(hash(d.token)))return NextResponse.json({error:'Please wait a minute.'},{status:429});
    const capability=await publicClient().rpc('support_case_view',{p_hash:hash(d.token)});if(capability.error||!capability.data)throw Error('Invalid or expired demo link.');const billing=await billingAnswer(d.token,d.question,capability.data);if(billing){const j=await billing.clone().json().catch(()=>null) as {interactionId?:string;answer?:string}|null;await recordAnswer(d.token,j?.interactionId,j?.answer,d.source);return billing;}const reservation=await publicClient().rpc('support_reserve_knowledge',{p_hash:hash(d.token),p_question:d.question});if(reservation.error||!reservation.data)throw Error('Demo question budget reached or unavailable.');if(instructionExtraction(d.question)){const finish=await publicClient().rpc('support_finish_knowledge',{p_hash:hash(d.token),p_id:reservation.data,p_supported:false,p_count:0});if(finish.error||!finish.data)throw Error('Case paused or unavailable. Ask a person to review.');await recordAnswer(d.token,reservation.data,'I can help with questions about the published information, but cannot share private instructions.',d.source);return NextResponse.json({answer:'I can help with questions about the published information, but cannot share private instructions.',supported:false,sources:[],interactionId:reservation.data},{headers:{'Cache-Control':'no-store'}});}const custom=await publicClient().rpc('support_custom_response',{p_hash:hash(d.token),p_question:d.question});if(custom.error)throw Error('Custom knowledge unavailable. Ask a person to review.');if(custom.data){const answer=exactCustomAnswer(custom.data);const logged=await publicClient().rpc('support_finish_knowledge',{p_hash:hash(d.token),p_id:reservation.data,p_supported:true,p_count:1});if(logged.error||!logged.data)throw Error('Could not record demo question.');await recordAnswer(d.token,reservation.data,answer.answer,d.source);return NextResponse.json({...answer,interactionId:reservation.data},{headers:{'Cache-Control':'no-store'}});}const vector=await embedKnowledge(d.question,true);const {data,error}=await publicClient().rpc('support_knowledge_vectors',{p_hash:hash(d.token),p_embedding:vector});if(error)throw Error('Knowledge unavailable. Ask a person to review.');const answer=await answerKnowledge(d.question,data??[],knowledgeDiagnostic);const logged=await publicClient().rpc('support_finish_knowledge',{p_hash:hash(d.token),p_id:reservation.data,p_supported:answer.supported,p_count:answer.sources.length});if(logged.error||!logged.data)throw Error('Could not record demo question. Ask a person to review.');await recordAnswer(d.token,reservation.data,answer.answer,d.source);return NextResponse.json({...answer,interactionId:reservation.data},{headers:{'Cache-Control':'no-store'}});
   }
   if(body?.action==='billing_verify'){
    const d=z.object({token:tokenSchema,provider:z.string().refine(p=>!!enabledDefinition(p)),reference:z.string().trim().min(3).max(80),email:z.string().trim().max(254).email()}).parse(body);
-   if(!allowRequest('billing:'+hash(d.token)))return NextResponse.json({error:'Please wait a minute.'},{status:429});
+   if(!await allowRequest('billing:'+hash(d.token)))return NextResponse.json({error:'Please wait a minute.'},{status:429});
    try{const r=await verifyVisitor({store:supabaseBillingStore(publicClient())},{caseHash:hash(d.token),provider:d.provider as BillingProviderId,reference:d.reference,email:d.email});
     return NextResponse.json(r.ok?{verified:true,provider:r.provider,mode:r.mode,expiresAt:r.expiresAt}:{error:r.error},{status:r.ok?200:r.status,headers:{'Cache-Control':'no-store'}});
    }catch(e){return NextResponse.json({error:safeErrorMessage(e)},{status:503});}
   }
   if(body?.action==='billing_refund'){
    const d=z.object({token:tokenSchema,lookupId:z.string().uuid(),message:z.string().trim().min(5).max(1000)}).parse(body);
-   if(!allowRequest('billing:'+hash(d.token)))return NextResponse.json({error:'Please wait a minute.'},{status:429});
+   if(!await allowRequest('billing:'+hash(d.token)))return NextResponse.json({error:'Please wait a minute.'},{status:429});
    try{const r=await requestRefundReview({store:supabaseBillingStore(publicClient())},{caseHash:hash(d.token),lookupId:d.lookupId,message:d.message});
     if(r.ok)alertOwner(d.token,'refund_review');
     return NextResponse.json(r.ok?{id:r.id,note:r.note}:{error:r.error},{status:r.ok?200:400});
@@ -80,7 +85,7 @@ export async function POST(req:NextRequest){
   }
   if(body?.action==='messages'){
    const d=z.object({token:tokenSchema,after:z.string().datetime({offset:true}).nullable().optional()}).parse(body);
-   if(!allowRequest('poll:'+hash(d.token),Date.now(),15))return NextResponse.json({error:'Please wait a minute.'},{status:429});
+   if(!await allowRequest('poll:'+hash(d.token),Date.now(),15))return NextResponse.json({error:'Please wait a minute.'},{status:429});
    const {data,error}=await publicClient().rpc('support_case_messages',{p_hash:hash(d.token),p_after:d.after??null});
    // Fail soft on a database without 045: no thread, nothing breaks.
    if(error)return NextResponse.json({inboxState:null,messages:[]},{headers:{'Cache-Control':'no-store'}});
@@ -89,7 +94,7 @@ export async function POST(req:NextRequest){
   }
   if(body?.action==='visitor_message'){
    const d=z.object({token:tokenSchema,body:messageBody}).parse(body);
-   if(!allowRequest('visitor:'+hash(d.token)))return NextResponse.json({error:'Please wait a minute.'},{status:429});
+   if(!await allowRequest('visitor:'+hash(d.token)))return NextResponse.json({error:'Please wait a minute.'},{status:429});
    const {data,error}=await publicClient().rpc('support_visitor_message',{p_hash:hash(d.token),p_body:d.body});
    if(error||!data)throw Error('Message not sent. A person needs to join this chat first, and the demo link must not have expired.');
    return NextResponse.json({id:data,note:'Message sent to the team in this chat. Nothing is emailed.'},{headers:{'Cache-Control':'no-store'}});
@@ -104,11 +109,18 @@ export async function POST(req:NextRequest){
    return NextResponse.json({id:data,note:modeText('Sent to the demo owner for review.','Sent to the team for review.')+' No refund or payment has been made.'+(d.email&&d.consent?' The team can see the address you shared and may reply by email.':'')});
   }
   const ctx=await authenticate(req);if(!ctx){const d=demoLocked();if(d)return d;return NextResponse.json({error:'Please sign in.'},{status:401});}
-  if(!allowRequest(ctx.actorId))return NextResponse.json({error:'Please wait a minute.'},{status:429});
+  if(!await allowRequest(ctx.actorId))return NextResponse.json({error:'Please wait a minute.'},{status:429});
   if(body?.action==='inbox'){const d=z.object({id:z.string().uuid(),state:z.enum(['open','taken_over','closed'])}).parse(body);const{data,error}=await ctx.client.rpc('set_support_inbox',{p_id:d.id,p_state:d.state});if(error||!data)throw Error('Case unavailable.');return NextResponse.json({note:'Case state updated. No message or payment sent.'});}
   if(body?.action==='settings'){
    const current=await ctx.client.from('widget_settings').select('controls').eq('user_id',ctx.userId).maybeSingle();if(current.error)throw Error('Could not load current settings.');const settings=widgetSettings.parse({...current.data?.controls,...(body.settings as Record<string,unknown>)});const{label,color,initials,prompts,...controls}=settings;
    const {error}=await ctx.client.from('widget_settings').upsert({user_id:ctx.userId,label,color,initials,prompts,controls});if(error)throw Error('Could not save widget settings.');return NextResponse.json({note:'Widget appearance and quick prompts saved. No external script or image URL accepted.'});
+  }
+  /* Permanent install key (db/055): create or rotate (server-generated, 24 base62 chars), or turn on/off. */
+  if(body?.action==='widget_key'){
+   const d=z.object({op:z.enum(['rotate','enable','disable']),mode:z.enum(['live','test']).default('live')}).parse(body);
+   if(d.op==='rotate'){const key=newWidgetKey(d.mode);const{error}=await ctx.client.rpc('rotate_widget_key',{p_key:key});if(error)throw Error('Could not create the install key. Managers and above can do this.');return NextResponse.json({publicKey:key,keyActive:true,note:'New install key created. The previous key, if any, stopped working; update the script on your site.'});}
+   const{data,error}=await ctx.client.rpc('set_widget_key_active',{p_active:d.op==='enable'});if(error||!data)throw Error('Create an install key first.');
+   return NextResponse.json({keyActive:d.op==='enable',note:d.op==='enable'?'Install key turned on. The widget shows again on your allowed sites.':'Install key turned off. The widget stops loading on every site until you turn it on.'});
   }
   if(body?.action==='create_demo'){
    const token=randomBytes(32).toString('hex'),id=randomUUID(),expires=new Date(Date.now()+3600000).toISOString();

@@ -4,30 +4,36 @@
    style attributes and the self-hosted fonts' inline @font-face rules cannot carry a nonce.
    connect-src: this app and Supabase (sign-in). Model, billing, email and crawl providers are called from
    the server only, so the browser never needs them.
-   frame-ancestors: /help is the support widget frame customers embed on their own sites, so it sets none;
-   every other page allows only same-origin framing (and also sends X-Frame-Options from next.config.ts). */
+   frame-ancestors: /help is the support widget frame customers embed on their own sites. It allows this app
+   plus the one origin a valid signed grant names (lib/widget-frame.ts, checked in proxy.ts); without a grant
+   only this app. Every other page allows only same-origin framing (and X-Frame-Options from next.config.ts). */
 export function supabaseOrigins(url=process.env.NEXT_PUBLIC_SUPABASE_URL):string{
  try{if(url){const u=new URL(url),secure=u.protocol==='https:';return `${secure?'https':'http'}://${u.host} ${secure?'wss':'ws'}://${u.host}`;}}catch{/* fall through */}
  return 'https://*.supabase.co wss://*.supabase.co';
 }
 export const embeddable=(pathname:string)=>pathname==='/help'||pathname.startsWith('/help/');
-export function buildCsp(o:{nonce:string;pathname:string;dev?:boolean;supabase?:string}):string{
+/* The Plan page loads PayPal's checkout (JS SDK, buttons in PayPal frames). Its scripts arrive through the
+   page's own nonced script ('strict-dynamic'); these sources add PayPal's frames, API calls, images and
+   styles on /plan only. */
+export const paypalPage=(pathname:string)=>pathname==='/plan';
+const PAYPAL='https://www.paypal.com https://www.sandbox.paypal.com https://*.paypal.com https://*.paypalobjects.com';
+export function buildCsp(o:{nonce:string;pathname:string;dev?:boolean;supabase?:string;frameOrigin?:string|null}):string{
  const dev=!!o.dev;
  return [
   "default-src 'self'",
   `script-src 'self' 'nonce-${o.nonce}' 'strict-dynamic'${dev?" 'unsafe-eval'":''}`,
-  "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob:",
+  `style-src 'self' 'unsafe-inline'${paypalPage(o.pathname)?' '+PAYPAL:''}`,
+  `img-src 'self' data: blob:${paypalPage(o.pathname)?' '+PAYPAL:''}`,
   "font-src 'self' data:",
-  `connect-src 'self' ${o.supabase??supabaseOrigins()}${dev?' ws: http://localhost:* http://127.0.0.1:*':''}`,
+  `connect-src 'self' ${o.supabase??supabaseOrigins()}${paypalPage(o.pathname)?' '+PAYPAL:''}${dev?' ws: http://localhost:* http://127.0.0.1:*':''}`,
   "media-src 'self'",
   "worker-src 'self' blob:",
-  "frame-src 'self'",
+  `frame-src 'self'${paypalPage(o.pathname)?' '+PAYPAL:''}`,
   "manifest-src 'self'",
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",
-  ...(embeddable(o.pathname)?[]:["frame-ancestors 'self'"]),
+  embeddable(o.pathname)&&o.frameOrigin?`frame-ancestors 'self' ${o.frameOrigin}`:"frame-ancestors 'self'",
  ].join('; ');
 }
 export function newNonce():string{const b=new Uint8Array(16);crypto.getRandomValues(b);return btoa(String.fromCharCode(...b));}

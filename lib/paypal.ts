@@ -7,7 +7,10 @@ const BASE = process.env.PAYPAL_API_BASE ?? "https://api-m.sandbox.paypal.com";
 const CLIENT_ID = process.env.PAYPAL_CLIENT_ID ?? "";
 const CLIENT_SECRET = process.env.PAYPAL_CLIENT_SECRET ?? "";
 
-if (BASE !== "https://api-m.sandbox.paypal.com") throw new Error("Only PayPal sandbox is supported");
+// Sandbox only for now. Outside production a local mock PayPal (http://127.0.0.1:<port>) is also accepted, for
+// scripts/verify-plan-e2e.mjs; production refuses anything but the sandbox host.
+const MOCK = process.env.NODE_ENV !== "production" && /^http:\/\/127\.0\.0\.1:\d{2,5}$/.test(BASE);
+if (BASE !== "https://api-m.sandbox.paypal.com" && !MOCK) throw new Error("Only PayPal sandbox is supported");
 
 let cachedToken: { token: string; expiresAt: number } | null = null;
 
@@ -56,7 +59,24 @@ export const listPlans = () => api("GET", "/v1/billing/plans?page_size=20");
 
 // ---- Subscriptions ----
 export const createSubscription = (p: unknown) => api("POST", "/v1/billing/subscriptions", p);
-export const getSubscription = (id: string) => api("GET", `/v1/billing/subscriptions/${id}`);
+const SUBSCRIPTION_ID = /^I-[A-Z0-9]{6,40}$/;
+const subId = (id: string) => { if (!SUBSCRIPTION_ID.test(id)) throw Error("Invalid subscription ID"); return id; };
+export const getSubscription = (id: string) => api("GET", `/v1/billing/subscriptions/${subId(id)}`);
+// AutomatePal's own plans (Phase 2): cancel at PayPal, or switch plan (PayPal returns an approval link).
+export const cancelSubscription = (id: string, reason: string) =>
+  api("POST", `/v1/billing/subscriptions/${subId(id)}/cancel`, { reason: reason.slice(0, 127) });
+export const reviseSubscription = (id: string, planId: string, returnUrl: string, cancelUrl: string) =>
+  api<{ links?: { href: string; rel: string }[] }>("POST", `/v1/billing/subscriptions/${subId(id)}/revise`, {
+    plan_id: planId, application_context: { return_url: returnUrl, cancel_url: cancelUrl, brand_name: "AutomatePal", user_action: "CONTINUE" },
+  });
+// Webhook authenticity: PayPal checks the transmission headers and the exact event against our webhook id.
+export async function verifyWebhookSignature(headers: Record<string, string>, event: unknown, webhookId: string): Promise<boolean> {
+  const r = await api<{ verification_status?: string }>("POST", "/v1/notifications/verify-webhook-signature", {
+    auth_algo: headers["paypal-auth-algo"], cert_url: headers["paypal-cert-url"], transmission_id: headers["paypal-transmission-id"],
+    transmission_sig: headers["paypal-transmission-sig"], transmission_time: headers["paypal-transmission-time"], webhook_id: webhookId, webhook_event: event,
+  });
+  return r.verification_status === "SUCCESS";
+}
 export const listSubscriptionsForPlan = (planId: string) =>
   api("GET", `/v1/billing/plans/${planId}/subscriptions?page_size=20`);
 

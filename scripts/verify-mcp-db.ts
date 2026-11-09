@@ -7,6 +7,7 @@
 import {Client} from 'pg';
 import assert from 'node:assert/strict';
 import {randomUUID, createHash} from 'node:crypto';
+import {COMP_FIXTURES_SQL} from './test-plan-fixture';
 const local = process.env.LOCAL_DATABASE_URL;
 if (!local) { console.error('verify-mcp-db: set LOCAL_DATABASE_URL to the local Supabase database (refusing to run without it).'); process.exit(1); }
 const host = new URL(local).hostname;
@@ -53,7 +54,7 @@ const vec = (v: number) => `('['||array_to_string(array_fill(${v}::float8,ARRAY[
 async function main() {
   await c.connect();
   try {
-    await c.query('BEGIN');
+    await c.query('BEGIN');await c.query(COMP_FIXTURES_SQL);
     const A = randomUUID(), B = randomUUID(), agentA = randomUUID(), managerA = randomUUID();
     for (const u of [A, B, agentA, managerA]) await c.query('insert into auth.users(id,email,email_confirmed_at) values($1,$2,now())', [u, `${u.slice(0, 8)}@mcp.example.test`]);
     await c.query("insert into workspace_members(workspace_id,user_id,role) values($1,$2,'agent'),($1,$3,'manager')", [A, agentA, managerA]);
@@ -204,12 +205,14 @@ async function main() {
     for (let i = 3; i <= 20; i++) { assert.equal((await ctx(tok['bot:test'], 'Cap question number ' + i))?.ok, true); }
     ok();
     assert.deepEqual(await ctx(tok['bot:test'], 'Cap question number 21'), {budget: true, limit: 20}); ok();
-    // Source quota: 30 sources per workspace (proposals count).
+    // Source quota: the workspace plan's source limit (db/057 plan_limits; proposals count).
     await c.query('RESET ROLE');
     await c.query("delete from mcp_calls where user_id=$1 and tool='add_text_knowledge_source'", [A]);
-    await c.query("insert into knowledge_documents(id,user_id,title,content) select gen_random_uuid(),$1,'Filler '||g,'Filler content for the quota test.' from generate_series(1,30-(select count(*) from knowledge_documents where user_id=$1)::int) g", [A]);
+    await c.query("select set_config('test.plan','free',true)"); // a small source limit (50) for this check
+    await c.query("insert into knowledge_documents(id,user_id,title,content) select gen_random_uuid(),$1,'Filler '||g,'Filler content for the quota test.' from generate_series(1,(public.workspace_limits($1)->>'sources')::int-(select count(*) from knowledge_documents where user_id=$1)::int) g", [A]);
     await as(null);
     assert.ok((await add(tok['knowledge:write'], 'Over quota', 'This proposal would exceed the quota.'))?.quota, 'quota enforced'); ok();
+    await c.query('RESET ROLE'); await c.query("select set_config('test.plan','enterprise',true)");
     // Call log: outcomes recorded, metadata only, pruned to 500 per workspace without losing today's write rows.
     await c.query('RESET ROLE');
     const outcomes = (await c.query('select outcome,count(*)::int n from mcp_calls where user_id=$1 group by outcome', [A])).rows.map((r) => r.outcome).sort();

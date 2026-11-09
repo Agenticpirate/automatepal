@@ -16,7 +16,7 @@ async function exportData(c:Session){
   c.client.from('knowledge_documents').select('id,title,content,published,source_kind,created_at,updated_at').eq('user_id',c.userId).limit(31),
   c.client.from('custom_responses').select('id,question,answer,published,updated_at').eq('user_id',c.userId).limit(31),
   c.client.from('support_requests').select('id,case_id,created_at,kind,contact_email').eq('user_id',c.userId).eq('contact_consent',true).not('contact_email','is',null).limit(500),
-  c.client.from('widget_settings').select('label,color,initials,prompts,controls').eq('user_id',c.userId).maybeSingle(),
+  c.client.from('widget_settings').select('bot_id,label,color,initials,prompts,controls').eq('user_id',c.userId),
   c.client.from('email_settings').select('owner_alerts,weekly_digest,new_leads').eq('user_id',c.userId).maybeSingle(),
   c.client.from('transcript_settings').select('retention_days').eq('user_id',c.userId).maybeSingle(),
   c.client.from('refresh_settings').select('frequency,sitemap_url,last_run_at').eq('user_id',c.userId).maybeSingle(),

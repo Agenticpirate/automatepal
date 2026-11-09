@@ -94,7 +94,7 @@ async function main() {
     await c.query("insert into knowledge_interactions(user_id,case_id,question,supported,source_count) select $1,$2,'Earlier question '||g,false,0 from generate_series(1,99) g", [A, caseId]);
     await c.query("insert into knowledge_interactions(user_id,case_id,question,supported,source_count,created_at) select $1,$2,'Last month '||g,false,0,date_trunc('month',now())-interval '1 day' from generate_series(1,50) g", [A, caseId]);
     await c.query("update widget_settings set controls='{}' where user_id=$1", [A]);
-    await c.query("insert into widget_settings(user_id,controls) values($1,'{\"maxQuestions\":50}') on conflict(user_id) do update set controls='{\"maxQuestions\":50}'", [A]);
+    await c.query("insert into widget_settings(user_id,bot_id,controls) values($1,$1,'{\"maxQuestions\":50}') on conflict(bot_id) do update set controls='{\"maxQuestions\":50}'", [A]);
     // The per-conversation cap is 50 max, so use a fresh conversation for the monthly check.
     const tok2 = randomUUID() + randomUUID();
     await c.query("insert into support_cases(id,user_id,token_hash,expires_at,order_label,amount) values($1,$2,$3,now()+interval '1 hour','Plans fixture 2',19)", [randomUUID(), A, sha(tok2)]);

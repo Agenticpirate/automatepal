@@ -10,6 +10,7 @@ import{modeText}from'../../../lib/app-mode';
 import { NextRequest,NextResponse,after } from 'next/server';
 import {deliverDueWebhooks} from '../../../lib/webhook-worker';
 import {notifySlack} from '../../../lib/slack';
+import {botParam,rpcBot} from '../../../lib/bots';
 import {serviceClient} from '../../../lib/service-db';
 import { createClient } from '@supabase/supabase-js';
 import { randomBytes,randomUUID,createHash } from 'node:crypto';
@@ -48,9 +49,10 @@ export async function GET(req:NextRequest){
  const {data,error}=await ctx.client.from('support_requests').select('id,case_id,created_at,kind,message,status,contact_email,contact_consent').eq('user_id',ctx.userId).order('created_at',{ascending:false}).limit(100);
  const cases=await ctx.client.from('support_cases').select('id,created_at,expires_at,order_label,inbox_state').eq('user_id',ctx.userId).order('created_at',{ascending:false}).limit(100);
  // Key columns arrive with db/055; on a database without them, fall back to the settings alone.
- let settings:{data:{label:string;color:string;initials:string;prompts:string[];controls:Record<string,unknown>;public_key?:string|null;key_active?:boolean;logo_type?:string|null;logo_version?:number}|null}=await ctx.client.from('widget_settings').select('label,color,initials,prompts,controls,public_key,key_active,logo_type,logo_version').eq('user_id',ctx.userId).maybeSingle();
+ const bot=botParam(req.nextUrl.searchParams.get('bot'),ctx.userId);
+ let settings:{data:{label:string;color:string;initials:string;prompts:string[];controls:Record<string,unknown>;public_key?:string|null;key_active?:boolean;logo_type?:string|null;logo_version?:number}|null}=await ctx.client.from('widget_settings').select('label,color,initials,prompts,controls,public_key,key_active,logo_type,logo_version').eq('bot_id',bot).eq('user_id',ctx.userId).maybeSingle();
  if((settings as {error?:unknown}).error)settings=await ctx.client.from('widget_settings').select('label,color,initials,prompts,controls').eq('user_id',ctx.userId).maybeSingle();
- return NextResponse.json(error?{error:'Could not load requests.'}:{requests:data,cases:cases.data??[],settings:settings.data?{...settings.data,...settings.data.controls}:null,installKey:settings.data?.public_key?{publicKey:settings.data.public_key,active:settings.data.key_active}:null,logoVersion:settings.data?.logo_type?settings.data.logo_version??null:null},{status:error?503:200,headers:{'Cache-Control':'no-store'}});
+ return NextResponse.json(error?{error:'Could not load requests.'}:{requests:data,cases:cases.data??[],settings:settings.data?{...settings.data,...settings.data.controls}:null,installKey:settings.data?.public_key?{publicKey:settings.data.public_key,active:settings.data.key_active}:null,logoVersion:settings.data?.logo_type?settings.data.logo_version??null:null,bot},{status:error?503:200,headers:{'Cache-Control':'no-store'}});
 }
 export async function POST(req:NextRequest){
  if(!validOrigin(req))return NextResponse.json({error:'Invalid origin'},{status:403});
@@ -117,19 +119,19 @@ export async function POST(req:NextRequest){
   if(!await allowRequest(ctx.actorId))return NextResponse.json({error:'Please wait a minute.'},{status:429});
   if(body?.action==='inbox'){const d=z.object({id:z.string().uuid(),state:z.enum(['open','taken_over','closed'])}).parse(body);const{data,error}=await ctx.client.rpc('set_support_inbox',{p_id:d.id,p_state:d.state});if(error||!data)throw Error('Case unavailable.');return NextResponse.json({note:'Case state updated. No message or payment sent.'});}
   if(body?.action==='settings'){
-   const current=await ctx.client.from('widget_settings').select('controls').eq('user_id',ctx.userId).maybeSingle();if(current.error)throw Error('Could not load current settings.');const settings=widgetSettings.parse({...current.data?.controls,...(body.settings as Record<string,unknown>)});const{label,color,initials,prompts,...controls}=settings;
-   const {error}=await ctx.client.from('widget_settings').upsert({user_id:ctx.userId,label,color,initials,prompts,controls});if(error)throw Error('Could not save widget settings.');return NextResponse.json({note:'Widget appearance and quick prompts saved. No external script or image URL accepted.'});
+   const bot=botParam(body.bot,ctx.userId);const current=await ctx.client.from('widget_settings').select('controls').eq('bot_id',bot).eq('user_id',ctx.userId).maybeSingle();if(current.error)throw Error('Could not load current settings.');const settings=widgetSettings.parse({...current.data?.controls,...(body.settings as Record<string,unknown>)});const{label,color,initials,prompts,...controls}=settings;
+   const {error}=await ctx.client.from('widget_settings').upsert({user_id:ctx.userId,bot_id:bot,label,color,initials,prompts,controls},{onConflict:'bot_id'});if(error)throw Error('Could not save widget settings.');return NextResponse.json({note:'Widget appearance and quick prompts saved. No external script or image URL accepted.'});
   }
   /* Permanent install key (db/055): create or rotate (server-generated, 24 base62 chars), or turn on/off. */
   if(body?.action==='widget_key'){
    const d=z.object({op:z.enum(['rotate','enable','disable']),mode:z.enum(['live','test']).default('live')}).parse(body);
-   if(d.op==='rotate'){const key=newWidgetKey(d.mode);const{error}=await ctx.client.rpc('rotate_widget_key',{p_key:key});if(error)throw Error('Could not create the install key. Managers and above can do this.');return NextResponse.json({publicKey:key,keyActive:true,note:'New install key created. The previous key, if any, stopped working; update the script on your site.'});}
-   const{data,error}=await ctx.client.rpc('set_widget_key_active',{p_active:d.op==='enable'});if(error||!data)throw Error('Create an install key first.');
+   if(d.op==='rotate'){const key=newWidgetKey(d.mode);const{error}=await ctx.client.rpc('rotate_widget_key',{p_key:key,p_bot:rpcBot(botParam(body.bot,ctx.userId),ctx.userId)});if(error)throw Error('Could not create the install key. Managers and above can do this.');return NextResponse.json({publicKey:key,keyActive:true,note:'New install key created. The previous key, if any, stopped working; update the script on your site.'});}
+   const{data,error}=await ctx.client.rpc('set_widget_key_active',{p_active:d.op==='enable',p_bot:rpcBot(botParam(body.bot,ctx.userId),ctx.userId)});if(error||!data)throw Error('Create an install key first.');
    return NextResponse.json({keyActive:d.op==='enable',note:d.op==='enable'?'Install key turned on. The widget shows again on your allowed sites.':'Install key turned off. The widget stops loading on every site until you turn it on.'});
   }
   if(body?.action==='create_demo'){
    const token=randomBytes(32).toString('hex'),id=randomUUID(),expires=new Date(Date.now()+3600000).toISOString();
-   const {error}=await ctx.client.from('support_cases').insert({id,user_id:ctx.userId,token_hash:hash(token),expires_at:expires,order_label:'Fictional Launch Kit order',amount:19});if(error)throw Error('Could not create demo.');
+   const demoBot=botParam(body.bot,ctx.userId);const {error}=await ctx.client.from('support_cases').insert({id,user_id:ctx.userId,...(demoBot!==ctx.userId?{bot_id:demoBot}:{}),token_hash:hash(token),expires_at:expires,order_label:'Fictional Launch Kit order',amount:19});if(error)throw Error('Could not create demo.');
    return NextResponse.json({token,expiresAt:expires,note:modeText('Fictional case only. This link expires in one hour; anyone with it can submit up to five demo requests.','Test chat created with a sample order. This link expires in one hour; anyone with it can submit up to five requests.')});
   }
   if(body?.action==='review'){

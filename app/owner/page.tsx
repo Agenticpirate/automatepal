@@ -21,6 +21,7 @@ import {ticketLabel} from '../../lib/tickets';
 import {unansweredCsv,downloadCsv} from '../../lib/exports';
 import {clusterQuestions} from '../../lib/cluster';
 import './owner-dash.css';
+import {BotFilter,useBotFilter,withBot} from '../components/BotPicker';
 
 type Ticket={id:string;created_at:string;order_label:string;inbox_state:string;ticket_status:string;priority:string;category:string;assigned_to_owner:boolean};
 type Query={id:string;case_id:string;created_at:string;question:string;supported:boolean;feedback:number|null};
@@ -52,11 +53,13 @@ function buildNotifs(d:Data):DashNotif[]{
 
 function inWindow<T extends {created_at:string}>(items:T[],from:number,to:number){return items.filter(x=>{const t=Date.parse(x.created_at);return t>=from&&t<to;});}
 
-export default function Owner(){
+export default function Owner(){const botFilter=useBotFilter();
  const[d,setD]=useState<Data|null>(null),[notice,setNotice]=useState('Loading owner overview...'),[days,setDays]=useState<Range>(7),[q,setQ]=useState('');
  const[tab,setTab]=useState<'conversations'|'questions'>('conversations'),[donut,setDonut]=useState<'topics'|'category'>('topics'),[status,setStatus]=useState('all'),[page,setPage]=useState(0);
- function read(){authHeaders().then(headers=>fetch('/api/owner-overview',{headers})).then(r=>r.json()).then(x=>{if(x.error)throw Error(x.error);setD(x);setNotice('Snapshot '+x.asOf);}).catch(()=>{setD(null);setNotice('Overview unavailable. Sign in or retry when the service recovers.');});}
- useEffect(()=>{read();},[]);
+ function read(){authHeaders().then(headers=>fetch(withBot('/api/owner-overview',botFilter),{headers})).then(r=>r.json()).then(x=>{if(x.error)throw Error(x.error);setD(x);setNotice('Snapshot '+x.asOf);}).catch(()=>{setD(null);setNotice('Overview unavailable. Sign in or retry when the service recovers.');});}
+ // read() always uses the current bot filter; reload when the filter changes.
+ // eslint-disable-next-line react-hooks/exhaustive-deps
+ useEffect(()=>{read();},[botFilter]);
 
  const v=useMemo(()=>{
   if(!d)return null;
@@ -121,6 +124,7 @@ export default function Owner(){
   </div>
   <div className="ap-od-actions">
    <span className="ap-dash-toggle" role="group" aria-label="Date range">{([7,30,90] as const).map(n=><button key={n} aria-pressed={days===n} onClick={()=>{setDays(n);setPage(0);}}>{n} days</button>)}</span>
+   <BotFilter/>
    <button onClick={read} className="ap-dash-btn"><DIcon name="refresh" size={13}/>Refresh snapshot</button>
   </div>
   <p role="status" className="ap-dash-muted ap-od-notice">{notice}</p>

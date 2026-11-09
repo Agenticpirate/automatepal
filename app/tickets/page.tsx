@@ -12,6 +12,7 @@ import {I,type IconName,VIEWS,type ViewKey,needsYou,isOpenTicket,aiPaused,status
 import {Avatar,Participants,MascotCluster,handler,rowPreview,readPins,writePins} from './conversation-ui';
 import {MESSAGE_MAX,POLL_MS} from '../../lib/support-messages';
 import './inbox.css';
+import {BotFilter,useBotFilter,withBot} from '../components/BotPicker';
 
 type Event={id:string;created_at:string;kind:string;body:string};
 type Timeline={events:Event[];requests:{id:string;created_at:string;kind:string;message:string;status:string;contact_email?:string|null}[];questions:{id:string;created_at:string;question:string;supported:boolean;feedback:number|null}[];payments?:Payment[];messages?:{id:string;created_at:string;author:'owner'|'visitor';body:string}[];coverage:string};
@@ -45,7 +46,7 @@ function Check({state,text,status,extra}:{state:CheckState;text:string;status:st
  </li>;
 }
 
-export default function Tickets(){
+export default function Tickets(){const botFilter=useBotFilter();
  const[rows,setRows]=useState<Ticket[]>([]),[asOf,setAsOf]=useState(0),[loaded,setLoaded]=useState(false),[loadError,setLoadError]=useState(''),[loadNote,setLoadNote]=useState('');
  const[toast,setToast]=useState<{text:string;ok:boolean;n:number}|null>(null),[busy,setBusy]=useState(false);
  const[search,setSearch]=useState(''),[view,setView]=useState<ViewKey>('all'),[status,setStatus]=useState('all'),[priority,setPriority]=useState('all'),[category,setCategory]=useState('all'),[sort,setSort]=useState('updated'),[filtersOpen,setFiltersOpen]=useState(false);
@@ -58,15 +59,15 @@ export default function Tickets(){
 
  useEffect(()=>{if(!toast)return;const id=window.setTimeout(()=>setToast(null),6000);return()=>window.clearTimeout(id);},[toast]);
 
- async function load(){const r=await fetch('/api/tickets',{headers:await authHeaders()}),d=await r.json();if(!r.ok)throw Error(d.error);setRows(d.tickets);setAsOf(clock());setLoaded(true);setLoadError('');setLoadNote(d.truncated?'Latest 200 only. Filters cover loaded rows.':'Latest up to 200 tickets loaded.');return d.tickets as Ticket[];}
+ async function load(){const r=await fetch(withBot('/api/tickets',botFilter),{headers:await authHeaders()}),d=await r.json();if(!r.ok)throw Error(d.error);setRows(d.tickets);setAsOf(clock());setLoaded(true);setLoadError('');setLoadNote(d.truncated?'Latest 200 only. Filters cover loaded rows.':'Latest up to 200 tickets loaded.');return d.tickets as Ticket[];}
  async function readTimeline(id:string){try{const r=await fetch('/api/tickets?id='+id,{headers:await authHeaders()}),d=await r.json();if(!r.ok)throw Error(d.error);setTimeline(d);}catch{say('Could not load ticket timeline.',false);}}
  function open(t:Ticket){setActive(t.id);setTimeline(null);setNote('');setReply('');setMenuOpen(false);setMode(t.inbox_state==='taken_over'?'reply':'note');setTags(t.tags.join(', '));setEditTags(false);setShowAll(false);try{history.replaceState(null,'','?ticket='+t.id);}catch{}void readTimeline(t.id);}
  function close(){setActive(null);setTimeline(null);try{history.replaceState(null,'',location.pathname);}catch{}}
 
- useEffect(()=>{authHeaders().then(headers=>fetch('/api/tickets',{headers})).then(r=>r.json()).then(d=>{if(d.error)throw Error(d.error);setRows(d.tickets);setAsOf(clock());setLoaded(true);setLoadNote(d.truncated?'Latest 200 only. Filters cover loaded rows.':'Latest up to 200 tickets loaded.');setPins(readPins());
+ useEffect(()=>{authHeaders().then(headers=>fetch(withBot('/api/tickets',botFilter),{headers})).then(r=>r.json()).then(d=>{if(d.error)throw Error(d.error);setRows(d.tickets);setAsOf(clock());setLoaded(true);setLoadNote(d.truncated?'Latest 200 only. Filters cover loaded rows.':'Latest up to 200 tickets loaded.');setPins(readPins());
   const requested=new URLSearchParams(location.search).get('ticket');const initial=d.tickets.find((t:Ticket)=>t.id===requested);
   if(initial){setActive(initial.id);setTags(initial.tags.join(', '));setMode(initial.inbox_state==='taken_over'?'reply':'note');authHeaders().then(headers=>fetch('/api/tickets?id='+initial.id,{headers})).then(r=>r.json()).then(x=>{if(x.error)throw Error(x.error);setTimeline(x);}).catch(()=>say('Could not load ticket timeline.',false));}
- }).catch(()=>{setLoaded(true);setLoadError('Please sign in or retry when the service recovers.');});},[]);
+ }).catch(()=>{setLoaded(true);setLoadError('Please sign in or retry when the service recovers.');});},[botFilter]);
 
  /* While a taken-over conversation is open and the tab is visible, re-read its timeline so visitor
     replies from the widget appear without a manual refresh. */
@@ -274,6 +275,7 @@ export default function Tickets(){
    <section className="ap-ib-list" aria-label="Ticket list">
     <header className="ap-ib-lhead">
      <h2>{viewDef.label}</h2>
+     <BotFilter/>
      <label className="ap-ib-sort"><select aria-label="Sort tickets" value={sort} onChange={e=>setSort(e.target.value)}>{SORTS.map(([v,l])=><option key={v} value={v}>{l}</option>)}</select><I n="chevronDown" s={12}/></label>
      <button type="button" className={'ap-ib-icon'+(filtersOpen||filterCount?' on':'')} aria-label={'Filters'+(filterCount?` (${filterCount} active)`:'')} aria-expanded={filtersOpen} onClick={()=>setFiltersOpen(!filtersOpen)}><I n="filter" s={14}/>{filterCount>0&&<span className="ap-ib-badge">{filterCount}</span>}</button>
      <button type="button" className="ap-ib-icon" aria-label="Refresh tickets" title="Refresh tickets" disabled={busy} onClick={refresh}><I n="refresh" s={14}/></button>

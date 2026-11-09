@@ -12,8 +12,10 @@ async function readAll(ids:string[],read:(chunk:string[])=>PromiseLike<Read>):Pr
  return {rows:parts.flatMap(p=>p.data??[]),error:parts.some(p=>!!p.error)};
 }
 const byTime=(a:{created_at:string},b:{created_at:string})=>a.created_at<b.created_at?-1:a.created_at>b.created_at?1:0;
-export async function loadConversations(c:Pick<Session,'client'|'userId'>,limit=300){
- const cases=await c.client.from('support_cases').select('id,created_at,ticket_status,inbox_state,order_label').eq('user_id',c.userId).order('ticket_updated_at',{ascending:false}).limit(limit);
+export async function loadConversations(c:Pick<Session,'client'|'userId'>,limit=300,bot:string|null=null){
+ let cq=c.client.from('support_cases').select('id,created_at,ticket_status,inbox_state,order_label').eq('user_id',c.userId);
+ if(bot)cq=bot===c.userId?cq.or(`bot_id.is.null,bot_id.eq.${c.userId}`):cq.eq('bot_id',bot);
+ const cases=await cq.order('ticket_updated_at',{ascending:false}).limit(limit);
  if(cases.error)return null;
  const ids=(cases.data??[]).map(x=>x.id as string);
  if(!ids.length)return {conversations:[],truncated:false};

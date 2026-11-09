@@ -45,9 +45,9 @@ export async function GET(req:NextRequest){
  const {data,error}=await ctx.client.from('support_requests').select('id,case_id,created_at,kind,message,status,contact_email,contact_consent').eq('user_id',ctx.userId).order('created_at',{ascending:false}).limit(100);
  const cases=await ctx.client.from('support_cases').select('id,created_at,expires_at,order_label,inbox_state').eq('user_id',ctx.userId).order('created_at',{ascending:false}).limit(100);
  // Key columns arrive with db/055; on a database without them, fall back to the settings alone.
- let settings:{data:{label:string;color:string;initials:string;prompts:string[];controls:Record<string,unknown>;public_key?:string|null;key_active?:boolean}|null}=await ctx.client.from('widget_settings').select('label,color,initials,prompts,controls,public_key,key_active').eq('user_id',ctx.userId).maybeSingle();
+ let settings:{data:{label:string;color:string;initials:string;prompts:string[];controls:Record<string,unknown>;public_key?:string|null;key_active?:boolean;logo_type?:string|null;logo_version?:number}|null}=await ctx.client.from('widget_settings').select('label,color,initials,prompts,controls,public_key,key_active,logo_type,logo_version').eq('user_id',ctx.userId).maybeSingle();
  if((settings as {error?:unknown}).error)settings=await ctx.client.from('widget_settings').select('label,color,initials,prompts,controls').eq('user_id',ctx.userId).maybeSingle();
- return NextResponse.json(error?{error:'Could not load requests.'}:{requests:data,cases:cases.data??[],settings:settings.data?{...settings.data,...settings.data.controls}:null,installKey:settings.data?.public_key?{publicKey:settings.data.public_key,active:settings.data.key_active}:null},{status:error?503:200,headers:{'Cache-Control':'no-store'}});
+ return NextResponse.json(error?{error:'Could not load requests.'}:{requests:data,cases:cases.data??[],settings:settings.data?{...settings.data,...settings.data.controls}:null,installKey:settings.data?.public_key?{publicKey:settings.data.public_key,active:settings.data.key_active}:null,logoVersion:settings.data?.logo_type?settings.data.logo_version??null:null},{status:error?503:200,headers:{'Cache-Control':'no-store'}});
 }
 export async function POST(req:NextRequest){
  if(!validOrigin(req))return NextResponse.json({error:'Invalid origin'},{status:403});

@@ -90,6 +90,27 @@ async function main() {
     await fresh.route(`${SHOP}/**`, r => r.fulfill({contentType: 'text/html', body: page(SHOP)}));
     await fresh.goto(`${SHOP}/again`); await fresh.waitForTimeout(2500);
     assert.equal(await fresh.locator('#automatepal-billing-widget').count(), 0, 'turned-off key shows nothing'); ok();
+    // Logo, per-page starters and the chat language, on a fresh visitor at /pricing.
+    const PNG1 = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
+    await db.query('begin'); await db.query("select set_config('app.widget_key_rpc','1',true)");
+    await db.query(`update widget_settings set key_active=true,logo_type='image/png',logo_data=$2,logo_version=logo_version+1,
+      controls=controls||'{"language":"es","pageStarters":[{"path":"/pricing","prompts":["Which plan fits me?"]}]}' where user_id=$1`, [OWNER, PNG1]);
+    await db.query('commit');
+    {
+      const c3 = await browser.newContext({locale: 'en-US'}); const t = await c3.newPage();
+      await t.route(`${SHOP}/**`, r => r.fulfill({contentType: 'text/html', body: page(SHOP)}));
+      await t.goto(`${SHOP}/pricing`);
+      const b = t.locator('#automatepal-billing-widget button'); await b.waitFor({timeout: 20000});
+      await t.waitForFunction(() => { const i = document.getElementById('automatepal-billing-widget')?.shadowRoot?.querySelector('button img'); return i && i.complete && i.naturalWidth === 1; }, null, {timeout: 20000});
+      ok(); // logo image loaded on the button from /api/widget/logo
+      await b.click();
+      assert.equal((await b.innerText()).trim(), 'Cerrar Shop help', 'button text in the chosen language'); ok();
+      const f = t.frameLocator('#automatepal-billing-widget iframe');
+      await f.getByRole('button', {name: 'Preguntar a la IA'}).waitFor({timeout: 30000}); ok();
+      await f.getByRole('button', {name: 'Which plan fits me?'}).waitFor(); ok(); // /pricing starter
+      assert.equal(await f.locator('header img').count(), 1, 'logo in the chat header'); ok();
+      await c3.close();
+    }
     // Tag-manager style installs on an allowed origin: script injected by JavaScript with the key in the URL,
     // and the AutomatePalConfig variant with no data- attributes at all.
     await db.query('begin'); await db.query("select set_config('app.widget_key_rpc','1',true)"); await db.query('update widget_settings set key_active=true where user_id=$1', [OWNER]); await db.query('commit');
@@ -106,7 +127,7 @@ async function main() {
       ok(); await c2.close();
       assert.ok(name);
     }
-    console.log(`PASS widget key end to end: ${n} checks; lazy conversation on first open, signed frame grant lets shop.example frame /help, exact answer through the widget, conversation reused across loads, reset starts a new one, other sites get no widget, no session and no framing, turned-off key shows nothing, tag-manager installs (?bot= injected, AutomatePalConfig) work.`);
+    console.log(`PASS widget key end to end: ${n} checks; lazy conversation on first open, signed frame grant lets shop.example frame /help, exact answer through the widget, conversation reused across loads, reset starts a new one, other sites get no widget, no session and no framing, turned-off key shows nothing, tag-manager installs (?bot= injected, AutomatePalConfig) work, logo on button and header, per-page starters, Spanish chat.`);
   } finally {
     await browser.close();
     await cleanup().catch(() => {});

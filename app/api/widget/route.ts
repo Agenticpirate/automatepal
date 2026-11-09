@@ -19,12 +19,12 @@ export async function GET(req:NextRequest){
   const{data,error}=await client.rpc('widget_key_view',{p_key:key});if(error||!data)return unavailable();
   const parsed=widgetSettings.safeParse({...data,...data.controls});
   if(!parsed.success||!widgetPageAllowed(origin,path,parsed.data,req.nextUrl.origin))return NextResponse.json({error:'Widget not enabled for this page.'},{status:403});
-  return NextResponse.json({settings:parsed.data,mode:data.mode},{headers:headers(origin)});
+  return NextResponse.json({settings:parsed.data,mode:data.mode,logoVersion:data.logoVersion??null},{headers:headers(origin)});
  }
  if(!CASE_TOKEN.test(token))return unavailable();
  const client=createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!,process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,{auth:{persistSession:false}});
  const{data,error}=await client.rpc('support_case_view',{p_hash:createHash('sha256').update(token).digest('hex')});if(error||!data)return unavailable();
  const parsed=widgetSettings.safeParse({...data.branding,...data.controls});
  if(!parsed.success||!widgetPageAllowed(origin,path,parsed.data,req.nextUrl.origin))return NextResponse.json({error:'Widget not enabled for this page.'},{status:403});
- return NextResponse.json({settings:parsed.data,expiresAt:data.expiresAt,frame:await signFrame(token,origin)},{headers:headers(origin)});
+ return NextResponse.json({settings:parsed.data,expiresAt:data.expiresAt,logoVersion:data.branding?.logoVersion??null,frame:await signFrame(token,origin)},{headers:headers(origin)});
 }

@@ -25,8 +25,8 @@
  try{Object.defineProperty(window,'AutomatePal',{value:Object.freeze(api),configurable:true});}catch{}
  const path=encodeURIComponent(location.pathname),get=q=>fetch(base+'/api/widget?'+q+'&path='+path,{credentials:'omit',referrerPolicy:'no-referrer'});
  // Demo: the token is the conversation. Key: settings only; a conversation is opened on first use.
- let session=null;
- try{const r=await get(keyMode?'key='+encodeURIComponent(botKey):'token='+encodeURIComponent(demoToken));if(!r.ok)return;const d=await r.json();settings=d.settings;if(!settings)return;if(demoMode)session={token:demoToken,frame:d.frame};}catch{return;}
+ let session=null,logoVersion=null;
+ try{const r=await get(keyMode?'key='+encodeURIComponent(botKey):'token='+encodeURIComponent(demoToken));if(!r.ok)return;const d=await r.json();settings=d.settings;if(!settings)return;logoVersion=Number.isInteger(d.logoVersion)?d.logoVersion:null;if(demoMode)session={token:demoToken,frame:d.frame};}catch{return;}
  // Page rules are display controls; the server checks origin and path again before opening a conversation.
  if((settings.excludedPaths||[]).some(p=>location.pathname===p||location.pathname.startsWith(p.endsWith('/')?p:p+'/')))return;
  const store={read(){try{const v=JSON.parse(localStorage.getItem(sessionKey)||'null');return v&&/^[a-f0-9]{64}$/.test(v.token)&&Date.parse(v.expiresAt)>Date.now()+300000?v:null}catch{return null}},
@@ -39,9 +39,12 @@
   const r=await fetch(base+'/api/widget/session',{method:'POST',credentials:'omit',referrerPolicy:'no-referrer',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:botKey,path:location.pathname})});
   if(!r.ok)throw Error('unavailable');const d=await r.json();store.write(d);return session={token:d.token,frame:d.frame};
  }
+ const L={en:['Close','unavailable, try again'],es:['Cerrar','no disponible, inténtalo de nuevo'],fr:['Fermer','indisponible, réessayez'],de:['Schließen','nicht verfügbar, bitte erneut versuchen'],pt:['Fechar','indisponível, tente novamente'],hi:['बंद करें','उपलब्ध नहीं, फिर से कोशिश करें'],te:['మూసివేయండి','అందుబాటులో లేదు, మళ్ళీ ప్రయత్నించండి']};
+ const lang=L[settings.language]?settings.language:(navigator.languages||[navigator.language||'en']).map(l=>String(l).toLowerCase().split('-')[0]).find(l=>L[l])||'en',[closeText,unavailableText]=L[lang];
  const side=settings.side==='left'?'left':'right',label=settings.label||'Site help',suffix=demoMode?' · demo':'';
  const host=document.createElement('div');host.id='automatepal-billing-widget';const root=host.attachShadow({mode:'open'});
- const button=document.createElement('button');button.textContent=label+suffix;button.setAttribute('aria-expanded','false');button.setAttribute('aria-controls','automatepal-panel');
+ const button=document.createElement('button'),text=document.createElement('span');text.textContent=label+suffix;button.append(text);
+ if(logoVersion){const img=document.createElement('img');img.alt='';img.width=20;img.height=20;img.referrerPolicy='no-referrer';img.src=base+'/api/widget/logo?'+(keyMode?'key='+encodeURIComponent(botKey):'token='+encodeURIComponent(demoToken))+'&v='+logoVersion;Object.assign(img.style,{width:'20px',height:'20px',objectFit:'contain',borderRadius:'4px',marginRight:'8px',verticalAlign:'middle'});img.onerror=()=>img.remove();button.prepend(img);}button.setAttribute('aria-expanded','false');button.setAttribute('aria-controls','automatepal-panel');
  const color=/^#[a-fA-F0-9]{6}$/.test(settings.color)?settings.color:'#233de8',rgb=[1,3,5].map(i=>parseInt(color.slice(i,i+2),16)/255).map(n=>n<=0.04045?n/12.92:((n+0.055)/1.055)**2.4),fg=rgb[0]*.2126+rgb[1]*.7152+rgb[2]*.0722>.179?'#111':'#fff';
  Object.assign(button.style,{position:'fixed',bottom:'20px',[side]:'20px',zIndex:'2147483000',border:'0',borderRadius:'12px',background:color,color:fg,padding:'15px 20px',font:'14px system-ui',cursor:'pointer',boxShadow:'0 8px 30px #0003'});
  const frame=document.createElement('iframe');frame.id='automatepal-panel';frame.title=demoMode?'AutomatePal fictional site support':label+' chat';frame.referrerPolicy='no-referrer';frame.setAttribute('sandbox','allow-scripts allow-same-origin allow-forms');Object.assign(frame.style,{position:'fixed',bottom:'80px',[side]:'20px',width:'min(380px, calc(100vw - 40px))',height:'min(680px, calc(100vh - 110px))',zIndex:'2147483000',border:'1px solid #e1e4ed',borderRadius:'16px',background:'#fff',display:'none',boxShadow:'0 12px 50px #0002'});
@@ -49,13 +52,13 @@
  // from the allow-list above, so nothing else the frame sends is passed on.
  let loaded=false,loading=null;const isOpen=()=>frame.style.display!=='none';
  async function load(){
-  const s=await ensureSession(),f=s.frame,q=new URLSearchParams({token:s.token,embed:location.origin});
+  const s=await ensureSession(),f=s.frame,q=new URLSearchParams({token:s.token,embed:location.origin,page:location.pathname.slice(0,200)});
   if(f&&f.origin===location.origin){q.set('fexp',String(f.exp));q.set('fsig',f.sig);}
   frame.src=base+'/help?'+q.toString();loaded=true;
  }
  function toggle(open,trigger){const was=isOpen();
-  if(open&&!loaded){loading=loading||load().catch(()=>{loading=null;button.textContent=label+' · unavailable, try again';frame.style.display='none';button.setAttribute('aria-expanded','false');});}
-  frame.style.display=open?'block':'none';button.setAttribute('aria-expanded',String(open));button.textContent=open?'Close '+label:label+suffix;try{sessionStorage.setItem(key,open?'open':'closed')}catch{}if(trigger&&open!==was)emit(open?'open':'close',{trigger});}
+  if(open&&!loaded){loading=loading||load().catch(()=>{loading=null;text.textContent=label+' · '+unavailableText;frame.style.display='none';button.setAttribute('aria-expanded','false');});}
+  frame.style.display=open?'block':'none';button.setAttribute('aria-expanded',String(open));text.textContent=open?closeText+' '+label:label+suffix;try{sessionStorage.setItem(key,open?'open':'closed')}catch{}if(trigger&&open!==was)emit(open?'open':'close',{trigger});}
  window.addEventListener('message',e=>{if(!loaded||e.source!==frame.contentWindow||e.origin!==base)return;const d=e.data;if(!d||typeof d!=='object'||d.source!=='automatepal-help'||!['message_sent','handoff_requested','lead_submitted'].includes(d.event))return;emit(d.event,d);});
  button.onclick=()=>toggle(!isOpen(),'button');root.append(frame,button);document.body.append(host);let open=!!settings.autoOpen,restored=false;try{const saved=sessionStorage.getItem(key);if(saved!==null){open=saved==='open';restored=true;}}catch{}toggle(open,open&&!restored?'auto':null);
  ready={open:()=>toggle(true,'api'),close:()=>toggle(false,'api'),toggle:()=>toggle(!isOpen(),'api'),

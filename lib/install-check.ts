@@ -35,7 +35,7 @@ export function detectWidgetScript(html:string,expectedToken?:string):InstallHit
     const tag=m[0];
     const src=/\bsrc\s*=\s*["']([^"']*\/widget\.js[^"']*)["']/i.exec(tag)?.[1];
     if(!src)continue;
-    const token=/\bdata-demo-token\s*=\s*["']([^"']+)["']/i.exec(tag)?.[1]??null;
+    const token=/\bdata-(?:demo-token|bot)\s*=\s*["']([^"']+)["']/i.exec(tag)?.[1]??null;
     return{found:true,scriptSrc:src.slice(0,300),tokenFound:token,tokenMatches:expectedToken?token===expectedToken:null};
   }
   return{found:false,scriptSrc:null,tokenFound:null,tokenMatches:null};

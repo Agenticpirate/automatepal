@@ -3,9 +3,9 @@
 # the work per call. Needs repository secrets APP_URL (for example https://automatepal.onrender.com, no
 # trailing slash) and CRON_SECRET (the same value as the server's CRON_SECRET, at least 32 characters).
 name: Scheduled refresh
+# The hourly schedule now runs as a Cloudflare Cron Trigger (wrangler.jsonc + custom-worker.ts). This workflow
+# is kept as a manual fallback only (Actions > Scheduled refresh > Run workflow), so the jobs never run twice.
 on:
-  schedule:
-    - cron: '17 * * * *'
   workflow_dispatch:
 permissions: {}
 concurrency:

@@ -1,8 +1,8 @@
 // Owner replies in the widget (Phase 2): message body validation, merge/dedupe/order, poll cursor, and the
-// per-process poll limit (allowRequest with a custom max). No database or network.
+// per-process poll limit (allowLocal with a custom max). No database or network.
 import assert from 'node:assert/strict';
 import {messageBody, mergeMessages, nextCursor, POLL_MS, type SupportMessage} from '../lib/support-messages';
-import {allowRequest} from '../lib/rate-limit';
+import {allowLocal} from '../lib/rate-limit';
 let n = 0;
 const ok = () => { n++; };
 
@@ -34,11 +34,11 @@ assert.equal(nextCursor([]), null); ok();
 
 // Poll limit: 15 per minute per case token, then refused; other keys unaffected; default max still 6.
 const t = 5_000_000;
-for (let i = 0; i < 15; i++) assert.equal(allowRequest('poll:fixture', t, 15), true, `poll ${i + 1}`);
+for (let i = 0; i < 15; i++) assert.equal(allowLocal('poll:fixture', t, 15), true, `poll ${i + 1}`);
 ok();
-assert.equal(allowRequest('poll:fixture', t, 15), false, '16th refused'); ok();
-assert.equal(allowRequest('poll:fixture', t + 60000, 15), true, 'window resets'); ok();
-for (let i = 0; i < 6; i++) allowRequest('default:fixture', t);
-assert.equal(allowRequest('default:fixture', t), false, 'default max stays 6'); ok();
+assert.equal(allowLocal('poll:fixture', t, 15), false, '16th refused'); ok();
+assert.equal(allowLocal('poll:fixture', t + 60000, 15), true, 'window resets'); ok();
+for (let i = 0; i < 6; i++) allowLocal('default:fixture', t);
+assert.equal(allowLocal('default:fixture', t), false, 'default max stays 6'); ok();
 assert.equal(POLL_MS, 5000); ok();
 console.log(`PASS owner replies: ${n} checks (body trim/limits/control chars, merge dedupe + order, microsecond cursor, poll limit 15/min, default limit unchanged)`);

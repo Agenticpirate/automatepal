@@ -1,0 +1,55 @@
+# Nightly logical backup of the hosted Supabase database (public + auth schemas) to a private Cloudflare R2
+# bucket, encrypted with age before upload. Mirrors scripts/hosted-db-backup.sh (same pg_dump options).
+# Repository secrets:
+#   SUPABASE_DB_URL       postgresql://postgres.<ref>:<password>@<pooler-host>:5432/postgres (session pooler)
+#   BACKUP_AGE_RECIPIENT  public key from `age-keygen` (keep the private key OFFLINE; it is needed to restore)
+#   R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET
+# Retention is set on the bucket with an R2 lifecycle rule (suggested: delete after 30 days).
+name: DB backup
+on:
+  schedule:
+    - cron: '30 20 * * *' # 02:00 IST
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: db-backup
+  cancel-in-progress: false
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check secrets
+        env:
+          DB: ${{ secrets.SUPABASE_DB_URL }}
+          AGE: ${{ secrets.BACKUP_AGE_RECIPIENT }}
+          BUCKET: ${{ secrets.R2_BUCKET }}
+        run: |
+          if [ -z "$DB" ] || [ -z "$AGE" ] || [ -z "$BUCKET" ]; then echo "::error::Set SUPABASE_DB_URL, BACKUP_AGE_RECIPIENT and the R2_* secrets."; exit 1; fi
+      - name: Dump, verify, encrypt
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          BACKUP_AGE_RECIPIENT: ${{ secrets.BACKUP_AGE_RECIPIENT }}
+        run: |
+          set -euo pipefail
+          sudo apt-get install -y age >/dev/null
+          name="hosted-$(date -u +%Y%m%dT%H%M%SZ).dump"
+          echo "NAME=$name" >> "$GITHUB_ENV"
+          docker run --rm -e DBURL="$SUPABASE_DB_URL" -v "$PWD:/out" -v "$PWD/certs:/certs:ro" postgres:17-alpine \
+            sh -c 'pg_dump "$DBURL?sslmode=verify-full&sslrootcert=/certs/supabase-ca.crt" --format=custom --no-owner --no-privileges --schema=public --schema=auth --file "/out/'"$name"'"'
+          tables=$(docker run --rm -v "$PWD:/out:ro" postgres:17-alpine pg_restore --list "/out/$name" | grep -c 'TABLE DATA')
+          if [ "$tables" -lt 20 ]; then echo "::error::Dump has only $tables tables with data"; exit 1; fi
+          age -r "$BACKUP_AGE_RECIPIENT" -o "$name.age" "$name"
+          shred -u "$name"
+          echo "Backup encrypted: $name.age ($(du -h "$name.age" | cut -f1), $tables tables with data)"
+      - name: Upload to R2
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+        run: |
+          aws s3 cp "$NAME.age" "s3://${{ secrets.R2_BUCKET }}/db/$NAME.age" \
+            --endpoint-url "https://${{ secrets.R2_ACCOUNT_ID }}.r2.cloudflarestorage.com" --only-show-errors
+          rm -f "$NAME.age"

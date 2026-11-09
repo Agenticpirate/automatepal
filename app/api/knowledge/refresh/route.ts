@@ -31,7 +31,7 @@ export async function POST(req:NextRequest){
  const c=await authenticate(req);if(!c){const d=demoLocked();if(d)return d;return NextResponse.json({error:'Please sign in.'},{status:401});}
  if(!validOrigin(req))return NextResponse.json({error:'Invalid origin'},{status:403});
  if(!roleAtLeast(c.role,'manager'))return NextResponse.json({error:'Only managers, admins and the owner can manage scheduled refresh.'},{status:403});
- if(!allowRequest('refresh:'+c.actorId))return NextResponse.json({error:'Please wait a minute.'},{status:429});
+ if(!await allowRequest('refresh:'+c.actorId))return NextResponse.json({error:'Please wait a minute.'},{status:429});
  let b:z.infer<typeof Action>;try{b=Action.parse(await limitedJson(req,2000));}catch{return NextResponse.json({error:'Check the fields and try again.'},{status:400});}
  if(b.action==='settings'){
   const url=b.sitemapUrl?b.sitemapUrl:null;

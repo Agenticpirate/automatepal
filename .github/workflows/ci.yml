@@ -1,0 +1,65 @@
+# Runs the existing checks on every pull request and push to main. No secrets are used: unit suites run
+# offline against fixtures, and the DB suites run against a disposable local Supabase started in the runner
+# (scripts refuse any non-local host).
+name: CI
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+env:
+  NODE_VERSION: 22
+  # Public placeholders so `next build` can inline NEXT_PUBLIC_* values; nothing connects to them.
+  NEXT_PUBLIC_SUPABASE_URL: http://127.0.0.1:54321
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: ci-placeholder
+  NEXT_PUBLIC_SITE_URL: http://localhost:3000
+jobs:
+  build-and-unit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '${{ env.NODE_VERSION }}', cache: npm}
+      - run: npm ci
+      - run: npm audit --omit=dev --audit-level=high
+      - run: npm run lint
+      - run: npx tsc --noEmit
+      - run: npm run build
+      - name: Install test browsers
+        run: npx playwright install --with-deps chromium webkit
+      - name: Unit and fixture suites
+        run: |
+          set -e
+          for s in test:safety test:hardening test:webhook test:billing test:tickets test:billing-support test:mcp test:leads test:production test:widget; do
+            echo "::group::$s"; npm run -s $s; echo "::endgroup::"
+          done
+  database:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      LOCAL_DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:54322/postgres
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '${{ env.NODE_VERSION }}', cache: npm}
+      - run: npm ci
+      - run: sudo apt-get install -y zsh >/dev/null
+      - name: Start disposable Supabase
+        run: |
+          mkdir -p .supabase-local
+          npx -y supabase@latest init --workdir .supabase-local --force >/dev/null
+          npx -y supabase@latest start --workdir .supabase-local -x studio,imgproxy,inbucket,edge-runtime,logflare,vector,supavisor,realtime,storage-api
+      - name: Apply db/001..N and seed fixtures
+        run: |
+          node scripts/local-db-apply.mjs
+          node scripts/local-db-seed.mjs
+      - name: DB suites (rollback-only)
+        run: zsh scripts/local-db-verify.sh
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with: {name: db-logs, path: /tmp/ap-db-logs, retention-days: 7}

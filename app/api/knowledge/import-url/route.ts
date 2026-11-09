@@ -11,7 +11,7 @@ const UA='AutomatePal-owner-import/1.0';
 export async function POST(req:NextRequest){
  if(!validOrigin(req))return NextResponse.json({error:'Invalid origin'},{status:403});
  const ctx=await authenticate(req);if(!ctx){const d=demoLocked();if(d)return d;return NextResponse.json({error:'Please sign in.'},{status:401});}
- if(!allowRequest('url-import:'+ctx.actorId))return NextResponse.json({error:'Please wait a minute between imports.'},{status:429});
+ if(!await allowRequest('url-import:'+ctx.actorId))return NextResponse.json({error:'Please wait a minute between imports.'},{status:429});
  let body:{url?:string};try{body=await req.json();}catch{return NextResponse.json({error:'Invalid request.'},{status:400});}
  const url=(body?.url??'').slice(0,500);
  const problem=importUrlProblem(url);if(problem)return NextResponse.json({error:problem},{status:400});

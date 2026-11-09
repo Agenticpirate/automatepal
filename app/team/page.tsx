@@ -146,7 +146,7 @@ export default function Team(){
      <div className="tm-card-head"><h2 id="tm-perms" className="ap-dash-h2">What each role can do</h2><span className="ap-dash-muted">Enforced by the database, not just hidden in the UI.</span></div>
      <div style={{overflowX:'auto'}}><table className="tm-matrix">
       <thead><tr><th scope="col">Capability</th>{(['agent','manager','admin','owner'] as const).map(r=><th key={r} scope="col" className={r===myRole?'tm-col-you':undefined}>{LABEL[r]}</th>)}</tr></thead>
-      <tbody>{MATRIX.map(([cap,hint,min])=><tr key={cap}><td>{cap}{hint&&<small>{hint}</small>}</td>{(['agent','manager','admin','owner'] as const).map(r=><td key={r} className={r===myRole?'tm-col-you':undefined}>{RANK[r]>=RANK[min]?<span className="tm-yes" aria-label="Allowed"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>:<span className="tm-no" aria-label="Not allowed"/>}</td>)}</tr>)}</tbody>
+      <tbody>{MATRIX.map(([cap,hint,min])=><tr key={cap}><td>{cap}{hint&&<small>{hint}</small>}</td>{(['agent','manager','admin','owner'] as const).map(r=><td key={r} className={r===myRole?'tm-col-you':undefined}>{RANK[r]>=RANK[min]?<span className="tm-yes" role="img" aria-label="Allowed"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>:<span className="tm-no" role="img" aria-label="Not allowed"/>}</td>)}</tr>)}</tbody>
      </table></div>
     </section>
 

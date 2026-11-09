@@ -89,7 +89,7 @@ export default function DashShell({crumb,notifications=[],search,onSearch,childr
         <p className="ap-dash-crumb">Workspace <span>›</span> {crumb}</p>
         {onSearch&&<label className="ap-dash-search"><DIcon name="search" size={14}/><input type="search" placeholder="Search this page" value={search??''} onChange={e=>onSearch(e.target.value)}/></label>}
         <Link href="/support" className="ap-dash-ask" title="Open the widget demo studio"><DIcon name="sparkles" size={14}/>Ask AI</Link>
-        <button className="ap-dash-bell" aria-label={'Notifications'+(unread?` (${unread} unread)`:'')} onClick={()=>setOpen(true)}>
+        <button className="ap-dash-bell" aria-label={unread?`${unread} unread notifications`:'Notifications'} onClick={()=>setOpen(true)}>
           <DIcon name="bell" size={16}/>{unread>0&&<span>{unread}</span>}
         </button>
       </header>

@@ -5,6 +5,7 @@ import {serviceClient} from '../../../../lib/service-db';
 import {allowRequest} from '../../../../lib/rate-limit';
 import {limitedJson} from '../../../../lib/limited-json';
 import {POST as supportPost} from '../../support/route';
+import {internalHeaders} from '../../../../lib/internal-call';
 /* Public chat API (Phase 3, db/060). POST {question, conversation?} with Authorization: Bearer <chat:write token>.
    Without a conversation it opens one (24 hours) and returns its id; pass it back to continue. Every answer runs
    the widget's own answer path (app/api/support: prompt-injection guard, per-conversation and monthly limits,
@@ -36,7 +37,7 @@ export async function POST(req: NextRequest) {
     expiresAt = opened.data.expiresAt;
   }
   // Same answer path as the widget.
-  const inner = await supportPost(new NextRequest(new URL('/api/support', req.url), {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({action: 'answer', token: conversation, question: d.question, source: 'widget'})}));
+  const inner = await supportPost(new NextRequest(new URL('/api/support', req.url), {method: 'POST', headers: {'Content-Type': 'application/json', ...internalHeaders()}, body: JSON.stringify({action: 'answer', token: conversation, question: d.question, source: 'widget'})}));
   const r = await inner.json().catch(() => ({error: 'Answer unavailable.'})) as Record<string, unknown>;
   if (!inner.ok) return json({conversation, ...(expiresAt ? {expiresAt} : {}), error: r.error ?? 'Answer unavailable.'}, inner.status);
   return json({conversation, ...(expiresAt ? {expiresAt} : {}), answer: r.answer, supported: r.supported, answerKind: r.answerKind ?? 'source_answer', sources: r.sources ?? []});

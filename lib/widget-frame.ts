@@ -9,11 +9,12 @@ export const CASE_TOKEN = /^[a-f0-9]{64}$/;
 const FRAME_TTL_S = 24 * 3600;
 const enc = new TextEncoder();
 const hex = (b: ArrayBuffer) => [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join('');
-// Development falls back to a fixed secret so local testing works without setup; production must set one.
+// Local development (NODE_ENV=development only) falls back to a fixed secret so testing needs no setup;
+// every other environment must set WIDGET_FRAME_SECRET or no grants are issued.
 function secret(): string | null {
   const s = process.env.WIDGET_FRAME_SECRET;
   if (s && s.length >= 32) return s;
-  return process.env.NODE_ENV === 'production' ? null : 'development-only-widget-frame-secret-000000';
+  return process.env.NODE_ENV === 'development' ? 'development-only-widget-frame-secret-000000' : null;
 }
 export async function sha256Hex(s: string): Promise<string> { return hex(await crypto.subtle.digest('SHA-256', enc.encode(s))); }
 async function hmac(key: string, msg: string): Promise<string> {
@@ -40,6 +41,9 @@ export async function verifyFrame(token: string | null, origin: string | null, e
   return same(await hmac(s, `${await sha256Hex(token)}|${o}|${e}`), sig) ? o : null;
 }
 // Client address for rate limiting only (never stored: lib/rate-limit.ts hashes keys).
-export function clientIp(h: Headers): string {
-  return h.get('cf-connecting-ip') ?? h.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown';
+// On Cloudflare only cf-connecting-ip is trusted (Cloudflare sets it; X-Forwarded-For can be sent by anyone).
+export function clientIp(h: Headers, env: Record<string, string | undefined> = process.env): string {
+  const cf = h.get('cf-connecting-ip');
+  if (env.APP_PLATFORM === 'cloudflare') return cf ?? 'unknown';
+  return cf ?? h.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown';
 }

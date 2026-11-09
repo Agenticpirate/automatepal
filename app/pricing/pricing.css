@@ -34,7 +34,7 @@
 .ap-cx-toggle{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid #E2E7F2;border-radius:999px;padding:5px;margin:26px auto 0;box-shadow:0 1px 6px rgba(9,49,141,.08)}
 .ap-cx-toggle button{border:0;background:transparent;border-radius:999px;padding:9px 18px;font-size:13.5px;font-weight:600;color:#4A5878;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:background .15s ease,color .15s ease}
 .ap-cx-toggle button[aria-pressed=true]{background:#041A52;color:#fff;box-shadow:0 2px 8px rgba(4,26,82,.3)}
-.ap-cx-trial-note{display:block;margin-top:12px;font-size:12px;color:#7A88AC}
+.ap-cx-trial-note{display:block;margin-top:12px;font-size:12px;color:#5B6889}
 
 /* Tray + cards */
 .ap-cx-tray{background:#F0E9F4;border-radius:24px;padding:clamp(14px,2.4vw,24px);margin-top:clamp(24px,4vh,36px)}
@@ -45,14 +45,14 @@
 .ap-cx-tier{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600;color:#0A1B3D}
 .ap-cx-tier i{width:8px;height:8px;border-radius:50%;background:#09318D;display:inline-block}
 .ap-cx-price{margin:18px 0 0;font-size:30px;font-weight:600;letter-spacing:-.02em;color:#0A1B3D}
-.ap-cx-price span{font-size:13px;font-weight:400;color:#7A88AC}
+.ap-cx-price span{font-size:13px;font-weight:400;color:#5B6889}
 .ap-cx-line{margin:10px 0 0;font-size:13px;line-height:1.6;color:#33456E}
-.ap-cx-note{margin:8px 0 0;font-size:11.5px;line-height:1.6;color:#7A88AC}
+.ap-cx-note{margin:8px 0 0;font-size:11.5px;line-height:1.6;color:#5B6889}
 .ap-cx-select{margin-top:18px;width:100%;display:inline-flex;align-items:center;justify-content:center;gap:8px;background:#041A52;color:#fff;border:0;border-radius:999px;padding:12px 16px;font-size:13.5px;font-weight:600;cursor:pointer;transition:background .15s ease,transform .15s ease}
 @media(hover:hover) and (pointer:fine){.ap-cx-select:hover{background:#0E2E74;transform:translateY(-1px)}}
 .ap-cx-select[aria-pressed=true]{background:#FD91CC;color:#041A52}
 .ap-cx-select small{display:block;font-size:10.5px;font-weight:400;opacity:.75}
-.ap-cx-state{margin-top:18px;border-top:1px solid #EEF1F8;padding-top:14px;font-size:11.5px;line-height:1.65;color:#7A88AC}
+.ap-cx-state{margin-top:18px;border-top:1px solid #EEF1F8;padding-top:14px;font-size:11.5px;line-height:1.65;color:#5B6889}
 
 /* Gauge card */
 .ap-cx-gauge-card{grid-column:1/-1;display:flex;align-items:center;gap:clamp(16px,3vw,32px);flex-wrap:wrap}
@@ -64,7 +64,7 @@
 .ap-cx-status{margin-top:16px;background:#fff;border:1.5px solid #E7EBF4;border-radius:18px;padding:22px}
 .ap-cx-status h2{font-size:16px;font-weight:600;color:#0A1B3D}
 .ap-cx-status p{margin:10px 0 0;font-size:13px;line-height:1.7;color:#33456E}
-.ap-cx-status .ap-cx-note{font-size:11.5px;color:#7A88AC}
+.ap-cx-status .ap-cx-note{font-size:11.5px;color:#5B6889}
 .ap-cx-clear{margin-top:12px;background:none;border:0;color:#09318D;font-size:13px;text-decoration:underline;cursor:pointer;padding:0}
 /* Included features (same on every tier) */
 .ap-cx-incl{margin-top:16px;background:#fff;border:1.5px solid #E7EBF4;border-radius:18px;padding:22px}

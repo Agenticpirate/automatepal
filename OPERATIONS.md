@@ -54,3 +54,47 @@ Automatic deployment rollback is NOT implemented or tested. Current rollback is 
 - `.github/workflows/ci.yml`: on every PR and push to main, `npm ci`, `npm audit` (high), lint, `tsc`, build, the offline unit and browser suites, and every `verify-*-db.ts` against a disposable Supabase started in the runner (`local-db-apply.mjs` + `local-db-seed.mjs` + `local-db-verify.sh`). No secrets.
 - `.github/workflows/db-backup.yml`: nightly 02:00 IST `pg_dump` (public + auth, same options as `scripts/hosted-db-backup.sh`), table count check, `age` encryption, upload to a private R2 bucket. Needs secrets `SUPABASE_DB_URL`, `BACKUP_AGE_RECIPIENT`, `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET`. Restore: download, `age -d -i <offline key>`, `pg_restore` into STAGING only, then run the DB suites and compare row counts.
 - Staging: `wrangler.jsonc` `env.staging` (Worker `automatepal-web-staging`, staging.automatepal.com), `npm run cf:deploy:staging`.
+## Runbook: secrets (Phase 5)
+Production secrets live only in Cloudflare (`npx wrangler secret put NAME`, `--env staging` for staging) and GitHub repository secrets for the workflows. Never in the repo, chat, tickets or screenshots. After any change: `npx wrangler deploy` is not needed for a secret (it applies to new requests), but check `GET /api/status` and the affected flow.
+
+| Secret | Rotate how | Effect of rotating |
+| --- | --- | --- |
+| `SUPABASE_SERVICE_ROLE_KEY` | Supabase dashboard > API > roll the JWT secret / service key, then `wrangler secret put` in the same minute. | Requests in between fall back: rate limits go in-process, cron and webhooks answer 503 (PayPal retries). Rolling the JWT secret also signs every user out. |
+| `CRON_SECRET` (32+) | `openssl rand -hex 32`; set in Cloudflare and the GitHub `CRON_SECRET` secret. | The hourly run uses the Worker's own value, so nothing is missed. |
+| `WIDGET_FRAME_SECRET` (32+) | `openssl rand -hex 32`. | Frame grants already issued stop verifying; widget.js fetches a new grant on the next page load, so an open panel only fails if it is reloaded inside the same page. Without the secret (outside `next dev`) no grant is issued, so browsers block the panel on every merchant site: set it before installing the widget anywhere. |
+| `WEB_PUSH_PUBLIC_KEY` / `WEB_PUSH_PRIVATE_KEY` | `node scripts/generate-vapid-keys.mjs`. | Every existing phone subscription becomes invalid; team members turn notifications on again in Owner > Push. Rotate only when the private key leaked. |
+| `PAYPAL_CLIENT_SECRET` | PayPal developer dashboard > app > rotate. | Checkout and webhook verification fail until the new value is set. |
+| `PAYPAL_WEBHOOK_ID` | Only changes if the webhook is re-created in PayPal. | A wrong id makes every event fail verification (401); PayPal retries for 3 days. |
+| `BILLING_ENCRYPTION_KEYS` / `_ACTIVE_KID` | Add `k2:<openssl rand -base64 32>` to the list, set `_ACTIVE_KID=k2`. Keep `k1` until `select count(*) from billing_connections where key_id='k1'` is 0 (each reconnect re-encrypts with the active key). | Nothing breaks while old kids stay in the list. Removing a kid that is still referenced makes those connections unreadable. |
+| `BILLING_RPC_SECRET` (32+) | Incident only. | Each stored connection holds a hash of a proof derived from it, so every merchant must reconnect their billing provider afterwards. |
+| `ANTHROPIC_API_KEY` | Console > API keys: create new, set it, then disable the old one. | None if done in that order. |
+| `RESEND_API_KEY` | Resend dashboard. | Emails become `dry_run` rows (nothing sent) while unset. |
+
+A leaked public widget key (`pk_live_…`) is not a secret: it only works on the owner's allowed origins. Turn it off or replace it in Setup if it is used somewhere unwanted.
+
+## Runbook: incidents (Phase 5)
+1. **Detect**: uptime workflow failure, `ALERT_WEBHOOK_URL` message, `server_error_summary(60)`, or a customer report with an `x-request-id`.
+2. **Triage (first 15 minutes)**: `GET /api/status` (release, mode); Cloudflare Workers > Logs filtered on `server_error` and the request id; Supabase > Reports (connections, CPU); Anthropic status page if answers fail. Write down the start time.
+3. **Contain** with the narrowest switch, each reversible:
+   - Answers costing too much or misbehaving: lower `LLM_DAILY_USD_CAP`; once a process reaches it, model answers pause with a 429 until UTC midnight (exact owner answers keep working). The ledger is per process, so the real ceiling is the cap times the number of running isolates.
+   - One abusive widget: turn its key off in Setup (owner) or `update widget_settings set key_active=false where public_key=…` (service role).
+   - Abuse from a network: Cloudflare WAF rule or rate-limit rule on the path; the app's own per-IP caps are 20 answers/min and 120 webhook calls/min.
+   - Bad release: Cloudflare Workers > Deployments > roll back to the previous version. Migrations are additive, so the previous code still runs on the newer schema.
+   - Database down: nothing to switch; the widget shows its error state and the cron answers 207/503. Check Supabase status.
+4. **Fix** through a PR (CI must pass), deploy to staging first, then production.
+5. **Afterwards**: a short note in PROGRESS (what, when, impact, cause, fix, follow-up). If personal data may have been exposed, the owner decides on notification; under GDPR the clock is 72 hours from awareness.
+
+## Runbook: restore (Phase 5)
+- **Bad data in a few rows**: prefer a forward fix (SQL in a reviewed transaction, run first on staging). Supabase Pro has point-in-time recovery for the whole project; use it only when a forward fix is not possible, because it rolls back every workspace.
+- **From the nightly backup** (`db-backup.yml`):
+  1. Download the newest object from the R2 bucket. Decrypt with the OFFLINE key: `age -d -i backup-key.txt backup.dump.age > backup.dump`.
+  2. Restore into STAGING, never straight into production: `pg_restore --no-owner --no-privileges --schema=public --schema=auth -d "$STAGING_DB_URL" backup.dump`.
+  3. Check: row counts for `auth.users`, `support_cases`, `knowledge_documents`, `workspace_subscriptions` against the backup workflow log; run `zsh scripts/local-db-verify.sh` against staging.
+  4. For a partial restore, copy only the affected rows from staging to production with a reviewed SQL script. For a full restore, follow Supabase's restore guide, pause the Worker routes first (maintenance) and replay nothing from PayPal: the webhook re-syncs subscriptions from PayPal on the next event, and `refresh` on the Plan page re-syncs one by hand.
+- **Practice**: restore into staging once a quarter and record the time it took.
+
+## Load check (Phase 5)
+`scripts/load-check.mjs` against a local production build on the local Supabase (Nov 10, 2026, Apple silicon laptop): `/api/status` p95 12 ms, `/widget.js` p95 7 ms, widget config p95 15 ms, exact answer p95 77 ms (90 requests from 15 shopper addresses), chat API p95 35 ms (30 new conversations), unsigned webhooks: 120 answered 400 and the next 20 got 429 from the per-address cap. 0% unexpected errors. Model-backed answers were not load tested (they cost money and depend on Anthropic's latency).
+
+## Accessibility (Phase 5)
+`scripts/verify-a11y.mjs --all` runs axe-core (WCAG 2.1 A and AA) on 11 public and 11 signed-in pages; `verify-widget-key-e2e.mjs` runs it on the launcher and the chat panel. Both run in CI. Automated checks catch roughly a third of real issues; a keyboard-only and screen-reader pass (VoiceOver) on the widget is still worth doing before a large customer.

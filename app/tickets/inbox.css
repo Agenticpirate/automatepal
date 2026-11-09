@@ -7,7 +7,7 @@
 
 .ap-dash-body:has(.ap-ib){padding:0;max-width:none;gap:0}
 .desk-ui main.ap-ib{padding:0}
-.ap-ib{--ib-top:67px;--ib-h:calc(100dvh - var(--ib-top));--ib-line:#E8ECF5;--ib-soft:#F7F9FD;--ib-ink:#0A1B3D;--ib-muted:#7A88AC;--ib-body:#4A5878;--ib-ease:cubic-bezier(.23,1,.32,1);
+.ap-ib{--ib-top:67px;--ib-h:calc(100dvh - var(--ib-top));--ib-line:#E8ECF5;--ib-soft:#F7F9FD;--ib-ink:#0A1B3D;--ib-muted:#5B6889;--ib-body:#4A5878;--ib-ease:cubic-bezier(.23,1,.32,1);
   display:grid;grid-template-columns:216px 340px minmax(0,1fr);align-items:start;min-height:var(--ib-h);background:#fff;color:var(--ib-ink);font-size:13px}
 .ap-ib-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 .ap-ib-left{display:contents}
@@ -32,7 +32,7 @@
 /* Beat the generic .desk-ui hover border so each control keeps its own border colour. */
 .desk-ui .ap-ib :is(button,a):not(:disabled):hover{border-color:var(--bch,var(--bc,transparent))}
 .ap-ib .ap-ib-note{margin:0;font-size:11.5px;line-height:1.6;color:var(--ib-muted)}
-.ap-ib .ap-ib-faint{color:#93A3C7;font-size:12px}
+.ap-ib .ap-ib-faint{color:#5E6B8C;font-size:12px}
 .ap-ib .ap-ib-hint{font-size:11px;color:var(--ib-muted)}
 .ap-ib .ap-ib-field{display:flex;flex-direction:column;gap:5px;min-width:0;font-size:11.5px;font-weight:600;color:var(--ib-body)}
 .ap-ib .ap-ib-field :is(select,input,textarea){width:100%;margin:0;border:1px solid #DDE3F0;border-radius:9px;padding:8px 10px;font:inherit;font-size:12.5px;font-weight:500;color:var(--ib-ink);background:#fff}
@@ -48,18 +48,18 @@
 .ap-ib-rail-head{display:flex;flex-direction:column;gap:2px;padding:0 8px}
 .ap-ib-rail-head b{font-size:14px;font-weight:650;letter-spacing:-.2px;color:#041A52}
 .ap-ib-rail-head span{font-size:11.5px;color:var(--ib-muted)}
-.ap-ib .ap-ib-search{display:flex;align-items:center;gap:7px;margin:14px 0 4px;padding:0 10px;height:34px;border:1px solid #E2E7F2;border-radius:10px;background:#fff;color:#93A3C7;transition:border-color .15s ease,box-shadow .15s ease}
+.ap-ib .ap-ib-search{display:flex;align-items:center;gap:7px;margin:14px 0 4px;padding:0 10px;height:34px;border:1px solid #E2E7F2;border-radius:10px;background:#fff;color:#5E6B8C;transition:border-color .15s ease,box-shadow .15s ease}
 .ap-ib .ap-ib-search:focus-within{border-color:#09318D;box-shadow:0 0 0 3px rgba(9,49,141,.12)}
 .desk-ui .ap-ib .ap-ib-search input{flex:1;min-width:0;height:100%;border:0;outline:none;padding:0;background:transparent;font:inherit;font-size:12.5px;color:var(--ib-ink)}
 .desk-ui .ap-ib .ap-ib-search input:focus-visible{outline:none}
-.ap-ib-rail-k{margin:16px 8px 6px;font-size:11.5px;font-weight:500;color:#93A3C7}
+.ap-ib-rail-k{margin:16px 8px 6px;font-size:11.5px;font-weight:500;color:#5E6B8C}
 .ap-ib .ap-ib-rail-group>button{--bc:transparent;--bch:transparent;display:flex;align-items:center;gap:9px;width:100%;margin:1px 0;padding:7px 9px;border-radius:8px;border:1px solid var(--bc);background:transparent;font:inherit;font-size:13px;font-weight:500;color:#33406B;text-align:left;cursor:pointer;transition:background-color .15s ease,color .15s ease}
-.ap-ib .ap-ib-rail-group>button svg{flex-shrink:0;color:#93A3C7;transition:color .15s ease}
+.ap-ib .ap-ib-rail-group>button svg{flex-shrink:0;color:#5E6B8C;transition:color .15s ease}
 @media(hover:hover){.ap-ib .ap-ib-rail-group>button:hover{background:#F1F4FA}}
 .ap-ib .ap-ib-rail-group>button[aria-pressed=true]{--bc:#E2E7F2;--bch:#E2E7F2;background:#fff;color:#041A52;font-weight:600;box-shadow:0 1px 2px rgba(4,26,82,.06)}
 .ap-ib .ap-ib-rail-group>button[aria-pressed=true] svg{color:#09318D}
 .ap-ib-rail-l{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ap-ib-rail-n{font-size:11.5px;color:#93A3C7;font-variant-numeric:tabular-nums}
+.ap-ib-rail-n{font-size:11.5px;color:#5E6B8C;font-variant-numeric:tabular-nums}
 .ap-ib .ap-ib-rail-group>button.hot .ap-ib-rail-n{min-width:20px;padding:1px 6px;border-radius:999px;background:#FD91CC;color:#041A52;font-weight:700;text-align:center}
 
 /* Ticket list */
@@ -105,7 +105,7 @@
 .ap-ib-item-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
 .ap-ib-item-main{display:flex;flex-direction:column;flex:1;min-width:0}
 .ap-ib-item-id{flex-shrink:0;font-size:11px;font-weight:600;letter-spacing:.2px;color:var(--ib-muted)}
-.ap-ib-item-time{display:inline-flex;align-items:center;gap:5px;flex-shrink:0;font-size:11.5px;color:#93A3C7;font-variant-numeric:tabular-nums}
+.ap-ib-item-time{display:inline-flex;align-items:center;gap:5px;flex-shrink:0;font-size:11.5px;color:#5E6B8C;font-variant-numeric:tabular-nums}
 .ap-ib-item-pin{display:inline-flex;color:#09318D}
 .ap-ib-item-title{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13.5px;font-weight:650;line-height:1.35;color:var(--ib-ink)}
 .ap-ib-item-prev{display:block;margin:2px 0 7px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;line-height:1.45;color:var(--ib-muted)}
@@ -115,7 +115,7 @@
 .ap-ib .ap-ib-pill.pink{background:#FD91CC;color:#041A52}
 .ap-ib .ap-ib-pill.navy{background:#041A52;color:#fff}
 .ap-ib-state{display:inline-flex;align-items:center;gap:6px;flex-shrink:0;color:var(--ib-body);text-transform:capitalize}
-.ap-ib-loadnote{margin:0;padding:12px 20px 20px;font-size:11px;color:#93A3C7}
+.ap-ib-loadnote{margin:0;padding:12px 20px 20px;font-size:11px;color:#5E6B8C}
 .ap-ib-empty{display:flex;flex-direction:column;align-items:center;gap:10px;padding:40px 24px;text-align:center}
 .ap-ib-empty p{margin:0;font-size:13px;color:var(--ib-body)}
 .ap-ib-skel{display:flex;flex-direction:column;gap:8px;padding:16px 20px 16px 22px;border-bottom:1px solid #EEF1F8}
@@ -140,7 +140,7 @@
 .ap-ib .ap-ib-chip:focus-within{border-color:#09318D;box-shadow:0 0 0 3px rgba(9,49,141,.12)}
 .desk-ui .ap-ib .ap-ib-chip select,.desk-ui .ap-ib .ap-ib-inline select{appearance:none;-webkit-appearance:none;field-sizing:content;margin:0;padding:0 16px 0 0;border:0;background:transparent;font:inherit;font-size:12px;font-weight:550;color:var(--ib-ink);cursor:pointer}
 .desk-ui .ap-ib :is(.ap-ib-chip,.ap-ib-inline) select:focus-visible{outline:none}
-.ap-ib .ap-ib-chip>svg,.ap-ib .ap-ib-inline>svg{position:absolute;right:7px;pointer-events:none;color:#93A3C7}
+.ap-ib .ap-ib-chip>svg,.ap-ib .ap-ib-inline>svg{position:absolute;right:7px;pointer-events:none;color:#5E6B8C}
 .ap-ib .ap-ib-bar{width:3px;height:12px;border-radius:2px}
 .ap-ib-created{font-size:12px;color:var(--ib-muted)}
 .ap-ib-ai{display:inline-flex;align-items:center;gap:5px;margin-left:auto;padding:3px 9px;border-radius:999px;background:#EEF2FA;color:#09318D;font-size:11.5px;font-weight:600}
@@ -224,11 +224,11 @@
 .ap-ib-msg-b{flex:1;min-width:0}
 .ap-ib-msg-meta{margin:0;font-size:12px;font-weight:600;color:#09318D}
 .ap-ib-msg:not(.team) .ap-ib-msg-meta{color:#33406B}
-.ap-ib-msg-meta time{font-weight:400;color:#93A3C7}
+.ap-ib-msg-meta time{font-weight:400;color:#5E6B8C}
 .ap-ib-msg-text{margin:3px 0 0;font-size:13px;line-height:1.55;color:#1E2B4D;white-space:pre-wrap;overflow-wrap:anywhere}
 .ap-ib-msg-chip{display:inline-block;margin-top:6px;padding:1px 8px;border-radius:999px;background:#EEF2FA;color:#09318D;font-size:10.5px;font-weight:600}
 .ap-ib-msg.flag .ap-ib-msg-chip{background:#FFE4F2;color:#9C2B68}
-.ap-ib-foot{margin:0;font-size:11px;line-height:1.6;color:#93A3C7;overflow-wrap:anywhere}
+.ap-ib-foot{margin:0;font-size:11px;line-height:1.6;color:#5E6B8C;overflow-wrap:anywhere}
 
 /* Composer: internal notes, or replies shown in the visitor's widget once the conversation is taken over. */
 .ap-ib-compose{--cx:24px;position:sticky;bottom:14px;z-index:3;margin:4px var(--cx) 14px;padding:8px 8px 8px 12px;border:1px solid #DDE3F0;border-radius:22px;background:#fff;box-shadow:0 -8px 24px -16px rgba(4,26,82,.35);transition:border-color .15s ease,box-shadow .15s ease}
@@ -280,7 +280,7 @@
 .ap-ib-rail>.ap-ib-search{margin-top:10px}
 .ap-ib-rail-foot{display:flex;flex-direction:column;gap:2px;margin-top:auto;padding-top:14px;border-top:1px solid var(--ib-line)}
 .ap-ib .ap-ib-rail-foot a{display:flex;align-items:center;gap:9px;padding:7px 9px;border-radius:9px;font-size:13px;font-weight:500;color:#33406B;text-decoration:none;transition:background-color .15s ease,color .15s ease}
-.ap-ib .ap-ib-rail-foot a svg{color:#93A3C7}
+.ap-ib .ap-ib-rail-foot a svg{color:#5E6B8C}
 .ap-ib-rail-views{margin-bottom:12px}
 
 /* Avatars: our own mascots. The AI sits on a soft disc; owner and visitor use ProfileMark tones. */

@@ -6,6 +6,15 @@
 import assert from 'node:assert/strict';
 import pg from 'pg';
 import {chromium} from '@playwright/test';
+import {readFileSync} from 'node:fs';
+import {createRequire} from 'node:module';
+const AXE = readFileSync(createRequire(import.meta.url).resolve('axe-core/axe.min.js'), 'utf8');
+// Serious or critical WCAG 2.1 A/AA violations (axe-core) in a page or frame, as short strings.
+async function axeSerious(target) {
+  await target.addScriptTag({content: AXE});
+  const r = await target.evaluate(() => window.axe.run(document, {runOnly: {type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']}, resultTypes: ['violations']}));
+  return r.violations.filter(v => v.impact === 'serious' || v.impact === 'critical').map(v => `${v.id}: ${v.nodes.map(n => n.target.join(' ')).slice(0, 3).join(', ')}`);
+}
 const APP = process.env.E2E_APP, DB = process.env.LOCAL_DATABASE_URL;
 if (!APP || !DB) { console.error('Set E2E_APP and LOCAL_DATABASE_URL.'); process.exit(1); }
 for (const u of [APP, DB]) if (!['127.0.0.1', 'localhost'].includes(new URL(u).hostname)) { console.error('Local hosts only.'); process.exit(1); }
@@ -15,7 +24,7 @@ const db = new pg.Client({connectionString: DB});
 let n = 0;
 const ok = () => { n++; };
 const cases = async () => Number((await db.query("select count(*) from support_cases where user_id=$1 and source='widget'", [OWNER])).rows[0].count);
-const page = (origin) => `<!doctype html><html><body><h1>${origin}</h1><script src="${APP}/widget.js" data-bot="${KEY}" async></script></body></html>`;
+const page = (origin) => `<!doctype html><html lang="en"><head><title>Shop</title></head><body><h1>${origin}</h1><script src="${APP}/widget.js" data-bot="${KEY}" async></script></body></html>`;
 async function seed() {
   await db.query('begin');
   await db.query("select set_config('app.widget_key_rpc','1',true)");
@@ -60,6 +69,9 @@ async function main() {
     const frame = p.frameLocator('#automatepal-billing-widget iframe');
     await frame.getByRole('heading', {name: /Clear answers/}).waitFor({timeout: 30000});
     ok(); // /help rendered inside shop.example: frame-ancestors allowed it
+    // Accessibility of what shoppers see: the launcher (in its shadow root) and the chat panel.
+    assert.deepEqual(await axeSerious(await (await frameEl.elementHandle()).contentFrame()), [], 'chat panel accessibility');
+    assert.deepEqual(await axeSerious(p.mainFrame()), [], 'launcher accessibility'); ok();
     const helpCsp = (await (await fetch(src)).headers.get('content-security-policy')) ?? '';
     assert.match(helpCsp, /frame-ancestors 'self' https:\/\/shop\.example/); ok();
     const ans = await (await fetch(`${APP}/api/support`, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({action: 'answer', token, question: Q, source: 'widget'})})).json();
@@ -148,7 +160,7 @@ async function main() {
       ok(); await c2.close();
       assert.ok(name);
     }
-    console.log(`PASS widget key end to end: ${n} checks; lazy conversation on first open, signed frame grant lets shop.example frame /help, exact answer through the widget, conversation reused across loads, reset starts a new one, other sites get no widget, no session and no framing, turned-off key shows nothing, tag-manager installs (?bot= injected, AutomatePalConfig) work, logo on button and header, per-page starters, Spanish chat, a second bot with its own key, name and conversations.`);
+    console.log(`PASS widget key end to end: ${n} checks; lazy conversation on first open, launcher and chat panel without serious WCAG 2.1 AA issues, signed frame grant lets shop.example frame /help, exact answer through the widget, conversation reused across loads, reset starts a new one, other sites get no widget, no session and no framing, turned-off key shows nothing, tag-manager installs (?bot= injected, AutomatePalConfig) work, logo on button and header, per-page starters, Spanish chat, a second bot with its own key, name and conversations.`);
   } finally {
     await browser.close();
     await cleanup().catch(() => {});

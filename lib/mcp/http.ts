@@ -27,7 +27,7 @@ export function createMcpHandler(backend: McpBackend, deps: McpHandlerDeps = {})
     const token = BEARER.exec(req.headers.get('authorization') ?? '')?.[1];
     if (!token) return unauthorized('Send Authorization: Bearer <AutomatePal API token>.');
     const hash = createHash('sha256').update(token).digest('hex');
-    if (!allowRequest('mcp:' + hash, (deps.now ?? Date.now)(), 30)) return reply(429, 'Rate limited. Try again in a minute.', {'Retry-After': '60'});
+    if (!await allowRequest('mcp:' + hash, (deps.now ?? Date.now)(), 30)) return reply(429, 'Rate limited. Try again in a minute.', {'Retry-After': '60'});
     let scope;
     try { scope = await backend.tokenScope(hash); } catch { return reply(503, 'Token check unavailable. Try again shortly.'); }
     if (!scope) return unauthorized('Token invalid, expired, revoked or without an MCP scope.');

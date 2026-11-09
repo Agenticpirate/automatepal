@@ -36,7 +36,7 @@ export async function POST(req:NextRequest){
  const ctx=await authenticate(req);if(!ctx){const d=demoLocked();if(d)return d;return NextResponse.json({error:'Please sign in.'},{status:401});}
  // Agents can read knowledge but not change it, matching the database rule for knowledge edits.
  if(!roleAtLeast(ctx.role,'manager'))return NextResponse.json({error:'Only managers, admins and owners can import website content.'},{status:403});
- if(!allowRequest('crawl:'+ctx.actorId))return NextResponse.json({error:'Please wait a minute between website imports.'},{status:429});
+ if(!await allowRequest('crawl:'+ctx.actorId))return NextResponse.json({error:'Please wait a minute between website imports.'},{status:429});
  let b:z.infer<typeof body>;
  try{b=body.parse(await limitedJson(req,40000));}catch{return NextResponse.json({error:'Check the import settings and try again.'},{status:400});}
  let links:string[]|undefined,notLinks:string[]=[];

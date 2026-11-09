@@ -22,7 +22,8 @@
     "load:check": "node scripts/load-check.mjs",
     "cf:build": "opennextjs-cloudflare build",
     "cf:preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
-    "cf:deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy -- --var APP_REVISION:$(git rev-parse --short=12 HEAD)"
+    "cf:deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy -- --var APP_REVISION:$(git rev-parse --short=12 HEAD)",
+    "cf:deploy:staging": "opennextjs-cloudflare build && opennextjs-cloudflare deploy -- --env staging --var APP_REVISION:$(git rev-parse --short=12 HEAD)"
   },
   "dependencies": {
     "@google/genai": "^2.31.0",

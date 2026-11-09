@@ -22,7 +22,7 @@ export async function GET(req:NextRequest){
 export async function POST(req:NextRequest){
  const ctx=await authenticate(req);if(!ctx){const d=demoLocked();if(d)return d;return NextResponse.json({error:'Please sign in.'},{status:401});}
  if(!validOrigin(req))return NextResponse.json({error:'Invalid origin'},{status:403});
- if(!allowRequest(ctx.actorId))return NextResponse.json({error:'Please wait a minute.'},{status:429});
+ if(!await allowRequest(ctx.actorId))return NextResponse.json({error:'Please wait a minute.'},{status:429});
  const body=await limitedJson(req,16000).then(v=>v as Record<string,unknown>|null).catch(()=>null);
  try{
   if(body?.action==='reconcile'){const report=await requestContext.run(ctx,()=>reconcileProof(z.string().uuid().parse(body.id)));return NextResponse.json({report},{headers:{'Cache-Control':'no-store'}});}

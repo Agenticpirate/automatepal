@@ -21,7 +21,7 @@ export async function POST(req:NextRequest){
  const c=await authenticate(req);if(!c){const d=demoLocked();if(d)return d;return NextResponse.json({error:'Please sign in.'},{status:401});}
  if(!validOrigin(req))return NextResponse.json({error:'Invalid origin'},{status:403});
  if(!roleAtLeast(c.role,'manager'))return NextResponse.json({error:'Only managers, admins and the owner can change insight topics.'},{status:403});
- if(!allowRequest('insights:'+c.actorId))return NextResponse.json({error:'Please wait a minute.'},{status:429});
+ if(!await allowRequest('insights:'+c.actorId))return NextResponse.json({error:'Please wait a minute.'},{status:429});
  let b:z.infer<typeof body>;try{b=body.parse(await limitedJson(req,2000));}catch{return NextResponse.json({error:'Give 1 to 12 different topics of 2 to 40 letters, digits or spaces. "Other" is added for you.'},{status:400});}
  const r=await c.client.rpc('set_insight_settings',{p_topics:b.topics,p_enabled:b.enabled});
  if(r.error||r.data!==true)return NextResponse.json({error:'Topics not saved.'},{status:400});

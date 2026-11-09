@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
   const ctx = await authenticate(req);
   if (!ctx) { const d = demoLocked(); if (d) return d; return NextResponse.json({error: 'Please sign in.'}, {status: 401}); }
   if (!validOrigin(req)) return NextResponse.json({error: 'Invalid origin'}, {status: 403});
-  if (!allowRequest('billing:' + ctx.actorId)) return NextResponse.json({error: 'Please wait a minute.'}, {status: 429});
+  if (!await allowRequest('billing:' + ctx.actorId)) return NextResponse.json({error: 'Please wait a minute.'}, {status: 429});
   if (!roleAtLeast(ctx.role, 'admin')) return NextResponse.json({error: 'Only workspace admins and the owner can manage billing connections.'}, {status: 403});
   try {
     const b = Body.parse(await limitedJson(req, 4000));

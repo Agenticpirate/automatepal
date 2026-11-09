@@ -27,7 +27,7 @@ const Action=z.discriminatedUnion('action',[z.object({action:z.literal('delete')
 export async function POST(req:NextRequest){
  const c=await authenticate(req);if(!c){const d=demoLocked();if(d)return d;return NextResponse.json({error:'Please sign in.'},{status:401});}
  if(!validOrigin(req))return NextResponse.json({error:'Invalid origin'},{status:403});
- if(!allowRequest('history:'+c.actorId))return NextResponse.json({error:'Please wait a minute.'},{status:429});
+ if(!await allowRequest('history:'+c.actorId))return NextResponse.json({error:'Please wait a minute.'},{status:429});
  let b:z.infer<typeof Action>;try{b=Action.parse(await limitedJson(req,1000));}catch{return NextResponse.json({error:'Check the fields and try again.'},{status:400});}
  if(b.action==='delete'){
   if(!roleAtLeast(c.role,'manager'))return NextResponse.json({error:'Only managers, admins and the owner can delete conversations.'},{status:403});

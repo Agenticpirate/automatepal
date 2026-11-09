@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
   const user = await authenticateUser(req);
   if (!user) { if (locked) return locked; return NextResponse.json({ error: 'Please sign in.' }, { status: 401 }); }
   if (!validOrigin(req)) return NextResponse.json({ error: 'Invalid origin' }, { status: 403 });
-  if (!allowRequest('team:' + user.actorId)) return NextResponse.json({ error: 'Please wait a minute.' }, { status: 429 });
+  if (!await allowRequest('team:' + user.actorId)) return NextResponse.json({ error: 'Please wait a minute.' }, { status: 429 });
   let body: z.infer<typeof Action>;
   try { body = Action.parse(await limitedJson(req, 4000)); } catch { return NextResponse.json({ error: 'Check the fields and try again.' }, { status: 400 }); }
   try {

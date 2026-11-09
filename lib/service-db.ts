@@ -2,7 +2,7 @@
    no signed-in user: the cron job, visitor-triggered owner alerts and server-error rows. Returns null when
    SUPABASE_SERVICE_ROLE_KEY is not set; every caller then skips its work (it never falls back to another key).
    The key must never reach the browser: it is read here only, and this module is imported only by route
-   handlers, lib/email.ts, lib/server-errors.ts and the cron job. */
+   handlers, lib/email.ts, lib/server-errors.ts, lib/rate-limit.ts and the cron job. */
 import {createClient,type SupabaseClient} from '@supabase/supabase-js';
 let cached:SupabaseClient|null|undefined;
 export function serviceClient():SupabaseClient|null{

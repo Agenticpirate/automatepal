@@ -37,6 +37,7 @@ export async function POST(req:NextRequest){
   const url=b.sitemapUrl?b.sitemapUrl:null;
   if(url){const problem=/^https:\/\//.test(url)?importUrlProblem(url):'Use an https:// sitemap URL.';if(problem)return NextResponse.json({error:problem},{status:400});}
   const r=await c.client.rpc('set_refresh_settings',{p_frequency:b.frequency,p_sitemap_url:url});
+  if(r.error&&/Upgrade required/.test(r.error.message))return NextResponse.json({error:r.error.message.replace(/^Upgrade required: /,'')+'. Upgrade on the Plan page.'},{status:402});
   if(r.error||r.data!==true)return NextResponse.json({error:'Schedule not saved. Check the sitemap URL.'},{status:400});
   return NextResponse.json({note:b.frequency==='off'?'Scheduled refresh is off.':`Saved. Your website sources are re-checked ${b.frequency}; changes wait here for your review and nothing is published automatically.`},{headers:noStore});
  }

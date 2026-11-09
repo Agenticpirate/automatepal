@@ -12,6 +12,9 @@ async function main(){await c.connect();try{await c.query('BEGIN');
  const A=randomUUID(),B=randomUUID(),agent=randomUUID(),manager=randomUUID(),admin=randomUUID(),stranger=randomUUID();
  const mail=(u:string)=>`${u.slice(0,8)}@team.example.test`;
  for(const u of [A,B,agent,manager,admin,stranger])await c.query("insert into auth.users(id,email,email_confirmed_at) values($1,$2,now())",[u,mail(u)]);
+ // Team features need seats: put A on a paid plan (a manual comp) and check that Free allows the owner only.
+ assert.equal((await c.query("select (public.workspace_limits($1)->>'seats')::int n",[A])).rows[0].n,1);ok();
+ await c.query("select public.set_manual_plan($1,'scale')",[A]);
  const caseA=randomUUID(),caseB=randomUUID();
  await c.query("insert into support_cases(id,user_id,token_hash,expires_at,order_label,amount) values($1,$2,$3,now()+interval '1 hour','Team fixture A',19),($4,$5,$6,now()+interval '1 hour','Team fixture B',19)",[caseA,A,hash(randomUUID()),caseB,B,hash(randomUUID())]);
 
@@ -115,9 +118,10 @@ async function main(){await c.connect();try{await c.query('BEGIN');
  assert.equal(await count('select count(*)::int n from support_cases where id=$1',[caseA]),0);ok();
  assert.equal(await count('select count(*)::int n from custom_responses'),0);ok();
 
- // Seat cap: 25 seats including the owner and open invites.
+ // Seat cap: the plan's seats (db/057; A is on Scale here, 10 seats) including the owner and open invites.
  await c.query('RESET ROLE');
- for(let i=0;i<23;i++){const u=randomUUID();await c.query("insert into auth.users(id,email,email_confirmed_at) values($1,$2,now())",[u,`seat${i}@team.example.test`]);await c.query("insert into workspace_members(workspace_id,user_id,role) values($1,$2,'agent')",[A,u]);}
+ const free=(await c.query("select (public.workspace_limits($1)->>'seats')::int-public.workspace_seat_count($1) n",[A])).rows[0].n;
+ for(let i=0;i<free;i++){const u=randomUUID();await c.query("insert into auth.users(id,email,email_confirmed_at) values($1,$2,now())",[u,`seat${i}@team.example.test`]);await c.query("insert into workspace_members(workspace_id,user_id,role) values($1,$2,'agent')",[A,u]);}
  await as(A);await rejects("select create_workspace_invite('overflow@team.example.test','agent',$1)",[hash(randomUUID())],/Seat limit reached/);
 
  // Owner-only deletion also removes the team.

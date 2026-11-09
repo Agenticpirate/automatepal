@@ -14,7 +14,7 @@ import {serviceClient} from './service-db';
 import {ticketLabel} from './tickets';
 import {SITE_URL} from './site';
 
-export type EmailType='owner_alert'|'weekly_digest'|'new_lead'|'team_invite'|'visitor_reply';
+export type EmailType='owner_alert'|'weekly_digest'|'new_lead'|'team_invite'|'visitor_reply'|'billing_notice';
 export type EmailMessage={type:EmailType;to:string;subject:string;text:string};
 export type EmailStatus='sent'|'dry_run'|'failed'|'suppressed_cap'|'suppressed_off'|'not_recorded'|'invalid';
 export type EmailOutcome={status:EmailStatus;id?:string;providerId?:string};
@@ -114,6 +114,17 @@ export function weeklyDigestEmail(to:string,d:DigestData,base=appUrl()):EmailMes
   `Write answers for them in Knowledge: ${base}/knowledge`,
  ];
  return{type:'weekly_digest',to,subject:`Your AutomatePal week: ${d.questions} questions, ${d.answered} answered`,text:lines.join('\n')+OWNER_FOOTER(base)};
+}
+/* Billing notices to the workspace owner (db/057). Plain text, no amounts or card details. */
+export function billingNoticeEmail(to:string,kind:'payment_failed'|'cancelled'|'expired',plan:string,until:string|null,base=appUrl()):EmailMessage{
+ const day=until?new Date(until).toUTCString().slice(0,16):null;
+ const body=kind==='payment_failed'
+  ?`PayPal could not collect the payment for your ${plan} plan.${day?` Your plan stays active until ${day} while PayPal retries;`:''} after that the workspace moves to the Free plan.\n\nUpdate your payment method in PayPal, or check your plan here: ${base}/plan`
+  :kind==='cancelled'
+  ?`Your ${plan} subscription is cancelled.${day?` You keep ${plan} features until ${day};`:''} after that the workspace moves to the Free plan. Nothing is deleted.\n\nResubscribe any time: ${base}/plan`
+  :`Your ${plan} subscription has ended and the workspace is now on the Free plan. Nothing is deleted.\n\nChoose a plan: ${base}/plan`;
+ const subject=kind==='payment_failed'?`Payment failed for your AutomatePal ${plan} plan`:kind==='cancelled'?`Your AutomatePal ${plan} plan is cancelled`:`Your AutomatePal ${plan} plan has ended`;
+ return{type:'billing_notice',to,subject,text:body+OWNER_FOOTER(base).replace(/Turn these emails off.*$/,'Billing notices cannot be turned off while you have a subscription.')};
 }
 export function teamInviteEmail(to:string,link:string,role:string):EmailMessage{
  return{type:'team_invite',to,subject:'You are invited to an AutomatePal workspace',

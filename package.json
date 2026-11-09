@@ -17,6 +17,7 @@
     "test:billing-support": "tsx scripts/verify-billing-crypto.ts && tsx scripts/verify-billing-redaction.ts && tsx scripts/verify-billing-http.ts && tsx scripts/verify-billing-contract.ts all && tsx scripts/verify-billing-isolation.ts",
     "billing:live-check": "tsx scripts/live-check/billing.ts",
     "test:mcp": "tsx scripts/verify-mcp-server.ts",
+    "test:plans": "tsx scripts/verify-subscriptions.ts",
     "test:leads": "tsx scripts/verify-leads.ts",
     "test:production": "tsx scripts/verify-production.ts",
     "load:check": "node scripts/load-check.mjs",

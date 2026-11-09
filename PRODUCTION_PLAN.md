@@ -70,6 +70,8 @@ This reuses the case model instead of replacing it:
 
 ### Phase 2: Our own subscriptions on PayPal sandbox (≈ 1 week)
 
+> **Status 2026-11-09:** built on branch `phase-2-billing` (stacked on `phase-1-install`): db/057 plans, subscriptions, plan-based limits and feature gates; `/plan` with PayPal subscription buttons; activate / change / cancel / refresh; signed, idempotent webhook with grace and billing notices; production-mode pricing page. Tests: DB 32, unit 14, end to end 19 (mock PayPal). Before a real sandbox run: activate the six sandbox plans and register the webhook (needs a public URL), set `PAYPAL_WEBHOOK_ID`. Comp our own workspace with `select set_manual_plan('<owner id>','enterprise')`. Message packs not built.
+
 - **Plans:** activate the six `CREATED` sandbox plans already recorded via `app/sandbox-catalog`, and map their ids in a config file.
 - **Checkout:** a PayPal JS SDK subscription button on the existing `app/pricing/page.tsx` and in a dashboard "Plan" card. Approval returns the subscription id to a new `POST /api/billing/subscribe`, which verifies it with the existing `getSubscription()` in `lib/paypal.ts` before saving.
 - **State** (`db/056`): one `workspace_subscriptions` table (workspace, PayPal subscription id, plan key, status, period end) and `paypal_webhook_events` (event id, for idempotency).

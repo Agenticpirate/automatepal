@@ -1,5 +1,6 @@
 'use client';
-import {modeText} from '../../lib/app-mode';
+import {modeText,isProduction} from '../../lib/app-mode';
+import {PLANS,TRIAL} from '../../lib/plans';
 import {useState} from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -24,7 +25,8 @@ const Icon=({name,size=14}:{name:keyof typeof P;size?:number})=>(
 );
 
 const tiers=[{name:'Starter',monthly:'29.50',annual:'234',equivalent:'19.50'},{name:'Growth',monthly:'64.50',annual:'474',equivalent:'39.50'},{name:'Scale',monthly:'214.50',annual:'1,554',equivalent:'129.50'}];
-/* Shipped features (FEATURES.md). Every tier gets all of them; tiers differ in test price only. */
+/* Shipped features (FEATURES.md). In preview every tier lists all of them. In production (real plans, lib/plans.ts)
+   only the ones every plan includes are listed here; plan cards add the rest. */
 const INCLUDED:[string,string][]=[
   ['Source-quoted answers','Exact passages, a separate grounding check, exact owner answers and dated exceptions.'],
   [`Billing lookups from ${SITE_BILLING_PROVIDERS.length} payment providers`,'Read-only, verified customers only, test or live mode. Refunds go to your review; nothing executes.'],
@@ -35,11 +37,14 @@ const INCLUDED:[string,string][]=[
   ['Team roles, API and webhooks','Owner, admin, manager and agent roles, read-only API tokens and signed webhooks.'],
   ['Knowledge import','Text, Markdown, CSV, small PDFs, a public URL or a site crawl, published only with your consent.'],
 ];
+const EVERY_PLAN=new Set(['Source-quoted answers','Ticket queue and takeover','Owner replies in the widget','Working hours and away message','Knowledge import']);
+const PLAN_KEY={Starter:'starter',Growth:'growth',Scale:'scale'} as const;
+const FEATURE_NAMES:Record<string,string>={api:'API access',webhooks:'Webhooks',mcp:'MCP server',billing_support:`Billing lookups from ${SITE_BILLING_PROVIDERS.length} payment providers`,insights:'AI conversation insights'};
 const NAV=[{label:'Home',href:'/',icon:'home' as const},{label:'Product',href:'/#features',icon:'grid' as const},{label:'Pricing',href:'/pricing',icon:'tag' as const,active:true},{label:'Contact',href:'/contact',icon:'mail' as const}];
 
 export default function Pricing(){
   const[interval,setInterval]=useState<'month'|'year'>('month'),[selected,setSelected]=useState<string|null>(null),[menu,setMenu]=useState(false);
-  const choice=tiers.find(t=>t.name===selected);
+  const choice=tiers.find(t=>t.name===selected),live=isProduction();
   return <DeskShell widget><main id="main-content" className="ap-cx"><div className="ap-cx-frame"><div className="ap-cx-inner">
     <div className="ap-cx-navwrap">
       <nav className="ap-cx-nav" aria-label="Primary">
@@ -57,14 +62,14 @@ export default function Pricing(){
     </div>
 
     <header className="ap-cx-hero">
-      <span className="ap-cx-badge"><i/>{modeText('Fictional test-mode configuration','Demo configuration, not for sale')}</span>
-      <h1 className="ap-cx-h1"><span className="ap-cx-ln"><span>Demo</span></span> <span className="ap-cx-ln"><span><em>pricing.</em></span></span></h1>
-      <p className="ap-cx-sub">Not a real commercial offer. No checkout, charges or subscriptions are available. {modeText('Every plan starts with a fictional USD $1 three-day trial, followed by the selected recurring configuration below.','Every plan starts with a demo USD $1 three-day trial, followed by the selected recurring configuration below.')}</p>
+      <span className="ap-cx-badge"><i/>{live?'Half the price of the usual AI support tools':modeText('Fictional test-mode configuration','Demo configuration, not for sale')}</span>
+      <h1 className="ap-cx-h1"><span className="ap-cx-ln"><span>{live?'Simple':'Demo'}</span></span> <span className="ap-cx-ln"><span><em>pricing.</em></span></span></h1>
+      <p className="ap-cx-sub">{live?`Every paid plan starts with a $${TRIAL.price}, ${TRIAL.days}-day trial. Payments run through PayPal; cancel any time from your dashboard and keep your plan until the period you paid for ends.`:<>Not a real commercial offer. No checkout, charges or subscriptions are available. {modeText('Every plan starts with a fictional USD $1 three-day trial, followed by the selected recurring configuration below.','Every plan starts with a demo USD $1 three-day trial, followed by the selected recurring configuration below.')}</>}</p>
       <div role="group" aria-label="Billing interval" className="ap-cx-toggle">
         <button type="button" aria-pressed={interval==='month'} onClick={()=>setInterval('month')}>Monthly {interval==='month'&&<Icon name="check" size={13}/>}</button>
         <button type="button" aria-pressed={interval==='year'} onClick={()=>setInterval('year')}>Annual {interval==='year'&&<Icon name="check" size={13}/>}</button>
       </div>
-      <span className="ap-cx-trial-note">{modeText('USD · fictional trial: $1 for 3 days','USD · demo trial: $1 for 3 days')}</span>
+      <span className="ap-cx-trial-note">{live?`USD · $${TRIAL.price} for the first ${TRIAL.days} days`:modeText('USD · fictional trial: $1 for 3 days','USD · demo trial: $1 for 3 days')}</span>
     </header>
 
     <div className="ap-cx-tray">
@@ -73,42 +78,44 @@ export default function Pricing(){
           <h2 className="ap-cx-tier"><i/>{t.name}</h2>
           <p className="ap-cx-price">${interval==='month'?t.monthly:t.equivalent}<span> / month{interval==='year'?' equivalent':''}</span></p>
           <p className="ap-cx-line">{interval==='year'?`$${t.annual} billed yearly after the trial.`:`$${t.monthly} billed monthly after the trial.`}</p>
-          <p className="ap-cx-note">{interval==='year'?'Annual total is charged once per year in this configuration, not monthly.':`Annual option: $${t.annual}/year ($${t.equivalent}/month equivalent).`}</p>
-          <button type="button" aria-pressed={selected===t.name} aria-label={`Select ${t.name} plan`} onClick={()=>setSelected(t.name)} className="ap-cx-select">
+          <p className="ap-cx-note">{interval==='year'?(live?'Charged once a year.':'Annual total is charged once per year in this configuration, not monthly.'):`Annual option: $${t.annual}/year ($${t.equivalent}/month equivalent).`}</p>
+          {live?<>{(()=>{const p=PLANS[PLAN_KEY[t.name as keyof typeof PLAN_KEY]];return <ul className="ap-cx-note" style={{margin:'8px 0',paddingLeft:16,lineHeight:1.8}}><li>{p.messages.toLocaleString('en-US')} AI answers a month</li><li>{p.pages.toLocaleString('en-US')} pages of knowledge</li><li>{p.seats} {p.seats===1?'seat':'seats'}</li>{p.refresh!=='manual'&&<li>Automatic {p.refresh} website refresh</li>}{p.features.filter(f=>FEATURE_NAMES[f]).map(f=><li key={f}>{FEATURE_NAMES[f]}</li>)}</ul>;})()}
+          <Link href={`/plan?choose=${PLAN_KEY[t.name as keyof typeof PLAN_KEY]}&interval=${interval}`} className="ap-cx-select">Start {t.name}<Icon name="arrow" size={14}/></Link></>
+          :<><button type="button" aria-pressed={selected===t.name} aria-label={`Select ${t.name} plan`} onClick={()=>setSelected(t.name)} className="ap-cx-select">
             {selected===t.name?<><Icon name="check" size={14}/>Selected</>:<>Select {t.name}<Icon name="arrow" size={14}/></>}
           </button>
           <span className="ap-cx-note" style={{marginTop:8,textAlign:'center'}}>Demo only · no checkout</span>
-          <div className="ap-cx-state">Test plan state: CREATED, not subscribable. Tier names label test prices only. No different feature limits or customer entitlements are implemented by these plans.</div>
+          <div className="ap-cx-state">Test plan state: CREATED, not subscribable. Tier names label test prices only. No different feature limits or customer entitlements are implemented by these plans.</div></>}
         </article>)}
         <article className="ap-cx-card ap-cx-gauge-card">
           <div>
-            <h2 className="ap-cx-tier"><i/>How demo prices relate to the reference</h2>
-            <p className="ap-cx-line" style={{marginTop:12}}>Demo figures are 50% of SiteGPT&apos;s publicly listed monthly and annual prices checked October 29, 2026. This is arithmetic only, not a feature, capacity, support or reliability comparison.</p>
+            <h2 className="ap-cx-tier"><i/>{live?'How our prices compare':'How demo prices relate to the reference'}</h2>
+            <p className="ap-cx-line" style={{marginTop:12}}>{live?'Each plan costs half of SiteGPT\u2019s publicly listed monthly and annual price for the tier with the same name (checked October 29, 2026). Features and limits differ; compare them before you choose.':'Demo figures are 50% of SiteGPT\u2019s publicly listed monthly and annual prices checked October 29, 2026. This is arithmetic only, not a feature, capacity, support or reliability comparison.'}</p>
           </div>
           <div className="ap-cx-gauge"><Gauge value={50} color="#FD91CC" label="Demo prices are 50 percent of the reference pricing, arithmetic only"/></div>
         </article>
       </section>
 
-      <section role="status" aria-live="polite" aria-atomic="true" className="ap-cx-status">
+      {!live&&<section role="status" aria-live="polite" aria-atomic="true" className="ap-cx-status">
         {choice?<><h2>{choice.name} / {interval==='year'?'annual':'monthly'} selected</h2>
           <p>{modeText('Fictional','Demo:')} $1 for 3 days, then ${interval==='year'?choice.annual:choice.monthly} per {interval==='year'?'year':'month'}. {interval==='year'?'The annual total is not billed monthly.':'Recurring monthly configuration.'}</p>
           <p className="ap-cx-note">Selection is local to this page and resets when reloaded. Nothing was saved, subscribed or charged. No feature entitlement changes.</p>
           <button type="button" className="ap-cx-clear" onClick={()=>setSelected(null)}>Clear selection</button></>
         :<p>Choose monthly or annual billing, then select a plan to preview its terms. No checkout will open.</p>}
-      </section>
+      </section>}
     </div>
 
     <section className="ap-cx-incl" aria-labelledby="incl-title">
-      <h2 id="incl-title">Included in every preview configuration</h2>
-      <p className="ap-cx-note">The same features on every tier. These plans set test prices only, not feature limits. Preview, no checkout.</p>
-      <ul>{INCLUDED.map(([t,d])=><li key={t}><span aria-hidden="true"><Icon name="check" size={12}/></span><div><b>{t}</b><small>{d}</small></div></li>)}</ul>
+      <h2 id="incl-title">{live?'Included in every plan':'Included in every preview configuration'}</h2>
+      <p className="ap-cx-note">{live?'Growth adds API access, webhooks, billing lookups and scheduled website refresh. Scale adds the MCP server and AI conversation insights. Free: 100 AI answers a month and 50 pages, no card needed.':'The same features on every tier. These plans set test prices only, not feature limits. Preview, no checkout.'}</p>
+      <ul>{INCLUDED.filter(([t])=>!live||EVERY_PLAN.has(t)).map(([t,d])=><li key={t}><span aria-hidden="true"><Icon name="check" size={12}/></span><div><b>{t}</b><small>{d}</small></div></li>)}</ul>
       <p className="ap-cx-note"><Link className="underline" href="/docs">Read the docs ↗</Link> for setup, provider keys and the MCP tools.</p>
     </section>
 
-    <section className="ap-cx-foot">
+    {!live&&<section className="ap-cx-foot">
       <p>All six configurations share the same $1 three-day trial. No setup fee is configured. These records do not establish customer eligibility, tax, shipping, fees or a refund policy.</p>
       <p>The earlier $19 monthly test record and $12 demo records are retained separately, not offered in this table. Payment execution stays off.</p>
       <p><a className="underline" href="https://sitegpt.ai/pricing">Reference pricing ↗</a> · <Link className="underline" href="/sandbox-catalog">Owner-only live test-mode configuration reads ↗</Link></p>
-    </section>
+    </section>}
   </div></div></main></DeskShell>;
 }

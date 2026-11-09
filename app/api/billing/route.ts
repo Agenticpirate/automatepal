@@ -11,6 +11,7 @@ import {invalidateConnection} from '../../../lib/billing/core/cache';
 import {resetConnection} from '../../../lib/billing/core/breaker';
 import {safeErrorMessage} from '../../../lib/billing/core/redact';
 import {BillingError, type BillingMode, type ProviderDefinition} from '../../../lib/billing/core/types';
+import {featureBlocked} from '../../../lib/plan-gate';
 
 // Owner billing view and connect API. Read-only provider keys only; credentials are encrypted
 // before they reach the database and are never returned to the browser or logged.
@@ -79,6 +80,7 @@ export async function POST(req: NextRequest) {
     if (!encryptionReady()) throw Error(ENCRYPTION_MISSING);
     const id = def.id;
     if (b.action === 'connect') {
+      const gate = await featureBlocked(ctx.client, 'billing_support', 'Billing support for your customers'); if (gate) return gate;
       const cred = pick(def.credentialFields, b.credentials);
       const config = pick(def.configFields ?? [], b.config);
       const v = def.validateCredential(b.mode, cred, config);

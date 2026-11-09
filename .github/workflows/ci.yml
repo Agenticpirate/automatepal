@@ -36,7 +36,7 @@ jobs:
       - name: Unit and fixture suites
         run: |
           set -e
-          for s in test:safety test:hardening test:webhook test:billing test:tickets test:billing-support test:mcp test:leads test:production test:widget; do
+          for s in test:plans test:safety test:hardening test:webhook test:billing test:tickets test:billing-support test:mcp test:leads test:production test:widget; do
             echo "::group::$s"; npm run -s $s; echo "::endgroup::"
           done
   database:
@@ -69,6 +69,15 @@ jobs:
             npx next dev -p 3100 > /tmp/e2e-app.log 2>&1 &
           for i in $(seq 1 90); do curl -sf -o /dev/null http://localhost:3100/widget.js && break; sleep 1; done
           E2E_APP=http://localhost:3100 node scripts/verify-widget-key-e2e.mjs
+      - name: Plans end to end (local app, local auth, mock PayPal)
+        run: |
+          eval "$(npx -y supabase@latest status --workdir .supabase-local -o env | grep -E '^(ANON_KEY|SERVICE_ROLE_KEY)=')"
+          pkill -f "next dev -p 3100" || true
+          PAYPAL_API_BASE=http://127.0.0.1:8790 PAYPAL_CLIENT_ID=mock-client PAYPAL_CLIENT_SECRET=mock PAYPAL_WEBHOOK_ID=WH-TEST \
+            NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321 NEXT_PUBLIC_SUPABASE_ANON_KEY="$ANON_KEY" SUPABASE_SERVICE_ROLE_KEY="$SERVICE_ROLE_KEY" \
+            npx next dev -p 3100 > /tmp/e2e-plan-app.log 2>&1 &
+          for i in $(seq 1 90); do curl -sf -o /dev/null http://localhost:3100/widget.js && break; sleep 1; done
+          E2E_APP=http://localhost:3100 SUPABASE_URL=http://127.0.0.1:54321 ANON_KEY="$ANON_KEY" SERVICE_ROLE_KEY="$SERVICE_ROLE_KEY" node scripts/verify-plan-e2e.mjs
       - if: failure()
         uses: actions/upload-artifact@v4
         with: {name: db-logs, path: /tmp/ap-db-logs, retention-days: 7}

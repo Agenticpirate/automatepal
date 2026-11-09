@@ -22,7 +22,7 @@ const nextConfig: NextConfig = {
    ]},
    // widget.js is the embed customers load on every page view. Short cache avoids a revalidation round trip per repeat view; at most 5 min stale plus 10 min SWR after a deploy.
    {source:'/widget.js',headers:[{key:'Cache-Control',value:'public, max-age=300, stale-while-revalidate=600'}]},
-   ...['/login','/dashboard','/proof','/tax','/help','/merchant-demo','/knowledge','/support','/setup','/integrations','/workspace','/tickets','/billing','/owner','/operations','/sandbox-catalog','/team','/invite','/mcp','/leads','/history','/api/:path*'].map(source=>({source,headers:[{key:'Cache-Control',value:'no-store'},{key:'X-Robots-Tag',value:'noindex, nofollow'}]})),
+   ...['/login','/dashboard','/proof','/tax','/help','/merchant-demo','/knowledge','/support','/setup','/integrations','/workspace','/tickets','/billing','/owner','/operations','/sandbox-catalog','/team','/invite','/mcp','/leads','/history','/plan','/api/:path*'].map(source=>({source,headers:[{key:'Cache-Control',value:'no-store'},{key:'X-Robots-Tag',value:'noindex, nofollow'}]})),
    // Design previews are not part of the public site.
    {source:'/preview/:path*',headers:[{key:'X-Robots-Tag',value:'noindex, nofollow'}]},
   ];},

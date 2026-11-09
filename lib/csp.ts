@@ -12,18 +12,23 @@ export function supabaseOrigins(url=process.env.NEXT_PUBLIC_SUPABASE_URL):string
  return 'https://*.supabase.co wss://*.supabase.co';
 }
 export const embeddable=(pathname:string)=>pathname==='/help'||pathname.startsWith('/help/');
+/* The Plan page loads PayPal's checkout (JS SDK, buttons in PayPal frames). Its scripts arrive through the
+   page's own nonced script ('strict-dynamic'); these sources add PayPal's frames, API calls, images and
+   styles on /plan only. */
+export const paypalPage=(pathname:string)=>pathname==='/plan';
+const PAYPAL='https://www.paypal.com https://www.sandbox.paypal.com https://*.paypal.com https://*.paypalobjects.com';
 export function buildCsp(o:{nonce:string;pathname:string;dev?:boolean;supabase?:string;frameOrigin?:string|null}):string{
  const dev=!!o.dev;
  return [
   "default-src 'self'",
   `script-src 'self' 'nonce-${o.nonce}' 'strict-dynamic'${dev?" 'unsafe-eval'":''}`,
-  "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob:",
+  `style-src 'self' 'unsafe-inline'${paypalPage(o.pathname)?' '+PAYPAL:''}`,
+  `img-src 'self' data: blob:${paypalPage(o.pathname)?' '+PAYPAL:''}`,
   "font-src 'self' data:",
-  `connect-src 'self' ${o.supabase??supabaseOrigins()}${dev?' ws: http://localhost:* http://127.0.0.1:*':''}`,
+  `connect-src 'self' ${o.supabase??supabaseOrigins()}${paypalPage(o.pathname)?' '+PAYPAL:''}${dev?' ws: http://localhost:* http://127.0.0.1:*':''}`,
   "media-src 'self'",
   "worker-src 'self' blob:",
-  "frame-src 'self'",
+  `frame-src 'self'${paypalPage(o.pathname)?' '+PAYPAL:''}`,
   "manifest-src 'self'",
   "object-src 'none'",
   "base-uri 'self'",

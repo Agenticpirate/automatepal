@@ -54,6 +54,8 @@ Written 2026-11-09. SiteGPT's side was re-checked live today (sitegpt.ai/feature
 
 ### Phase 1: Permanent install (≈ 1 week). *Biggest gap*
 
+> **Status 2026-11-09:** core built on branch `phase-1-install` (stacked on `phase-0-foundation`): db/055 keys, `/api/widget` key mode, `/api/widget/session`, `widget.js` `data-bot`, signed `frame-ancestors` grant, per-conversation cap, Setup step 4 card, tests (DB 29, frame 20, end-to-end 14). Later the same day: WordPress plugin (tested on real WordPress), tag-manager installs (`?bot=`, `AutomatePalConfig`), platform guides, logo upload (db/056), chat UI in 7 languages, per-page starters. Not done, needs accounts: Shopify theme app extension (Partner account), publishing `@automatepal/react` (npm). Needs `WIDGET_FRAME_SECRET` and migrations 055-056 before deploy.
+
 This reuses the case model instead of replacing it:
 
 - **Bot key** (`db/055`): add `public_key` (text, unique, `pk_live_…` / `pk_test_…`), `key_rotated_at` and `active` to `widget_settings`. One widget config per workspace is the bot for now.

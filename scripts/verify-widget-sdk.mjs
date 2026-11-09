@@ -52,7 +52,7 @@ try {
   // open(): panel visible, frame loads with the page origin, open event.
   await p.evaluate(() => window.AutomatePal.open());
   assert.equal(await shown(p), true); ok();
-  assert.match(await p.locator('iframe').getAttribute('src'), /\/help\?token=b{64}&embed=https%3A%2F%2Fmerchant\.example$/); ok();
+  assert.match(await p.locator('iframe').getAttribute('src'), /\/help\?token=b{64}&embed=https%3A%2F%2Fmerchant\.example&page=%2F[^&]*$/); ok();
   await p.waitForFunction(() => window.__ev.length >= 4);
   await p.waitForTimeout(300);
   // A message from the merchant page itself is ignored (wrong source window).

@@ -61,6 +61,14 @@ jobs:
           node scripts/local-db-seed.mjs
       - name: DB suites (rollback-only)
         run: zsh scripts/local-db-verify.sh
+      - name: Widget key end to end (local app on the local database)
+        run: |
+          npx playwright install --with-deps chromium
+          eval "$(npx -y supabase@latest status --workdir .supabase-local -o env | grep -E '^(ANON_KEY|SERVICE_ROLE_KEY)=')"
+          NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321 NEXT_PUBLIC_SUPABASE_ANON_KEY="$ANON_KEY" SUPABASE_SERVICE_ROLE_KEY="$SERVICE_ROLE_KEY" \
+            npx next dev -p 3100 > /tmp/e2e-app.log 2>&1 &
+          for i in $(seq 1 90); do curl -sf -o /dev/null http://localhost:3100/widget.js && break; sleep 1; done
+          E2E_APP=http://localhost:3100 node scripts/verify-widget-key-e2e.mjs
       - if: failure()
         uses: actions/upload-artifact@v4
         with: {name: db-logs, path: /tmp/ap-db-logs, retention-days: 7}

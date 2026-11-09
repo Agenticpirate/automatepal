@@ -29,6 +29,9 @@ async function recordAnswer(token:string,id:unknown,answer:unknown,source:string
 const alertOwner=(token:string,event:'handoff'|'refund_review'|'lead')=>{void notifyOwner(hash(token),event).catch(()=>{});};
 const tokenSchema=z.string().regex(/^[a-f0-9]{64}$/);
 const hash=(t:string)=>createHash('sha256').update(t).digest('hex');
+const B62='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+// 24 unbiased base62 characters (rejection sampling), about 143 bits.
+function newWidgetKey(mode:'live'|'test'){let out='';while(out.length<24){for(const b of randomBytes(32)){if(b<248&&out.length<24)out+=B62[b%62];}}return `pk_${mode}_${out}`;}
 function publicClient(){return createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!,process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,{auth:{persistSession:false}});}
 export async function GET(req:NextRequest){
  const token=req.nextUrl.searchParams.get('token');
@@ -41,8 +44,10 @@ export async function GET(req:NextRequest){
  const ctx=await authenticate(req);if(!ctx){const d=demoGate(req,'support');if(d)return d;return NextResponse.json({error:'Please sign in.'},{status:401});}
  const {data,error}=await ctx.client.from('support_requests').select('id,case_id,created_at,kind,message,status,contact_email,contact_consent').eq('user_id',ctx.userId).order('created_at',{ascending:false}).limit(100);
  const cases=await ctx.client.from('support_cases').select('id,created_at,expires_at,order_label,inbox_state').eq('user_id',ctx.userId).order('created_at',{ascending:false}).limit(100);
- const settings=await ctx.client.from('widget_settings').select('label,color,initials,prompts,controls').eq('user_id',ctx.userId).maybeSingle();
- return NextResponse.json(error?{error:'Could not load requests.'}:{requests:data,cases:cases.data??[],settings:settings.data?{...settings.data,...settings.data.controls}:null},{status:error?503:200,headers:{'Cache-Control':'no-store'}});
+ // Key columns arrive with db/055; on a database without them, fall back to the settings alone.
+ let settings:{data:{label:string;color:string;initials:string;prompts:string[];controls:Record<string,unknown>;public_key?:string|null;key_active?:boolean;logo_type?:string|null;logo_version?:number}|null}=await ctx.client.from('widget_settings').select('label,color,initials,prompts,controls,public_key,key_active,logo_type,logo_version').eq('user_id',ctx.userId).maybeSingle();
+ if((settings as {error?:unknown}).error)settings=await ctx.client.from('widget_settings').select('label,color,initials,prompts,controls').eq('user_id',ctx.userId).maybeSingle();
+ return NextResponse.json(error?{error:'Could not load requests.'}:{requests:data,cases:cases.data??[],settings:settings.data?{...settings.data,...settings.data.controls}:null,installKey:settings.data?.public_key?{publicKey:settings.data.public_key,active:settings.data.key_active}:null,logoVersion:settings.data?.logo_type?settings.data.logo_version??null:null},{status:error?503:200,headers:{'Cache-Control':'no-store'}});
 }
 export async function POST(req:NextRequest){
  if(!validOrigin(req))return NextResponse.json({error:'Invalid origin'},{status:403});
@@ -109,6 +114,13 @@ export async function POST(req:NextRequest){
   if(body?.action==='settings'){
    const current=await ctx.client.from('widget_settings').select('controls').eq('user_id',ctx.userId).maybeSingle();if(current.error)throw Error('Could not load current settings.');const settings=widgetSettings.parse({...current.data?.controls,...(body.settings as Record<string,unknown>)});const{label,color,initials,prompts,...controls}=settings;
    const {error}=await ctx.client.from('widget_settings').upsert({user_id:ctx.userId,label,color,initials,prompts,controls});if(error)throw Error('Could not save widget settings.');return NextResponse.json({note:'Widget appearance and quick prompts saved. No external script or image URL accepted.'});
+  }
+  /* Permanent install key (db/055): create or rotate (server-generated, 24 base62 chars), or turn on/off. */
+  if(body?.action==='widget_key'){
+   const d=z.object({op:z.enum(['rotate','enable','disable']),mode:z.enum(['live','test']).default('live')}).parse(body);
+   if(d.op==='rotate'){const key=newWidgetKey(d.mode);const{error}=await ctx.client.rpc('rotate_widget_key',{p_key:key});if(error)throw Error('Could not create the install key. Managers and above can do this.');return NextResponse.json({publicKey:key,keyActive:true,note:'New install key created. The previous key, if any, stopped working; update the script on your site.'});}
+   const{data,error}=await ctx.client.rpc('set_widget_key_active',{p_active:d.op==='enable'});if(error||!data)throw Error('Create an install key first.');
+   return NextResponse.json({keyActive:d.op==='enable',note:d.op==='enable'?'Install key turned on. The widget shows again on your allowed sites.':'Install key turned off. The widget stops loading on every site until you turn it on.'});
   }
   if(body?.action==='create_demo'){
    const token=randomBytes(32).toString('hex'),id=randomUUID(),expires=new Date(Date.now()+3600000).toISOString();

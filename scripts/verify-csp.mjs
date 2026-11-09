@@ -1,6 +1,6 @@
 // CSP gate (Chrome, production build): every page gets a nonce-based Content-Security-Policy with
 // 'strict-dynamic', a fresh nonce per response, nonces on every executable script, the right
-// frame-ancestors rule (none on the /help widget frame, 'self' elsewhere), the other security headers, a
+// frame-ancestors rule ('self' everywhere; /help adds one origin only with a signed grant, see verify-widget-frame), the other security headers, a
 // hydrated React tree, and ZERO CSP violations (securitypolicyviolation events and console reports).
 // Run `npm run build` first. Uses the open demo fixtures so app pages render their populated states.
 import assert from 'node:assert/strict';
@@ -28,7 +28,7 @@ try {
   for (const h of ['x-content-type-options', 'referrer-policy', 'permissions-policy', 'strict-transport-security', 'x-frame-options']) assert.ok(a.headers.get(h), h);
   ok();
   const help = await fetch(BASE + '/help');
-  assert.ok(!/frame-ancestors/.test(help.headers.get('content-security-policy') ?? 'x'), '/help stays embeddable'); assert.equal(help.headers.get('x-frame-options'), null); ok();
+  assert.match(help.headers.get('content-security-policy') ?? '', /frame-ancestors 'self'(;|$)/, '/help without a signed grant: this app only'); assert.equal(help.headers.get('x-frame-options'), null); ok();
   const api = await fetch(BASE + '/api/status');
   assert.ok(api.headers.get('content-security-policy'), 'API responses keep a CSP header'); ok();
   const browser = await chromium.launch();
@@ -56,6 +56,6 @@ try {
       await p.close();
     }
     assert.deepEqual(failures, [], 'CSP violations:\n' + failures.join('\n')); ok();
-    console.log(`PASS CSP: ${n} checks; ${PAGES.length} pages with a per-request nonce and 'strict-dynamic', no unsafe-inline/eval for scripts, frame-ancestors 'self' (none on /help), connect-src limited to the app and Supabase, every page hydrated, every executable script nonced, zero CSP violations.`);
+    console.log(`PASS CSP: ${n} checks; ${PAGES.length} pages with a per-request nonce and 'strict-dynamic', no unsafe-inline/eval for scripts, frame-ancestors 'self' (plus a signed origin on /help), connect-src limited to the app and Supabase, every page hydrated, every executable script nonced, zero CSP violations.`);
   } finally { await browser.close(); }
 } finally { server.kill(); }

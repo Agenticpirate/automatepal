@@ -2,7 +2,7 @@
 // Secrets are NOT here: set them with `npx wrangler secret put NAME` (see .env.example for the list:
 // ANTHROPIC_API_KEY, GEMINI_API_KEY, CONTEXT_DEV_API_KEY, PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET,
 // BILLING_ENCRYPTION_KEYS, BILLING_RPC_SECRET, SUPABASE_SERVICE_ROLE_KEY, CRON_SECRET, RESEND_API_KEY,
-// WIDGET_FRAME_SECRET).
+// WIDGET_FRAME_SECRET, WEB_PUSH_PRIVATE_KEY; WEB_PUSH_PUBLIC_KEY can be a plain var).
 // automatepal.com and www are attached to this Worker as custom domains in the Cloudflare dashboard.
 {
   "$schema": "node_modules/wrangler/config-schema.json",

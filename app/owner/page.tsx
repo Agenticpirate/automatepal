@@ -15,6 +15,7 @@ import {authHeaders} from '../../lib/browser-auth';
 import Alerts from './alerts';
 import EmailSettings from './email-settings';
 import SlackSettings from './slack-settings';
+import PushSettings from './push-settings';
 import InsightTopics from './insight-topics';
 import {ticketLabel} from '../../lib/tickets';
 import {unansweredCsv,downloadCsv} from '../../lib/exports';
@@ -26,7 +27,7 @@ type Query={id:string;case_id:string;created_at:string;question:string;supported
 type Req={id:string;case_id:string;created_at:string;kind:string;status:string};
 type Insight={case_id:string;topic:string;sentiment:'positive'|'neutral'|'negative';outcome:'resolved'|'unresolved'|'escalated';labeled_at:string};
 type Open={case_id:string;day:string;source:string;opens:number};
-type Data={insights?:Insight[];opens?:Open[];insightSettings?:{topics:string[]|null;enabled:boolean};asOf:string;tickets:Ticket[];queries:Query[];requests:Req[];usage:{utcDay:string;answersToday:number;dailyLimit:number;sources:number;sourceLimit:number;pageUnits:number;pageLimit:number};truncated:Record<string,boolean>;coverage:string};
+type Data={insights?:Insight[];opens?:Open[];insightSettings?:{topics:string[]|null;enabled:boolean};asOf:string;tickets:Ticket[];queries:Query[];requests:Req[];usage:{utcDay:string;answersToday:number;dailyLimit:number;sources:number;sourceLimit:number;pageUnits:number;pageLimit:number;plan?:string;monthUsed?:number;monthLimit?:number};truncated:Record<string,boolean>;coverage:string};
 type Range=7|30|90;
 const DAY=86400000,PAGE=10;
 const STATUS_ORDER=['new','open','in_progress','pending','resolved','closed'];
@@ -108,7 +109,7 @@ export default function Owner(){
  // eslint-disable-next-line react-hooks/exhaustive-deps
  },[d,tab,status,needle]);
  const pages=Math.max(1,Math.ceil(rows.length/PAGE)),cur=Math.min(page,pages-1),shown=rows.slice(cur*PAGE,cur*PAGE+PAGE);
- const pct=d&&d.usage.dailyLimit>0?Math.min(100,Math.round(100*d.usage.answersToday/d.usage.dailyLimit)):0;
+ const pct=d?d.usage.monthLimit?Math.min(100,Math.round(100*(d.usage.monthUsed??0)/d.usage.monthLimit)):d.usage.dailyLimit>0?Math.min(100,Math.round(100*d.usage.answersToday/d.usage.dailyLimit)):0:0;
  const fmtDate=(s:string)=>new Date(s).toLocaleDateString('en-US',{month:'short',day:'2-digit',year:'numeric',timeZone:'UTC'});
 
  return <DeskShell widget><DashShell crumb="Overview" notifications={d?buildNotifs(d):[]} search={q} onSearch={s=>{setQ(s);setPage(0);}}><main className="ap-dash-headrow" style={{display:'contents'}}>
@@ -164,11 +165,11 @@ export default function Owner(){
    </details>
   </section>
   <section className="ap-dash-card">
-   <div className="ap-od-cardhead"><h2 className="ap-dash-h2">Preview budget</h2></div>
-   <div className="ap-od-budget"><Gauge value={pct} color="#09318D" label={`${pct} percent of today's answer attempt limit used`}/><RadialRings rings={[{frac:d.usage.dailyLimit>0?d.usage.answersToday/d.usage.dailyLimit:0,label:'answers'},{frac:d.usage.sourceLimit>0?d.usage.sources/d.usage.sourceLimit:0,label:'sources'},{frac:d.usage.pageLimit>0?d.usage.pageUnits/d.usage.pageLimit:0,label:'page units'}]}/></div>
-   <p className="ap-dash-sub" style={{margin:'10px 0 0'}}>{d.usage.answersToday}/{d.usage.dailyLimit} answer attempts on {d.usage.utcDay} UTC</p>
+   <div className="ap-od-cardhead"><h2 className="ap-dash-h2">{d.usage.monthLimit?'Plan usage':'Preview budget'}</h2></div>
+   <div className="ap-od-budget"><Gauge value={pct} color="#09318D" label={`${pct} percent of ${d.usage.monthLimit?'this month\'s AI answers':'today\'s answer attempt limit'} used`}/><RadialRings rings={[{frac:d.usage.monthLimit?d.usage.monthUsed!/d.usage.monthLimit:d.usage.dailyLimit>0?d.usage.answersToday/d.usage.dailyLimit:0,label:'answers'},{frac:d.usage.sourceLimit>0?d.usage.sources/d.usage.sourceLimit:0,label:'sources'},{frac:d.usage.pageLimit>0?d.usage.pageUnits/d.usage.pageLimit:0,label:'page units'}]}/></div>
+   <p className="ap-dash-sub" style={{margin:'10px 0 0'}}>{d.usage.monthLimit?<>{d.usage.monthUsed}/{d.usage.monthLimit} AI answers this month ({d.usage.plan} plan)</>:<>{d.usage.answersToday}/{d.usage.dailyLimit} answer attempts on {d.usage.utcDay} UTC</>}</p>
    <p className="ap-dash-sub" style={{margin:'4px 0 0'}}>{d.usage.sources}/{d.usage.sourceLimit} sources · {d.usage.pageUnits}/{d.usage.pageLimit} page units</p>
-   <p className="ap-dash-muted" style={{marginTop:8}}>Rings show answers, sources and page units from the outside in. Refused and unsupported questions use attempts. Limits are not paid entitlements.</p>
+   <p className="ap-dash-muted" style={{marginTop:8}}>Rings show answers, sources and page units from the outside in. Refused and unsupported questions count too.{d.usage.monthLimit?' Limits come from your plan; see the Plan page.':' Limits are not paid entitlements.'}</p>
   </section>
 
   <section className="ap-dash-card">
@@ -235,5 +236,6 @@ export default function Owner(){
  <InsightTopics topics={d.insightSettings?.topics??null} enabled={d.insightSettings?.enabled??true} available={!!d.insightSettings}/>
  <Alerts/>
  <EmailSettings/>
+ <PushSettings/>
  <SlackSettings/></>}</main></DashShell></DeskShell>;
 }

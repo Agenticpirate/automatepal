@@ -10,6 +10,7 @@ import{modeText}from'../../../lib/app-mode';
 import { NextRequest,NextResponse,after } from 'next/server';
 import {deliverDueWebhooks} from '../../../lib/webhook-worker';
 import {notifySlack} from '../../../lib/slack';
+import {notifyPush} from '../../../lib/push-notify';
 import {botParam,rpcBot} from '../../../lib/bots';
 import {serviceClient} from '../../../lib/service-db';
 import { createClient } from '@supabase/supabase-js';
@@ -30,7 +31,8 @@ const sourceSchema=z.enum(['widget','hosted_page']).default('widget');
 /* Transcript (db/049): store the answer the visitor saw. Fail soft: an un-migrated database keeps working. */
 async function recordAnswer(token:string,id:unknown,answer:unknown,source:string){if(typeof id!=='string'||typeof answer!=='string'||!answer.trim())return;try{await publicClient().rpc('support_record_answer',{p_hash:hash(token),p_id:id,p_answer:answer,p_source:source});}catch{/* transcript is best effort */}}
 /* Owner email (db/048, lib/email.ts) runs after the response is decided and never blocks or fails the visitor. */
-const alertOwner=(token:string,event:'handoff'|'refund_review'|'lead')=>{void notifyOwner(hash(token),event).catch(()=>{});void notifySlack(hash(token),event).catch(()=>{});};
+/* Owner email, Slack and device push run after the response is sent (next/server after, also on Workers). */
+const alertOwner=(token:string,event:'handoff'|'refund_review'|'lead')=>{const h=hash(token);after(()=>Promise.all([notifyOwner(h,event),notifySlack(h,event),notifyPush(h,event)]).then(()=>{},()=>{}));};
 const tokenSchema=z.string().regex(/^[a-f0-9]{64}$/);
 const hash=(t:string)=>createHash('sha256').update(t).digest('hex');
 const B62='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

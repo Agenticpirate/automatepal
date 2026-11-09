@@ -90,7 +90,7 @@ This reuses the case model instead of replacing it:
 
 ### Phase 3: Close the SiteGPT gaps on top of existing modules (≈ 2–3 weeks)
 
-> **Status 2026-11-09:** first batch built on branch `phase-3-parity` (stacked on `phase-2-billing`): fast/deep model choice (db/058), automatic webhook delivery (059), public chat API (060), GitHub docs and Word import, Slack alerts (061). Multiple chatbots built on branch `phase-3-multibot` (db/062). Remaining in this phase: PWA inbox with Web Push, YouTube/Drive/Notion import (need OAuth apps or transcript access), Zendesk/WhatsApp (need accounts and app review), OpenAPI spec and TypeScript SDK.
+> **Status 2026-11-09:** first batch built on branch `phase-3-parity` (stacked on `phase-2-billing`): fast/deep model choice (db/058), automatic webhook delivery (059), public chat API (060), GitHub docs and Word import, Slack alerts (061). Multiple chatbots built on branch `phase-3-multibot` (db/062). Mobile inbox with Web Push built on branch `phase-3-push` (db/063). Remaining in this phase: YouTube/Drive/Notion import (need OAuth apps or transcript access), Zendesk/WhatsApp (need accounts and app review), OpenAPI spec and TypeScript SDK.
 
 | SiteGPT feature | Build on | Change |
 | --- | --- | --- |

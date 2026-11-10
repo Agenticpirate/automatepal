@@ -28,7 +28,7 @@ type Query={id:string;case_id:string;created_at:string;question:string;supported
 type Req={id:string;case_id:string;created_at:string;kind:string;status:string};
 type Insight={case_id:string;topic:string;sentiment:'positive'|'neutral'|'negative';outcome:'resolved'|'unresolved'|'escalated';labeled_at:string};
 type Open={case_id:string;day:string;source:string;opens:number};
-type Data={insights?:Insight[];opens?:Open[];insightSettings?:{topics:string[]|null;enabled:boolean};asOf:string;tickets:Ticket[];queries:Query[];requests:Req[];usage:{utcDay:string;answersToday:number;dailyLimit:number;sources:number;sourceLimit:number;pageUnits:number;pageLimit:number;plan?:string;monthUsed?:number;monthLimit?:number};truncated:Record<string,boolean>;coverage:string};
+type Data={ratings?:{case_id:string;score:number;rated_at:string}[];insights?:Insight[];opens?:Open[];insightSettings?:{topics:string[]|null;enabled:boolean};asOf:string;tickets:Ticket[];queries:Query[];requests:Req[];usage:{utcDay:string;answersToday:number;dailyLimit:number;sources:number;sourceLimit:number;pageUnits:number;pageLimit:number;plan?:string;monthUsed?:number;monthLimit?:number};truncated:Record<string,boolean>;coverage:string};
 type Range=7|30|90;
 const DAY=86400000,PAGE=10;
 const STATUS_ORDER=['new','open','in_progress','pending','resolved','closed'];
@@ -100,8 +100,11 @@ export default function Owner(){const botFilter=useBotFilter();
   const byCat=countBy(cur.t,t=>t.category),categories=byCat.length>6?[...byCat.slice(0,5),{key:'other',label:'Other',value:byCat.slice(5).reduce((n,p)=>n+p.value,0)}]:byCat;
   const statuses=countBy(d.tickets,t=>t.ticket_status,STATUS_ORDER);
   const week={answered:cur.q.filter(x=>x.supported).length,unanswered:cur.q.filter(x=>!x.supported).length,reviews:cur.r.length,leads:kind(cur.r,'lead_callback'),rated:cur.q.filter(x=>x.feedback===1||x.feedback===-1).length,helpful:cur.q.filter(x=>x.feedback===1).length,total:cur.q.length};
+  /* CSAT (db/065): share of conversation ratings in this range that are 4 or 5. */
+  const rs=(d.ratings??[]).filter(x=>{const t=Date.parse(x.rated_at);return t>=start&&t<end;});
+  const csat=d.ratings?{count:rs.length,satisfied:rs.filter(x=>x.score>=4).length,average:rs.length?Math.round(10*rs.reduce((n,x)=>n+x.score,0)/rs.length)/10:0}:null;
   const prevTotal=prv.q.length;
-  return {kpis,funnel,opensRecorded:openedCases.size>0,topics,sentiments,outcomes,labeled:labels.length,categories,statuses,trend,week,prevTotal,hasPrev,attention:d.tickets.filter(needsAttention),themes:clusterQuestions(d.queries.filter(x=>!x.supported)),queue:{refunds:d.requests.filter(r=>r.status==='pending_review'&&r.kind==='refund_request').length,taken:d.tickets.filter(t=>t.inbox_state==='taken_over').length,unassigned:d.tickets.filter(t=>!t.assigned_to_owner&&!['closed','resolved'].includes(t.ticket_status)).length,negative:d.queries.filter(x=>x.feedback===-1).length}};
+  return {csat,kpis,funnel,opensRecorded:openedCases.size>0,topics,sentiments,outcomes,labeled:labels.length,categories,statuses,trend,week,prevTotal,hasPrev,attention:d.tickets.filter(needsAttention),themes:clusterQuestions(d.queries.filter(x=>!x.supported)),queue:{refunds:d.requests.filter(r=>r.status==='pending_review'&&r.kind==='refund_request').length,taken:d.tickets.filter(t=>t.inbox_state==='taken_over').length,unassigned:d.tickets.filter(t=>!t.assigned_to_owner&&!['closed','resolved'].includes(t.ticket_status)).length,negative:d.queries.filter(x=>x.feedback===-1).length}};
  },[d,days]);
 
  const needle=q.trim().toLowerCase(),match=(...s:string[])=>!needle||s.join(' ').toLowerCase().includes(needle);
@@ -131,7 +134,7 @@ export default function Owner(){const botFilter=useBotFilter();
  </header>
  {d&&v&&<>
  <div className="ap-dash-card ap-od-strip">
-  <p className="ap-dash-muted" style={{margin:0}}>Last {days} days (from the loaded snapshot): <strong>{v.week.answered} answered</strong> · <strong>{v.week.unanswered} unanswered</strong> · <strong>{v.week.reviews} review requests</strong> ({v.week.leads} follow-ups) · {v.week.total?Math.round(100*v.week.answered/v.week.total)+'% answered':'no questions yet'} · {v.week.rated?Math.round(100*v.week.helpful/v.week.rated)+'% of '+v.week.rated+' ratings helpful':'no ratings yet'}</p>
+  <p className="ap-dash-muted" style={{margin:0}}>Last {days} days (from the loaded snapshot): <strong>{v.week.answered} answered</strong> · <strong>{v.week.unanswered} unanswered</strong> · <strong>{v.week.reviews} review requests</strong> ({v.week.leads} follow-ups) · {v.week.total?Math.round(100*v.week.answered/v.week.total)+'% answered':'no questions yet'} · {v.week.rated?Math.round(100*v.week.helpful/v.week.rated)+'% of '+v.week.rated+' ratings helpful':'no ratings yet'}{v.csat&&<> · <strong>CSAT</strong> {v.csat.count?`${Math.round(100*v.csat.satisfied/v.csat.count)}% satisfied (${v.csat.satisfied} of ${v.csat.count} conversations rated 4 or 5, average ${v.csat.average})`:'no conversation ratings yet'}</>}</p>
  </div>
 
  <section className="ap-dash-kpis ap-od-kpis" aria-label="Key numbers">{v.kpis.map((k,i)=><article key={k.label} className="ap-dash-kpi ap-od-kpi" style={{animationDelay:`${.06*i}s`}}>

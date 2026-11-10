@@ -76,6 +76,14 @@ async function main() {
     assert.match(helpCsp, /frame-ancestors 'self' https:\/\/shop\.example/); ok();
     const ans = await (await fetch(`${APP}/api/support`, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({action: 'answer', token, question: Q, source: 'widget'})})).json();
     assert.equal(ans.answer, A, 'exact owner answer through the widget conversation'); ok();
+    // CSAT: no rating prompt before an answer; after asking in the panel the visitor rates 1 to 5 and can change it.
+    assert.equal(await frame.getByRole('group', {name: 'How was this conversation?'}).count(), 0, 'no rating prompt before an answer');
+    await frame.locator('#help-message').fill(Q); await frame.getByRole('button', {name: 'Ask a question', exact: true}).last().click();
+    const rating = frame.getByRole('group', {name: 'How was this conversation?'}); await rating.waitFor({timeout: 30000});
+    await rating.getByRole('button', {name: '4 / 5'}).click(); await frame.getByText('Thanks for your rating.').waitFor();
+    await rating.getByRole('button', {name: '5 / 5'}).click(); await frame.locator('button[aria-pressed="true"][aria-label="5 / 5"]').waitFor();
+    assert.deepEqual((await db.query('select r.score from case_ratings r join support_cases c on c.id=r.case_id where c.user_id=$1', [OWNER])).rows, [{score: 5}], 'one rating, replaced'); ok();
+    assert.deepEqual(await axeSerious(await (await frameEl.elementHandle()).contentFrame()), [], 'rating prompt accessibility'); ok();
     const view = await (await fetch(`${APP}/api/support?token=${token}`)).json();
     assert.equal(view.case.source, 'widget'); assert.equal(view.case.billing, null, 'no fictional order card'); ok();
     // Same visitor, new page load: the saved conversation is reused.
@@ -160,7 +168,7 @@ async function main() {
       ok(); await c2.close();
       assert.ok(name);
     }
-    console.log(`PASS widget key end to end: ${n} checks; lazy conversation on first open, launcher and chat panel without serious WCAG 2.1 AA issues, signed frame grant lets shop.example frame /help, exact answer through the widget, conversation reused across loads, reset starts a new one, other sites get no widget, no session and no framing, turned-off key shows nothing, tag-manager installs (?bot= injected, AutomatePalConfig) work, logo on button and header, per-page starters, Spanish chat, a second bot with its own key, name and conversations.`);
+    console.log(`PASS widget key end to end: ${n} checks; lazy conversation on first open, launcher and chat panel without serious WCAG 2.1 AA issues, signed frame grant lets shop.example frame /help, exact answer through the widget, 1 to 5 conversation rating from the panel (replaceable), conversation reused across loads, reset starts a new one, other sites get no widget, no session and no framing, turned-off key shows nothing, tag-manager installs (?bot= injected, AutomatePalConfig) work, logo on button and header, per-page starters, Spanish chat, a second bot with its own key, name and conversations.`);
   } finally {
     await browser.close();
     await cleanup().catch(() => {});

@@ -7,9 +7,9 @@ const BASE = process.env.PAYPAL_API_BASE ?? "https://api-m.sandbox.paypal.com";
 const CLIENT_ID = process.env.PAYPAL_CLIENT_ID ?? "";
 const CLIENT_SECRET = process.env.PAYPAL_CLIENT_SECRET ?? "";
 
-// Sandbox only for now. Outside production a local mock PayPal (http://127.0.0.1:<port>) is also accepted, for
+// Sandbox only for now. In local development (NODE_ENV=development) a local mock PayPal (http://127.0.0.1:<port>) is also accepted, for
 // scripts/verify-plan-e2e.mjs; production refuses anything but the sandbox host.
-const MOCK = process.env.NODE_ENV !== "production" && /^http:\/\/127\.0\.0\.1:\d{2,5}$/.test(BASE);
+const MOCK = process.env.NODE_ENV === "development" && /^http:\/\/127\.0\.0\.1:\d{2,5}$/.test(BASE);
 if (BASE !== "https://api-m.sandbox.paypal.com" && !MOCK) throw new Error("Only PayPal sandbox is supported");
 
 let cachedToken: { token: string; expiresAt: number } | null = null;

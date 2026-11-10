@@ -25,7 +25,7 @@
 .wi-list li[data-state=failed]{background:#FFF7FB}
 @keyframes wi-in{from{opacity:0;transform:translateY(3px)}}
 .wi-title{font-weight:650;color:#0A1B3D;overflow-wrap:anywhere}
-.wi-meta{display:flex;flex-wrap:wrap;gap:4px 12px;margin:4px 0 4px 24px;font-size:11.5px;color:#6B7A99}
+.wi-meta{display:flex;flex-wrap:wrap;gap:4px 12px;margin:4px 0 4px 24px;font-size:11.5px;color:#5B6889}
 .wi-url{font-family:var(--font-geist-mono),monospace;font-size:11px;color:#4A5878;overflow-wrap:anywhere;min-width:0}
 .wi-state[data-state=saved]{color:#1D6B3E;font-weight:700}
 .wi-state[data-state=failed]{color:#A3226F;font-weight:700}

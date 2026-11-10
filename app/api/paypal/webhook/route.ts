@@ -1,6 +1,8 @@
 import {NextRequest, NextResponse} from 'next/server';
 import {serviceClient} from '../../../../lib/service-db';
 import {limitedJson} from '../../../../lib/limited-json';
+import {allowRequest} from '../../../../lib/rate-limit';
+import {clientIp} from '../../../../lib/widget-frame';
 import {getSubscription, cancelSubscription, verifyWebhookSignature} from '../../../../lib/paypal';
 import {eventSubscription, syncSubscription, billingNotice, SubscriptionError} from '../../../../lib/subscriptions';
 /* PayPal webhooks for AutomatePal's own subscriptions (Phase 2). Order: body cap and shape, already-handled
@@ -14,6 +16,8 @@ const ok = (outcome: string) => NextResponse.json({ok: true, outcome}, {headers:
 export async function POST(req: NextRequest) {
   const webhookId = process.env.PAYPAL_WEBHOOK_ID, service = serviceClient();
   if (!webhookId || !service) return NextResponse.json({error: 'Webhook not configured.'}, {status: 503});
+  // Each event costs a verification call to PayPal; cap what one address can trigger (PayPal retries on 429).
+  if (!await allowRequest('paypal-webhook:' + clientIp(req.headers), Date.now(), 120)) return NextResponse.json({error: 'Too many requests.'}, {status: 429, headers: {'Retry-After': '60'}});
   let event: unknown;
   try { event = await limitedJson(req, 64 * 1024); } catch { return NextResponse.json({error: 'Invalid body.'}, {status: 400}); }
   const e = eventSubscription(event);

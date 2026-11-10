@@ -13,7 +13,7 @@
 .ap-od-delta-good{color:#0D6B3C;background:#E3F6EC}
 .ap-od-delta-bad{color:#A3236E;background:#FFE6F3}
 .ap-od-delta-flat{color:#4A5878;background:#F0F3FA}
-.ap-od-delta-na{color:#6B789A;background:#F4F6FB;font-weight:550}
+.ap-od-delta-na{color:#5B6889;background:#F4F6FB;font-weight:550}
 
 .ap-od-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
 .ap-od-grid>.ap-dash-card{min-width:0}
@@ -22,7 +22,7 @@
 .ap-od-desc{margin:6px 0 12px}
 .ap-od-total{font-size:12px;color:#4A5878;display:inline-flex;align-items:center;gap:6px}
 .ap-od-total strong{font-size:18px;color:#0A1B3D;font-variant-numeric:tabular-nums}
-.ap-od-empty{margin:8px 0 0;padding:22px;border:1.5px dashed #D5DCEC;border-radius:14px;text-align:center;color:#6B789A;font-size:13px}
+.ap-od-empty{margin:8px 0 0;padding:22px;border:1.5px dashed #D5DCEC;border-radius:14px;text-align:center;color:#5B6889;font-size:13px}
 .ap-od-more{display:inline-flex;align-items:center;min-height:44px;margin-top:6px;font-size:13px;font-weight:600;color:#09318D;text-decoration:underline;text-underline-offset:3px}
 .ap-od-details{margin-top:8px}
 .ap-od-details summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-size:12px;font-weight:600;color:#09318D}
@@ -35,7 +35,7 @@
 .ap-od-funnel-track{height:12px;border-radius:999px;background:#EEF2FA;margin:6px 0 4px;overflow:hidden}
 .ap-od-funnel-bar{display:block;height:100%;border-radius:999px;transform-origin:0 50%;animation:ap-od-grow .7s cubic-bezier(.22,1,.36,1) both}
 .ap-od-funnel-0{background:#041A52}.ap-od-funnel-1{background:#09318D}.ap-od-funnel-2{background:#5E7FD0}.ap-od-funnel-3{background:#FD91CC}
-.ap-od-funnel li small{font-size:11px;color:#6B789A}
+.ap-od-funnel li small{font-size:11px;color:#5B6889}
 .ap-od-funnel-sides{list-style:none;margin:0;padding:12px;display:grid;gap:8px;background:#F6F8FD;border-radius:14px}
 .ap-od-funnel-sides li{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:#4A5878}
 .ap-od-funnel-sides strong{color:#0A1B3D;font-variant-numeric:tabular-nums}
@@ -69,7 +69,7 @@
 .ap-od-tools{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .ap-od-tools .ap-dash-select{min-height:40px}
 .ap-od-tbl{width:100%;border-collapse:collapse;font-size:13px}
-.ap-od-tbl th{text-align:left;font-size:11px;font-weight:600;color:#7A88AC;padding:9px 10px;border-bottom:1.5px solid #E2E7F2;white-space:nowrap}
+.ap-od-tbl th{text-align:left;font-size:11px;font-weight:600;color:#5B6889;padding:9px 10px;border-bottom:1.5px solid #E2E7F2;white-space:nowrap}
 .ap-od-tbl td{padding:10px;border-bottom:1px solid #EEF2FA;color:#0A1B3D;vertical-align:middle}
 .ap-od-tbl tbody tr:last-child td{border-bottom:0}
 .ap-od-tbl a{color:#09318D}
@@ -97,7 +97,7 @@
  .ap-od-tbl,.ap-od-tbl tbody,.ap-od-tbl tr,.ap-od-tbl td{display:block;width:100%}
  .ap-od-tbl tr{border:1.5px solid #E2E7F2;border-radius:14px;padding:6px 12px;margin-bottom:10px}
  .ap-od-tbl td{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:7px 0;border-bottom:1px solid #F0F3FA;text-align:right}
- .ap-od-tbl td::before{content:attr(data-label);font-size:11px;font-weight:600;color:#7A88AC;text-align:left;flex:none}
+ .ap-od-tbl td::before{content:attr(data-label);font-size:11px;font-weight:600;color:#5B6889;text-align:left;flex:none}
  .ap-od-tbl td:last-child{border-bottom:0}
  .ap-od-wrap{max-width:none}
  .ap-od-pager{justify-content:space-between}

@@ -67,14 +67,14 @@ export default function Docs(){
    <section id="sdk" aria-labelledby="sdk-h">
     <h2 id="sdk-h">Widget SDK and events</h2>
     <p>The script tag adds <code>window.AutomatePal</code> to your page. It exists as soon as the script runs; calls made before the widget is ready apply when it appears, and do nothing on a page where the widget is hidden.</p>
-    <div className="ps-scroll"><table className="ps-table"><thead><tr><th>Call</th><th>What it does</th></tr></thead><tbody>
+    <div className="ps-scroll" role="region" aria-label="Widget SDK calls table" tabIndex={0}><table className="ps-table"><thead><tr><th>Call</th><th>What it does</th></tr></thead><tbody>
      <tr><td><code>AutomatePal.open()</code></td><td>Opens the chat panel (it loads on first open).</td></tr>
      <tr><td><code>AutomatePal.close()</code></td><td>Closes the panel.</td></tr>
      <tr><td><code>AutomatePal.toggle()</code></td><td>Opens or closes it.</td></tr>
      <tr><td><code>AutomatePal.reset()</code></td><td>Closes the panel, forgets its open state and starts a fresh panel on the next open. Questions already sent stay recorded for you, and the demo link is unchanged.</td></tr>
      <tr><td><code>AutomatePal.on(type, fn)</code></td><td>Calls <code>fn(payload)</code> for an event and returns a function that stops listening. <code>AutomatePal.off(type, fn)</code> does the same.</td></tr>
     </tbody></table></div>
-    <div className="ps-scroll"><table className="ps-table"><thead><tr><th>Event</th><th>When</th><th>Payload</th></tr></thead><tbody>
+    <div className="ps-scroll" role="region" aria-label="Widget events table" tabIndex={0}><table className="ps-table"><thead><tr><th>Event</th><th>When</th><th>Payload</th></tr></thead><tbody>
      <tr><td><code>open</code></td><td>The panel opened</td><td><code>{'{type, trigger}'}</code>, trigger <code>api</code>, <code>button</code> or <code>auto</code></td></tr>
      <tr><td><code>close</code></td><td>The panel closed</td><td><code>{'{type, trigger}'}</code>, trigger <code>api</code>, <code>button</code> or <code>reset</code></td></tr>
      <tr><td><code>message_sent</code></td><td>The visitor sent a question, a request or a message to the team</td><td><code>{'{type, channel}'}</code>, channel <code>ai</code>, <code>request</code> or <code>person</code></td></tr>
@@ -100,7 +100,7 @@ document.querySelector('#help-link').onclick = () => AutomatePal.open();`}</code
     <h2 id="billing-h">Connect billing</h2>
     <p>Billing support answers order and charge status, payment history, failed payments and retries, invoices, renewal dates and refund status from your payment provider, where the provider supports the lookup. The capability matrix below shows which lookups each provider has. It is read-only: every provider request is matched against a fixed list of read endpoints (plus PayPal’s token sign-in) before it leaves the server, and anything else is refused. No money moves.</p>
     <h3>Server setup</h3>
-    <div className="ps-scroll"><table className="ps-table"><thead><tr><th>Variable</th><th>What it holds</th></tr></thead><tbody>
+    <div className="ps-scroll" role="region" aria-label="Environment variables table" tabIndex={0}><table className="ps-table"><thead><tr><th>Variable</th><th>What it holds</th></tr></thead><tbody>
      <tr><td><code>BILLING_ENCRYPTION_KEYS</code></td><td>Comma-separated <code>kid:base64</code> keys, 32 bytes each, for example <code>k1:$(openssl rand -base64 32)</code>.</td></tr>
      <tr><td><code>BILLING_ENCRYPTION_ACTIVE_KID</code></td><td>The key id new credentials are encrypted with, for example <code>k1</code>.</td></tr>
      <tr><td><code>BILLING_RPC_SECRET</code></td><td>A separate random secret (<code>openssl rand -hex 32</code>) that proves database calls come from the server. Rotating keys does not change it.</td></tr>
@@ -126,7 +126,7 @@ document.querySelector('#help-link').onclick = () => AutomatePal.open();`}</code
     </article>)}</div>
     <h3>Capability matrix</h3>
     <p>The bot only offers a lookup the provider supports, and says so when it cannot.</p>
-    <div className="ps-scroll"><table className="ps-table dc-matrix"><thead><tr><th>Provider</th>{BILLING_INTENTS.map(i=><th key={i}>{INTENT_LABEL[i]}</th>)}</tr></thead><tbody>
+    <div className="ps-scroll" role="region" aria-label="Billing providers table" tabIndex={0}><table className="ps-table dc-matrix"><thead><tr><th>Provider</th>{BILLING_INTENTS.map(i=><th key={i}>{INTENT_LABEL[i]}</th>)}</tr></thead><tbody>
      {providers.map(p=><tr key={p.id}><td>{p.label}</td>{BILLING_INTENTS.map(i=><td key={i}>{p.capabilities[i]?<span className="ps-status ok">Yes</span>:<span className="ps-status no">No</span>}</td>)}</tr>)}
     </tbody></table></div>
     <p>Providers can be tried with test keys: <code>npm run billing:live-check -- &lt;provider&gt;</code> makes read-only calls with the keys named in <code>.env.example</code>.</p>
@@ -184,9 +184,9 @@ document.querySelector('#help-link').onclick = () => AutomatePal.open();`}</code
     <p>Endpoint <code>{SITE_URL}/mcp</code>, Streamable HTTP, stateless JSON responses, POST only. It serves one workspace, chosen by the token.</p>
     <h3>Tokens and scopes</h3>
     <p>Create a token on the Integrations page. Tokens are hashed at rest, expire after 1 to 168 hours, can be revoked, and at most five are active per workspace. Send it as <code>Authorization: Bearer ap_ro_…</code>. Each token has one scope, and only that scope’s tools are listed.</p>
-    <div className="ps-scroll"><table className="ps-table"><thead><tr><th>Scope</th><th>Tools</th></tr></thead><tbody>{SCOPES.map(([s,d])=><tr key={s}><td><code>{s}</code></td><td>{d}</td></tr>)}</tbody></table></div>
+    <div className="ps-scroll" role="region" aria-label="API token scopes table" tabIndex={0}><table className="ps-table"><thead><tr><th>Scope</th><th>Tools</th></tr></thead><tbody>{SCOPES.map(([s,d])=><tr key={s}><td><code>{s}</code></td><td>{d}</td></tr>)}</tbody></table></div>
     <h3>Tools</h3>
-    <div className="ps-scroll"><table className="ps-table"><thead><tr><th>Tool</th><th>What it returns</th><th>Scopes</th><th>Annotations</th></tr></thead><tbody>
+    <div className="ps-scroll" role="region" aria-label="MCP tools table" tabIndex={0}><table className="ps-table"><thead><tr><th>Tool</th><th>What it returns</th><th>Scopes</th><th>Annotations</th></tr></thead><tbody>
      {tools.map(t=><tr key={t}><td><code>{t}</code></td><td>{MCP_TOOL_SUMMARY[t]}</td><td>{TOOL_SCOPES[t].join(', ')}</td><td>{ANNOTATIONS[t]}</td></tr>)}
     </tbody></table></div>
     <p>Read tools return metadata and counts, except <code>get_unanswered_digest</code>, which includes the text of visitor questions it could not answer. No tool returns owner or visitor message bodies, contact addresses, credentials or source text. <code>reply_to_conversation</code> is the only tool a visitor sees: it posts a team reply in the widget, only in a conversation you already took over in Tickets, and it never takes one over. <code>update_settings</code> changes only the chat mode (working hours on or off), working hours, away message, the AI-or-person choice and the contact field. There are no code-execution, takeover, email or payment tools.</p>

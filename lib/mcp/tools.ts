@@ -2,7 +2,7 @@ import {McpServer} from '@modelcontextprotocol/sdk/server/mcp.js';
 import type {CallToolResult, ToolAnnotations} from '@modelcontextprotocol/sdk/types.js';
 import {z} from 'zod';import '../zod-csp';
 import {answerKnowledge, embedKnowledge, exactCustomAnswer, instructionExtraction, safeKnowledge, type KnowledgeSource} from '../knowledge';
-import {parseVector, rankChunks, type OwnerChunk} from '../owner-retrieval';
+import {parseVector, rankChunks, type OwnerChunk,TEXT_RETRIEVAL_THRESHOLD,TEXT_RETRIEVAL_LIMIT} from '../owner-retrieval';
 import {buildUnansweredDigest, type DigestInteraction} from '../unanswered-digest';
 import {providerDefinition, PROVIDERS} from '../billing/core/registry';
 import {BILLING_INTENTS, type BillingProviderId} from '../billing/core/types';
@@ -109,7 +109,7 @@ export function buildMcpServer({scope, hash, backend, embed = (q) => embedKnowle
       if (!embedding) continue;
       chunks.push({id: c.id, documentId: c.documentId, title: c.title, excerpt: c.excerpt, embedding, sourceKind: c.sourceKind === 'owner_guidance' ? 'owner_guidance' : 'text', applicability: c.applicability, effectiveFrom: c.effectiveFrom ?? null, effectiveUntil: c.effectiveUntil ?? null});
     }
-    const ranked = rankChunks(chunks, vector);
+    const ranked = rankChunks(chunks, vector, TEXT_RETRIEVAL_THRESHOLD, TEXT_RETRIEVAL_LIMIT);
     const result = await answer(question, ranked as KnowledgeSource[]);
     return json({...result, retrieved: ranked.length, preview: true, note: TEST_NOTE});
   }));

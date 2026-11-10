@@ -5,7 +5,7 @@ import{validOrigin}from'../../../../lib/origin';
 import{allowRequest}from'../../../../lib/rate-limit';
 import{limitedJson}from'../../../../lib/limited-json';
 import{answerKnowledge,embedKnowledge,safeKnowledge,instructionExtraction,KnowledgeSource}from'../../../../lib/knowledge';
-import{rankChunks,parseVector,OwnerChunk}from'../../../../lib/owner-retrieval';
+import {rankChunks,parseVector,OwnerChunk,TEXT_RETRIEVAL_THRESHOLD,TEXT_RETRIEVAL_LIMIT} from '../../../../lib/owner-retrieval';
 // Owner-only dashboard preview. Uses the owner's own published chunks via existing RLS reads.
 // Nothing is recorded into knowledge_interactions: previews never enter analytics or the digest.
 export async function POST(req:NextRequest){
@@ -27,7 +27,7 @@ export async function POST(req:NextRequest){
       if(!embedding)continue;
       chunks.push({id:(r as {id:string}).id,documentId:(r as {document_id:string}).document_id,title:doc.title,excerpt:(r as {content:string}).content,embedding,sourceKind:doc.source_kind==='owner_guidance'?'owner_guidance':'text',applicability:doc.applicability,effectiveFrom:doc.effective_from,effectiveUntil:doc.effective_until});
     }
-    const ranked=rankChunks(chunks,vector);
+    const ranked=rankChunks(chunks,vector,TEXT_RETRIEVAL_THRESHOLD,TEXT_RETRIEVAL_LIMIT);
     const stages:string[]=[];
     const answer=await answerKnowledge(b.question,ranked as KnowledgeSource[],s=>stages.push(s));
     return NextResponse.json({...answer,stages,retrieved:ranked.length,preview:true,note:'Dashboard preview over your published sources. Not recorded in analytics or the digest.'},{headers:{'Cache-Control':'no-store'}});

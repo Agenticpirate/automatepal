@@ -15,7 +15,7 @@ const description='How to install the AutomatePal widget, control it from your p
 export const metadata:Metadata={title:'Docs',description,alternates:{canonical:'/docs'},robots:{index:true,follow:true},
  openGraph:{title:'Docs | AutomatePal',description,url:'/docs',images:[{url:'/opengraph-image',width:1200,height:630,alt:modeText('AutomatePal fictional-data preview, no live payments','AutomatePal: source-backed support, no live payments')}]},
  twitter:{card:'summary_large_image',title:'Docs | AutomatePal',description,images:['/opengraph-image']}};
-const TOC:[string,string][]=[['install','Install the widget'],['sdk','Widget SDK and events'],['followups','Follow-up suggestions'],['billing','Connect billing'],['verification','Customer verification'],['refunds','Refund reviews'],['replies','Owner replies'],['hours','Working hours'],['leads','Leads'],['mcp','MCP server'],['limits','Limits and what is not built']];
+const TOC:[string,string][]=[['install','Install the widget'],['sdk','Widget SDK and events'],['followups','Follow-up suggestions'],['billing','Connect billing'],['verification','Customer verification'],['refunds','Refund reviews'],['replies','Owner replies'],['hours','Working hours'],['leads','Leads'],['api','HTTP API'],['mcp','MCP server'],['limits','Limits and what is not built']];
 const INTENT_LABEL:Record<BillingIntent,string>={order_status:'Order or charge status',payment_history:'Payment history',failed_payment:'Failed payment and retry',invoice:'Invoice link',renewal:'Subscription renewal',refund_status:'Refund status'};
 const CONFIDENCE:Record<string,string>={'official-spec':'Official API spec','official-spec-early-access':'Official spec, early access','docs-derived':'Built from API docs'};
 // Least-privilege key guidance per provider. Mirrors each module's validateCredential (lib/billing/providers/*).
@@ -178,6 +178,20 @@ document.querySelector('#help-link').onclick = () => AutomatePal.open();`}</code
      <li>Deleting a lead removes the address and the consent from that request. The request stays in Tickets. Deletions are audited.</li>
      <li>Leads are not forwarded to email or a CRM.</li>
     </ul>
+   </section>
+   <section id="api" aria-labelledby="api-h">
+    <h2 id="api-h">HTTP API</h2>
+    <p>For your own backend. Plans with API access only. Create a token on the Integrations page (one scope per token, 1 to 168 hours, revocable) and send it as <code>Authorization: Bearer ap_ro_…</code>. Keep tokens on your server; never put one in a web page or app.</p>
+    <h3>Ask a question: <code>POST /api/v1/chat</code></h3>
+    <p>Scope <code>chat:write</code>. Answers run the same path as the widget (published sources only, exact owner answers first, grounding check) and count against the same monthly messages. The reply holds a <code>conversation</code> id, valid for 24 hours; send it back to continue that conversation. 30 requests a minute per token.</p>
+    <pre className="dc-code" aria-label="Chat API example"><code>{`curl -X POST ${SITE_URL}/api/v1/chat \\
+  -H "Authorization: Bearer $AUTOMATEPAL_TOKEN" -H "Content-Type: application/json" \\
+  -d '{"question": "Do you ship internationally?"}'
+# {"conversation": "…", "expiresAt": "…", "answer": "…", "supported": true, "sources": […]}`}</code></pre>
+    <h3>Refresh website sources now: <code>POST /api/v1/sources/refresh</code></h3>
+    <p>Scope <code>sources:refresh</code>, no body. Call it from a deploy hook or when your CMS publishes. It runs the scheduled refresh immediately: up to 15 saved pages are re-read (least recently checked first) and up to 5 new sitemap pages are found. Changes wait in the review queue on the Knowledge page; nothing is published by the call. One run per 10 minutes and 24 a day per workspace; sooner calls get <code>429</code> with <code>Retry-After</code>. The reply holds counts only.</p>
+    <pre className="dc-code" aria-label="Refresh API example"><code>{`curl -X POST ${SITE_URL}/api/v1/sources/refresh -H "Authorization: Bearer $AUTOMATEPAL_TOKEN"
+# {"ok": true, "checked": 15, "changed": 2, "added": 1, "removed": 0, "skipped": 0, "sitemap": "read", "queuedForReview": 3}`}</code></pre>
    </section>
    <section id="mcp" aria-labelledby="mcp-h">
     <h2 id="mcp-h">MCP server</h2>

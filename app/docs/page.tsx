@@ -75,7 +75,7 @@ export default function Docs(){
      <tr><td><code>AutomatePal.on(type, fn)</code></td><td>Calls <code>fn(payload)</code> for an event and returns a function that stops listening. <code>AutomatePal.off(type, fn)</code> does the same.</td></tr>
     </tbody></table></div>
     <div className="ps-scroll" role="region" aria-label="Widget events table" tabIndex={0}><table className="ps-table"><thead><tr><th>Event</th><th>When</th><th>Payload</th></tr></thead><tbody>
-     <tr><td><code>open</code></td><td>The panel opened</td><td><code>{'{type, trigger}'}</code>, trigger <code>api</code>, <code>button</code> or <code>auto</code></td></tr>
+     <tr><td><code>open</code></td><td>The panel opened</td><td><code>{'{type, trigger}'}</code>, trigger <code>api</code>, <code>button</code>, <code>auto</code> or <code>proactive</code> (the visitor clicked a proactive message)</td></tr>
      <tr><td><code>close</code></td><td>The panel closed</td><td><code>{'{type, trigger}'}</code>, trigger <code>api</code>, <code>button</code> or <code>reset</code></td></tr>
      <tr><td><code>message_sent</code></td><td>The visitor sent a question, a request or a message to the team</td><td><code>{'{type, channel}'}</code>, channel <code>ai</code>, <code>request</code> or <code>person</code></td></tr>
      <tr><td><code>handoff_requested</code></td><td>The visitor asked for a person</td><td><code>{'{type, withinHours}'}</code></td></tr>

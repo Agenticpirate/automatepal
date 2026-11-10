@@ -15,7 +15,7 @@
     the widget is not shown on this page. Event payloads carry the event type and a fixed label only: never
     message text, names, emails, order details, the key or a token. */
  const EVENTS=['open','close','message_sent','handoff_requested','lead_submitted'],listeners={};EVENTS.forEach(n=>listeners[n]=new Set());
- const pick={open:{trigger:['api','button','auto']},close:{trigger:['api','button','reset']},message_sent:{channel:['ai','person','request']},handoff_requested:{withinHours:[true,false]},lead_submitted:{}};
+ const pick={open:{trigger:['api','button','auto','proactive']},close:{trigger:['api','button','reset']},message_sent:{channel:['ai','person','request']},handoff_requested:{withinHours:[true,false]},lead_submitted:{}};
  function emit(type,detail){if(!EVENTS.includes(type))return;const payload={type};for(const[k,allowed]of Object.entries(pick[type]))if(detail&&allowed.includes(detail[k]))payload[k]=detail[k];Object.freeze(payload);
   for(const fn of[...listeners[type]]){try{fn(payload)}catch{}}try{window.dispatchEvent(new CustomEvent('automatepal:'+type,{detail:payload}))}catch{}}
  let ready=null;const queued=[];const call=(name,arg)=>ready?ready[name](arg):queued.push([name,arg]);
@@ -56,15 +56,29 @@
   if(f&&f.origin===location.origin){q.set('fexp',String(f.exp));q.set('fsig',f.sig);}
   frame.src=base+'/help?'+q.toString();loaded=true;
  }
- function toggle(open,trigger){const was=isOpen();
+ function toggle(open,trigger){const was=isOpen();if(open)hideNote();
   if(open&&!loaded){loading=loading||load().catch(()=>{loading=null;text.textContent=label+' · '+unavailableText;frame.style.display='none';button.setAttribute('aria-expanded','false');});}
   frame.style.display=open?'block':'none';button.setAttribute('aria-expanded',String(open));text.textContent=open?closeText+' '+label:label+suffix;try{sessionStorage.setItem(key,open?'open':'closed')}catch{}if(trigger&&open!==was)emit(open?'open':'close',{trigger});}
+ /* Proactive message (owner rule for this path, longest prefix wins): a note beside the button after a delay,
+    once per browser session, only while the panel is closed. Plain text. Clicking it opens the chat. */
+ let note=null,noteTimer=null;const noteKey='automatepal-note-'+id;
+ function hideNote(){if(noteTimer){clearTimeout(noteTimer);noteTimer=null;}if(note){note.remove();note=null;}}
+ function showNote(message){if(isOpen()||note)return;try{sessionStorage.setItem(noteKey,'1')}catch{}
+  note=document.createElement('div');note.id='automatepal-note';Object.assign(note.style,{position:'fixed',bottom:'80px',[side]:'20px',zIndex:'2147483000',maxWidth:'min(280px, calc(100vw - 40px))',display:'flex',alignItems:'flex-start',gap:'4px',background:'#fff',color:'#0A1B3D',border:'1px solid #e1e4ed',borderRadius:'14px',boxShadow:'0 8px 30px #0002',padding:'6px',font:'14px/1.45 system-ui'});
+  const go=document.createElement('button'),x=document.createElement('button');go.type=x.type='button';go.textContent=message;x.textContent='\u00d7';x.setAttribute('aria-label',closeText);
+  Object.assign(go.style,{flex:'1',border:'0',background:'transparent',color:'inherit',font:'inherit',textAlign:'start',padding:'8px 10px',cursor:'pointer',borderRadius:'10px'});
+  Object.assign(x.style,{border:'0',background:'transparent',color:'#4A5878',font:'18px/1 system-ui',width:'32px',height:'32px',cursor:'pointer',borderRadius:'8px',flex:'none'});
+  go.onclick=()=>toggle(true,'proactive');x.onclick=hideNote;note.append(go,x);root.append(note);}
+ function scheduleNote(){const rules=Array.isArray(settings.proactive)?settings.proactive:[],p=location.pathname;
+  const rule=rules.filter(r=>r&&typeof r.path==='string'&&typeof r.message==='string'&&(p===r.path||p.startsWith(r.path.endsWith('/')?r.path:r.path+'/')||r.path==='/')).sort((a,b)=>b.path.length-a.path.length)[0];
+  if(!rule||isOpen())return;try{if(sessionStorage.getItem(noteKey))return}catch{}
+  noteTimer=setTimeout(()=>{noteTimer=null;showNote(rule.message.slice(0,140));},Math.min(120,Math.max(0,Number(rule.delaySeconds)||0))*1000);}
  window.addEventListener('message',e=>{if(!loaded||e.source!==frame.contentWindow||e.origin!==base)return;const d=e.data;if(!d||typeof d!=='object'||d.source!=='automatepal-help'||!['message_sent','handoff_requested','lead_submitted'].includes(d.event))return;emit(d.event,d);});
- button.onclick=()=>toggle(!isOpen(),'button');root.append(frame,button);document.body.append(host);let open=!!settings.autoOpen,restored=false;try{const saved=sessionStorage.getItem(key);if(saved!==null){open=saved==='open';restored=true;}}catch{}toggle(open,open&&!restored?'auto':null);
+ button.onclick=()=>toggle(!isOpen(),'button');root.append(frame,button);document.body.append(host);let open=!!settings.autoOpen,restored=false;try{const saved=sessionStorage.getItem(key);if(saved!==null){open=saved==='open';restored=true;}}catch{}toggle(open,open&&!restored?'auto':null);scheduleNote();
  ready={open:()=>toggle(true,'api'),close:()=>toggle(false,'api'),toggle:()=>toggle(!isOpen(),'api'),
   // Reset: close the panel, forget the open state and start a fresh panel on the next open. With a key it
   // also forgets this visitor's conversation, so the next open starts a new one. Questions already sent stay
   // recorded for the owner.
-  reset:()=>{toggle(false,'reset');frame.src='about:blank';loaded=false;loading=null;if(keyMode){session=null;store.clear();}try{sessionStorage.removeItem(key)}catch{}}};
+  reset:()=>{hideNote();toggle(false,'reset');frame.src='about:blank';loaded=false;loading=null;if(keyMode){session=null;store.clear();}try{sessionStorage.removeItem(key)}catch{}}};
  for(const[name]of queued.splice(0))ready[name]();
 })();

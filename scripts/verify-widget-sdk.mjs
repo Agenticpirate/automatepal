@@ -109,11 +109,30 @@ try {
   await auto.p.waitForFunction(() => window.__ev.length >= 1);
   assert.deepEqual((await events(auto.p))[0], {type: 'open', trigger: 'auto'}); ok();
   await auto.p.close();
+  // Proactive message: shown after the delay beside the closed button, as text only; clicking it opens the chat
+  // with trigger proactive; it is not shown again in the same browser session; dismissing removes it.
+  const note = () => document.getElementById('automatepal-billing-widget')?.shadowRoot?.getElementById('automatepal-note');
+  const pro = await page(browser, {path: '/pricing/annual', settings: {label: 'Demo help', excludedPaths: [], proactive: [{path: '/', message: 'General <b>help</b>', delaySeconds: 0}, {path: '/pricing', message: 'Questions about plans? <img src=x onerror=alert(1)>', delaySeconds: 1}]}});
+  await pro.p.waitForLoadState('networkidle');
+  assert.equal(await pro.p.evaluate(`!!(${note})()`), false, 'not before the delay');
+  await pro.p.waitForFunction(`!!(${note})()`, null, {timeout: 5000});
+  assert.deepEqual(await pro.p.evaluate(`(() => { const n = (${note})(); return [n.querySelector('button').textContent, n.querySelectorAll('img,b,script').length, n.querySelectorAll('button')[1].getAttribute('aria-label')]; })()`), ['Questions about plans? <img src=x onerror=alert(1)>', 0, 'Close']); ok();
+  await pro.p.evaluate(`(${note})().querySelector('button').click()`);
+  assert.deepEqual((await events(pro.p))[0], {type: 'open', trigger: 'proactive'}); assert.equal(await pro.p.evaluate(`!!(${note})()`), false, 'note gone once the chat opens'); ok();
+  await pro.p.evaluate(() => window.AutomatePal.close()); await pro.p.reload(); await pro.p.waitForLoadState('networkidle'); await pro.p.waitForTimeout(1800);
+  assert.equal(await pro.p.evaluate(`!!(${note})()`), false, 'once per browser session'); ok();
+  assert.deepEqual(pro.errors, []);
+  await pro.p.close();
+  const dismiss = await page(browser, {settings: {label: 'Demo help', excludedPaths: [], proactive: [{path: '/', message: 'Need a hand?', delaySeconds: 0}]}});
+  await dismiss.p.waitForFunction(`!!(${note})()`, null, {timeout: 5000});
+  await dismiss.p.evaluate(`(${note})().querySelectorAll('button')[1].click()`);
+  assert.equal(await dismiss.p.evaluate(`!!(${note})()`), false); assert.deepEqual(await events(dismiss.p), [], 'dismissing opens nothing'); ok();
+  await dismiss.p.close();
   const excluded = await page(browser, {path: '/account/settings', settings: {excludedPaths: ['/account']}});
   await excluded.p.waitForLoadState('networkidle');
   await excluded.p.evaluate(() => { window.AutomatePal.open(); window.AutomatePal.reset(); });
   assert.equal(await excluded.p.locator('#automatepal-billing-widget').count(), 0); assert.deepEqual(await events(excluded.p), []); ok();
   assert.deepEqual(excluded.errors, []); ok();
   await excluded.p.close();
-  console.log(`PASS widget SDK: ${n} checks; open/close/toggle/reset, queued calls before mount, auto-open trigger, excluded page no-op, events via on()/off() and automatepal:* DOM events, payloads limited to type + fixed label (no text, email, name, token), messages only from the panel frame, throwing listeners isolated.`);
+  console.log(`PASS widget SDK: ${n} checks; open/close/toggle/reset, queued calls before mount, auto-open trigger, proactive message (delay, longest path, text only, opens with trigger proactive, once per session, dismiss), excluded page no-op, events via on()/off() and automatepal:* DOM events, payloads limited to type + fixed label (no text, email, name, token), messages only from the panel frame, throwing listeners isolated.`);
 } finally { await browser.close(); }

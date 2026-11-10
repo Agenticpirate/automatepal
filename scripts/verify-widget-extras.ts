@@ -1,7 +1,7 @@
 // Phase 1 widget extras without network or database: per-page starters, language choice and translation
 // completeness, logo file checks, and the settings schema for the new controls.
 import assert from 'node:assert/strict';
-import {startersFor, widgetSettings} from '../lib/widget';
+import {startersFor, widgetSettings, proactiveFor} from '../lib/widget';
 import {resolveLang, WIDGET_TEXT, LANG_NAMES} from '../lib/widget-i18n';
 import {logoMatches, LOGO_TYPES} from '../lib/widget-logo';
 let n = 0;
@@ -39,4 +39,14 @@ for (const bad of [{language: 'xx'}, {pageStarters: [{path: 'pricing', prompts: 
   assert.equal(widgetSettings.safeParse({...base, ...bad}).success, false, JSON.stringify(bad).slice(0, 60));
 }
 ok();
-console.log(`PASS widget extras: ${n} checks; per-page starters (longest prefix, segment boundary, root rule), language choice, ${Object.keys(LANG_NAMES).length} complete translations, logo magic bytes (no SVG), schema bounds.`);
+// Proactive messages: bounds, default delay, longest matching path wins, "/" covers every page.
+{
+  const rules = widgetSettings.parse({...base, proactive: [{path: '/', message: 'Need a hand?'}, {path: '/pricing', message: 'Questions about plans?', delaySeconds: 0}]}).proactive;
+  assert.deepEqual(rules.map(r => r.delaySeconds), [5, 0]); assert.deepEqual(widgetSettings.parse(base).proactive, []); ok();
+  assert.equal(proactiveFor('/pricing/annual', rules)?.message, 'Questions about plans?'); assert.equal(proactiveFor('/pricing-old', rules)?.message, 'Need a hand?'); assert.equal(proactiveFor('/docs', rules)?.message, 'Need a hand?'); ok();
+  assert.equal(proactiveFor('/docs', rules.slice(1)), null); assert.equal(proactiveFor(null, rules), null); assert.equal(proactiveFor('/x', []), null); ok();
+  for (const bad of [[{path: 'pricing', message: 'Hello there'}], [{path: '/p', message: 'Hi'}], [{path: '/p', message: 'x'.repeat(141)}], [{path: '/p', message: 'Hello there', delaySeconds: 121}], [{path: '/p', message: 'Hello there', delaySeconds: -1}], [{path: '/p', message: 'Hello there', delaySeconds: 1.5}], Array.from({length: 11}, () => ({path: '/', message: 'Hello there'}))])
+    assert.equal(widgetSettings.safeParse({...base, proactive: bad}).success, false, JSON.stringify(bad).slice(0, 60));
+  ok();
+}
+console.log(`PASS widget extras: ${n} checks; per-page starters (longest prefix, segment boundary, root rule), language choice, ${Object.keys(LANG_NAMES).length} complete translations, logo magic bytes (no SVG), schema bounds, proactive message rules.`);

@@ -26,5 +26,8 @@ export async function loadConversations(c:Pick<Session,'client'|'userId'>,limit=
  ]);
  if(q.error||r.error)return null;
  const sorted=<T extends {created_at:string}>(rows:unknown[])=>(rows as T[]).sort(byTime);
- return {conversations:buildConversations(cases.data as CaseRow[],sorted<QuestionRow>(q.rows),(m.error?[]:sorted<MessageRow>(m.rows)),sorted<RequestRow>(r.rows)),truncated:(cases.data?.length??0)>=limit};
+ /* CSAT (db/065), fail-soft: a database without the table just has no ratings. */
+ const rated=await readAll(ids,chunk=>c.client.from('case_ratings').select('case_id,score').eq('user_id',c.userId).in('case_id',chunk).limit(1000));
+ const score=new Map((rated.error?[]:rated.rows as {case_id:string;score:number}[]).map(x=>[x.case_id,x.score]));
+ return {conversations:buildConversations(cases.data as CaseRow[],sorted<QuestionRow>(q.rows),(m.error?[]:sorted<MessageRow>(m.rows)),sorted<RequestRow>(r.rows)).map(v=>score.has(v.id)?{...v,rating:score.get(v.id)}:v),truncated:(cases.data?.length??0)>=limit};
 }

@@ -64,6 +64,8 @@ export async function POST(req:NextRequest){
  const body=await limitedJson(req,6000).then(v=>v as Record<string,unknown>|null).catch(()=>null);
  try{
   if(body?.action==='feedback'){const d=z.object({token:tokenSchema,id:z.string().uuid(),feedback:z.union([z.literal(1),z.literal(-1)])}).parse(body);const {data,error}=await publicClient().rpc('support_rate_knowledge',{p_hash:hash(d.token),p_id:d.id,p_feedback:d.feedback});if(error||!data)throw Error('Feedback unavailable.');return NextResponse.json({note:'Feedback recorded.'});}
+  /* CSAT (db/065): 1 to 5 for the whole conversation; score only. */
+  if(body?.action==='rate'){const d=z.object({token:tokenSchema,score:z.number().int().min(1).max(5)}).parse(body);if(!await allowRequest('rate:'+hash(d.token),Date.now(),10))return NextResponse.json({error:'Please wait a minute.'},{status:429});const {data,error}=await publicClient().rpc('support_rate_case',{p_hash:hash(d.token),p_score:d.score});if(error||data!==true)return NextResponse.json({error:'Rating unavailable.'},{status:400});return NextResponse.json({note:'Rating recorded.'});}
   if(body?.action==='open'){
    const d=z.object({token:tokenSchema,source:sourceSchema}).parse(body);
    if(!await allowRequest('open:'+hash(d.token),Date.now(),10))return NextResponse.json({recorded:false},{status:429});

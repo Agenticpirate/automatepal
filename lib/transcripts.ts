@@ -8,7 +8,7 @@ export type QuestionRow={id:string;case_id:string;created_at:string;question:str
 export type MessageRow={id:string;case_id:string;created_at:string;author:string;body:string};
 export type RequestRow={id:string;case_id:string;created_at:string;kind:string;message:string};
 export type Entry={at:string;author:'visitor'|'ai'|'owner'|'request';text:string;meta?:string};
-export type Conversation={id:string;label:string;created_at:string;last_at:string;status:string;inbox_state:string;source:string;questions:number;unanswered:number;preview:string;entries:Entry[]};
+export type Conversation={id:string;label:string;created_at:string;last_at:string;status:string;inbox_state:string;source:string;questions:number;unanswered:number;preview:string;entries:Entry[];rating?:number};
 export const SOURCES=['widget','hosted_page','api','mcp'] as const;
 export const RETENTION_DAYS=[30,90,365] as const;
 

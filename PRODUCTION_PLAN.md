@@ -90,7 +90,7 @@ This reuses the case model instead of replacing it:
 
 ### Phase 3: Close the SiteGPT gaps on top of existing modules (≈ 2–3 weeks)
 
-> **Status 2026-11-09:** first batch built on branch `phase-3-parity` (stacked on `phase-2-billing`): fast/deep model choice (db/058), automatic webhook delivery (059), public chat API (060), GitHub docs and Word import, Slack alerts (061). Multiple chatbots built on branch `phase-3-multibot` (db/062). Mobile inbox with Web Push built on branch `phase-3-push` (db/063). Remaining in this phase: YouTube/Drive/Notion import (need OAuth apps or transcript access), Zendesk/WhatsApp (need accounts and app review), OpenAPI spec and TypeScript SDK.
+> **Status 2026-11-09:** first batch built on branch `phase-3-parity` (stacked on `phase-2-billing`): fast/deep model choice (db/058), automatic webhook delivery (059), public chat API (060), GitHub docs and Word import, Slack alerts (061). Multiple chatbots built on branch `phase-3-multibot` (db/062). Mobile inbox with Web Push built on branch `phase-3-push` (db/063). Sources refresh API (`POST /api/v1/sources/refresh`, scope `sources:refresh`, db/064) built on branch `phase-3-refresh-api`. Remaining in this phase: YouTube/Drive/Notion import (need OAuth apps or transcript access), Zendesk/WhatsApp (need accounts and app review), OpenAPI spec and TypeScript SDK.
 
 | SiteGPT feature | Build on | Change |
 | --- | --- | --- |
@@ -117,6 +117,8 @@ Candidate add-ons, each reusing an existing module. Pick which ones:
 5. White-label and agency (remove "Powered by", custom domain).
 
 ### Phase 5: Hardening (≈ 1 week)
+
+> **Status 2026-11-10:** built on branch `phase-5-hardening`: internal security review with four fixes and regression tests, axe-core WCAG 2.1 AA audit in CI (0 violations), load check extended to widget.js, chat API and the webhook cap, runbooks in OPERATIONS.md. Still open: the external penetration test, the 200-case eval set (needs approval to spend on model calls), a load test against staging, legal details and review.
 
 - An external penetration test of the widget key path, `/api/support`, `/mcp` and the PayPal webhook. Fix every high or critical finding.
 - Grow the existing `knowledge-eval.json` / `eval:knowledge` set to 200+ cases and run it in CI on prompt or model changes.

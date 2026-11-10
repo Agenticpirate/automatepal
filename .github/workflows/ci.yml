@@ -79,6 +79,7 @@ jobs:
           for i in $(seq 1 90); do curl -sf -o /dev/null http://localhost:3100/widget.js && break; sleep 1; done
           E2E_APP=http://localhost:3100 SUPABASE_URL=http://127.0.0.1:54321 ANON_KEY="$ANON_KEY" SERVICE_ROLE_KEY="$SERVICE_ROLE_KEY" node scripts/verify-plan-e2e.mjs
           E2E_APP=http://localhost:3100 SUPABASE_URL=http://127.0.0.1:54321 ANON_KEY="$ANON_KEY" SERVICE_ROLE_KEY="$SERVICE_ROLE_KEY" node scripts/verify-chat-api-e2e.mjs
+          E2E_APP=http://localhost:3100 SUPABASE_URL=http://127.0.0.1:54321 ANON_KEY="$ANON_KEY" SERVICE_ROLE_KEY="$SERVICE_ROLE_KEY" node scripts/verify-refresh-api-e2e.mjs
           E2E_APP=http://localhost:3100 node scripts/verify-push-sw.mjs
           E2E_APP=http://localhost:3100 SUPABASE_URL=http://127.0.0.1:54321 ANON_KEY="$ANON_KEY" SERVICE_ROLE_KEY="$SERVICE_ROLE_KEY" node scripts/verify-bot-stats-e2e.mjs
           E2E_APP=http://localhost:3100 SUPABASE_URL=http://127.0.0.1:54321 ANON_KEY="$ANON_KEY" SERVICE_ROLE_KEY="$SERVICE_ROLE_KEY" node scripts/verify-a11y.mjs --all

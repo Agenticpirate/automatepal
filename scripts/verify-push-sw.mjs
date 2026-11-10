@@ -18,14 +18,16 @@ try {
   const ctx = await browser.newContext();
   await ctx.grantPermissions(['notifications'], {origin: APP});
   const page = await ctx.newPage();
-  await page.goto(APP + '/pricing');
+  await page.goto(APP + '/pricing', {waitUntil: 'networkidle'});
+  // next dev can reload the page once after its first compile; retry a call that a reload interrupted.
+  const settled = async (fn) => { for (let i = 0; ; i++) { try { return await fn(); } catch (e) { if (i >= 4 || !/context was destroyed|navigation/i.test(String(e))) throw e; await page.waitForLoadState('networkidle').catch(() => {}); } } };
   const cdp = await ctx.newCDPSession(page);
   const regId = new Promise(res => cdp.on('ServiceWorker.workerRegistrationUpdated', e => { const r = e.registrations.find(x => x.scopeURL === APP + '/' && !x.isDeleted); if (r) res(r.registrationId); }));
   await cdp.send('ServiceWorker.enable');
-  await page.evaluate(async () => { await navigator.serviceWorker.register('/sw.js', {scope: '/'}); await navigator.serviceWorker.ready; });
+  await settled(() => page.evaluate(async () => { await navigator.serviceWorker.register('/sw.js', {scope: '/'}); await navigator.serviceWorker.ready; }));
   const registrationId = await regId; ok();
   const deliver = async (data) => cdp.send('ServiceWorker.deliverPushMessage', {origin: APP, registrationId, data: JSON.stringify(data)});
-  const notes = () => page.evaluate(async () => (await (await navigator.serviceWorker.ready).getNotifications()).map(x => ({title: x.title, body: x.body, url: x.data && x.data.url, tag: x.tag})));
+  const notes = () => settled(() => page.evaluate(async () => (await (await navigator.serviceWorker.ready).getNotifications()).map(x => ({title: x.title, body: x.body, url: x.data && x.data.url, tag: x.tag}))));
   const waitTag = async (tag, count = 1) => { for (let i = 0; i < 40; i++) { if ((await notes()).filter(x => x.tag === tag).length >= count) return; await page.waitForTimeout(250); } throw Error('no notification with tag ' + tag); };
   await deliver({title: 'A visitor asked for a person', body: 'T-1234 · tap to open', url: '/tickets?ticket=11111111-2222-4333-8444-555555555555', tag: 'case-1'});
   await waitTag('case-1');

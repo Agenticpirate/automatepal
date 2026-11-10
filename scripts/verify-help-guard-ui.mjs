@@ -65,7 +65,7 @@ try {
       assert.equal(await p.locator('img[src="x"]').count(), 0); assert.equal(await p.evaluate(() => window.__xss), undefined); ok();
       await group.getByRole('button', {name: 'Do you ship to Pune?'}).click();
       await p.getByText('Fictional answer for: Do you ship to Pune?').waitFor(); ok();
-      assert.equal(await box.inputValue(), 'Do you ship to Pune?'); ok();
+      assert.equal(await box.inputValue(), '', 'the box is cleared once the question is in the thread'); await p.locator('.hp-q', {hasText: 'Do you ship to Pune?'}).waitFor(); ok();
       assert.deepEqual(await group.getByRole('button').allInnerTexts(), ['What is the refund policy?', 'How do I track my order?', 'Can I change my address?'], 'the question just asked is left out'); ok();
       assert.equal(await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, `overflow at ${vp.width}`); ok();
       assert.deepEqual(errors, [], errors.join(' | ')); ok();

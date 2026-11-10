@@ -81,7 +81,7 @@ try {
       await chooser.getByRole('button', {name: 'Ask the AI'}).click();
       assert.equal(await p.evaluate(() => document.activeElement?.id), 'help-message', 'Ask the AI focuses the question box'); ok();
       // Ask a person to review and Ask a question stay.
-      await p.getByRole('button', {name: 'Ask a person to review'}).waitFor(); await p.getByRole('button', {name: 'Ask a question'}).waitFor(); ok();
+      await p.locator('summary', {hasText: 'Ask a person to review'}).waitFor(); await p.getByRole('button', {name: 'Ask a question'}).waitFor(); ok();
 
       // 2b. Open hours (disabled working hours = always open): joined note.
       await p.unroute('**/api/**');

@@ -4,6 +4,10 @@
 export type OwnerChunk={id:string;documentId:string;title:string;excerpt:string;embedding:number[];sourceKind?:'text'|'owner_guidance';applicability?:string;effectiveFrom?:string|null;effectiveUntil?:string|null};
 export const OWNER_RETRIEVAL_THRESHOLD=0.72;
 export const OWNER_RETRIEVAL_LIMIT=4;
+/* Text sources (db/066): a lower floor and two more passages; the answer and grounding checks decide support.
+   Owner guidance keeps 0.72 (lib/knowledge.ts eligibleKnowledge filters it again). */
+export const TEXT_RETRIEVAL_THRESHOLD=0.62;
+export const TEXT_RETRIEVAL_LIMIT=6;
 export function cosine(a:number[],b:number[]):number{
   if(a.length!==b.length||!a.length)return -1;
   let dot=0,na=0,nb=0;

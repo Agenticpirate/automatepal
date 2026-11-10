@@ -60,8 +60,10 @@ export default function Docs(){
      <li><b>Shape the widget</b> in <Link href="/support">Widget studio</Link>: colour, starter questions, side, allowed origins and paths, and working hours.</li>
      <li><b>Paste one script tag</b> before <code>&lt;/body&gt;</code>.</li>
     </ol>
-    <pre className="dc-code" aria-label="Widget script tag"><code>{`<script src="${SITE_URL}/widget.js" data-demo-token="YOUR_TOKEN" defer></script>`}</code></pre>
-    <p>In this preview the token comes from a one-hour demo link created in Widget studio. Origin and path rules control where the widget shows; they are not authentication for someone who holds the link.</p>
+    <pre className="dc-code" aria-label="Widget script tag"><code>{`<script src="${SITE_URL}/widget.js" data-bot="pk_live_YOUR_INSTALL_KEY" async></script>`}</code></pre>
+    <p>Your install key is on the <Link href="/setup">Setup</Link> page, with step-by-step guides for plain HTML, WordPress (a plugin), Shopify, Google Tag Manager, Webflow, Wix, Squarespace and Next.js, and a check that finds the script on your live page. The key is public: it only works on the origins you allow in Widget studio, and you can turn it off or replace it at any time. Where a tag manager drops <code>data-</code> attributes, put the key in the address instead: <code>widget.js?bot=pk_live_…</code>.</p>
+    <p>The widget loads after your page, adds one button and makes no request for a conversation until a visitor opens it. On a single-page app it reads the address when it loads; starter questions, proactive messages and excluded paths are chosen for that first page.</p>
+    <p>To try it before installing, Widget studio creates a one-hour demo link (<code>data-demo-token</code> instead of <code>data-bot</code>).</p>
     <p>The chat refuses a message that carries its own system prompt, a pasted chat transcript or a request to ignore the bot’s instructions. The visitor sees “This message can’t be sent. Please rephrase your question.” and the text stays in the box. The server runs the same check before any model call, and the answer prompt tells the model never to show, translate or rewrite its instructions. Ordinary questions that mention instructions or a system go through. This is a filter, not a guarantee.</p>
    </section>
    <section id="sdk" aria-labelledby="sdk-h">

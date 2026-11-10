@@ -7,6 +7,7 @@ import "./components/public-shell.css";
 import { connection } from "next/server";
 import { SITE_URL } from "../lib/site";
 import { modeText } from "../lib/app-mode";
+import SupportWidget from "./components/SupportWidget";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -59,6 +60,8 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         {/* Keyboard users jump past the navigation. Pages put id="main-content" on their main region. */}
         <a href="#main-content" className="ap-skip">Skip to content</a>
         {children}
+        {/* Our own chat widget on the marketing pages; off until SUPPORT_BOT_KEY is set. */}
+        <SupportWidget botKey={process.env.SUPPORT_BOT_KEY ?? null} />
       </body>
     </html>
   );

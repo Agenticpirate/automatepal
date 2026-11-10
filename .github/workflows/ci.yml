@@ -72,7 +72,7 @@ jobs:
       - name: Plans end to end (local app, local auth, mock PayPal)
         run: |
           eval "$(npx -y supabase@latest status --workdir .supabase-local -o env | grep -E '^(ANON_KEY|SERVICE_ROLE_KEY)=')"
-          pkill -f "next dev -p 3100" || true
+          pkill -f "next dev -p 3100" || true; sleep 2; rm -rf .next/dev  # a dev cache from a server with other env values makes pages reload in a loop
           PAYPAL_API_BASE=http://127.0.0.1:8790 PAYPAL_CLIENT_ID=mock-client PAYPAL_CLIENT_SECRET=mock PAYPAL_WEBHOOK_ID=WH-TEST \
             NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321 NEXT_PUBLIC_SUPABASE_ANON_KEY="$ANON_KEY" SUPABASE_SERVICE_ROLE_KEY="$SERVICE_ROLE_KEY" \
             npx next dev -p 3100 > /tmp/e2e-plan-app.log 2>&1 &

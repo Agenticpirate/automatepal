@@ -113,7 +113,7 @@ Candidate add-ons, each reusing an existing module. Pick which ones:
 1. Shopify / WooCommerce order tracking, as a new adapter under `lib/billing/providers`, with the same verify-then-read flow.
 2. Pause or cancel requests that go to the refund-review style approval in Tickets.
 3. CSAT after a conversation, extending the existing up/down feedback. **Built 2026-11-10 on branch `phase-4-csat` (db/065).**
-4. Proactive messages, a new `widget.js` trigger driven by controls.
+4. Proactive messages, a new `widget.js` trigger driven by controls. **Built 2026-11-10 on branch `phase-4-proactive`.**
 5. White-label and agency (remove "Powered by", custom domain).
 
 ### Phase 5: Hardening (≈ 1 week)

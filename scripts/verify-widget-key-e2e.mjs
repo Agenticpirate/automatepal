@@ -135,17 +135,23 @@ async function main() {
     const PNG1 = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
     await db.query('begin'); await db.query("select set_config('app.widget_key_rpc','1',true)");
     await db.query(`update widget_settings set key_active=true,logo_type='image/png',logo_data=$2,logo_version=logo_version+1,
-      controls=controls||'{"language":"es","pageStarters":[{"path":"/pricing","prompts":["Which plan fits me?"]}]}' where user_id=$1`, [OWNER, PNG1]);
+      controls=controls||'{"language":"es","pageStarters":[{"path":"/pricing","prompts":["Which plan fits me?"]}],"proactive":[{"path":"/pricing","message":"Questions about our plans? Ask here.","delaySeconds":0}]}' where user_id=$1`, [OWNER, PNG1]);
     await db.query('commit');
     {
       const c3 = await browser.newContext({locale: 'en-US'}); const t = await c3.newPage();
       await t.route(`${SHOP}/**`, r => r.fulfill({contentType: 'text/html', body: page(SHOP)}));
       await t.goto(`${SHOP}/pricing`);
-      const b = t.locator('#automatepal-billing-widget button'); await b.waitFor({timeout: 20000});
+      const b = t.locator('#automatepal-billing-widget button[aria-controls="automatepal-panel"]'); await b.waitFor({timeout: 20000});
       await t.waitForFunction(() => { const i = document.getElementById('automatepal-billing-widget')?.shadowRoot?.querySelector('button img'); return i && i.complete && i.naturalWidth === 1; }, null, {timeout: 20000});
       ok(); // logo image loaded on the button from /api/widget/logo
+      // Proactive message for /pricing beside the closed button; accessible; gone once the chat opens.
+      const noteText = () => document.getElementById('automatepal-billing-widget')?.shadowRoot?.querySelector('#automatepal-note button')?.textContent ?? null;
+      await t.waitForFunction(noteText, null, {timeout: 10000}); assert.equal(await t.evaluate(noteText), 'Questions about our plans? Ask here.');
+      assert.deepEqual(await axeSerious(t.mainFrame()), [], 'proactive message accessibility');
+      if (process.env.E2E_SHOT) await t.screenshot({path: process.env.E2E_SHOT});
       await b.click();
       assert.equal((await b.innerText()).trim(), 'Cerrar Shop help', 'button text in the chosen language'); ok();
+      assert.equal(await t.evaluate(noteText), null, 'note removed when the chat opens'); ok();
       const f = t.frameLocator('#automatepal-billing-widget iframe');
       await f.getByRole('button', {name: 'Preguntar a la IA'}).waitFor({timeout: 30000}); ok();
       await f.getByRole('button', {name: 'Which plan fits me?'}).waitFor(); ok(); // /pricing starter
@@ -168,7 +174,7 @@ async function main() {
       ok(); await c2.close();
       assert.ok(name);
     }
-    console.log(`PASS widget key end to end: ${n} checks; lazy conversation on first open, launcher and chat panel without serious WCAG 2.1 AA issues, signed frame grant lets shop.example frame /help, exact answer through the widget, 1 to 5 conversation rating from the panel (replaceable), conversation reused across loads, reset starts a new one, other sites get no widget, no session and no framing, turned-off key shows nothing, tag-manager installs (?bot= injected, AutomatePalConfig) work, logo on button and header, per-page starters, Spanish chat, a second bot with its own key, name and conversations.`);
+    console.log(`PASS widget key end to end: ${n} checks; lazy conversation on first open, launcher and chat panel without serious WCAG 2.1 AA issues, signed frame grant lets shop.example frame /help, exact answer through the widget, 1 to 5 conversation rating from the panel (replaceable), conversation reused across loads, reset starts a new one, other sites get no widget, no session and no framing, turned-off key shows nothing, tag-manager installs (?bot= injected, AutomatePalConfig) work, logo on button and header, per-page starters, proactive message, Spanish chat, a second bot with its own key, name and conversations.`);
   } finally {
     await browser.close();
     await cleanup().catch(() => {});

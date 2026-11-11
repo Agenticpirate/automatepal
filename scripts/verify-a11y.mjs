@@ -12,7 +12,7 @@ for (const u of [APP, SB]) if (!['127.0.0.1', 'localhost'].includes(new URL(u).h
 const AXE = readFileSync(createRequire(import.meta.url).resolve('axe-core/axe.min.js'), 'utf8');
 const strict = process.argv.includes('--all'), only = process.argv.find(a => a.startsWith('--page='))?.slice(7);
 const PUBLIC = ['/', '/pricing', '/docs', '/login', '/contact', '/security', '/privacy', '/terms', '/status', '/legal', '/integrations'];
-const SIGNED_IN = ['/dashboard', '/owner', '/tickets', '/history', '/knowledge', '/setup', '/plan', '/team', '/leads', '/workspace', '/billing'];
+const SIGNED_IN = ['/dashboard', '/owner', '/tickets', '/history', '/knowledge', '/setup', '/plan', '/team', '/leads', '/workspace', '/billing', '/support'];
 const email = `a11y-${randomUUID().slice(0, 8)}@a11y.example.test`;
 const u = await (await fetch(`${SB}/auth/v1/admin/users`, {method: 'POST', headers: {apikey: SERVICE, Authorization: `Bearer ${SERVICE}`, 'Content-Type': 'application/json'}, body: JSON.stringify({email, password: 'local-test-only-123', email_confirm: true})})).json();
 const session = await (await fetch(`${SB}/auth/v1/token?grant_type=password`, {method: 'POST', headers: {apikey: ANON, 'Content-Type': 'application/json'}, body: JSON.stringify({email, password: 'local-test-only-123'})})).json();

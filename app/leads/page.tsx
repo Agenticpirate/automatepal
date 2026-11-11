@@ -19,7 +19,7 @@ export default function Leads(){
  async function remove(id:string){setBusy(true);try{const r=await fetch('/api/leads',{method:'POST',headers:{'Content-Type':'application/json',...await authHeaders()},body:JSON.stringify({action:'delete',id})});const d=await r.json();setNotice(d.note??d.error);setConfirm(null);if(r.ok)await load();}catch{setNotice('Request failed.');}finally{setBusy(false);}}
  const shown=data?filterLeads(data.leads,query):[];
  function exportCsv(){downloadCsv(`automatepal-leads-${new Date().toISOString().slice(0,10)}.csv`,leadsCsv(shown));setNotice(`Exported ${shown.length} lead${shown.length===1?'':'s'} as CSV. Nothing was sent anywhere.`);}
- return <DeskShell><DashShell crumb="Leads"><main style={{display:'contents'}}>
+ return <DeskShell widget><DashShell crumb="Leads"><main style={{display:'contents'}}>
 <header>
 <p className="ap-dash-kicker">Customer support / leads</p>
 <h1 className="ap-dash-h1"><span className="ap-dash-ln"><span>Leads</span></span></h1>

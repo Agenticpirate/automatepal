@@ -41,8 +41,8 @@ export default function Support(){const[cases,setCases]=useState<InboxCase[]>([]
 <article className={'ap-dash-kpi'+(pending?' ap-dash-kpi-alert':'')}><h3><DIcon name="alert" size={13}/>Pending review</h3><p>{pending}</p><span className="ap-dash-chip">live snapshot</span></article>
 <article className="ap-dash-kpi"><h3><DIcon name="checkcircle" size={13}/>Requests</h3><p>{requests.length}</p><span className="ap-dash-chip">live snapshot</span></article>
 </div>
-<section className="ap-dash-card"><h2 className="ap-dash-h2">Make the demo yours</h2>
-<p className="ap-dash-muted" style={{margin:'8px 0 0'}}>Tenant-scoped label, monogram and color. Image logos are not supported yet. No scripts, HTML or remote tracking images.</p>
+<section className="ap-dash-card"><h2 className="ap-dash-h2">{modeText('Make the demo yours','Look and starter questions')}</h2>
+<p className="ap-dash-muted" style={{margin:'8px 0 0'}}>{modeText('Tenant-scoped label, monogram and color. Image logos are not supported yet. No scripts, HTML or remote tracking images.','The name, monogram, colour and logo visitors see, and the questions offered when the chat opens. Plain text only.')}</p>
 <div className="ap-dash-filters" style={{marginTop:14}}>
 <label className="ap-dash-field">Widget label<input maxLength={40} value={branding.label} onChange={e=>setBranding({...branding,label:e.target.value})} className="ap-dash-select"/></label>
 <label className="ap-dash-field">Monogram<input maxLength={3} value={branding.initials} onChange={e=>setBranding({...branding,initials:e.target.value})} className="ap-dash-select"/></label>

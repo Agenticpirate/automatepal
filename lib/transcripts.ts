@@ -3,7 +3,7 @@
 import {csvCell} from './exports';
 import {ticketLabel} from './tickets';
 
-export type CaseRow={id:string;created_at:string;ticket_status:string;inbox_state:string;order_label:string};
+export type CaseRow={id:string;created_at:string;ticket_status:string;inbox_state:string;order_label:string|null};
 export type QuestionRow={id:string;case_id:string;created_at:string;question:string;answer:string|null;source:string|null;supported:boolean;feedback:number|null};
 export type MessageRow={id:string;case_id:string;created_at:string;author:string;body:string};
 export type RequestRow={id:string;case_id:string;created_at:string;kind:string;message:string};
@@ -24,7 +24,7 @@ export function buildConversations(cases:CaseRow[],questions:QuestionRow[],messa
   const qs=q.get(c.id)??[];
   const first=[...qs].sort((a,b)=>Date.parse(a.created_at)-Date.parse(b.created_at))[0];
   const last=entries.length?entries[entries.length-1].at:c.created_at;
-  return{id:c.id,label:ticketLabel(c.id),created_at:c.created_at,last_at:Date.parse(last)>Date.parse(c.created_at)?last:c.created_at,status:c.ticket_status,inbox_state:c.inbox_state,source:first?.source??'widget',questions:qs.length,unanswered:qs.filter(x=>!x.supported).length,preview:(entries.find(e=>e.author==='visitor')?.text??c.order_label).slice(0,160),entries};
+  return{id:c.id,label:ticketLabel(c.id),created_at:c.created_at,last_at:Date.parse(last)>Date.parse(c.created_at)?last:c.created_at,status:c.ticket_status,inbox_state:c.inbox_state,source:first?.source??'widget',questions:qs.length,unanswered:qs.filter(x=>!x.supported).length,preview:(entries.find(e=>e.author==='visitor')?.text??c.order_label??'').slice(0,160),entries};
  }).sort((a,b)=>Date.parse(b.last_at)-Date.parse(a.last_at));
 }
 const order=(a:Entry['author'])=>({visitor:0,ai:1,request:2,owner:3})[a];

@@ -85,7 +85,7 @@ export default function Plan() {
   async function cancel() { if (!confirm('Cancel your subscription? You keep your plan until the end of the period you paid for.')) return; if (await post({action: 'cancel'})) await load(); }
   const sub = data?.subscription, paypalLive = sub?.provider === 'paypal' && (sub.status === 'active' || sub.status === 'suspended');
   const current = data?.catalog.find(c => c.key === data.plan);
-  return <DeskShell><DashShell crumb="Plan"><main style={{display: 'contents'}}>
+  return <DeskShell widget><DashShell crumb="Plan"><main style={{display: 'contents'}}>
     <header>
       <p className="ap-dash-kicker">Workspace / plan</p>
       <h1 className="ap-dash-h1"><span className="ap-dash-ln"><span>Plan and usage</span></span></h1>

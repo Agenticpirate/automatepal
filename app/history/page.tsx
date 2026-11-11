@@ -28,7 +28,7 @@ export default function History(){const botFilter=useBotFilter();
  async function post(body:unknown){setBusy(true);try{const r=await fetch('/api/history',{method:'POST',headers:{'Content-Type':'application/json',...await authHeaders()},body:JSON.stringify(body)});const d=await r.json();setNotice(d.note??d.error);setConfirm(null);if(r.ok)await load();}catch{setNotice('Request failed.');}finally{setBusy(false);}}
  function exportCsv(){downloadCsv(`automatepal-chat-history-${new Date().toISOString().slice(0,10)}.csv`,transcriptsCsv(shown));setNotice(`Exported ${shown.length} conversation${shown.length===1?'':'s'} as CSV. Nothing was sent anywhere.`);}
  const active=shown.find(c=>c.id===open)??null;
- return <DeskShell><DashShell crumb="Chat history"><main style={{display:'contents'}}>
+ return <DeskShell widget><DashShell crumb="Chat history"><main style={{display:'contents'}}>
 <header>
 <p className="ap-dash-kicker">Customer support / chat history</p>
 <h1 className="ap-dash-h1"><span className="ap-dash-ln"><span>Chat history</span></span></h1>

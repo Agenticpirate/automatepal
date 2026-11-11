@@ -13,7 +13,7 @@
     "test:webhook": "tsx scripts/verify-webhook.ts",
     "test:billing": "tsx scripts/verify-billing-preview.ts",
     "test:hardening": "tsx scripts/verify-hardening.ts && tsx scripts/verify-hardening-p5.ts",
-    "test:tickets": "tsx scripts/verify-tickets.ts",
+    "test:tickets": "tsx scripts/verify-ticket-titles.ts && tsx scripts/verify-tickets.ts",
     "test:billing-support": "tsx scripts/verify-billing-crypto.ts && tsx scripts/verify-billing-redaction.ts && tsx scripts/verify-billing-http.ts && tsx scripts/verify-billing-contract.ts all && tsx scripts/verify-billing-isolation.ts",
     "billing:live-check": "tsx scripts/live-check/billing.ts",
     "test:mcp": "tsx scripts/verify-mcp-server.ts",

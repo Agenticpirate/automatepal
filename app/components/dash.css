@@ -222,3 +222,9 @@
 @media(max-width:560px){.ap-revenue .ag-paging-panel{justify-content:center;height:auto;min-height:var(--ag-header-height,48px);padding:8px 6px}.ap-revenue .ag-paging-panel-content{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;flex-shrink:1;min-width:0;max-width:100%;gap:6px 12px}.ap-revenue :is(.ag-paging-page-size,.ag-paging-row-summary-panel,.ag-paging-page-summary-panel){margin:0}}
 /* Touch screens give the paging arrows a 44px-tall target (globals.css); centre the icon in it and widen the target. */
 @media(pointer:coarse){.ap-revenue .ag-paging-button{display:inline-flex;align-items:center;justify-content:center;min-width:40px}}
+/* Widget studio tabs: a wrapping row of pills above the settings card; hidden panels stay mounted so one Save covers every tab. */
+.ap-studio-tabs{flex-wrap:wrap;padding:0;border-bottom:0;gap:8px}
+.ap-studio-tabs button{padding:9px 16px;font-size:13px;min-height:40px}
+.ap-studio-tabs button:focus-visible{outline:2px solid #09318D;outline-offset:2px}
+.ap-studio-tabs button span{display:inline-block;margin-left:4px;padding:0 7px;border-radius:999px;background:#FD91CC;color:#041A52;opacity:1;font-weight:700}
+[role=tabpanel][hidden],.ap-dash-card[hidden]{display:none!important}

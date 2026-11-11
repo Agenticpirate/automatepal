@@ -159,6 +159,7 @@ try {
         return json(r, {});
       });
       await p.goto(BASE + '/support');
+      await p.getByRole('tab', {name: 'Working hours'}).click(); // settings are grouped in tabs
       const panel = p.getByRole('region', {name: 'Working hours'});
       await panel.waitFor();
       await panel.getByLabel('Use working hours for the person handoff').check();

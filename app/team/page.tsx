@@ -30,7 +30,7 @@ const MATRIX:[string,string,Role][]=[
  ['Invite and manage admins','','owner'],
  ['Delete workspace data','Removes the team as well','owner'],
 ];
-const PALETTE=['#09318D','#041A52','#E25FAE','#0B3CA8','#A3226F','#1F4FBF'];
+const PALETTE=['#09318D','#041A52','#B8327F','#0B3CA8','#A3226F','#1F4FBF']; // each at least 4.5:1 under white initials
 const color=(s:string)=>PALETTE[[...s].reduce((a,c)=>(a*31+c.charCodeAt(0))>>>0,7)%PALETTE.length];
 const initials=(email:string)=>{const n=email.split('@')[0].split(/[._-]+/).filter(Boolean);return ((n[0]?.[0]??'?')+(n[1]?.[0]??'')).toUpperCase();};
 const date=(s:string)=>new Date(s).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});

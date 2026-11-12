@@ -5,7 +5,7 @@ export default function manifest():MetadataRoute.Manifest{
  return{
   name:'AutomatePal',
   short_name:'AutomatePal',
-  description:'Source-backed support and owner review. '+modeText('Fictional-data preview, no live payments.','Read-only billing, no live payments.'),
+  description:'AI customer support that shows its work. '+modeText('Fictional-data preview, no live payments.','Read-only billing, no live payments.'),
   // Installed from the dashboard it opens the Tickets inbox as an app; iOS needs this for push notifications.
   start_url:'/tickets',
   scope:'/',

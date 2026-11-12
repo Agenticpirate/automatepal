@@ -26,11 +26,12 @@ const instrumentSerif = Instrument_Serif({ variable: "--font-instrument-serif", 
 
 export const metadata: Metadata = {
  metadataBase:new URL(SITE_URL),
- title:{default:'AutomatePal - AI support that cites its sources',template:'%s | AutomatePal'},
- description:'AI customer support that answers from your own docs, quotes the passage it used and sends anything it can’t back up to your team. '+modeText('Fictional-data preview. No live payments.','Billing stays read-only. No live payments.'),
+ title:{default:'AutomatePal: AI customer support that shows its work',template:'%s | AutomatePal'},
+ keywords:['AI customer support','AI chatbot for website','customer support chatbot','AI help desk','support widget','AutomatePal'],
+ description:'AI customer support chatbot trained on your website and help docs. Every answer quotes its source, and your team takes over refunds and edge cases. '+modeText('Fictional-data preview. No live payments.','Free to start.'),
  alternates:{canonical:'/'},
- openGraph:{type:'website',siteName:'AutomatePal',url:'/',title:'AutomatePal - AI support that shows its work',description:'Answers from your own docs with the source attached, and a person for everything else. '+modeText('Fictional-data preview, no live payments.','Read-only billing, no live payments.'),images:[{url:'/opengraph-image',width:1200,height:630,alt:modeText('AutomatePal: source-backed answers, owner review, fictional-data preview','AutomatePal: source-backed answers and owner review')}]},
- twitter:{card:'summary_large_image',title:'AutomatePal - AI support that cites its sources',description:'Answers from your own docs with the source attached, and a person for everything else. '+modeText('Fictional-data preview, no live payments.','Read-only billing, no live payments.'),images:['/opengraph-image']},
+ openGraph:{type:'website',siteName:'AutomatePal',url:'/',title:'AutomatePal: AI customer support that shows its work',description:'An AI support agent for your website that answers in seconds, quotes the exact source and hands the rest to your team. '+modeText('Fictional-data preview, no live payments.','Free to start.'),images:[{url:'/opengraph-image',width:1200,height:630,alt:modeText('AutomatePal: AI support that shows its work, fictional-data preview','AutomatePal: AI support that shows its work')}]},
+ twitter:{card:'summary_large_image',title:'AutomatePal: AI customer support that shows its work',description:'An AI support agent for your website that answers in seconds, quotes the exact source and hands the rest to your team. '+modeText('Fictional-data preview, no live payments.','Free to start.'),images:['/opengraph-image']},
  // Public pages stay indexable in both demo modes so search engines can list the site and its favicon.
  // App surfaces that show demo fixtures keep their X-Robots-Tag noindex headers (next.config.ts).
  robots:{index:true,follow:true},

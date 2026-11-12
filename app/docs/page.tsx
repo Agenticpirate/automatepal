@@ -11,7 +11,7 @@ import './docs.css';
    code that enforces them (lib/billing/core/registry.ts, lib/mcp/scopes.ts), so this page cannot name a
    provider the registry does not enable. Prose limits mirror FEATURES.md and HARDENING.md.
    Not in app/sitemap.ts on purpose (verify-seo expects exactly seven public paths). */
-const description='How to install the AutomatePal widget, control it from your page, connect a payment provider read-only, verify customers, reply in the widget, set working hours, manage leads and connect an MCP client. Includes what is not built yet.';
+const description='Install the AutomatePal chat widget on any website, use the HTTP API and MCP server, connect billing read-only and set working hours. Includes what is not built yet.';
 export const metadata:Metadata={title:'Docs',description,alternates:{canonical:'/docs'},robots:{index:true,follow:true},
  openGraph:{title:'Docs | AutomatePal',description,url:'/docs',images:[{url:'/opengraph-image',width:1200,height:630,alt:modeText('AutomatePal fictional-data preview, no live payments','AutomatePal: source-backed support, no live payments')}]},
  twitter:{card:'summary_large_image',title:'Docs | AutomatePal',description,images:['/opengraph-image']}};

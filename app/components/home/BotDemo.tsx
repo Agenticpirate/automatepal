@@ -300,7 +300,7 @@ export default function BotDemo(){
  const trace=[...msgs].reverse().find(m=>m.from==='bot'&&(m.source||(m.checks?.length??0)>0||m.card));
  return <div className="hm-demo-grid" data-demo="scripted-chat">
   <div className="hm-demo-head">
-   <p className="hm-kicker">01 / See it in action</p>
+   <p className="hm-kicker">See it in action</p>
    <h2 id="demo-title" className="hm-h2">Ask it something. <span className="ap-hl">Watch it work</span>.</h2>
    <p className="hm-lede">A working walkthrough of the assistant for North Dock, a made-up store. Pick a question and watch it search the sources, quote the passage, verify the customer before it reads billing records, and send anything it can’t back up to you.</p>
   </div>

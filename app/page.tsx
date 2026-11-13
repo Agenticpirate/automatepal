@@ -1,6 +1,6 @@
 'use client';
 import {modeText} from '../lib/app-mode';
-import Link from 'next/link';import Image from 'next/image';import {useEffect,useRef,useState} from 'react';import DeskShell from './components/DeskShell';
+import Link from 'next/link';import Image from 'next/image';import {useEffect,useState} from 'react';import DeskShell from './components/DeskShell';
 import AnswerPipeline from './components/home/AnswerPipeline';
 import BotDemo from './components/home/BotDemo';
 import AddOns from './components/home/AddOns';
@@ -46,15 +46,6 @@ const PATHS: Record<string, React.ReactNode> = {
 function Icon({ name, size = 16, strokeWidth = 2 }: { name: keyof typeof PATHS; size?: number; strokeWidth?: number }) {
   return (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{PATHS[name]}</svg>);
 }
-type Stat = { icon: keyof typeof PATHS; target: number; suffix: string; decimals: number; label: string };
-/* Illustrative numbers from North Dock, the fictional demo store, labelled as such under the row.
-   They are not AutomatePal customer results. */
-const STATS: Stat[] = [
-  { icon: 'sparkles', target: 71, suffix: '%', decimals: 0, label: 'Resolved without a human' },
-  { icon: 'clock', target: 3.2, suffix: 's', decimals: 1, label: 'Average time to first answer' },
-  { icon: 'listchecks', target: 12, suffix: 'h', decimals: 0, label: 'Support hours saved every week' },
-  { icon: 'ban', target: 0, suffix: '', decimals: 0, label: 'Answers sent without a source' },
-];
 const VP_NAV: { label: string; href: string; icon: keyof typeof PATHS; active?: boolean }[] = [
   { label: 'Home', href: '/', icon: 'home', active: true },
   { label: 'Product', href: '#features', icon: 'sparkles' },
@@ -62,7 +53,6 @@ const VP_NAV: { label: string; href: string; icon: keyof typeof PATHS; active?: 
   { label: 'Pricing', href: '/pricing', icon: 'tag' },
 ];
 /* Capability strip: every item is a shipped preview feature (see FEATURES.md). */
-const CAPABILITIES = ['Exact source quotes','Independent grounding check','Read-only billing lookups','Verified customers only','Impact × urgency priority','Human takeover','Owner replies in the widget','Working hours and away message','Effective-dated owner exceptions','Exact custom answers','PDF, Markdown and URL import','Consent-gated publishing','Origin and path rules','MCP server','Signed webhooks','Scoped, expiring API tokens','Row-level tenant isolation','Unanswered-question CSV'];
 type Feature = { icon: PlatformIcon; title: string; body: string; wide?: boolean; visual: React.ReactNode };
 const FEATURES: Feature[] = [
   { icon: 'quote', wide: true, title: 'Answers your customers can check', body: 'Every reply comes with the exact passage it was built from, so customers and your team can see where it came from. A separate grounding check has to agree before anything is sent.',
@@ -105,41 +95,6 @@ const FAQ:[string,string][]=[
   ['Do I need a developer?','No. Sources, testing and the widget’s look are all set up in the dashboard. Going live means pasting one script tag into your site, the same way you would add an analytics snippet.'],
   ['Is my data safe?','Each workspace is isolated at the database level, API tokens are scoped and expire, and you can delete your workspace data yourself. AutomatePal does not yet hold SOC 2 or HIPAA certification.'],
 ];
-function useCountUp(ref: React.RefObject<HTMLDivElement | null>) {
-  useEffect(() => {
-    const root = ref.current;
-    if (!root) return;
-    const values = Array.from(root.querySelectorAll<HTMLElement>('[data-target]'));
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const setFinal = (el: HTMLElement) => { const t = parseFloat(el.dataset.target || '0'); const d = Number(el.dataset.decimals || '0'); el.textContent = t.toFixed(d) + (el.dataset.suffix || ''); };
-    if (reduced) { values.forEach(setFinal); return; }
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        io.unobserve(entry.target);
-        const el = entry.target as HTMLElement;
-        const i = values.indexOf(el);
-        const target = parseFloat(el.dataset.target || '0');
-        const decimals = Number(el.dataset.decimals || '0');
-        const suffix = el.dataset.suffix || '';
-        const duration = 1500 + i * 80;
-        const offset = 480 + i * 90;
-        window.setTimeout(() => {
-          const start = performance.now();
-          const tick = (now: number) => {
-            const p = Math.min(1, (now - start) / duration);
-            const eased = 1 - Math.pow(1 - p, 3);
-            el.textContent = (target * eased).toFixed(decimals) + suffix;
-            if (p < 1) requestAnimationFrame(tick);
-          };
-          requestAnimationFrame(tick);
-        }, offset);
-      });
-    }, { threshold: 0.25 });
-    values.forEach((v) => io.observe(v));
-    return () => io.disconnect();
-  }, [ref]);
-}
 /* Cursor spotlight on feature cards: mouse only, sets the card's own variables. */
 function spot(e: React.PointerEvent<HTMLElement>) {
   if (e.pointerType !== 'mouse') return;
@@ -157,7 +112,7 @@ function OwnerView(){
   const onKey=(e:React.KeyboardEvent)=>{if(e.key!=='ArrowRight'&&e.key!=='ArrowLeft')return;e.preventDefault();const next:OwnerTab=tab==='inbox'?'overview':'inbox';setTab(next);document.getElementById('ov-tab-'+next)?.focus();};
   const cur=OWNER_TABS.find(t=>t.id===tab)!;
   return <section className="ap-product hm-ov" aria-labelledby="owner-view-title">
-    <div className="ap-product-head"><div><p className="hm-kicker">04 / The owner’s view</p><h2 id="owner-view-title" className="hm-h2">See what needs you.<br/>Skip the rest.</h2></div><p>Every conversation in one inbox, with the AI assistant, you and the visitor in one thread. Take over, reply inside the widget and hand back when you’re done. The overview keeps the counts and trends.</p></div>
+    <div className="ap-product-head"><div><p className="hm-kicker">The owner’s view</p><h2 id="owner-view-title" className="hm-h2">See what needs you.<br/>Skip the rest.</h2></div><p>Every conversation in one inbox, with the AI assistant, you and the visitor in one thread. Take over, reply inside the widget and hand back when you’re done. The overview keeps the counts and trends.</p></div>
     <div className="hm-ov-tabs" role="tablist" aria-label="Owner screens" onKeyDown={onKey}>{OWNER_TABS.map(t=><button key={t.id} id={'ov-tab-'+t.id} type="button" role="tab" aria-selected={tab===t.id} aria-controls={'ov-panel-'+t.id} tabIndex={tab===t.id?0:-1} onClick={()=>setTab(t.id)}>{t.label}</button>)}</div>
     <div className="hm-clip ap-rv"><div className="ap-product-frame" data-demo="product-screenshots">
       <div className="ap-product-bar"><span className="ap-chrome-dots" aria-hidden="true"><i/><i/><i/></span><span className="ap-chrome-url">AutomatePal / {cur.url}</span><span className="ap-chrome-tag">Rendered product · fictional test data</span></div>
@@ -173,11 +128,11 @@ function OwnerView(){
 }
 export default function Landing(){
   const[open,setOpen]=useState(false);
-  const statsRef=useRef<HTMLDivElement>(null);useCountUp(statsRef);
   useEffect(()=>{const els=Array.from(document.querySelectorAll('.ap-rv'));els.forEach(el=>el.classList.add('ap-rv-off'));const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('ap-rv-in');io.unobserve(e.target);}}),{threshold:.18});els.forEach(el=>io.observe(el));return()=>io.disconnect();},[]);
   useEffect(()=>{const onKey=(e:KeyboardEvent)=>{if(e.key==='Escape')setOpen(false);};const onResize=()=>{if(window.innerWidth>720)setOpen(false);};window.addEventListener('keydown',onKey);window.addEventListener('resize',onResize);return()=>{window.removeEventListener('keydown',onKey);window.removeEventListener('resize',onResize);};},[]);
   const stagger=(i:number)=>({'--i':i} as React.CSSProperties);
-  return <DeskShell widget><main id="main-content" className="ap-public ap-home"><script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify({"@context":"https://schema.org","@type":"WebSite",name:"AutomatePal",url:SITE_URL+"/",description:"Source-quoted AI customer support with an owner-reviewed service desk. "+modeText('Fictional-data preview, no live payments.','Read-only billing, no live payments.'),inLanguage:"en",publisher:{"@type":"Organization",name:"AutomatePal",url:SITE_URL+"/",logo:SITE_URL+"/icon-512.png",sameAs:[REPO_URL],contactPoint:{"@type":"ContactPoint",contactType:"customer support",email:CONTACT_EMAIL,availableLanguage:"en"}}}).replace(/</g,"\\u003c")}}/>
+  return <DeskShell widget><main id="main-content" className="ap-public ap-home"><script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify({"@context":"https://schema.org","@type":"WebSite",name:"AutomatePal",url:SITE_URL+"/",description:"AI customer support that shows its work: an AI support agent for your website that quotes its sources and hands the rest to your team. "+modeText('Fictional-data preview, no live payments.','Free to start.'),inLanguage:"en",publisher:{"@type":"Organization",name:"AutomatePal",url:SITE_URL+"/",logo:SITE_URL+"/icon-512.png",sameAs:[REPO_URL],contactPoint:{"@type":"ContactPoint",contactType:"customer support",email:CONTACT_EMAIL,availableLanguage:"en"}}}).replace(/</g,"\\u003c")}}/>
+  <script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify([{"@context":"https://schema.org","@type":"SoftwareApplication",name:"AutomatePal",applicationCategory:"BusinessApplication",applicationSubCategory:"Customer support software",operatingSystem:"Web",url:SITE_URL+"/",description:"AI customer support chatbot trained on your website and help docs. Every answer quotes its source, and your team takes over refunds and edge cases.",offers:{"@type":"Offer",price:"0",priceCurrency:"USD",description:"Free plan"}},{"@context":"https://schema.org","@type":"FAQPage",mainEntity:FAQ.map(([q,a])=>({"@type":"Question",name:q,acceptedAnswer:{"@type":"Answer",text:a}}))}]).replace(/</g,"\\u003c")}}/>
   <section className="vp vp-static" aria-label="Intro">
     <div className="vp-bg" aria-hidden="true"/><div className="vp-bg-tint" aria-hidden="true"/>
     <div className="vp-page">
@@ -188,31 +143,31 @@ export default function Landing(){
         <button className="vp-burger" aria-label="Menu" aria-expanded={open} onClick={()=>setOpen(!open)}><i/><i/><i/></button>
       </header>
       {open&&(<><div className="vp-overlay" onClick={()=>setOpen(false)}/><nav className="vp-sheet" aria-label="Mobile">{VP_NAV.map((n,i)=>(<Link key={n.label} href={n.href} className={n.active?'vp-active':undefined} aria-current={n.active?'page':undefined} style={{animationDelay:`${0.05+i*0.05}s`}} onClick={()=>setOpen(false)}><Icon name={n.icon} size={15}/>{n.label}</Link>))}<Link href="/login" className="vp-sheet-signin" style={{animationDelay:'0.25s'}} onClick={()=>setOpen(false)}><Icon name="login" size={15}/>Sign in</Link></nav></>)}
-      <div className="vp-hero">
-        <div className="vp-trust vp-anim" style={{'--d':'0.05s'} as React.CSSProperties}>
-          <span className="vp-ring"><span role="img" aria-label="Source quotes"><Icon name="quote" size={15} strokeWidth={2.2}/></span></span>
-          <span className="vp-ring"><span role="img" aria-label="Owner review"><Icon name="shieldcheck" size={15} strokeWidth={2.2}/></span></span>
-          <span className="vp-ring"><span role="img" aria-label="A person in control"><Icon name="usercheck" size={15} strokeWidth={2.2}/></span></span>
-          <span className="vp-trust-pill"><Icon name="sparkles" size={13}/>The AI support agent that shows its sources</span>
-        </div>
-        <h1 className="vp-headline"><span>Answers in seconds.</span><span>Proof in every reply.</span></h1>
-        <p className="vp-sub vp-anim" style={{'--d':'0.28s'} as React.CSSProperties}>Turn your help docs into an AI agent that answers customers in seconds, quotes the exact line it used, and hands refunds and edge cases to your team with the context attached.</p>
-        <div className="hm-hero-ctas vp-anim" style={{'--d':'0.4s'} as React.CSSProperties}>
+      <div className="vp-hero hx">
+        <p className="hx-eyebrow vp-anim" style={{'--d':'0.05s'} as React.CSSProperties}><span className="hx-dot" aria-hidden="true"/>AI customer support for websites and online stores</p>
+        <h1 className="hx-h1"><span className="hx-line"><span>AI support that</span></span><span className="hx-line"><span><em>shows its work.</em></span></span></h1>
+        <p className="vp-sub hx-sub vp-anim" style={{'--d':'0.34s'} as React.CSSProperties}>AutomatePal turns your website and help docs into a support agent that answers customers in seconds, quotes the exact source, and hands refunds and edge cases to your team.</p>
+        <div className="hm-hero-ctas vp-anim" style={{'--d':'0.44s'} as React.CSSProperties}>
           <Link href="/setup" className="vp-cta" style={{animationName:'vp-revealPulse'} as React.CSSProperties}>Start free <span className="vp-cta-arrow"><Icon name="arrowupright" size={14} strokeWidth={2.4}/></span></Link>
           <a href="#demo" className="hm-cta-ghost">Watch it answer <Icon name="arrowright" size={14}/></a>
         </div>
-        <p className="hm-hero-note vp-anim" style={{'--d':'0.46s'} as React.CSSProperties}>No credit card. Live with one script tag.</p>
+        <p className="hm-hero-note vp-anim" style={{'--d':'0.5s'} as React.CSSProperties}>Free to start. No credit card. Live with one line of code.</p>
       </div>
-      <div className="vp-stats" ref={statsRef}>
-        {STATS.map((s,i)=>(<div className="vp-stat vp-anim" key={s.label} style={{'--d':`${0.5+i*0.08}s`} as React.CSSProperties}><span className="vp-stat-icon" aria-hidden="true"><Icon name={s.icon} size={26} strokeWidth={1.9}/></span><span className="vp-stat-value" data-target={s.target} data-suffix={s.suffix} data-decimals={s.decimals}>0{s.suffix}</span><span className="vp-stat-label">{s.label}</span></div>))}
+      {/* A scripted example, not a live chat: one question answered with its quoted source, drawn in on load. */}
+      <div className="hx-stage vp-anim" style={{'--d':'0.6s'} as React.CSSProperties} role="img" aria-label="Example: a shopper asks whether an item can be returned after 30 days. The agent answers yes, within 45 days of delivery, and shows the line of the returns policy it quoted.">
+        <div className="hx-float hx-float-l" aria-hidden="true"><span className="hx-float-ic"><Icon name="usercheck" size={15}/></span><span><b>Handed to your team</b><small>Refund review, context attached</small></span></div>
+        <div className="hx-card" aria-hidden="true">
+          <div className="hx-card-head"><span className="hx-url"><i/>yourstore.com</span><span className="hx-time"><Icon name="clock" size={12}/>Answered in 2.8s</span></div>
+          <p className="hx-q">Can I return an item after 30 days?</p>
+          <div className="hx-a"><span className="hx-typing"><i/><i/><i/></span><p>Yes. Unused items can be returned within 45 days of delivery.</p></div>
+          <div className="hx-src"><span className="hx-src-h"><Icon name="quote" size={13}/>Returns policy<em>returns.md</em></span><q>Unused items can be returned <mark>within 45 days of delivery</mark> for a full refund.</q></div>
+          <ul className="hx-checks"><li><Icon name="check" size={12} strokeWidth={3}/>Quote matches the source</li><li><Icon name="check" size={12} strokeWidth={3}/>Grounding check passed</li></ul>
+        </div>
+        <div className="hx-float hx-float-r" aria-hidden="true"><span className="hx-float-ic"><Icon name="creditcard" size={15}/></span><span><b>Billing, read-only</b><small>Invoice AP-1001 · Paid</small></span></div>
       </div>
-      <p className="hm-stats-note vp-anim" style={{'--d':'0.8s'} as React.CSSProperties}>Illustrative numbers from North Dock, our demo store. Not customer results.</p>
-      <div className="hm-marquee vp-anim" style={{'--d':'0.85s'} as React.CSSProperties} aria-label="Capabilities">
-        <ul className="hm-marquee-track">{CAPABILITIES.map(c=><li key={c}>{c}</li>)}</ul>
-        <ul className="hm-marquee-track" aria-hidden="true">{CAPABILITIES.map(c=><li key={c}>{c}</li>)}</ul>
-      </div>
+      <div className="hx-works vp-anim" style={{'--d':'0.85s'} as React.CSSProperties}><span>Installs on</span><ul>{['WordPress','Shopify','Webflow','Wix','Squarespace','Next.js','Google Tag Manager'].map(n=><li key={n}>{n}</li>)}</ul></div>
     </div>
-    <noscript><style>{'.vp-anim,.vp-headline span,.vp-header{animation:none;opacity:1;transform:none;filter:none}'}</style></noscript>
+    <noscript><style>{'.vp-anim,.hx-line>span,.hx-card *,.hx-float,.vp-header{animation:none!important;opacity:1!important;transform:none!important;filter:none!important}.hx-typing{display:none}'}</style></noscript>
   </section>
 
   <section id="demo" className="hm-sec hm-demo" aria-labelledby="demo-title">
@@ -223,7 +178,7 @@ export default function Landing(){
 
   <section id="how" className="hm-sec hm-how" aria-labelledby="how-title">
     <div className="hm-head ap-rv">
-      <p className="hm-kicker">02 / How every answer is made</p>
+      <p className="hm-kicker">How it works</p>
       <h2 id="how-title" className="hm-h2">No source, <span className="ap-hl">no answer</span>.</h2>
       <p className="hm-lede">Every reply goes through the same four steps: ask, retrieve, quote, verify. If any step fails, nothing goes to the customer, and your team gets a review item with the full conversation.</p>
     </div>
@@ -233,7 +188,7 @@ export default function Landing(){
 
   <section id="features" className="hm-sec hm-features" aria-labelledby="features-title">
     <div className="hm-head ap-rv">
-      <p className="hm-kicker">03 / Platform</p>
+      <p className="hm-kicker">Platform</p>
       <h2 id="features-title" className="hm-h2">Everything you need to hand support to AI, <span className="ap-hl">safely</span>.</h2>
       <p className="hm-lede">From the first doc you import to the last ticket you close, you can see what the agent did and step in at any point.</p>
     </div>
@@ -249,7 +204,7 @@ export default function Landing(){
 
   <section id="addons" className="hm-sec hm-addons-sec" aria-labelledby="addons-title">
     <div className="hm-head ap-rv">
-      <p className="hm-kicker">05 / Add-ons and integrations</p>
+      <p className="hm-kicker">Add-ons and integrations</p>
       <h2 id="addons-title" className="hm-h2">Connect the tools your team already uses.</h2>
       <p className="hm-lede">Start with the built-in service desk, then add what you need. Each add-on is labelled available or in preview, so you know what works today.</p>
     </div>
@@ -261,7 +216,7 @@ export default function Landing(){
 
   <section id="trust" className="hm-sec hm-trust" aria-labelledby="trust-title">
     <div className="hm-head ap-rv">
-      <p className="hm-kicker">06 / Trust</p>
+      <p className="hm-kicker">Trust</p>
       <h2 id="trust-title" className="hm-h2">The controls your security review will ask about.</h2>
       <p className="hm-lede">Built in from day one and covered by automated tests, not bolted on after launch.</p>
     </div>
@@ -274,7 +229,7 @@ export default function Landing(){
   <section id="faq" className="hm-sec hm-faq" aria-labelledby="faq-title">
     <div className="hm-faq-grid">
       <div className="hm-head ap-rv">
-        <p className="hm-kicker">07 / Questions</p>
+        <p className="hm-kicker">Questions</p>
         <h2 id="faq-title" className="hm-h2">Questions, answered.</h2>
         <p className="hm-lede">Setup steps, provider keys and the MCP tools are in the <Link href="/docs" className="hm-inline-link hm-nowrap">docs ↗</Link>. Have a question we didn’t cover? <Link href="/contact" className="hm-inline-link hm-nowrap">Send it to us ↗</Link> and a person will read it.</p>
       </div>
@@ -283,4 +238,4 @@ export default function Landing(){
   </section>
 
   <section className="ap-start"><p className="ap-kicker">{modeText('Free preview. Fictional data. Real workflow.','Free to start. Read-only billing. A person in control.')}</p><h2>Turn your docs into<br className="hm-br-wide"/> a support agent you can check.</h2><Link href="/setup" className="ap-beam-btn"><span>Start the guided setup <span>↗</span></span></Link><p>Sign in → add a source → test it → paste one script tag.</p></section>
-  <footer className="ap-footer"><div className="ap-footer-grid"><div className="ap-footer-brand"><Link className="ap-mark" href="/"><Image src="/automatepal-logo.png" alt="" width={57} height={28} className="ap-logo"/>AutomatePal</Link><p>Source-quoted AI support<br/>with a person in control.</p><p className="ap-footer-note">{modeText('Fictional-data preview. No live payments. No uptime, SLA or certification claim.','No live payments. No uptime, SLA or certification claim.')}</p></div><nav className="ap-footer-col" aria-label="Product"><h3>Product</h3><a href="#how">How it works</a><a href="#features">Platform</a><a href="#trust">Trust</a><a href="#addons">Add-ons</a><a href="#faq">FAQ</a><Link href="/pricing">Pricing</Link><Link href="/docs">Docs</Link></nav><nav className="ap-footer-col" aria-label="Get started"><h3>Get started</h3><Link href="/setup">Guided setup</Link><Link href="/login">Sign in</Link><Link href="/support">One-hour demo</Link><Link href="/knowledge">Knowledge workspace</Link></nav><nav className="ap-footer-col" aria-label="Company"><h3>Company</h3><Link href="/status">Status</Link><Link href="/security">Security</Link><Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link><Link href="/contact">Contact</Link><a href={REPO_URL} rel="noreferrer" target="_blank">GitHub</a></nav></div><FolderWordmark/><div className="ap-footer-bar"><span>© 2026 {COPYRIGHT_HOLDER}. AutomatePal - candidate preview build.</span><span>Answers quote their sources. A person keeps the final say.</span></div></footer></main></DeskShell>;}
+  <footer className="ap-footer"><div className="ap-footer-grid"><div className="ap-footer-brand"><Link className="ap-mark" href="/"><Image src="/automatepal-logo.png" alt="" width={57} height={28} className="ap-logo"/>AutomatePal</Link><p>AI support that shows its work.<br/>A person in control.</p><p className="ap-footer-note">{modeText('Fictional-data preview. No live payments. No uptime, SLA or certification claim.','No live payments. No uptime, SLA or certification claim.')}</p></div><nav className="ap-footer-col" aria-label="Product"><h3>Product</h3><a href="#how">How it works</a><a href="#features">Platform</a><a href="#trust">Trust</a><a href="#addons">Add-ons</a><a href="#faq">FAQ</a><Link href="/pricing">Pricing</Link><Link href="/docs">Docs</Link></nav><nav className="ap-footer-col" aria-label="Get started"><h3>Get started</h3><Link href="/setup">Guided setup</Link><Link href="/login">Sign in</Link><Link href="/support">One-hour demo</Link><Link href="/knowledge">Knowledge workspace</Link></nav><nav className="ap-footer-col" aria-label="Company"><h3>Company</h3><Link href="/status">Status</Link><Link href="/security">Security</Link><Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link><Link href="/contact">Contact</Link><a href={REPO_URL} rel="noreferrer" target="_blank">GitHub</a></nav></div><FolderWordmark/><div className="ap-footer-bar"><span>© 2026 {COPYRIGHT_HOLDER}. AutomatePal - candidate preview build.</span><span>Answers quote their sources. A person keeps the final say.</span></div></footer></main></DeskShell>;}

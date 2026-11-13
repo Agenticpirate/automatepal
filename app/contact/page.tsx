@@ -4,7 +4,7 @@ import type {Metadata} from 'next';
 import PublicShell,{DocHead} from '../components/PublicShell';
 import {CONTACT_EMAIL,REPO_URL} from '../../lib/site';
 
-const description='How to reach the AutomatePal beta owner for support, data deletion, security and abuse reports.';
+const description='How to reach AutomatePal for support, data deletion, security and abuse reports.';
 export const metadata:Metadata={title:'Contact and abuse reports',description,alternates:{canonical:'/contact'},
  openGraph:{title:'Contact and abuse reports | AutomatePal',description,url:'/contact',images:[{url:'/opengraph-image',width:1200,height:630,alt:modeText('AutomatePal fictional-data preview, no live payments','AutomatePal: source-backed support, no live payments')}]},
  twitter:{card:'summary_large_image',title:'Contact and abuse reports | AutomatePal',description,images:['/opengraph-image']}};

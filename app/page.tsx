@@ -112,7 +112,7 @@ function OwnerView(){
   const onKey=(e:React.KeyboardEvent)=>{if(e.key!=='ArrowRight'&&e.key!=='ArrowLeft')return;e.preventDefault();const next:OwnerTab=tab==='inbox'?'overview':'inbox';setTab(next);document.getElementById('ov-tab-'+next)?.focus();};
   const cur=OWNER_TABS.find(t=>t.id===tab)!;
   return <section className="ap-product hm-ov" aria-labelledby="owner-view-title">
-    <div className="ap-product-head"><div><p className="hm-kicker">04 / The owner’s view</p><h2 id="owner-view-title" className="hm-h2">See what needs you.<br/>Skip the rest.</h2></div><p>Every conversation in one inbox, with the AI assistant, you and the visitor in one thread. Take over, reply inside the widget and hand back when you’re done. The overview keeps the counts and trends.</p></div>
+    <div className="ap-product-head"><div><p className="hm-kicker">The owner’s view</p><h2 id="owner-view-title" className="hm-h2">See what needs you.<br/>Skip the rest.</h2></div><p>Every conversation in one inbox, with the AI assistant, you and the visitor in one thread. Take over, reply inside the widget and hand back when you’re done. The overview keeps the counts and trends.</p></div>
     <div className="hm-ov-tabs" role="tablist" aria-label="Owner screens" onKeyDown={onKey}>{OWNER_TABS.map(t=><button key={t.id} id={'ov-tab-'+t.id} type="button" role="tab" aria-selected={tab===t.id} aria-controls={'ov-panel-'+t.id} tabIndex={tab===t.id?0:-1} onClick={()=>setTab(t.id)}>{t.label}</button>)}</div>
     <div className="hm-clip ap-rv"><div className="ap-product-frame" data-demo="product-screenshots">
       <div className="ap-product-bar"><span className="ap-chrome-dots" aria-hidden="true"><i/><i/><i/></span><span className="ap-chrome-url">AutomatePal / {cur.url}</span><span className="ap-chrome-tag">Rendered product · fictional test data</span></div>
@@ -178,7 +178,7 @@ export default function Landing(){
 
   <section id="how" className="hm-sec hm-how" aria-labelledby="how-title">
     <div className="hm-head ap-rv">
-      <p className="hm-kicker">02 / How every answer is made</p>
+      <p className="hm-kicker">How it works</p>
       <h2 id="how-title" className="hm-h2">No source, <span className="ap-hl">no answer</span>.</h2>
       <p className="hm-lede">Every reply goes through the same four steps: ask, retrieve, quote, verify. If any step fails, nothing goes to the customer, and your team gets a review item with the full conversation.</p>
     </div>
@@ -188,7 +188,7 @@ export default function Landing(){
 
   <section id="features" className="hm-sec hm-features" aria-labelledby="features-title">
     <div className="hm-head ap-rv">
-      <p className="hm-kicker">03 / Platform</p>
+      <p className="hm-kicker">Platform</p>
       <h2 id="features-title" className="hm-h2">Everything you need to hand support to AI, <span className="ap-hl">safely</span>.</h2>
       <p className="hm-lede">From the first doc you import to the last ticket you close, you can see what the agent did and step in at any point.</p>
     </div>
@@ -204,7 +204,7 @@ export default function Landing(){
 
   <section id="addons" className="hm-sec hm-addons-sec" aria-labelledby="addons-title">
     <div className="hm-head ap-rv">
-      <p className="hm-kicker">05 / Add-ons and integrations</p>
+      <p className="hm-kicker">Add-ons and integrations</p>
       <h2 id="addons-title" className="hm-h2">Connect the tools your team already uses.</h2>
       <p className="hm-lede">Start with the built-in service desk, then add what you need. Each add-on is labelled available or in preview, so you know what works today.</p>
     </div>
@@ -216,7 +216,7 @@ export default function Landing(){
 
   <section id="trust" className="hm-sec hm-trust" aria-labelledby="trust-title">
     <div className="hm-head ap-rv">
-      <p className="hm-kicker">06 / Trust</p>
+      <p className="hm-kicker">Trust</p>
       <h2 id="trust-title" className="hm-h2">The controls your security review will ask about.</h2>
       <p className="hm-lede">Built in from day one and covered by automated tests, not bolted on after launch.</p>
     </div>
@@ -229,7 +229,7 @@ export default function Landing(){
   <section id="faq" className="hm-sec hm-faq" aria-labelledby="faq-title">
     <div className="hm-faq-grid">
       <div className="hm-head ap-rv">
-        <p className="hm-kicker">07 / Questions</p>
+        <p className="hm-kicker">Questions</p>
         <h2 id="faq-title" className="hm-h2">Questions, answered.</h2>
         <p className="hm-lede">Setup steps, provider keys and the MCP tools are in the <Link href="/docs" className="hm-inline-link hm-nowrap">docs ↗</Link>. Have a question we didn’t cover? <Link href="/contact" className="hm-inline-link hm-nowrap">Send it to us ↗</Link> and a person will read it.</p>
       </div>
@@ -238,4 +238,4 @@ export default function Landing(){
   </section>
 
   <section className="ap-start"><p className="ap-kicker">{modeText('Free preview. Fictional data. Real workflow.','Free to start. Read-only billing. A person in control.')}</p><h2>Turn your docs into<br className="hm-br-wide"/> a support agent you can check.</h2><Link href="/setup" className="ap-beam-btn"><span>Start the guided setup <span>↗</span></span></Link><p>Sign in → add a source → test it → paste one script tag.</p></section>
-  <footer className="ap-footer"><div className="ap-footer-grid"><div className="ap-footer-brand"><Link className="ap-mark" href="/"><Image src="/automatepal-logo.png" alt="" width={57} height={28} className="ap-logo"/>AutomatePal</Link><p>Source-quoted AI support<br/>with a person in control.</p><p className="ap-footer-note">{modeText('Fictional-data preview. No live payments. No uptime, SLA or certification claim.','No live payments. No uptime, SLA or certification claim.')}</p></div><nav className="ap-footer-col" aria-label="Product"><h3>Product</h3><a href="#how">How it works</a><a href="#features">Platform</a><a href="#trust">Trust</a><a href="#addons">Add-ons</a><a href="#faq">FAQ</a><Link href="/pricing">Pricing</Link><Link href="/docs">Docs</Link></nav><nav className="ap-footer-col" aria-label="Get started"><h3>Get started</h3><Link href="/setup">Guided setup</Link><Link href="/login">Sign in</Link><Link href="/support">One-hour demo</Link><Link href="/knowledge">Knowledge workspace</Link></nav><nav className="ap-footer-col" aria-label="Company"><h3>Company</h3><Link href="/status">Status</Link><Link href="/security">Security</Link><Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link><Link href="/contact">Contact</Link><a href={REPO_URL} rel="noreferrer" target="_blank">GitHub</a></nav></div><FolderWordmark/><div className="ap-footer-bar"><span>© 2026 {COPYRIGHT_HOLDER}. AutomatePal - candidate preview build.</span><span>Answers quote their sources. A person keeps the final say.</span></div></footer></main></DeskShell>;}
+  <footer className="ap-footer"><div className="ap-footer-grid"><div className="ap-footer-brand"><Link className="ap-mark" href="/"><Image src="/automatepal-logo.png" alt="" width={57} height={28} className="ap-logo"/>AutomatePal</Link><p>AI support that shows its work.<br/>A person in control.</p><p className="ap-footer-note">{modeText('Fictional-data preview. No live payments. No uptime, SLA or certification claim.','No live payments. No uptime, SLA or certification claim.')}</p></div><nav className="ap-footer-col" aria-label="Product"><h3>Product</h3><a href="#how">How it works</a><a href="#features">Platform</a><a href="#trust">Trust</a><a href="#addons">Add-ons</a><a href="#faq">FAQ</a><Link href="/pricing">Pricing</Link><Link href="/docs">Docs</Link></nav><nav className="ap-footer-col" aria-label="Get started"><h3>Get started</h3><Link href="/setup">Guided setup</Link><Link href="/login">Sign in</Link><Link href="/support">One-hour demo</Link><Link href="/knowledge">Knowledge workspace</Link></nav><nav className="ap-footer-col" aria-label="Company"><h3>Company</h3><Link href="/status">Status</Link><Link href="/security">Security</Link><Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link><Link href="/contact">Contact</Link><a href={REPO_URL} rel="noreferrer" target="_blank">GitHub</a></nav></div><FolderWordmark/><div className="ap-footer-bar"><span>© 2026 {COPYRIGHT_HOLDER}. AutomatePal - candidate preview build.</span><span>Answers quote their sources. A person keeps the final say.</span></div></footer></main></DeskShell>;}

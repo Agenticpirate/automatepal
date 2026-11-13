@@ -777,3 +777,35 @@
 @media(max-width:1020px){.hx-float{display:none}}
 @media(max-width:720px){.ap-home .vp-hero.hx{padding-top:clamp(28px,6vh,56px)}.ap-home .hx-h1{font-size:clamp(38px,11.4vw,60px);letter-spacing:-.04em}.hx-eyebrow{font-size:12px}.hx-card{padding:14px;border-radius:18px}.hx-q,.hx-a{font-size:14px}.hx-works{gap:8px 14px;font-size:12.5px}.hx-works ul{gap:6px 14px}}
 @media(prefers-reduced-motion:reduce){.hx-line>span,.hx-card *,.hx-float,.hx-dot{animation:none!important;opacity:1!important;transform:none!important}.hx-typing{display:none}.hx-src mark{background-size:100% 100%}}
+
+/* ── Sections below the hero (2026-11): the same quiet style as the hero. Hairline borders and soft shadows replace
+   the 2 to 3 px navy outlines with offset pink shadows, the marker underline in headings becomes a serif italic
+   accent, and the numbered mono kickers become small pills. Layout and content are unchanged. */
+.ap-home .hm-kicker,.ap-home .ap-product .hm-kicker{display:inline-flex;align-items:center;gap:8px;width:fit-content;margin:0 0 20px;padding:6px 12px;border:1px solid #DCE3F2;border-radius:999px;background:#fff;color:#33415F;font:500 12px var(--font-inter),'Inter',system-ui,sans-serif;letter-spacing:.01em}
+.ap-home .hm-kicker::before{content:'';width:6px;height:6px;border-radius:50%;background:#E25FAE}
+.ap-home .hm-trust .hm-kicker{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.2);color:#E4EAF8}
+.ap-home .hm-trust .hm-kicker::before{background:#FD91CC}
+.ap-public.ap-home .hm-h2{font-weight:600;letter-spacing:-.04em;line-height:1.05}
+.ap-home .hm-h2 .ap-hl{font-family:var(--font-instrument-serif),'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400;letter-spacing:-.015em;color:#C2408C;white-space:normal;padding-right:.04em}
+.ap-home .hm-h2 .ap-hl::after{display:none}
+.ap-home .hm-trust .hm-h2 .ap-hl{color:#FD91CC}
+.ap-home .hm-lede{color:#4A5878}
+/* Frames and cards */
+.ap-home .hm-chat,.ap-home .hm-stage,.ap-public.ap-home .ap-product-frame{border:1px solid #D9E0F0;box-shadow:0 1px 0 rgba(255,255,255,.8) inset,0 40px 80px -36px rgba(4,26,82,.32),0 14px 30px -18px rgba(4,26,82,.18)}
+.ap-public.ap-home .ap-product-frame{border-color:rgba(4,26,82,.9)}
+.ap-home .hm-pipe{border:1px solid rgba(255,255,255,.12);box-shadow:0 40px 80px -36px rgba(4,26,82,.55),0 14px 30px -18px rgba(4,26,82,.3)}
+.ap-home .hm-card{border:1px solid #DFE5F3;box-shadow:0 1px 2px rgba(4,26,82,.04),0 14px 34px -22px rgba(4,26,82,.22);transition:transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s cubic-bezier(.22,1,.36,1),border-color .2s ease}
+@media(hover:hover) and (pointer:fine){.ap-home .hm-card:hover{transform:translateY(-4px);border-color:#C9D3EC;box-shadow:0 1px 2px rgba(4,26,82,.05),0 28px 54px -26px rgba(4,26,82,.32)}}
+.ap-home .hm-compare-after{border:1px solid rgba(255,255,255,.12);box-shadow:0 40px 80px -36px rgba(4,26,82,.5)}
+.ap-home .hm-launcher{border:1px solid rgba(4,26,82,.85)}
+.desk-ui .ap-home .hm-launcher:hover{box-shadow:0 18px 34px -12px rgba(4,26,82,.55),0 0 0 6px rgba(253,145,204,.22)}
+.ap-home .hm-how{background-image:radial-gradient(rgba(9,49,141,.09) 1px,transparent 1.4px);background-size:26px 26px}
+/* Closing call to action */
+.ap-home .ap-start .ap-beam-btn{border:0;border-radius:999px;box-shadow:0 0 0 1px rgba(253,145,204,.45),0 18px 44px -14px rgba(253,145,204,.6);transition:transform .25s cubic-bezier(.22,1,.36,1),box-shadow .25s ease}
+@media(hover:hover) and (pointer:fine){.ap-home .ap-start .ap-beam-btn:hover{transform:translateY(-2px);box-shadow:0 0 0 1px rgba(253,145,204,.6),0 24px 54px -14px rgba(253,145,204,.75)}}
+.ap-home .ap-start h2{font-weight:600;letter-spacing:-.04em}
+/* Scroll reveal: a little slower and softer than before, still one pass per element. */
+.ap-home .ap-rv.ap-rv-off{opacity:0;transform:translateY(22px);filter:blur(4px)}
+.ap-home .ap-rv.ap-rv-off.ap-rv-in{opacity:1;transform:none;filter:none;transition:opacity .9s cubic-bezier(.22,1,.36,1),transform .9s cubic-bezier(.22,1,.36,1),filter .9s cubic-bezier(.22,1,.36,1);transition-delay:calc(var(--i,0)*90ms)}
+@media(prefers-reduced-motion:reduce){.ap-home .ap-rv.ap-rv-off{opacity:1;transform:none;filter:none}.ap-home .hm-card,.ap-home .ap-start .ap-beam-btn{transition:none}}
+@media(max-width:720px){.ap-home .hm-kicker{margin-bottom:16px}}

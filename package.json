@@ -33,7 +33,7 @@
     "ag-grid-react": "^36.2.0",
     "better-sqlite3": "^13.0.3",
     "linkedom": "^0.18.15",
-    "next": "16.4.3",
+    "next": "16.4.6",
     "pdfjs-dist": "6.4.299",
     "pg": "^8.23.1",
     "react": "19.3.0",
